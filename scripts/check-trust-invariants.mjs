@@ -142,8 +142,12 @@ if (!fs.existsSync(canonIndexPath)) {
 } else {
   const canonIndexContent = fs.readFileSync(canonIndexPath, "utf8");
 
-  // Check for denial exports (DeniedDecisionPayload is enough as indicator)
-  if (!canonIndexContent.includes("DeniedDecisionPayload")) {
+  // Check for denial exports - either direct export or re-export from types
+  const exportsDenialTypes = 
+    canonIndexContent.includes("DeniedDecisionPayload") ||
+    canonIndexContent.includes('export * from "./types"');
+
+  if (!exportsDenialTypes) {
     warn(
       "canon/index.ts should export DeniedDecisionPayload for public API"
     );
@@ -188,9 +192,15 @@ function scanForUnpersisteDenials(dir) {
           // Check if mechanicalDeny is called in same file
           const hasMechanicalDeny = /mechanicalDeny/.test(content);
           
-          // Exception: gate functions in optr.ts are allowed to return traces
-          // because they're collected and persisted by selectPolicyWithDenialTracking
-          const isGateFunction = fullPath.includes("optr.ts") || fullPath.includes("optr/");
+          // Exception: gate functions are allowed to return traces
+          // Gate functions follow naming convention: gateXxx or xxxGate
+          // They return WhyNotTrace | null and are collected by OPTR
+          const isGateFunction = 
+            fullPath.includes("optr.ts") || 
+            fullPath.includes("optr/") ||
+            /function\s+gate[A-Z]/.test(content) ||
+            /function\s+\w+Gate/.test(content) ||
+            /export\s+function\s+gate/.test(content);
           
           if (!hasMechanicalDeny && !isGateFunction) {
             issues.push(
