@@ -25,15 +25,15 @@ jobs:
 
       - name: Verify Canon exports
         run: |
-          # Check that canon package exists
-          if [ ! -d "packages/canon" ]; then
-            echo "❌ Canon package missing"
+          # Check that canon package (bickford) exists
+          if [ ! -d "packages/bickford" ]; then
+            echo "❌ Canon package (bickford) missing"
             exit 1
           fi
           
           # Check that all required files exist
           for file in types.ts invariants.ts optr.ts promotion.ts promote.ts nonInterference.ts execution.ts migration.ts runtime.ts index.ts; do
-            if [ ! -f "packages/canon/src/$file" ]; then
+            if [ ! -f "packages/bickford/src/canon/$file" ]; then
               echo "❌ Missing canon module: $file"
               exit 1
             fi
