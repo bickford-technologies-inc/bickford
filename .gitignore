@@ -1,0 +1,17 @@
+node_modules/
+*.log
+.env
+.DS_Store
+coverage/
+tmp/
+.sessions/
+
+# Build artifacts and release evidence
+dist/
+*.tgz
+
+# Keep release artifacts for verification
+!dist/build-stamp.json
+!dist/sbom.cdx.json
+!dist/evidence-pack.json
+!dist/RELEASE_NOTES.md

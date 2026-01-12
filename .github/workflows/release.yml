@@ -1,0 +1,84 @@
+name: Release bickford
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Verify tag matches version
+        run: node ./scripts/release-prep.mjs
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+
+      - name: Build stamp + build
+        run: npm run build
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+
+      - name: Generate SBOM (CycloneDX)
+        run: |
+          npm i -g @cyclonedx/cyclonedx-npm
+          npm run sbom
+
+      - name: Generate evidence pack
+        run: npm run evidence
+
+      - name: Create release notes
+        run: |
+          echo "# bickford ${GITHUB_REF_NAME}" > dist/RELEASE_NOTES.md
+          echo "" >> dist/RELEASE_NOTES.md
+          echo "Decision Continuity Runtime (DCR) - Transaction-ready release" >> dist/RELEASE_NOTES.md
+          echo "" >> dist/RELEASE_NOTES.md
+          echo "## Verification Artifacts" >> dist/RELEASE_NOTES.md
+          echo "" >> dist/RELEASE_NOTES.md
+          echo "- **Commit:** \`$(git rev-parse HEAD)\`" >> dist/RELEASE_NOTES.md
+          echo "- **Build stamp:** \`dist/build-stamp.json\`" >> dist/RELEASE_NOTES.md
+          echo "- **SBOM:** \`dist/sbom.cdx.json\`" >> dist/RELEASE_NOTES.md
+          echo "- **Evidence pack:** \`dist/evidence-pack.json\`" >> dist/RELEASE_NOTES.md
+          echo "" >> dist/RELEASE_NOTES.md
+          echo "## Core Components" >> dist/RELEASE_NOTES.md
+          echo "" >> dist/RELEASE_NOTES.md
+          echo "- DecisionTracker: Immutable decision chain with SHA-256 hashing" >> dist/RELEASE_NOTES.md
+          echo "- OptimalPathScorer (OPTR): Multi-criteria path evaluation" >> dist/RELEASE_NOTES.md
+          echo "- GovernanceGate: Stage-based promotion with validation rules" >> dist/RELEASE_NOTES.md
+          echo "- SessionManager: Cross-device continuity with checkpoints" >> dist/RELEASE_NOTES.md
+          echo "- IPProtector: Access control and PII sanitization" >> dist/RELEASE_NOTES.md
+          echo "" >> dist/RELEASE_NOTES.md
+          echo "## Documentation" >> dist/RELEASE_NOTES.md
+          echo "" >> dist/RELEASE_NOTES.md
+          echo "- Architecture: \`ARCHITECTURE.md\`" >> dist/RELEASE_NOTES.md
+          echo "- Quick Start: \`QUICKSTART.md\`" >> dist/RELEASE_NOTES.md
+          echo "- Deployment: \`DEPLOYMENT.md\`" >> dist/RELEASE_NOTES.md
+          echo "- Data Room: \`dataroom/\`" >> dist/RELEASE_NOTES.md
+          echo "- Legal Docs: \`dataroom/LEGAL/\`" >> dist/RELEASE_NOTES.md
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/build-stamp.json
+            dist/sbom.cdx.json
+            dist/evidence-pack.json
+            dist/RELEASE_NOTES.md
+          body_path: dist/RELEASE_NOTES.md

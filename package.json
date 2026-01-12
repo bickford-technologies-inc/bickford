@@ -1,0 +1,29 @@
+{
+  "name": "bickford",
+  "version": "1.0.0",
+  "description": "bickford Decision Continuity Runtime (DCR) - A critical runtime architecture for immutable decision tracking, optimal path scoring, and governance enforcement",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test src/**/*.test.js",
+    "build": "node ./scripts/build-stamp.mjs",
+    "release:prep": "node ./scripts/release-prep.mjs",
+    "sbom": "cyclonedx-npm --output-file dist/sbom.cdx.json --output-format json",
+    "evidence": "node ./scripts/evidence-pack.mjs"
+  },
+  "keywords": [
+    "decision-tracking",
+    "governance",
+    "optimal-path-scoring",
+    "session-continuity",
+    "runtime-architecture",
+    "OPTR",
+    "execution-equilibrium"
+  ],
+  "author": "Derek bickford",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
