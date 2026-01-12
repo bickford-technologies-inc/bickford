@@ -92,6 +92,15 @@ model MigrationScore {
   @@map("MigrationScore")
 }
 
+model ChatThread {
+  id             String    @id @default(cuid())
+  createdAt      DateTime  @default(now())
+  lastReplayedAt DateTime?
+  messages       ChatMessage[]
+
+  @@map("ChatThread")
+}
+
 model ChatMessage {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
@@ -105,6 +114,15 @@ model ChatMessage {
   intentId  String?  @unique
 
   supersedesMessageId String?
+
+  threadId       String?
+  thread         ChatThread? @relation(fields: [threadId], references: [id])
+
+  canonEntryId   String?
+  canonEntry     CanonEntry? @relation(fields: [canonEntryId], references: [id])
+
+  @@index([threadId])
+  @@index([canonEntryId])
 }
 
 model Intent {
@@ -165,4 +183,17 @@ enum ExecutionStatus {
   RUNNING
   FAILED
   SUCCEEDED
+}
+
+// Canon entry tracking for chat-canon linkage
+model CanonEntry {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  kind        String
+  title       String
+  content     String
+  provenance  Json?
+  messages    ChatMessage[]
+
+  @@map("CanonEntry")
 }
