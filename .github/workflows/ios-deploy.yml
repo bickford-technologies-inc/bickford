@@ -1,0 +1,104 @@
+name: iOS Build & Submit to App Store
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to build and submit"
+        required: true
+        type: choice
+        options:
+          - production
+          - staging
+  push:
+    branches: [main]
+    paths:
+      - "packages/bickford-mobile-expo/**"
+
+env:
+  NODE_VERSION: "20.x"
+  EXPO_WORKING_DIR: packages/bickford-mobile-expo
+
+jobs:
+  build-and-submit-ios:
+    name: Build & Submit iOS to App Store Connect
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Validate required secrets/vars
+        run: |
+          if [ -z "${EXPO_TOKEN:-}" ]; then
+            echo "::error::Missing EXPO_TOKEN. Add it in GitHub repo settings → Secrets and variables → Actions → Secrets."
+            echo "::error::Generate one at https://expo.dev/accounts/<account>/settings/access-tokens"
+            exit 1
+          fi
+
+          if [ -z "${EXPO_APPLE_APP_SPECIFIC_PASSWORD:-}" ]; then
+            echo "::error::Missing EXPO_APPLE_APP_SPECIFIC_PASSWORD. This is required for App Store Connect submission."
+            exit 1
+          fi
+
+          if [ -z "${APPLE_ID:-}" ] || [ -z "${ASC_APP_ID:-}" ] || [ -z "${APPLE_TEAM_ID:-}" ]; then
+            echo "::error::Missing APPLE_ID / ASC_APP_ID / APPLE_TEAM_ID (repo variables or secrets)."
+            exit 1
+          fi
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_ID: ${{ vars.APPLE_ID || secrets.APPLE_ID }}
+          ASC_APP_ID: ${{ vars.ASC_APP_ID || secrets.ASC_APP_ID }}
+          APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID || secrets.APPLE_TEAM_ID }}
+
+      - name: Install dependencies
+        working-directory: ${{ env.EXPO_WORKING_DIR }}
+        run: npm ci
+
+      - name: Build iOS app with EAS
+        working-directory: ${{ env.EXPO_WORKING_DIR }}
+        run: |
+          echo "🏗️ Building iOS app with EAS..."
+          PROFILE="${{ github.event.inputs.environment || 'production' }}"
+          echo "Using EAS profile: $PROFILE"
+
+          eas build --platform ios --profile "$PROFILE" --non-interactive --wait --json > eas-build.json
+          node -e "const fs=require('node:fs'); const j=JSON.parse(fs.readFileSync('eas-build.json','utf8')); const b=Array.isArray(j)?j[0]:j; if(!b||!b.id){console.error('Missing build id in eas-build.json'); process.exit(1);} console.log('buildId='+b.id);" >> "$GITHUB_OUTPUT"
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        id: eas_build
+
+      - name: Submit to App Store Connect
+        working-directory: ${{ env.EXPO_WORKING_DIR }}
+        run: |
+          echo "🚀 Submitting to App Store Connect..."
+          PROFILE="${{ github.event.inputs.environment || 'production' }}"
+          echo "Using EAS profile: $PROFILE"
+          echo "Submitting build id: ${{ steps.eas_build.outputs.buildId }}"
+
+          eas submit --platform ios --profile "$PROFILE" --id "${{ steps.eas_build.outputs.buildId }}" --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_ID: ${{ vars.APPLE_ID || secrets.APPLE_ID }}
+          ASC_APP_ID: ${{ vars.ASC_APP_ID || secrets.ASC_APP_ID }}
+          APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID || secrets.APPLE_TEAM_ID }}
+
+      - name: Notify submission complete
+        run: |
+          echo "✅ iOS build submitted to App Store Connect successfully!"
+          echo "📱 Check your App Store Connect dashboard for review status"

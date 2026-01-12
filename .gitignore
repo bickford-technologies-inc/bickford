@@ -1,0 +1,45 @@
+# Local iOS crash logs (Apple review / device exports)
+crashlog-*.ips
+
+# Local iOS build artifacts
+*.ipa
+
+# Local dev data
+.data/
+
+# Dependency directories
+node_modules/
+.vscode/
+
+# Environment variables
+.env
+.env.local
+*.env
+!.env.example
+!.env.*.example
+
+# macOS files
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.swp
+
+# Local temp clones
+.tmp-bickford/
+
+# Build outputs
+dist/
+out/
+
+# Private deal execution files
+INTRO_RANKING.md
+STAGE2_*.md
+*_PRIVATE.md
+
+# External scratch repos (do not commit)
+_external/
