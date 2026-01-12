@@ -1,0 +1,29 @@
+{
+  "name": "@bickford/ledger",
+  "version": "1.0.0",
+  "description": "Bickford Ledger: Durable Prisma/Postgres persistence for intent-decision pairs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "npm run typecheck",
+    "test": "echo 'No tests yet'"
+  },
+  "keywords": [
+    "bickford",
+    "ledger",
+    "persistence"
+  ],
+  "author": "Bickford",
+  "license": "PROPRIETARY",
+  "dependencies": {
+    "@bickford/types": "*",
+    "@prisma/client": "^7.2.0"
+  },
+  "devDependencies": {
+    "prisma": "^7.2.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.9.3"
+  }
+}
