@@ -1,0 +1,27 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model LedgerEntry {
+  id        String   @id
+  intent    Json
+  decision  Json
+  hash      String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model AgentState {
+  agentId     String   @id
+  ttvBaseline Float
+  updatedAt   DateTime @updatedAt
+}
