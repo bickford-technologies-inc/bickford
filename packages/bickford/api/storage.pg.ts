@@ -188,4 +188,32 @@ export class PostgresCanonStore {
       payload: row.payload,
     }));
   }
+
+  // ---------- canon knowledge ----------
+  async getAllCanon() {
+    try {
+      const r = await this.pool.query(
+        `
+        SELECT "itemId" as id, level, kind, title, statement, confidence, trust
+        FROM "CanonKnowledge"
+        WHERE level = 'CANON'
+        ORDER BY "createdAt" ASC
+        `
+      );
+      return r.rows.map((row) => ({
+        id: row.id,
+        level: row.level,
+        kind: row.kind,
+        title: row.title,
+        statement: row.statement,
+        confidence: row.confidence
+          ? { confidence: row.confidence, trust: row.trust || 1.0 }
+          : undefined,
+      }));
+    } catch (error) {
+      // Table might not exist yet
+      console.warn("getAllCanon: CanonKnowledge table not found, returning empty array");
+      return [];
+    }
+  }
 }
