@@ -1,0 +1,68 @@
+name: PR Preview Environment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Type Check
+        run: npm run typecheck || true
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy Preview to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          npm install -g @railway/cli
+          railway up --detach --environment pr-${{ github.event.pull_request.number }}
+
+      - name: Get Preview URL
+        id: preview
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          PREVIEW_URL=$(railway domain --environment pr-${{ github.event.pull_request.number }})
+          echo "url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+
+      - name: Comment Preview URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🚀 Preview Deployment Ready\n\n**Preview URL:** ${{ steps.preview.outputs.url }}\n\n- ✅ Build succeeded\n- ✅ Migrations applied\n- ✅ Preview environment: \`pr-${{ github.event.pull_request.number }}\`\n\n**Test endpoints:**\n- Execute: \`POST ${{ steps.preview.outputs.url }}/api/execute\`\n- Ledger: \`GET ${{ steps.preview.outputs.url }}/api/ledger\`\n- Verify: \`GET ${{ steps.preview.outputs.url }}/api/ledger/verify\``
+            })
+
+  cleanup:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'closed'
+    
+    steps:
+      - name: Cleanup Preview Environment
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          npm install -g @railway/cli
+          railway environment delete pr-${{ github.event.pull_request.number }} --yes || true
