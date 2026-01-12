@@ -1,4 +1,4 @@
-name: Bickford Non-Regression Invariants
+name: Bickford Invariants
 
 on:
   pull_request:
@@ -11,113 +11,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Use Node (match Vercel floor)
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "20.19.4"
+          cache: "npm"
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install
+        run: npm ci
 
-      # ─────────────────────────────────────────────
-      # Invariant 1 — Vercel config correctness
-      # ─────────────────────────────────────────────
-      - name: Enforce vercel.json invariants
-        run: |
-          if [ -f vercel.json ]; then
-            if grep -q '"functions"' vercel.json; then
-              echo "❌ vercel.json must NOT define functions for App Router"
-              exit 1
-            fi
-            if grep -q '"outputDirectory"' vercel.json; then
-              echo "❌ vercel.json must NOT define outputDirectory for Next.js"
-              exit 1
-            fi
-          fi
-          echo "✅ vercel.json invariant satisfied"
+      - name: Invariant checks
+        run: npm run check:invariants
 
-      # ─────────────────────────────────────────────
-      # Invariant 2 — Prisma generation is build-time
-      # ─────────────────────────────────────────────
-      - name: Enforce Prisma generate during build
-        run: |
-          npm run build
-          if [ ! -d node_modules/@prisma/client ]; then
-            echo "❌ Prisma Client not generated during build"
-            exit 1
-          fi
-          echo "✅ Prisma Client present"
-
-      # ─────────────────────────────────────────────
-      # Invariant 3 — Single React type universe
-      # ─────────────────────────────────────────────
-      - name: Enforce single @types/react
-        run: |
-          COUNT=$(npm ls @types/react --json | jq '.dependencies | length')
-          if [ "$COUNT" -gt 1 ]; then
-            echo "❌ Multiple @types/react versions detected"
-            npm ls @types/react
-            exit 1
-          fi
-          echo "✅ Single React type universe"
-
-      # ─────────────────────────────────────────────
-      # Invariant 4 — Turbo env isolation explicit
-      # ─────────────────────────────────────────────
-      - name: Enforce turbo globalEnv
-        run: |
-          REQUIRED=("DATABASE_URL" "OPENAI_API_KEY" "ANTHROPIC_API_KEY")
-          for VAR in "${REQUIRED[@]}"; do
-            if ! grep -q "$VAR" turbo.json; then
-              echo "❌ turbo.json missing globalEnv entry: $VAR"
-              exit 1
-            fi
-          done
-          echo "✅ turbo globalEnv invariant satisfied"
-
-      # ─────────────────────────────────────────────
-      # Invariant 5 — Node major version lock
-      # ─────────────────────────────────────────────
-      - name: Enforce Node 20.x only
-        run: |
-          if ! grep -q '"node": "20.x"' package.json; then
-            echo "❌ Node version must be pinned to 20.x"
-            exit 1
-          fi
-          echo "✅ Node version pinned"
-
-      # ─────────────────────────────────────────────
-      # Invariant 6 — No dist artifacts committed
-      # ─────────────────────────────────────────────
-      - name: Prevent dist/ commits
-        run: |
-          if git ls-files | grep -E '/dist/'; then
-            echo "❌ dist/ artifacts must not be committed"
-            exit 1
-          fi
-          echo "✅ No dist artifacts tracked"
-
-      # ─────────────────────────────────────────────
-      # Invariant 7 — Single Prisma schema authority
-      # ─────────────────────────────────────────────
-      - name: Enforce single Prisma schema
-        run: |
-          COUNT=$(git ls-files | grep 'schema.prisma' | wc -l)
-          if [ "$COUNT" -ne 1 ]; then
-            echo "❌ Exactly one schema.prisma must exist"
-            git ls-files | grep schema.prisma
-            exit 1
-          fi
-          echo "✅ Single Prisma schema enforced"
-
-      # ─────────────────────────────────────────────
-      # Canon: BUILD_CANON.md must exist and be v1
-      # ─────────────────────────────────────────────
-      - name: Ensure BUILD_CANON exists
-        run: |
-          test -f docs/BUILD_CANON.md || (echo "❌ BUILD_CANON.md missing" && exit 1)
-          echo "✅ Build Canon present"
-
-      - name: Canon freeze guard
-        run: |
-          grep -q "Build Canon v1" docs/BUILD_CANON.md || (echo "❌ Canon version mismatch" && exit 1)
-          echo "🔒 Canon v1 enforced"
+      - name: Build (smoke)
+        env:
+          DATABASE_URL: "postgresql://user:pass@localhost:5432/db?sslmode=disable"
+        run: npm run build
