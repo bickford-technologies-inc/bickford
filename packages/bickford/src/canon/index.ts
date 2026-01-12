@@ -11,6 +11,7 @@
  * - OPTR: Decision engine with 3 upgrades applied
  * - Promotion: 4-test gate for structural changes
  * - NonInterference: Multi-agent equilibrium checks
+ * - Runtime: Decision continuity runtime with hash-linked ledger
  */
 
 // Types

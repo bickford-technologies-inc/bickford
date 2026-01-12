@@ -225,3 +225,66 @@ export const DEFAULT_WEIGHTS: OPTRWeights = {
   lambdaR: 0.2,  // Risk coefficient
   lambdaP: 0.05, // Success probability coefficient
 };
+
+/**
+ * Default feature extractor
+ * In production, this would analyze path characteristics
+ */
+export function extractFeatures(path: CandidatePath): CandidateFeatures {
+  // Simple heuristic: use first action in path
+  const nextAction = path.actions[0];
+  
+  // Map risk level to numeric value
+  const riskMap = { LOW: 1, MEDIUM: 2, HIGH: 3 };
+  const risk = riskMap[nextAction.riskLevel] || 2;
+  
+  // Simple TTV estimate based on path length
+  const ttv = path.actions.length * 10;
+  
+  // Simple cost estimate
+  const cost = path.actions.length * 5;
+  
+  // Simple success probability (higher for paths with fewer actions)
+  const successProb = Math.max(0.1, 1.0 - (path.actions.length * 0.1));
+  
+  return {
+    ttv,
+    cost,
+    risk,
+    successProb,
+    nextAction
+  };
+}
+
+/**
+ * High-level OPTR execution function
+ * Simplified wrapper around optrResolve
+ */
+export function runOPTR(params: {
+  ts: string;
+  tenantId: string;
+  goal: string;
+  candidates: CandidatePath[];
+  canonIds: Set<string>;
+  weights: OPTRWeights;
+  featureExtractor?: (p: CandidatePath) => CandidateFeatures;
+}): OPTRRun {
+  const canonStore = new Map<string, { level: any }>();
+  for (const id of params.canonIds) {
+    canonStore.set(id, { level: "CANON" });
+  }
+
+  const featureFn = params.featureExtractor || extractFeatures;
+
+  return optrResolve({
+    ts: params.ts,
+    tenantId: params.tenantId,
+    goal: params.goal,
+    candidates: params.candidates,
+    canonRefsUsed: Array.from(params.canonIds),
+    canonIdsPresent: Array.from(params.canonIds),
+    canonStore,
+    weights: params.weights,
+    featureFn
+  });
+}
