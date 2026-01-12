@@ -1,0 +1,23 @@
+name: No conflict markers
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  no-conflicts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure no merge conflict markers
+        run: |
+          if git grep -n "<<<<<<< " -- . ":(exclude)scripts/railway-doctor.mjs" ":(exclude).github/workflows/no-conflict-markers.yml"; then
+            echo "Found merge conflict markers (<<<<<<<) in repo."
+            exit 1
+          fi
+          if git grep -n ">>>>>>> " -- . ":(exclude)scripts/railway-doctor.mjs" ":(exclude).github/workflows/no-conflict-markers.yml"; then
+            echo "Found merge conflict markers (>>>>>>>) in repo."
+            exit 1
+          fi
+      - name: Run railway doctor
+        run: node scripts/railway-doctor.mjs

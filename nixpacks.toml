@@ -1,0 +1,14 @@
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+nixPkgsArchive = "a343533bccc62400e8a9560423486a3b6c11a23b"
+
+[phases.install]
+cmds = ["npm ci --include=dev"]
+
+[phases.build]
+cmds = [
+  "bash scripts/railway-build.sh"
+]
+
+[start]
+cmd = "npx prisma migrate deploy && npm run start"
