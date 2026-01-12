@@ -1,0 +1,114 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+      
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --detach
+      
+      - name: Run migrations
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway run npx prisma migrate deploy
+      
+      - name: Get deployment URL
+        id: get_url
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          URL=$(railway domain 2>/dev/null)
+          EXIT_CODE=$?
+          
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "❌ Failed to execute 'railway domain' command (exit code: $EXIT_CODE)"
+            echo ""
+            echo "Possible causes:"
+            echo "  1. Railway CLI authentication failed - Check RAILWAY_TOKEN secret"
+            echo "  2. Project not linked - Run 'railway link' locally first"
+            echo "  3. No domains configured - Add a domain in Railway dashboard"
+            exit 1
+          fi
+          
+          if [ -z "$URL" ]; then
+            echo "❌ Railway domain command returned empty URL"
+            echo ""
+            echo "Possible causes:"
+            echo "  1. No domain configured for this Railway project"
+            echo "  2. Project not properly initialized"
+            echo "  3. Railway service not deployed yet"
+            exit 1
+          fi
+          
+          echo "✅ Deployed to: $URL"
+          echo "DEPLOYMENT_URL=$URL" >> $GITHUB_OUTPUT
+      
+      - name: Health check with retry
+        env:
+          DEPLOYMENT_URL: ${{ steps.get_url.outputs.DEPLOYMENT_URL }}
+        run: |
+          MAX_ATTEMPTS=10
+          WAIT_TIME=5
+          TIMEOUT=30
+          
+          echo "Starting health check (max ${MAX_ATTEMPTS} attempts, ${WAIT_TIME}s between attempts, ${TIMEOUT}s timeout)"
+          
+          for i in $(seq 1 $MAX_ATTEMPTS); do
+            echo "Attempt $i/$MAX_ATTEMPTS: Checking $DEPLOYMENT_URL/api/health"
+            
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time $TIMEOUT "$DEPLOYMENT_URL/api/health" 2>/dev/null || echo "000")
+            
+            if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+              echo "✅ Health check passed! (HTTP $HTTP_CODE)"
+              exit 0
+            fi
+            
+            if [ "$HTTP_CODE" = "000" ]; then
+              echo "   ⚠️  Request timed out or connection failed"
+            else
+              echo "   ❌ Health check failed with HTTP $HTTP_CODE"
+            fi
+            
+            if [ $i -lt $MAX_ATTEMPTS ]; then
+              echo "   Waiting ${WAIT_TIME}s before retry..."
+              sleep $WAIT_TIME
+            fi
+          done
+          
+          echo ""
+          echo "❌ Health check failed after $MAX_ATTEMPTS attempts"
+          echo "   Check Railway logs for service startup errors"
+          exit 1
+      
+      - name: Verify Ledger Chain
+        env:
+          DEPLOYMENT_URL: ${{ steps.get_url.outputs.DEPLOYMENT_URL }}
+        run: |
+          echo "Verifying ledger chain integrity..."
+          RESULT=$(curl -s "$DEPLOYMENT_URL/api/ledger/verify")
+          echo "$RESULT"
+          
+          if echo "$RESULT" | grep -q '"valid":false'; then
+            echo "❌ Ledger chain verification FAILED"
+            exit 1
+          fi
+          
+          echo "✅ Ledger chain verified"
