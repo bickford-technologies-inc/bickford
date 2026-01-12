@@ -1,0 +1,30 @@
+{
+  "name": "@bickford/ui",
+  "version": "1.0.0",
+  "description": "Bickford UI components - React components for Bickford interfaces",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "npm run typecheck",
+    "test": "echo 'No tests yet'"
+  },
+  "keywords": [
+    "bickford",
+    "ui",
+    "react",
+    "components"
+  ],
+  "author": "Bickford",
+  "license": "PROPRIETARY",
+  "dependencies": {
+    "@bickford/core": "*",
+    "@bickford/types": "*",
+    "react": "^19.2.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.8",
+    "typescript": "^5.0.0"
+  }
+}
