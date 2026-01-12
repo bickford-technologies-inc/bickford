@@ -101,8 +101,8 @@ model ChatMessage {
 
   resolution ChatResolution
 
-  intentId  String?
-  intent    Intent? @relation(fields: [intentId], references: [id])
+  intent    Intent?  @relation("MessageIntent")
+  intentId  String?  @unique
 
   supersedesMessageId String?
 }
@@ -111,8 +111,8 @@ model Intent {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
-  sourceMessageId String
-  sourceMessage   ChatMessage @relation(fields: [sourceMessageId], references: [id])
+  sourceMessage   ChatMessage @relation("MessageIntent", fields: [sourceMessageId], references: [id])
+  sourceMessageId String   @unique
 
   intentType IntentType
   goal       String
