@@ -46,23 +46,28 @@ const ALLOWED_EDGE_IMPORTS = [
 function isEdgeFile(filePath) {
   // Detect edge runtime files
   const content = readFileSync(filePath, "utf-8");
-  
-  // Check for Edge runtime exports config
-  if (content.includes('export const runtime = "edge"')) {
-    return true;
-  }
-  
-  // Check for Edge runtime environment variable usage
-  if (content.includes("NEXT_RUNTIME") || content.includes("EdgeRuntime")) {
-    return true;
-  }
-  
-  // Check file path patterns
   const relativePath = relative(PROJECT_ROOT, filePath);
+  
+  // Check file path patterns first - explicit edge files
   if (
     relativePath.includes("/edge/") ||
-    relativePath.includes("edge.ts") ||
-    relativePath.includes("edge.js")
+    relativePath.endsWith("edge.ts") ||
+    relativePath.endsWith("edge.js")
+  ) {
+    return true;
+  }
+  
+  // Check for Edge runtime exports config (must be exact match)
+  if (content.match(/export\s+const\s+runtime\s*=\s*["']edge["']/)) {
+    return true;
+  }
+  
+  // Only consider it edge if it explicitly uses EdgeRuntime in a runtime check context
+  // and doesn't have assertNodeRuntime
+  if (
+    content.includes("EdgeRuntime") &&
+    !content.includes("assertNodeRuntime") &&
+    !content.includes("Runtime check: Prisma must only run in Node")
   ) {
     return true;
   }
