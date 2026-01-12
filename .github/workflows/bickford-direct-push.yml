@@ -1,0 +1,402 @@
+name: Bickford Direct Push
+
+on:
+  workflow_dispatch:
+    inputs:
+      changes:
+        description: 'Changes to apply'
+        required: true
+        type: choice
+        options:
+          - ui-correction
+          - canon-migration
+          - full-consolidation
+        default: full-consolidation
+
+jobs:
+  direct-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required to push changes to main branch
+    steps:
+      - name: Checkout with token
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BICKFORD_PUSH_TOKEN }}
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Apply UI correction
+        if: inputs.changes == 'ui-correction' || inputs.changes == 'full-consolidation'
+        run: |
+          mkdir -p packages/web-ui/src/app
+          mkdir -p packages/web-ui/src/components
+          mkdir -p packages/web-ui/src/app/api/execute
+          mkdir -p packages/web-ui/src/app/api/ledger
+
+          # Create page.tsx (main layout)
+          cat > packages/web-ui/src/app/page.tsx << 'EOF'
+          import { ExecutionSurface } from "@/components/execution-surface";
+          import { ExecutionLedger } from "@/components/execution-ledger";
+          import { ChatDock } from "@/components/chat-dock";
+          import { Header } from "@/components/header";
+
+          export default function HomePage() {
+            return (
+              <main className="min-h-screen bg-black text-white">
+                <Header />
+                <div className="relative mx-auto max-w-6xl px-6 py-10">
+                  <div className="space-y-8">
+                    <ExecutionSurface />
+                    <ExecutionLedger />
+                  </div>
+                  <ChatDock />
+                </div>
+              </main>
+            );
+          }
+          EOF
+
+          # Create ExecutionSurface component
+          cat > packages/web-ui/src/components/execution-surface.tsx << 'EOF'
+          "use client";
+          import { useState } from "react";
+
+          export function ExecutionSurface() {
+            const [intent, setIntent] = useState("");
+            const [state, setState] = useState<"idle" | "executing">("idle");
+
+            async function execute() {
+              if (!intent.trim()) return;
+              setState("executing");
+              fetch("/api/execute", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ intent }),
+              }).finally(() => {
+                setState("idle");
+                setIntent("");
+              });
+            }
+
+            return (
+              <section className="rounded-xl border border-neutral-800 bg-gradient-to-b from-neutral-900 to-black p-6">
+                <h2 className="text-sm font-semibold tracking-wide text-neutral-400">INTENT</h2>
+                <textarea
+                  value={intent}
+                  onChange={(e) => setIntent(e.target.value)}
+                  placeholder="Describe what you want to do…"
+                  className="mt-3 w-full min-h-[120px] rounded-md bg-black border border-neutral-700 p-4 text-sm outline-none focus:border-white"
+                />
+                <div className="mt-4 flex items-center justify-between">
+                  <button
+                    onClick={execute}
+                    disabled={state === "executing"}
+                    className="rounded-md bg-white px-5 py-2 text-sm font-medium text-black disabled:opacity-40"
+                  >
+                    {state === "executing" ? "EXECUTING…" : "EXECUTE"}
+                  </button>
+                  <span className="text-xs text-neutral-500">
+                    {state === "executing" ? "AUTHORITY ASSERTED" : "IDLE — READY"}
+                  </span>
+                </div>
+              </section>
+            );
+          }
+          EOF
+
+          # Create ExecutionLedger component
+          cat > packages/web-ui/src/components/execution-ledger.tsx << 'EOF'
+          "use client";
+          import { useEffect, useState } from "react";
+
+          type LedgerEntry = {
+            id: string;
+            intent: string;
+            status: "ALLOW" | "DENY";
+            timestamp: string;
+          };
+
+          export function ExecutionLedger() {
+            const [entries, setEntries] = useState<LedgerEntry[]>([]);
+
+            useEffect(() => {
+              const interval = setInterval(async () => {
+                const res = await fetch("/api/ledger");
+                const data = await res.json();
+                setEntries(data);
+              }, 1500);
+              return () => clearInterval(interval);
+            }, []);
+
+            return (
+              <section className="rounded-xl border border-neutral-800 bg-neutral-950 p-6">
+                <h2 className="text-sm font-semibold tracking-wide text-neutral-400">EXECUTION LEDGER</h2>
+                {entries.length === 0 ? (
+                  <p className="mt-4 text-xs text-neutral-600">No executions yet. System is armed.</p>
+                ) : (
+                  <ul className="mt-4 space-y-3">
+                    {entries.map((e) => (
+                      <li key={e.id} className="flex items-center justify-between rounded-md border border-neutral-800 bg-black px-4 py-3 text-xs">
+                        <span className="truncate">{e.intent}</span>
+                        <span className={`ml-4 font-medium ${e.status === "ALLOW" ? "text-green-400" : "text-red-400"}`}>
+                          {e.status}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            );
+          }
+          EOF
+
+          # Create ChatDock component
+          cat > packages/web-ui/src/components/chat-dock.tsx << 'EOF'
+          "use client";
+          import { useState } from "react";
+
+          export function ChatDock() {
+            const [open, setOpen] = useState(false);
+
+            return (
+              <div className="fixed bottom-6 right-6 z-40">
+                {open && (
+                  <div className="mb-3 h-[420px] w-[320px] rounded-xl border border-neutral-800 bg-neutral-900 p-3 shadow-xl">
+                    <div className="text-xs text-neutral-400 mb-2">Bickford Utility</div>
+                    <div className="h-full rounded-md bg-black p-2 text-xs text-neutral-500">
+                      Chat is advisory only.
+                    </div>
+                  </div>
+                )}
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="rounded-full bg-white px-4 py-2 text-xs font-medium text-black"
+                >
+                  {open ? "Close Utility" : "Open Utility"}
+                </button>
+              </div>
+            );
+          }
+          EOF
+
+          # Create Header component
+          cat > packages/web-ui/src/components/header.tsx << 'EOF'
+          export function Header() {
+            return (
+              <header className="border-b border-neutral-800 px-6 py-4">
+                <h1 className="text-lg font-semibold tracking-wide">BICKFORD</h1>
+                <p className="text-xs text-neutral-500">Zero-Approval Execution Runtime</p>
+              </header>
+            );
+          }
+          EOF
+
+          # Create /api/execute route
+          cat > packages/web-ui/src/app/api/execute/route.ts << 'EOF'
+          import { NextRequest, NextResponse } from 'next/server';
+          import { ledger } from '../ledger/store';
+
+          export async function POST(req: NextRequest) {
+            const { intent } = await req.json();
+            
+            const entry = {
+              status: 'ALLOW' as const,
+              id: crypto.randomUUID(),
+              intent: intent,
+              timestamp: new Date().toISOString()
+            };
+            
+            // Add to ledger
+            ledger.push(entry);
+            console.log('[EXECUTE]', intent);
+            
+            return NextResponse.json(entry);
+          }
+          EOF
+
+          # Create ledger store
+          cat > packages/web-ui/src/app/api/ledger/store.ts << 'EOF'
+          // In-memory ledger storage (shared across API routes)
+          // Note: This will reset on server restart. Use a database for persistence.
+          export const ledger: Array<{
+            id: string;
+            intent: string;
+            status: 'ALLOW' | 'DENY';
+            timestamp: string;
+          }> = [];
+          EOF
+
+          # Create /api/ledger route
+          cat > packages/web-ui/src/app/api/ledger/route.ts << 'EOF'
+          import { NextResponse } from 'next/server';
+          import { ledger } from './store';
+
+          export async function GET() {
+            // Return last 10 entries, most recent first
+            return NextResponse.json(ledger.slice(-10).reverse());
+          }
+          EOF
+
+          # Clean up old Vite files (using -f flag for graceful handling of non-existent files)
+          rm -f packages/web-ui/src/App.tsx
+          rm -f packages/web-ui/src/App.css
+          rm -f packages/web-ui/src/main.tsx
+          rm -f packages/web-ui/src/index.css
+          rm -f packages/web-ui/index.html
+          rm -f packages/web-ui/vite.config.ts
+          
+          # Create/Replace package.json with Next.js configuration
+          # Note: This is an intentional complete replacement for Vite→Next.js migration
+          cat > packages/web-ui/package.json << 'EOF'
+          {
+            "name": "web-ui",
+            "version": "0.1.0",
+            "private": true,
+            "scripts": {
+              "dev": "next dev",
+              "build": "next build",
+              "start": "next start",
+              "lint": "next lint"
+            },
+            "dependencies": {
+              "next": "^15.1.4",
+              "react": "^19.0.0",
+              "react-dom": "^19.0.0"
+            },
+            "devDependencies": {
+              "@types/node": "^22.10.5",
+              "@types/react": "^19.0.6",
+              "@types/react-dom": "^19.0.3",
+              "typescript": "^5.0.0",
+              "tailwindcss": "^4.0.0"
+            }
+          }
+          EOF
+
+          # Create Next.js config
+          cat > packages/web-ui/next.config.js << 'EOF'
+          /** @type {import('next').NextConfig} */
+          const nextConfig = {
+            reactStrictMode: true,
+          }
+
+          module.exports = nextConfig
+          EOF
+
+          # Create Tailwind config
+          cat > packages/web-ui/tailwind.config.js << 'EOF'
+          /** @type {import('tailwindcss').Config} */
+          module.exports = {
+            content: [
+              './src/**/*.{js,ts,jsx,tsx,mdx}',
+            ],
+            theme: {
+              extend: {},
+            },
+            plugins: [],
+          }
+          EOF
+
+          # Create global CSS with Tailwind directives
+          cat > packages/web-ui/src/app/globals.css << 'EOF'
+          @tailwind base;
+          @tailwind components;
+          @tailwind utilities;
+          EOF
+
+          # Create root layout
+          cat > packages/web-ui/src/app/layout.tsx << 'EOF'
+          import type { Metadata } from 'next'
+          import './globals.css'
+
+          export const metadata: Metadata = {
+            title: 'Bickford Execution Runtime',
+            description: 'Zero-Approval Execution Runtime',
+          }
+
+          export default function RootLayout({
+            children,
+          }: {
+            children: React.ReactNode
+          }) {
+            return (
+              <html lang="en">
+                <body>{children}</body>
+              </html>
+            )
+          }
+          EOF
+
+          # Create TypeScript config
+          cat > packages/web-ui/tsconfig.json << 'EOF'
+          {
+            "compilerOptions": {
+              "target": "ES2017",
+              "lib": ["dom", "dom.iterable", "esnext"],
+              "allowJs": true,
+              "skipLibCheck": true,
+              "strict": true,
+              "forceConsistentCasingInFileNames": true,
+              "noEmit": true,
+              "esModuleInterop": true,
+              "module": "esnext",
+              "moduleResolution": "bundler",
+              "resolveJsonModule": true,
+              "isolatedModules": true,
+              "jsx": "preserve",
+              "incremental": true,
+              "plugins": [
+                {
+                  "name": "next"
+                }
+              ],
+              "paths": {
+                "@/*": ["./src/*"]
+              }
+            },
+            "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+            "exclude": ["node_modules"]
+          }
+          EOF
+
+          # Ensure vercel.json is configured for Next.js deployment
+          # Note: This ensures consistency even if the repo config drifts
+          cat > vercel.json << 'EOF'
+          {
+            "version": 2,
+            "installCommand": "npm install --workspaces",
+            "buildCommand": "npm run build:web",
+            "outputDirectory": "packages/web-ui/.next"
+          }
+          EOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "Bickford Automation"
+          git config user.email "automation@bickford.dev"
+          git add .
+          
+          # Dynamic commit message based on change type
+          case "${{ inputs.changes }}" in
+            ui-correction)
+              git commit -m "feat: bickford UI correction - execution dominance restored" || echo "No changes to commit"
+              ;;
+            canon-migration)
+              git commit -m "feat: bickford canon migration - authority consolidated" || echo "No changes to commit"
+              ;;
+            full-consolidation)
+              git commit -m "feat: bickford full consolidation - UI and canon unified" || echo "No changes to commit"
+              ;;
+          esac
+          
+          git push origin main
+
+      - name: Notify completion
+        run: |
+          echo "✅ Bickford changes (${{ inputs.changes }}) deployed to main"
+          echo "🚀 Vercel will auto-deploy at: https://session-completion-runtime.vercel.app"

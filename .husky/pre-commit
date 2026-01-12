@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+echo "🔍 Pre-commit validation..."
+
+# TypeScript syntax check
+echo "  Checking TypeScript syntax..."
+if ! npm run lint --if-present 2>&1 | grep -q "error"; then
+  echo "✅ TypeScript validation passed"
+else
+  echo ""
+  echo "❌ TypeScript errors detected!"
+  echo "   Run: npm run lint"
+  echo ""
+  echo "   Auto-fixing common issues..."
+  
+  # Attempt auto-fix
+  npm run lint:fix --if-present 2>/dev/null || true
+  
+  # Re-check
+  if ! npm run lint --if-present 2>&1 | grep -q "error"; then
+    echo "✅ Auto-fix successful!"
+    git add -u
+  else
+    echo "❌ Could not auto-fix. Please resolve manually."
+    exit 1
+  fi
+fi
+
+echo "✅ Pre-commit validation passed"
+
