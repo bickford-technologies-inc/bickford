@@ -1,0 +1,50 @@
+name: Canon Invariants
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  canon-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check Canon package structure
+        run: node scripts/check-canon-invariants.mjs
+
+      - name: Verify Canon exports
+        run: |
+          # Check that canon package exists
+          if [ ! -d "packages/canon" ]; then
+            echo "❌ Canon package missing"
+            exit 1
+          fi
+          
+          # Check that all required files exist
+          for file in types.ts invariants.ts optr.ts promotion.ts promote.ts nonInterference.ts execution.ts migration.ts runtime.ts index.ts; do
+            if [ ! -f "packages/canon/src/$file" ]; then
+              echo "❌ Missing canon module: $file"
+              exit 1
+            fi
+          done
+          
+          echo "✅ All Canon modules present"
+
+      - name: Verify core exports runtime
+        run: |
+          if ! grep -q "export \* as runtime" packages/core/src/index.ts; then
+            echo "❌ Core must export runtime module"
+            exit 1
+          fi
+          echo "✅ Core exports runtime"
