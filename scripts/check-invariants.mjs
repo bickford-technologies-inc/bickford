@@ -143,4 +143,64 @@ for (const dir of workspaceDirs) {
   }
 }
 
+// ---------- 6) Prisma relation invariants ----------
+// Enforce: single-side relation ownership + required uniqueness for Intent source
+
+const prismaSchemaPath = path.join(ROOT, "prisma/schema.prisma");
+requireFile(prismaSchemaPath);
+
+const schema = fs.readFileSync(prismaSchemaPath, "utf8");
+
+// Helper: extract model blocks
+function extractModels(schemaText) {
+  const models = {};
+  const modelRegex = /model\s+(\w+)\s*\{([\s\S]*?)\}/g;
+  let match;
+  while ((match = modelRegex.exec(schemaText))) {
+    models[match[1]] = match[2];
+  }
+  return models;
+}
+
+const models = extractModels(schema);
+
+// --- Rule 6.1: No relation may define fields+references on both sides
+function countRelationOwners(modelBody) {
+  const relationLines = modelBody
+    .split("\n")
+    .map(l => l.trim())
+    .filter(l => l.includes("@relation"));
+
+  return relationLines.filter(
+    l => l.includes("fields:") || l.includes("references:")
+  ).length;
+}
+
+for (const [name, body] of Object.entries(models)) {
+  const ownerCount = countRelationOwners(body);
+  if (ownerCount > 1) {
+    fail(
+      `Prisma invariant violated in model "${name}": multiple @relation fields define ownership (fields/references). Only ONE side may own a relation.`
+    );
+  }
+}
+
+// --- Rule 6.2: Intent.sourceMessageId must be @unique
+if (models.Intent) {
+  const intentLines = models.Intent.split("\n").map(l => l.trim());
+  const sourceIdLine = intentLines.find(l =>
+    l.startsWith("sourceMessageId")
+  );
+
+  if (!sourceIdLine) {
+    fail(`Intent model must define sourceMessageId.`);
+  }
+
+  if (!sourceIdLine.includes("@unique")) {
+    fail(
+      `Intent.sourceMessageId must be @unique to enforce one-intent-per-source-message invariant.`
+    );
+  }
+}
+
 console.log("✅ All invariants satisfied.");
