@@ -1,0 +1,14 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model LedgerEntry {
+  id        String   @id
+  hash      String
+  createdAt DateTime
+}
