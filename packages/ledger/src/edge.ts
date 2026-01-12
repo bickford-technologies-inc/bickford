@@ -52,8 +52,7 @@ export class EdgeLedgerClient {
 // Runtime check to ensure we're in an Edge environment
 export function assertEdgeRuntime(): void {
   const isEdge =
-    typeof EdgeRuntime !== "undefined" ||
-    (globalThis as any).EdgeRuntime ||
+    typeof (globalThis as any).EdgeRuntime !== "undefined" ||
     process.env.NEXT_RUNTIME === "edge" ||
     process.env.VERCEL_EDGE === "1";
 

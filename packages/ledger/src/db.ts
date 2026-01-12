@@ -11,7 +11,7 @@ const globalForPrisma = globalThis as unknown as {
 
 // Runtime check: Prisma must only run in Node.js, never in Edge
 export function assertNodeRuntime(): void {
-  if (typeof EdgeRuntime !== "undefined" || (globalThis as any).EdgeRuntime) {
+  if (typeof (globalThis as any).EdgeRuntime !== "undefined") {
     throw new Error(
       "INVARIANT VIOLATION: Prisma Client cannot run in Edge runtime. " +
       "Use @bickford/ledger/edge for Edge-compatible APIs."

@@ -29,8 +29,7 @@ export function isNodeRuntime(): boolean {
     typeof process !== "undefined" &&
     process.versions != null &&
     process.versions.node != null &&
-    typeof EdgeRuntime === "undefined" &&
-    !(globalThis as any).EdgeRuntime
+    typeof (globalThis as any).EdgeRuntime === "undefined"
   );
 }
 
@@ -39,8 +38,7 @@ export function isNodeRuntime(): boolean {
  */
 export function isEdgeRuntime(): boolean {
   return (
-    typeof EdgeRuntime !== "undefined" ||
-    (globalThis as any).EdgeRuntime ||
+    typeof (globalThis as any).EdgeRuntime !== "undefined" ||
     process.env.NEXT_RUNTIME === "edge" ||
     process.env.VERCEL_EDGE === "1"
   );

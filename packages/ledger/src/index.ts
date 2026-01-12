@@ -34,12 +34,12 @@ export async function appendLedger(
 }
 
 export async function getLedger(tenantId?: string): Promise<LedgerEntry[]> {
-  const rows: LedgerRow[] = await prisma.ledgerEntry.findMany({
+  const rows = await prisma.ledgerEntry.findMany({
     where: tenantId ? { tenantId } : {},
     orderBy: { createdAt: "desc" },
   });
 
-  return rows.map((r: LedgerRow) => ({
+  return rows.map((r) => ({
     id: r.id,
     intent: r.intent as Intent,
     decision: r.decision as Decision,
