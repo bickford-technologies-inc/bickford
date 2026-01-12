@@ -1,0 +1,15 @@
+[Unit]
+Description=Session Completion Runtime - continuous git sync
+
+[Service]
+Type=simple
+WorkingDirectory=%h/session-completion-runtime
+Environment=GIT_SYNC_INTERVAL_MS=60000
+# Safety default: do NOT auto-add new files
+Environment=GIT_SYNC_ADD_NEW=0
+ExecStart=/usr/bin/env npm run git:sync:watch
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

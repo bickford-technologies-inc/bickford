@@ -1,0 +1,5 @@
+{
+  "name": "session-completion-runtime",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "postStartCommand": "node scripts/git-sync-autostart.mjs"
+}
