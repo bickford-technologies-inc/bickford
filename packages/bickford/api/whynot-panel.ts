@@ -155,14 +155,21 @@ export function createDeniedDecisionProof(trace: WhyNotTrace): {
 } {
   const id = `deny_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   
-  // Create proof hash
+  // Convert reason codes to strings immediately
+  const reasonCodesStr = trace.reasonCodes.map(c => c.toString());
+  
+  // Normalize arrays (undefined -> empty array)
+  const missingCanonIds = trace.missingCanonIds || [];
+  const violatedInvariantIds = trace.violatedInvariantIds || [];
+  
+  // Create proof hash using normalized data
   const proofString = JSON.stringify({
     id,
     actionId: trace.actionId,
     ts: trace.ts,
-    reasonCodes: trace.reasonCodes,
-    missingCanonIds: trace.missingCanonIds,
-    violatedInvariantIds: trace.violatedInvariantIds,
+    reasonCodes: reasonCodesStr,
+    missingCanonIds,
+    violatedInvariantIds,
     message: trace.message,
   });
   const proofHash = crypto
@@ -173,9 +180,9 @@ export function createDeniedDecisionProof(trace: WhyNotTrace): {
   return {
     id,
     actionId: trace.actionId,
-    reasonCodes: trace.reasonCodes.map(c => c.toString()),
-    missingCanonIds: trace.missingCanonIds || [],
-    violatedInvariantIds: trace.violatedInvariantIds || [],
+    reasonCodes: reasonCodesStr,
+    missingCanonIds,
+    violatedInvariantIds,
     requiredCanonRefs: trace.requiredCanonRefs || [],
     message: trace.message,
     context: trace.context || {},
