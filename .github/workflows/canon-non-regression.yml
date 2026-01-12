@@ -1,0 +1,63 @@
+name: Bickford Non-Regression Invariants
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  canon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enforce Node version
+        run: |
+          NODE=$(node -p "require('./package.json').engines?.node || ''")
+          if [ "$NODE" != "20.x" ]; then
+            echo "❌ Node engine must be pinned to 20.x"
+            exit 1
+          fi
+
+      - name: Enforce vercel.json invariants
+        run: |
+          if grep -q '"outputDirectory"' vercel.json; then
+            echo "❌ outputDirectory must not be set for Next.js"
+            exit 1
+          fi
+          if grep -q '"functions"' vercel.json; then
+            echo "❌ functions must not be manually defined for App Router"
+            exit 1
+          fi
+
+      - name: Enforce single Prisma schema
+        run: |
+          COUNT=$(git ls-files | grep -c 'schema.prisma')
+          if [ "$COUNT" -ne 1 ]; then
+            echo "❌ Exactly one schema.prisma is allowed"
+            git ls-files | grep schema.prisma
+            exit 1
+          fi
+
+      - name: Enforce Turbo globalEnv
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const j=JSON.parse(fs.readFileSync('turbo.json','utf8'));
+          const required=["DATABASE_URL","OPENAI_API_KEY","ANTHROPIC_API_KEY"];
+          const missing=required.filter(v=>!(j.globalEnv||[]).includes(v));
+          if(missing.length){
+            console.error("❌ Missing turbo.globalEnv:", missing);
+            process.exit(1);
+          }
+          NODE
+
+      - name: Ensure no build artifacts committed
+        run: |
+          if git ls-files | grep -E '/dist/|\.next/'; then
+            echo "❌ Build artifacts must never be committed"
+            exit 1
+          fi
+
+      - name: Canon Clean
+        run: echo "✅ Canon Clean"

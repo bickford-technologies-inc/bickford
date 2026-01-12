@@ -1,0 +1,20 @@
+name: Auto Label Canon Changes
+
+on:
+  pull_request:
+    paths:
+      - "vercel.json"
+      - "turbo.json"
+      - "prisma/**"
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          labels:
+            canon-change:
+              - "vercel.json"
+              - "turbo.json"
+              - "prisma/**"

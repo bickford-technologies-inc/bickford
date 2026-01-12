@@ -1,0 +1,32 @@
+name: Canon Change Gate
+
+on:
+  pull_request:
+    paths:
+      - "vercel.json"
+      - "turbo.json"
+      - "prisma/**"
+      - "docs/BUILD_CANON.md"
+
+jobs:
+  canon-change:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require Canon Version Bump
+        run: |
+          if ! git diff origin/main...HEAD -- docs/BUILD_CANON.md | grep -q "Canon v"; then
+            echo "❌ Canon changes require explicit Canon version bump"
+            exit 1
+          fi
+
+      - name: Require Canon Intent Label
+        run: |
+          if ! echo "${{ github.event.pull_request.labels.*.name }}" | grep -q "canon-change"; then
+            echo "❌ Canon changes require 'canon-change' label"
+            exit 1
+          fi
+
+      - name: Canon Change Approved
+        run: echo "✅ Canon change explicitly approved"
