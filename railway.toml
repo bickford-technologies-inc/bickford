@@ -1,0 +1,9 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "bash scripts/railway-build.sh"
+
+[deploy]
+startCommand = "npx prisma migrate deploy && npm run start"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 10000
+restartPolicyType = "ON_FAILURE"

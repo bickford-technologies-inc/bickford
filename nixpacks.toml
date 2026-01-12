@@ -1,0 +1,17 @@
+[phases.setup]
+nixPkgs = ["nodejs_22"]
+nixPkgsArchive = "057f9aecfb71c4437d2b27d3323df7f93c010b7e"
+
+[phases.install]
+cmds = ["npm ci --include=dev"]
+
+[phases.build]
+cmds = [
+  "bash scripts/railway-build.sh"
+]
+
+[start]
+cmd = "npx prisma migrate deploy && npm run start"
+
+[variables]
+NODE_ENV = "production"

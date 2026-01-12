@@ -1,0 +1,71 @@
+[build]
+  base = "."
+  publish = "packages/web-ui/dist"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "22.12.0"
+  NPM_FLAGS = "--legacy-peer-deps"
+
+# --- BUILD STABILITY ---
+[[plugins]]
+  package = "netlify-plugin-checklinks"
+  # Validate all internal/external links
+
+[[plugins]]
+  package = "netlify-plugin-debug-cache"
+  # Verify build cache contents for debugging
+
+# --- AUTOMATION ---
+[[plugins]]
+  package = "netlify-plugin-prisma-provider"
+  [plugins.inputs]
+    DATABASE_PROVIDER = "postgresql"
+
+[[plugins]]
+  package = "netlify-plugin-contextual-env"
+  [plugins.inputs]
+    prefix = "VITE_"
+    # Auto-switch env vars by branch/context
+
+# --- OBSERVABILITY (COACHING) ---
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+  [plugins.inputs]
+    audits = ["performance", "accessibility", "seo"]
+    # Automatic performance audits after each build
+
+[[plugins]]
+  package = "@sentry/netlify-build-plugin"
+  [plugins.inputs]
+    sentryOrg = "$SENTRY_ORG"
+    sentryProject = "$SENTRY_PROJECT"
+    # Error tracking with source maps
+
+# --- VISUAL APPROVAL AUTOMATION ---
+[[plugins]]
+  package = "netlify-plugin-visual-diff"
+  [plugins.inputs]
+    appName = "Bickford"
+    matchLevel = "Layout"
+    # Auto-approve if <5% visual change
+
+# --- PREVIEW DATABASE ISOLATION ---
+[[plugins]]
+  package = "@snaplet/netlify-preview-database-plugin"
+  # Each PR gets isolated database snapshot
+
+# --- REDIRECTS ---
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# --- SECURITY HEADERS ---
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
