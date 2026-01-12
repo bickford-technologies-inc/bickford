@@ -49,3 +49,5 @@ STAGE2_*.md
 .netlify/
 .netlify-*/
 netlify-debug.log
+.vercel
+.env*.local

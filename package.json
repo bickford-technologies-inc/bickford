@@ -72,7 +72,8 @@
     "deploy:railway": "railway up",
     "logs:railway": "railway logs",
     "railway:doctor": "node scripts/railway-doctor.mjs",
-    "railway:deploy:web": "railway up -s web-ui -d"
+    "railway:deploy:web": "railway up -s web-ui -d",
+    "env:vercel": "ts-node scripts/provision-vercel-env.ts"
   },
   "workspaces": [
     "packages/*",
@@ -101,15 +102,18 @@
     "netlify-plugin-visual-diff": "^2.0.0",
     "prisma": "^7.2.0",
     "ts-jest": "^29.2.5",
-    "turbo": "^2.7.4",
+    "ts-node": "^10.9.2",
     "tsx": "^4.7.0",
+    "turbo": "^2.7.4",
     "typescript": "^5.0.0"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.962.0",
     "@octokit/rest": "^22.0.1",
+    "@types/node-fetch": "^2.6.13",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "node-fetch": "^3.3.2",
     "pg": "^8.16.3",
     "prom-client": "^15.1.3",
     "redis": "^5.10.0",
