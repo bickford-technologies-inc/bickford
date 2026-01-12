@@ -1,0 +1,29 @@
+{
+  "name": "@bickford/web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bickford Web Application - Next.js app",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@bickford/core": "*",
+    "@bickford/types": "*",
+    "@bickford/authority": "*",
+    "@bickford/ledger": "*",
+    "@bickford/optr": "*",
+    "@bickford/ui": "*",
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.0.0"
+  }
+}

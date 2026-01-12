@@ -1,0 +1,43 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2025-12-21T14:41:00-05:00",
+  "locked": true,
+  "hash": "SHA-256 of CANON.md content",
+  "author": "Bickford",
+  "reviewers": [],
+  "status": "active",
+  "invariants": {
+    "count": 5,
+    "mechanical": ["timestamp-authority", "canon-only-execution"],
+    "automated": ["promotion-gate", "non-interference"],
+    "manual": ["trust-first-denial-traces"]
+  },
+  "upgrades": {
+    "applied": [
+      {
+        "id": "upgrade-1",
+        "name": "Mechanical Authority Enforcement",
+        "date": "2025-12-21",
+        "status": "deployed"
+      },
+      {
+        "id": "upgrade-2",
+        "name": "Stable WhyNot Taxonomy",
+        "date": "2025-12-21",
+        "status": "deployed"
+      },
+      {
+        "id": "upgrade-3",
+        "name": "Fixed OPTR Selection Bug",
+        "date": "2025-12-21",
+        "status": "deployed"
+      }
+    ],
+    "pending": []
+  },
+  "references": {
+    "implementation": "packages/core/src/canon/",
+    "tests": "packages/core/src/canon/__tests__/",
+    "documentation": "canon/CANON.md"
+  }
+}
