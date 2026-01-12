@@ -1,0 +1,30 @@
+{
+  "name": "@bickford/session-completion",
+  "version": "1.0.0",
+  "description": "Session completion event capture, validation, and routing runtime",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "echo 'Use npm run dev from root to start the web app'",
+    "start": "echo 'Use npm start from root to start the web app'",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "npm run typecheck",
+    "example:capture": "tsx examples/capture-demo.ts",
+    "test": "echo 'No tests yet'"
+  },
+  "keywords": [
+    "session-completion",
+    "event-capture",
+    "ai-agents",
+    "runtime",
+    "routing"
+  ],
+  "author": "Bickford",
+  "license": "PROPRIETARY",
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "tsx": "^4.7.0",
+    "typescript": "^5.0.0"
+  }
+}
