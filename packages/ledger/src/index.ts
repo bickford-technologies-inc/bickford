@@ -32,7 +32,7 @@ export async function getLedger(): Promise<LedgerType[]> {
     orderBy: { createdAt: "desc" },
   });
 
-  return rows.map(r => ({
+  return rows.map((r: any) => ({
     id: r.id,
     intent: r.intent as any,
     decision: r.decision as any,
