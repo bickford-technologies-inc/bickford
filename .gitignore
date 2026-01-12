@@ -1,0 +1,47 @@
+# Local iOS crash logs (Apple review / device exports)
+crashlog-*.ips
+
+# Local iOS build artifacts
+*.ipa
+
+# Local dev data
+.data/
+
+# Dependency directories
+node_modules/
+.vscode/
+
+# Environment variables
+.env
+.env.local
+*.env
+!.env.example
+!.env.*.example
+
+# macOS files
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.swp
+
+# Build outputs
+dist/
+out/
+*.tsbuildinfo
+.turbo/
+.next/
+
+# Private deal execution files
+INTRO_RANKING.md
+STAGE2_*.md
+*_PRIVATE.md
+
+# Netlify
+.netlify/
+.netlify-*/
+netlify-debug.log
