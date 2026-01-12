@@ -1,0 +1,137 @@
+name: Architect Prime
+
+# Manual trigger workflow for Prime Architecture Initiative
+# Orchestrates the 5-milestone consolidation plan
+on:
+  workflow_dispatch:
+    inputs:
+      milestone:
+        description: 'Milestone to run (1-5)'
+        required: true
+        default: '1'
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+          - '5'
+      issue_number:
+        description: 'Tracking issue number (optional)'
+        required: false
+        type: string
+
+env:
+  NODE_VERSION: '20.x'
+
+jobs:
+  architect:
+    name: Run Milestone ${{ github.event.inputs.milestone }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git operations
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run orchestration script
+        id: orchestrate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node scripts/architect-prime.mjs ${{ github.event.inputs.milestone }} ${{ github.event.inputs.issue_number }}
+      
+      - name: Create Pull Request (Milestone 1)
+        if: github.event.inputs.milestone == '1'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'feat: Add repository inventory (Milestone 1)'
+          branch: architect-prime/milestone-1
+          delete-branch: true
+          title: '🏗️ Prime Architecture: Milestone 1 - Repository Inventory'
+          body: |
+            ## Milestone 1: Discovery & Inventory
+            
+            This PR contains the automated repository inventory as part of the Prime Architecture Initiative.
+            
+            ### What's included:
+            - `INVENTORY.md`: Complete analysis of all repositories
+            - Summary table with key metrics
+            - Red flags section highlighting potential issues
+            - Per-repository details
+            
+            ### Next steps:
+            1. **Review the inventory** - Look for any surprises or concerns
+            2. **Identify consolidation targets** - Which repos should merge?
+            3. **Note any red flags** - Open PRs, missing docs, conflicts
+            4. **Merge this PR** - Once you're satisfied with the discovery
+            5. **Run Milestone 2** - Validation phase (coming soon)
+            
+            ### Context:
+            This is **setup only** - no repositories have been modified yet. This is pure discovery to inform the consolidation strategy.
+            
+            See [docs/ARCHITECTURE_PRIME.md](./docs/ARCHITECTURE_PRIME.md) for the full plan.
+          labels: |
+            architecture
+            automated
+            milestone-1
+      
+      - name: Post summary comment
+        if: github.event.inputs.issue_number != ''
+        uses: actions/github-script@v7
+        env:
+          PR_URL: ${{ steps.orchestrate.outputs.pr_url || 'N/A' }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const milestone = '${{ github.event.inputs.milestone }}';
+            const issueNumber = parseInt('${{ github.event.inputs.issue_number }}');
+            
+            if (!issueNumber) return;
+            
+            const workflowUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            
+            let body = `## 🤖 Architect Prime: Milestone ${milestone}\n\n`;
+            body += `**Workflow**: [View run](${workflowUrl})\n`;
+            body += `**Status**: ✅ Completed\n`;
+            body += `**Triggered by**: @${context.actor}\n\n`;
+            
+            if (milestone === '1') {
+              body += `**Outputs**:\n`;
+              body += `- Repository inventory generated\n`;
+              body += `- Pull request created with results\n\n`;
+              body += `**Next steps**: Review the PR and merge when ready.\n`;
+            } else {
+              body += `**Note**: Milestones 2-5 are not yet implemented.\n`;
+              body += `This is a placeholder run.\n`;
+            }
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: body
+            });
+      
+      - name: Upload inventory artifact
+        if: github.event.inputs.milestone == '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: repository-inventory
+          path: INVENTORY.md
+          retention-days: 30

@@ -1,0 +1,35 @@
+{
+  "name": "@bickford/core",
+  "version": "1.0.0",
+  "description": "Bickford Core: OPTR engine, Canon authority, and Ledger consolidated",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "npm run typecheck",
+    "test": "echo 'No tests yet'"
+  },
+  "keywords": [
+    "bickford",
+    "core",
+    "optr",
+    "canon",
+    "ledger",
+    "authority"
+  ],
+  "author": "Bickford",
+  "license": "PROPRIETARY",
+  "dependencies": {
+    "@bickford/types": "*",
+    "@prisma/adapter-pg": "^7.2.0",
+    "@prisma/client": "^7.2.0",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "prisma": "^7.2.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.9.3"
+  }
+}

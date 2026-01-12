@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": "apps/web/.next",
+  "env": {
+    "DATABASE_URL": "@database-url",
+    "GITHUB_TOKEN": "@github-token",
+    "BICKFORD_API_TOKEN": "@bickford-api-token"
+  },
+  "functions": {
+    "apps/web/src/app/api/execute/route.ts": {
+      "maxDuration": 300
+    }
+  }
+}
