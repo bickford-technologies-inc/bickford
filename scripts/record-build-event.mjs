@@ -6,8 +6,6 @@
  * Creates immutable proof that a build occurred.
  */
 
-import crypto from "crypto";
-
 const COMMIT_SHA = process.env.COMMIT_SHA || process.env.GITHUB_SHA || "unknown";
 const BRANCH = process.env.BRANCH || process.env.GITHUB_REF_NAME || "unknown";
 const STATUS = process.env.STATUS || "success";

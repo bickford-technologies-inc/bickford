@@ -86,6 +86,14 @@ export function isRegressiveMigration(analysis: MigrationAnalysis): boolean {
 
 /**
  * Parse Prisma migration SQL to extract operations
+ * 
+ * Note: This is a simplified parser for common Prisma migrations.
+ * Limitations:
+ * - Does not handle schema-qualified tables (e.g., schema.table)
+ * - May miss complex ALTER statements
+ * - Assumes standard PostgreSQL syntax
+ * 
+ * For production use, consider using a proper SQL parser.
  */
 export function parseMigrationSQL(sql: string): MigrationOperation[] {
   const operations: MigrationOperation[] = [];
@@ -95,7 +103,8 @@ export function parseMigrationSQL(sql: string): MigrationOperation[] {
     const upper = line.toUpperCase();
 
     if (upper.startsWith("CREATE TABLE")) {
-      const match = line.match(/CREATE TABLE ["']?(\w+)["']?/i);
+      // Match: CREATE TABLE "table" or CREATE TABLE table
+      const match = line.match(/CREATE TABLE\s+["']?(\w+)["']?/i);
       operations.push({
         type: "CREATE",
         target: match?.[1] || "unknown",
@@ -103,7 +112,7 @@ export function parseMigrationSQL(sql: string): MigrationOperation[] {
         riskLevel: "LOW",
       });
     } else if (upper.startsWith("DROP TABLE")) {
-      const match = line.match(/DROP TABLE ["']?(\w+)["']?/i);
+      const match = line.match(/DROP TABLE\s+["']?(\w+)["']?/i);
       operations.push({
         type: "DROP",
         target: match?.[1] || "unknown",
@@ -111,7 +120,7 @@ export function parseMigrationSQL(sql: string): MigrationOperation[] {
         riskLevel: "HIGH",
       });
     } else if (upper.startsWith("ALTER TABLE")) {
-      const match = line.match(/ALTER TABLE ["']?(\w+)["']?/i);
+      const match = line.match(/ALTER TABLE\s+["']?(\w+)["']?/i);
       let riskLevel: "LOW" | "MEDIUM" | "HIGH" = "MEDIUM";
 
       if (upper.includes("DROP COLUMN") || upper.includes("DROP CONSTRAINT")) {
@@ -127,7 +136,7 @@ export function parseMigrationSQL(sql: string): MigrationOperation[] {
         riskLevel,
       });
     } else if (upper.startsWith("RENAME")) {
-      const match = line.match(/RENAME ["']?(\w+)["']?/i);
+      const match = line.match(/RENAME\s+["']?(\w+)["']?/i);
       operations.push({
         type: "RENAME",
         target: match?.[1] || "unknown",

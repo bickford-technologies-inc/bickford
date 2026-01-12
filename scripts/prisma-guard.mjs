@@ -115,7 +115,11 @@ function checkSchemaOutput() {
     "utf-8"
   );
 
-  if (!schemaContent.includes('output   = "../node_modules/.prisma/client"')) {
+  // Normalize whitespace for comparison
+  const normalizedContent = schemaContent.replace(/\s+/g, ' ');
+  const expectedOutput = 'output = "../node_modules/.prisma/client"'.replace(/\s+/g, ' ');
+
+  if (!normalizedContent.includes(expectedOutput)) {
     log(
       "warn",
       "Schema should specify output path: output = \"../node_modules/.prisma/client\""

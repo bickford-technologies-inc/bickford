@@ -104,18 +104,23 @@ function checkFileForForbiddenImports(filePath) {
 function findTypeScriptFiles(dir, files = []) {
   const entries = readdirSync(dir);
 
+  // Directories to exclude from scanning
+  // These are build artifacts, dependencies, or generated code
+  const EXCLUDED_DIRS = [
+    'node_modules',  // Dependencies
+    '.git',          // Git metadata
+    'dist',          // Build output
+    '.next',         // Next.js build cache
+    'build',         // Generic build output
+    'coverage'       // Test coverage reports
+  ];
+
   for (const entry of entries) {
     const fullPath = join(dir, entry);
     const stat = statSync(fullPath);
 
     if (stat.isDirectory()) {
-      // Skip node_modules, dist, .git
-      if (
-        entry === "node_modules" ||
-        entry === ".git" ||
-        entry === "dist" ||
-        entry === ".next"
-      ) {
+      if (EXCLUDED_DIRS.includes(entry)) {
         continue;
       }
       findTypeScriptFiles(fullPath, files);
