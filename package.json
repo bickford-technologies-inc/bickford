@@ -58,6 +58,7 @@
     "lint": "npm --workspaces run lint",
     "typecheck": "npm --workspaces --if-present run typecheck",
     "check": "bash scripts/health-check.sh",
+    "check:invariants": "node scripts/check-invariants.mjs",
     "deploy:old": "bash scripts/deploy.sh",
     "deploy:staging": "bash scripts/deploy.sh staging",
     "deploy:production": "bash scripts/deploy.sh production",
