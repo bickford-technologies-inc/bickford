@@ -29,6 +29,7 @@
     "demo:a": "tsx demo/demo-a.ts",
     "demo:c": "tsx demo/demo-c.ts",
     "demo:d": "tsx demo/demo-d.ts",
+    "demo:trust-ux": "tsx demo/demo-trust-ux.ts",
     "demo:optr-deal": "tsx demo/demo-optr-deal.ts",
     "demo:video": "tsx demo/generate-video.ts",
     "demo:ledger": "tsx demo/demo-ledger.ts",

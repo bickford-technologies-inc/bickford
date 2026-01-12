@@ -4,7 +4,7 @@
  * Combines OPTR engine, Canon authority, Ledger, and Runtime into a single package.
  * 
  * Exports:
- * - optr: OPTR decision engine with path scoring
+ * - optr: OPTR decision engine with path scoring and denial tracking
  * - canon: Canon authority with invariants and enforcement
  * - ledger: Append-only ledger for intent-decision pairs
  * - runtime: Chat v2 execution runtime with mode gating

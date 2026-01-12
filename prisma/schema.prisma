@@ -185,6 +185,40 @@ enum ExecutionStatus {
   SUCCEEDED
 }
 
+// Stable taxonomy for denial reasons (Phase 3: Trust UX)
+enum DenialReasonCode {
+  MISSING_CANON_PREREQS
+  INVARIANT_VIOLATION
+  NON_INTERFERENCE_VIOLATION
+  AUTHORITY_BOUNDARY_FAIL
+  RISK_BOUND_EXCEEDED
+  COST_BOUND_EXCEEDED
+  SUCCESS_PROB_TOO_LOW
+}
+
+// Denied decision ledger (Phase 3: Trust UX)
+model DeniedDecision {
+  id                    String              @id @default(cuid())
+  createdAt             DateTime            @default(now())
+  ts                    String              // ISO8601 timestamp from denial trace
+  actionId              String
+  actionName            String?
+  tenantId              String
+  goal                  String?
+  reasonCodes           DenialReasonCode[]
+  missingCanonIds       String[]            @default([])
+  violatedInvariantIds  String[]            @default([])
+  requiredCanonRefs     String[]            @default([])
+  message               String
+  context               Json?
+  optrRunId             String?             // Link to OPTR run if applicable
+
+  @@index([actionId])
+  @@index([tenantId])
+  @@index([createdAt])
+  @@map("DeniedDecision")
+}
+
 // Canon entry tracking for chat-canon linkage
 model CanonEntry {
   id          String   @id @default(cuid())
