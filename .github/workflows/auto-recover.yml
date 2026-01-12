@@ -1,0 +1,109 @@
+name: Auto-Recovery on Deploy
+
+on:
+  deployment_status:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  health-check:
+    name: Health Check & Auto-Recover
+    runs-on: ubuntu-latest
+    if: github.event.deployment_status.state == 'success'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm ci --workspaces
+
+      - name: Check deployment health
+        id: health
+        run: |
+          sleep 10  # Wait for services to stabilize
+
+          DEPLOYMENT_URL="${{ github.event.deployment_status.target_url }}"
+          echo "deployment_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+
+          # Run Vercel-specific health check
+          if npm run health:vercel; then
+            echo "✅ Build health check passed"
+            HEALTH_PASSED=true
+          else
+            echo "❌ Build health check failed"
+            HEALTH_PASSED=false
+          fi
+
+          # Check if backend API is responding
+          if curl -sf "$DEPLOYMENT_URL/api/health" > /dev/null; then
+            echo "✅ Backend API is healthy"
+            API_HEALTHY=true
+          else
+            echo "⚠️  Backend API not responding"
+            API_HEALTHY=false
+          fi
+
+          # Overall health assessment
+          if [ "$HEALTH_PASSED" = "true" ] && [ "$API_HEALTHY" = "true" ]; then
+            echo "healthy=true" >> $GITHUB_OUTPUT
+          else
+            echo "healthy=false" >> $GITHUB_OUTPUT
+            echo "❌ Deployment health check failed"
+            echo "   Build check: $HEALTH_PASSED"
+            echo "   API check: $API_HEALTHY"
+          fi
+
+      - name: Trigger rollback if unhealthy
+        if: steps.health.outputs.healthy == 'false'
+        run: |
+          echo "⚠️  Deployment is unhealthy, triggering rollback..."
+          # Trigger rollback via API or webhook
+          curl -X POST "${{ secrets.DEPLOYMENT_ROLLBACK_WEBHOOK }}" \
+            -H "Content-Type: application/json" \
+            -d '{"deployment_id": "${{ github.event.deployment.id }}", "reason": "health_check_failed"}' || true
+
+      - name: Notify on failure
+        if: steps.health.outputs.healthy == 'false'
+        id: notify
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🚨 Deployment Health Check Failed',
+                body: `Deployment to ${{ github.event.deployment_status.environment }} failed health check.
+
+                **Deployment SHA:** ${{ github.event.deployment.sha }}
+                **Environment:** ${{ github.event.deployment_status.environment }}
+                **Deployment URL:** ${{ steps.health.outputs.deployment_url }}
+                **Time:** ${new Date().toISOString()}
+
+                ## Health Check Results
+                - Build validation failed or API not responding
+                - Auto-rollback has been triggered
+
+                Please review the deployment logs for more details.`,
+                labels: ['deployment', 'critical', 'automated']
+              })
+              console.log('✅ Issue created successfully')
+            } catch (error) {
+              console.error('❌ Failed to create issue:', error.message)
+            }
+
+      - name: Fallback logging
+        if: steps.health.outputs.healthy == 'false' && steps.notify.outcome == 'failure'
+        run: |
+          echo "⚠️  Failed to create GitHub issue for deployment failure"
+          echo "Deployment SHA: ${{ github.event.deployment.sha }}"
+          echo "Environment: ${{ github.event.deployment_status.environment }}"
+          echo "Time: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          echo "Please check deployment logs manually"

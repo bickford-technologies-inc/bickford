@@ -1,0 +1,28 @@
+{
+  "name": "@bickford/claude-integration",
+  "version": "1.0.0",
+  "description": "Claude AI integration for Bickford - tool execution gates and wrappers",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "npm run typecheck",
+    "test": "echo 'No tests yet'"
+  },
+  "keywords": [
+    "bickford",
+    "claude",
+    "anthropic",
+    "ai-integration"
+  ],
+  "author": "Bickford",
+  "license": "PROPRIETARY",
+  "dependencies": {
+    "@bickford/core": "*",
+    "@bickford/types": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
