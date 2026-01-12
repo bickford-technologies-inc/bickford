@@ -1,0 +1,37 @@
+name: Chat v2 Invariants
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  chat-invariants:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check Chat v2 invariants
+        run: node scripts/check-chat-invariants.mjs
+
+      - name: Verify Prisma schema
+        env:
+          DATABASE_URL: "postgresql://user:pass@localhost:5432/db?sslmode=disable"
+        run: npx prisma validate
+
+      - name: Check for migration
+        run: |
+          if [ ! -f "prisma/migrations/20260208_chat_v2/migration.sql" ]; then
+            echo "❌ Chat v2 migration missing"
+            exit 1
+          fi
+          echo "✅ Chat v2 migration present"
