@@ -11,7 +11,9 @@
   "scripts": {
     "start": "bash scripts/setup.sh && npm run dev",
     "dev": "turbo run dev --filter=web",
-    "build": "prisma generate && turbo run build",
+    "prebuild": "npm run prisma:generate",
+    "build": "turbo run build",
+    "prisma:generate": "prisma generate",
     "test": "turbo run test",
     "deploy": "vercel --prod",
     "prisma:migrate": "prisma migrate deploy",

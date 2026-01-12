@@ -3,20 +3,44 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "*.tsbuildinfo"]
+      "outputs": ["dist/**", ".next/**", "*.tsbuildinfo"],
+      "env": [
+        "DATABASE_URL",
+        "NODE_ENV",
+        "VERCEL",
+        "CI",
+        "NEXT_RUNTIME"
+      ]
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "env": [
+        "DATABASE_URL",
+        "NODE_ENV"
+      ]
     },
     "test": {
       "dependsOn": ["^build"],
-      "outputs": ["coverage/**"]
+      "outputs": ["coverage/**"],
+      "env": [
+        "DATABASE_URL",
+        "NODE_ENV",
+        "CI"
+      ]
     }
   },
   "globalEnv": [
     "DATABASE_URL",
     "OPENAI_API_KEY",
-    "ANTHROPIC_API_KEY"
+    "ANTHROPIC_API_KEY",
+    "NODE_ENV",
+    "VERCEL",
+    "CI",
+    "NEXT_RUNTIME",
+    "VERCEL_EDGE",
+    "BICKFORD_API_TOKEN",
+    "GITHUB_TOKEN",
+    "PG_SSL"
   ]
 }
