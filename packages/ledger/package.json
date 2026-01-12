@@ -29,7 +29,18 @@
     "typescript": "^5.9.3"
   },
   "exports": {
-    ".": "./dist/index.js",
-    "./db": "./dist/db.js"
+    ".": {
+      "node": "./dist/index.js",
+      "edge": "./dist/edge.js",
+      "default": "./dist/index.js"
+    },
+    "./db": {
+      "node": "./dist/db.js",
+      "types": "./dist/db.d.ts"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    }
   }
 }
