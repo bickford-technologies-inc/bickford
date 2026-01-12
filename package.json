@@ -5,7 +5,7 @@
   "packageManager": "npm@10.8.2",
   "description": "Intent → Reality in <5 seconds. Zero-approval execution runtime with OPTR gating, canon enforcement, and immutable ledger.",
   "engines": {
-    "node": ">=20.19.4",
+    "node": "20.x",
     "npm": ">=10.0.0"
   },
   "scripts": {
@@ -73,7 +73,9 @@
     "logs:railway": "railway logs",
     "railway:doctor": "node scripts/railway-doctor.mjs",
     "railway:deploy:web": "railway up -s web-ui -d",
-    "env:vercel": "ts-node scripts/provision-vercel-env.ts"
+    "env:vercel": "ts-node scripts/provision-vercel-env.ts",
+    "doctor": "sh scripts/bickford-doctor.sh",
+    "doctor:fix": "sh scripts/bickford-doctor-fix.sh"
   },
   "workspaces": [
     "packages/*",

@@ -1,5 +1,7 @@
 # Bickford
 
+![Canon Clean](https://img.shields.io/badge/Canon-CLEAN-brightgreen)
+
 **Intent → Reality in <5 seconds**
 
 Zero-approval execution runtime with OPTR gating, canon enforcement, and immutable ledger.
@@ -43,6 +45,7 @@ No approval gates. No manual steps. No "save draft" buttons.
 ## API
 
 ### Execute Intent
+
 ```bash
 POST /api/execute
 Authorization: Bearer {BICKFORD_API_TOKEN}
@@ -54,11 +57,13 @@ Content-Type: application/json
 ```
 
 ### Query Ledger
+
 ```bash
 GET /api/ledger?limit=10
 ```
 
 ### Canon Status
+
 ```bash
 GET /api/canon
 ```
@@ -66,10 +71,12 @@ GET /api/canon
 ## Environment Variables
 
 Required:
+
 - `DATABASE_URL` - Postgres connection
 - `BICKFORD_API_TOKEN` - API authentication
 
 Optional:
+
 - `GITHUB_TOKEN` - Auto-commit to GitHub
 - `ANTHROPIC_API_KEY` - Claude intent parsing
 - `DEMO_MODE=true` - Safe demo mode (no real execution)
@@ -84,6 +91,7 @@ Optional:
 ## If This Repo Exists, Bickford Is Usable
 
 Test:
+
 1. Clone repo
 2. Run `npm run start`
 3. Submit intent
