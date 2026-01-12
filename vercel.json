@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "installCommand": "npm install --workspaces",
+  "buildCommand": "npm -w packages/demo-dashboard run build",
+  "outputDirectory": "packages/demo-dashboard/dist"
+}
