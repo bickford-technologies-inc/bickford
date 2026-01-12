@@ -170,3 +170,70 @@ export type AuthorityCheckResult = {
   invalidRefs?: string[]; // Refs that exist but aren't CANON level
   message?: string;
 };
+
+/**
+ * ConfidenceEnvelope: Trust and weight of knowledge
+ * UPGRADE #9: Trust/weight metadata for canon knowledge
+ */
+export type ConfidenceEnvelope = {
+  confidence: number; // 0.0 to 1.0: statistical confidence in the knowledge
+  trust: number;      // 0.0 to 1.0: epistemic trust (source reliability)
+  weight?: number;    // Combined metric: confidence * trust
+  sourceRefs?: string[]; // References supporting this knowledge
+};
+
+/**
+ * ExecutionContext: Snapshot of scope for each execution
+ * UPGRADE #6: Execution context hash for deterministic scope tracking
+ */
+export type ExecutionContext = {
+  executionId: string;
+  timestamp: ISO8601;
+  tenantId: string;
+  actorId: string;
+  canonRefsSnapshot: string[]; // Canon IDs in effect at execution time
+  constraintsSnapshot: string[]; // Constraint IDs in effect
+  environmentHash: string; // Hash of relevant environment state
+  contextHash: string; // SHA256 of above fields for audit trail
+};
+
+/**
+ * TokenStreamProof: Ledger proof for token streaming
+ * UPGRADE #5: Token streaming with ledger proof
+ */
+export type TokenStreamProof = {
+  executionId: string;
+  streamId: string;
+  tokens: string[]; // Buffered tokens
+  ledgerHash: string; // Hash of ledger state before streaming
+  proofHash: string; // Hash proving tokens are authorized
+  approved: boolean;
+  timestamp: ISO8601;
+};
+
+/**
+ * PromotionRequest: Request for canon knowledge promotion
+ * UPGRADE #7: Canon promotion endpoint
+ */
+export type PromotionRequest = {
+  itemId: string;
+  from: CanonLevel;
+  to: CanonLevel;
+  evidenceRefs: string[];
+  reason: string;
+  requestedBy: string;
+  requestedAt: ISO8601;
+};
+
+/**
+ * PathConstraint: Constraint derived from canon knowledge for OPTR
+ * UPGRADE #8: OPTR ingestion of canon knowledge
+ */
+export type PathConstraint = {
+  id: string;
+  canonRefId: string; // Canon item this constraint is derived from
+  constraintType: "PREREQUISITE" | "RISK_BOUND" | "COST_BOUND" | "TIME_BOUND" | "RESOURCE_LIMIT";
+  appliesTo: string[]; // Action IDs this constraint applies to
+  params: Record<string, any>; // Constraint-specific parameters
+  confidence: ConfidenceEnvelope;
+};

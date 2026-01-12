@@ -28,11 +28,14 @@ export * from "./promotion";
 // Non-Interference
 export * from "./nonInterference";
 
+// Execution Context + Token Streaming
+export * from "./execution";
+
 /**
  * Bickford Canon Version
  */
-export const BICKFORD_CANON_VERSION = "1.0.0";
-export const BICKFORD_CANON_TIMESTAMP = "2025-12-21T14:41:00-05:00";
+export const BICKFORD_CANON_VERSION = "2.0.0"; // Updated for Tier-1/Tier-2 closures
+export const BICKFORD_CANON_TIMESTAMP = "2026-01-12T20:50:00-05:00";
 
 /**
  * Canonical formula (for reference):
@@ -53,9 +56,16 @@ export const BICKFORD_CANON_TIMESTAMP = "2025-12-21T14:41:00-05:00";
  * 3. Promotion requires 4 tests
  * 4. Non-interference (∀i≠j: ΔE[TTV_j | π_i] ≤ 0)
  * 5. Trust-first denial traces
+ * 6. Session completion ledger events
  * 
  * Upgrades applied:
  * 1. Mechanical authority enforcement (requireCanonRefs gate)
  * 2. Stable WhyNot taxonomy (DenialReasonCode enum)
  * 3. Fixed OPTR selection bug (cached features)
+ * 4. Denied decision proof persistence
+ * 5. Token streaming with ledger proof
+ * 6. Execution context hash
+ * 7. Canon promotion endpoint
+ * 8. OPTR canon knowledge ingestion
+ * 9. ConfidenceEnvelope for trust/weight
  */
