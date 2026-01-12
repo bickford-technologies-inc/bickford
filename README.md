@@ -1,6 +1,6 @@
 # Bickford
 
-![Canon Clean](https://img.shields.io/badge/Canon-CLEAN-brightgreen)
+![Canon](https://img.shields.io/badge/Bickford-Canon%20Clean-brightgreen)
 
 **Intent → Reality in <5 seconds**
 

@@ -24,3 +24,78 @@ model AgentState {
   ttvBaseline Float
   updatedAt   DateTime @updatedAt
 }
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  author    ChatAuthor
+  text      String
+
+  resolution ChatResolution
+
+  intentId  String?
+  intent    Intent? @relation(fields: [intentId], references: [id])
+
+  supersedesMessageId String?
+}
+
+model Intent {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  sourceMessageId String
+  sourceMessage   ChatMessage @relation(fields: [sourceMessageId], references: [id])
+
+  intentType IntentType
+  goal       String
+  constraints String[]
+
+  admissibility AdmissibilityStatus
+  denialReason  String?
+
+  execution Execution?
+}
+
+model Execution {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  intentId  String @unique
+  intent    Intent @relation(fields: [intentId], references: [id])
+
+  status ExecutionStatus
+  artifacts String[]
+}
+
+enum ChatAuthor {
+  USER
+  BICKFORD
+}
+
+enum ChatResolution {
+  CAPTURED
+  DENIED
+  EXECUTING
+  REALIZED
+}
+
+enum IntentType {
+  OBSERVE
+  QUERY
+  CHANGE
+  AUTOMATE
+}
+
+enum AdmissibilityStatus {
+  PENDING
+  ALLOWED
+  DENIED
+}
+
+enum ExecutionStatus {
+  QUEUED
+  RUNNING
+  FAILED
+  SUCCEEDED
+}

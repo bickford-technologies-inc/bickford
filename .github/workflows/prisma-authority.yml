@@ -1,0 +1,19 @@
+name: Prisma Authority Guard
+
+on: [pull_request, push]
+
+jobs:
+  prisma:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enforce single Prisma schema
+        run: |
+          FILES=$(git ls-files | grep schema.prisma || true)
+          COUNT=$(echo "$FILES" | wc -l)
+          if [ "$COUNT" -ne 1 ]; then
+            echo "❌ Multiple Prisma schemas detected"
+            echo "$FILES"
+            exit 1
+          fi

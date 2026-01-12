@@ -1,0 +1,20 @@
+name: Vercel Invariants
+
+on: [pull_request, push]
+
+jobs:
+  vercel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Block forbidden keys
+        run: |
+          if grep -q '"functions"' vercel.json; then
+            echo "❌ 'functions' forbidden for App Router"
+            exit 1
+          fi
+          if grep -q '"outputDirectory"' vercel.json; then
+            echo "❌ 'outputDirectory' forbidden for Next.js"
+            exit 1
+          fi

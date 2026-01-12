@@ -75,7 +75,8 @@
     "railway:deploy:web": "railway up -s web-ui -d",
     "env:vercel": "ts-node scripts/provision-vercel-env.ts",
     "doctor": "sh scripts/bickford-doctor.sh",
-    "doctor:fix": "sh scripts/bickford-doctor-fix.sh"
+    "doctor:fix": "sh scripts/bickford-doctor-fix.sh",
+    "doctor:ci": "node scripts/doctor-ci.ts"
   },
   "workspaces": [
     "packages/*",

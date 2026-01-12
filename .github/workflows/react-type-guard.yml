@@ -1,0 +1,22 @@
+name: React Type Guard
+
+on: [pull_request, push]
+
+jobs:
+  react-types:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+
+      - name: Enforce Single @types/react
+        run: |
+          COUNT=$(npm ls @types/react --all | grep @types/react@ | wc -l)
+          if [ "$COUNT" -ne 1 ]; then
+            echo "❌ Multiple @types/react detected"
+            npm ls @types/react --all
+            exit 1
+          fi
