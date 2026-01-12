@@ -1,6 +1,6 @@
 /**
  * Bickford Canon - Public API
- * TIMESTAMP: 2026-01-12T18:44:00Z
+ * TIMESTAMP: 2026-01-12T21:35:00Z
  * LOCKED: This is the canonical Bickford decision framework
  * 
  * Mathematical foundation: Minimizes E[Time-to-Value] subject to invariants
@@ -13,6 +13,7 @@
  * - NonInterference: Multi-agent equilibrium checks
  * - Migration: Migration scoring and regression prevention
  * - Runtime: Environment invariant enforcement
+ * - Denials: Structured denial persistence (Phase 3: Trust UX)
  */
 
 // Types
@@ -36,11 +37,14 @@ export * from "./migration";
 // Runtime Environment Validation
 export * from "./runtime";
 
+// Denials (Phase 3: Trust UX)
+export * from "./denials/persistDeniedDecision";
+
 /**
  * Bickford Canon Version
  */
-export const BICKFORD_CANON_VERSION = "1.1.0";
-export const BICKFORD_CANON_TIMESTAMP = "2026-01-12T18:44:00Z";
+export const BICKFORD_CANON_VERSION = "1.2.0";
+export const BICKFORD_CANON_TIMESTAMP = "2026-01-12T21:35:00Z";
 
 /**
  * Canonical formula (for reference):
@@ -60,7 +64,7 @@ export const BICKFORD_CANON_TIMESTAMP = "2026-01-12T18:44:00Z";
  * 2. Canon-only execution (authority boundary)
  * 3. Promotion requires 4 tests
  * 4. Non-interference (∀i≠j: ΔE[TTV_j | π_i] ≤ 0)
- * 5. Trust-first denial traces
+ * 5. Trust-first denial traces (Phase 3: complete)
  * 6. Session completions are ledger events
  * 
  * Upgrades applied:
@@ -69,4 +73,5 @@ export const BICKFORD_CANON_TIMESTAMP = "2026-01-12T18:44:00Z";
  * 3. Fixed OPTR selection bug (cached features)
  * 4. Migration scoring and regression prevention
  * 5. Runtime environment validation (Prisma/Node, Edge isolation)
+ * 6. Phase 3: Trust UX (denial ledger, WhyNot API, CI enforcement)
  */

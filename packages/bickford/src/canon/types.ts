@@ -82,6 +82,24 @@ export type WhyNotTrace = {
   context?: Record<string, any>;
 };
 
+/**
+ * Structured denial payload for ledger persistence (Phase 3: Trust UX)
+ */
+export type DeniedDecisionPayload = {
+  ts: ISO8601;
+  actionId: string;
+  actionName?: string;
+  tenantId: string;
+  goal?: string;
+  reasonCodes: DenialReasonCode[];
+  missingCanonIds?: string[];
+  violatedInvariantIds?: string[];
+  requiredCanonRefs?: string[];
+  message: string;
+  context?: Record<string, any>;
+  optrRunId?: string;
+};
+
 export type LedgerEvent = {
   id: string;
   ts: ISO8601;
