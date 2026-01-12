@@ -7,7 +7,7 @@
  * - optr: OPTR decision engine with path scoring and denial tracking
  * - canon: Canon authority with invariants and enforcement
  * - ledger: Append-only ledger for intent-decision pairs
- * - runtime: Runtime execution with mechanical denial (Phase 3: Trust UX)
+ * - runtime: Chat v2 execution runtime with mode gating
  */
 
 // OPTR Engine
@@ -19,7 +19,7 @@ export * as canon from "./canon";
 // Ledger
 export * as ledger from "./ledger";
 
-// Runtime (Phase 3: Trust UX)
+// Runtime (Chat v2)
 export * as runtime from "./runtime";
 
 // Re-export commonly used items at top level
