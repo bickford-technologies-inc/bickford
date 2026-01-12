@@ -1,17 +1,8 @@
 {
-  "version": 2,
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
   "framework": "nextjs",
-  "outputDirectory": "apps/web/.next",
+  "version": 2,
   "env": {
     "DATABASE_URL": "DATABASE_URL",
     "GITHUB_TOKEN": "GITHUB_TOKEN"
-  },
-  "functions": {
-    "apps/web/src/app/api/execute/route.ts": {
-      "maxDuration": 300
-    }
   }
 }
