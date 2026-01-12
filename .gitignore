@@ -1,0 +1,29 @@
+# Dependency directories
+node_modules/
+.vscode/
+
+# Environment variables
+.env
+
+# Local secrets (do not commit)
+.secrets/
+samgov.key
+
+# macOS files
+.DS_Store
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+
+# Build outputs
+dist/
+out/
+
+# Private deal execution files
+INTRO_RANKING.md
+STAGE2_*.md
+*_PRIVATE.md

@@ -1,0 +1,53 @@
+{
+  "name": "Bickford",
+  "oneLine": "Session completion runtime + execution governance (audit ledger, non-interference, receipt-gated execution)",
+  "contact": {
+    "fromName": "Bickford Team",
+    "fromEmail": "YOUR_GMAIL_ADDRESS@gmail.com",
+    "replyTo": "YOUR_GMAIL_ADDRESS@gmail.com",
+    "phone": "",
+    "website": ""
+  },
+  "capabilities": {
+    "keywords": [
+      "execution governance",
+      "audit trail",
+      "deterministic replay",
+      "non-interference",
+      "policy enforcement",
+      "decision gate",
+      "formal verification",
+      "TLA+",
+      "event ledger",
+      "idempotency",
+      "runtime controls",
+      "compliance automation",
+      "procurement workflow",
+      "risk controls",
+      "AI governance"
+    ],
+    "negativeKeywords": [
+      "construction",
+      "janitorial",
+      "HVAC",
+      "vehicle",
+      "food service",
+      "medical supplies"
+    ]
+  },
+  "eligibility": {
+    "setAsides": [],
+    "naics": [],
+    "psc": [],
+    "places": {
+      "allowedCountries": ["US"],
+      "allowedStates": [],
+      "excludedStates": []
+    }
+  },
+  "commercial": {
+    "minEstimatedValueUsd": 0,
+    "maxBidEffortHours": 60,
+    "minDaysToDeadline": 7
+  }
+}

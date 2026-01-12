@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "0862bd78-b529-4157-a8e1-088ac86f9031"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.bickfordd.sessioncompletionruntimemonorepo",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
+  }
+}

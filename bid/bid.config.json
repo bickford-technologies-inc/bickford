@@ -1,0 +1,42 @@
+{
+  "customer": "DoD",
+  "solicitationId": "REPLACE_ME",
+  "programName": "REPLACE_ME",
+  "pointOfContact": "REPLACE_ME",
+  "outputDir": "bid_out",
+  "include": [
+    "README.md",
+    "QUICKSTART.md",
+    "DEPLOY_AUTOMATION.md",
+    "IMPLEMENTATION_STATUS.md",
+    "PROOF_TLA_OUTPUT.txt",
+    "PROOF_TEST_OUTPUT.txt",
+    "docs/financial/DEAL_VALUATION_DEFENSE.md",
+    "docs/financial/EXECUTION_GOVERNANCE_RUNTIME_ONE_PAGER.md",
+    "docs/legal/README.md",
+    "docs/legal/ECONOMIC_PARTICIPATION_EXHIBIT.md",
+    "docs/legal/IPO_INDEPENDENT_EQUITY_CLAUSE.md",
+    "docs/technical/ARCHITECTURE.md",
+    "docs/technical/INTEGRATION_GUIDE.md",
+    "docs/technical/DEMO_GUIDE.md",
+    "docs/technical/RUNTIME_COMMERCIALIZATION_PATTERNS.md",
+    "demo/DEMO_A_SCREENS.md",
+    "demo/DEMO_C_SCREENS.md",
+    "demo/demo-a.ts",
+    "demo/demo-c.ts",
+    "bickford/**",
+    "packages/bickford/api/**",
+    "packages/bickford/src/**",
+    "packages/session-completion-runtime/src/**"
+  ],
+  "exclude": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/dist/**",
+    "**/android/**",
+    "**/ios/**",
+    "**/.expo/**",
+    "**/.next/**",
+    "**/.vercel/**"
+  ]
+}

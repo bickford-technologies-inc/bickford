@@ -1,0 +1,264 @@
+[
+  {
+    "id": "B1-01",
+    "title": "Enterprise IT Support Services",
+    "agency": "Department of Veterans Affairs",
+    "why": [
+      "Clear IT/services scope",
+      "VA awards these regularly",
+      "Strong audit/compliance angle"
+    ],
+    "scoreBand": "~92–95",
+    "revenueLikelihood": "⭐⭐⭐⭐⭐"
+  },
+  {
+    "id": "B1-02",
+    "title": "Systems Engineering and Technical Assistance (SETA)",
+    "agency": "Department of the Army",
+    "why": [
+      "Decision support + systems coordination",
+      "Perfect execution-governance wedge"
+    ],
+    "scoreBand": "~90–93",
+    "revenueLikelihood": "⭐⭐⭐⭐⭐"
+  },
+  {
+    "id": "B1-03",
+    "title": "Cybersecurity Support Services",
+    "agency": "Air Force / DoD Component",
+    "why": [
+      "Cyber + services + compliance",
+      "Not hardware-bound"
+    ],
+    "scoreBand": "~90–92",
+    "revenueLikelihood": "⭐⭐⭐⭐½"
+  },
+  {
+    "id": "B1-04",
+    "title": "Data Management & Analytics Support",
+    "agency": "Department of Veterans Affairs",
+    "why": [
+      "Data pipelines, governance, reporting",
+      "Clear software/services NAICS"
+    ],
+    "scoreBand": "~89–92",
+    "revenueLikelihood": "⭐⭐⭐⭐½"
+  },
+  {
+    "id": "B1-05",
+    "title": "IT Program Management Support",
+    "agency": "Defense Logistics Agency (DLA)",
+    "why": [
+      "Execution tracking + audit",
+      "DLA pays reliably"
+    ],
+    "scoreBand": "~88–91",
+    "revenueLikelihood": "⭐⭐⭐⭐½"
+  },
+  {
+    "id": "B1-06",
+    "title": "Cloud Migration & Application Modernization",
+    "agency": "Department of the Army",
+    "why": [
+      "High spend category",
+      "Needs execution control + audit trails"
+    ],
+    "scoreBand": "~88–90",
+    "revenueLikelihood": "⭐⭐⭐⭐"
+  },
+  {
+    "id": "B1-07",
+    "title": "Software Development & Sustainment Services",
+    "agency": "Department of the Navy",
+    "why": [
+      "Long-term sustainment dollars",
+      "Strong fit for session completion + replay"
+    ],
+    "scoreBand": "~87–90",
+    "revenueLikelihood": "⭐⭐⭐⭐"
+  },
+  {
+    "id": "B1-08",
+    "title": "Enterprise Architecture Support",
+    "agency": "Air Force",
+    "why": [
+      "Governance, standards, execution authority"
+    ],
+    "scoreBand": "~87–89",
+    "revenueLikelihood": "⭐⭐⭐⭐"
+  },
+  {
+    "id": "B1-09",
+    "title": "IT Service Desk & Operations Support",
+    "agency": "Department of Veterans Affairs",
+    "why": [
+      "Not glamorous, but pays",
+      "Easy insertion point"
+    ],
+    "scoreBand": "~86–89",
+    "revenueLikelihood": "⭐⭐⭐⭐"
+  },
+  {
+    "id": "B1-10",
+    "title": "DevSecOps Engineering Support",
+    "agency": "DoD (various)",
+    "why": [
+      "Execution pipelines + control"
+    ],
+    "scoreBand": "~86–88",
+    "revenueLikelihood": "⭐⭐⭐⭐"
+  },
+  {
+    "id": "B1-11",
+    "title": "Mission Systems Integration Support",
+    "agency": "Department of the Army",
+    "why": [
+      "Integration ≠ hardware",
+      "High coordination burden"
+    ],
+    "scoreBand": "~85–88",
+    "revenueLikelihood": "⭐⭐⭐⭐"
+  },
+  {
+    "id": "B1-12",
+    "title": "Data Governance & Compliance Support",
+    "agency": "Department of Veterans Affairs",
+    "why": [
+      "Audit, lineage, replay",
+      "Strong regulatory pressure"
+    ],
+    "scoreBand": "~85–88",
+    "revenueLikelihood": "⭐⭐⭐⭐"
+  },
+  {
+    "id": "B1-13",
+    "title": "IT Modernization Program Support",
+    "agency": "Department of Defense",
+    "why": [
+      "Umbrella modernization contracts"
+    ],
+    "scoreBand": "~85–87",
+    "revenueLikelihood": "⭐⭐⭐½"
+  },
+  {
+    "id": "B1-14",
+    "title": "Software Lifecycle Management Support",
+    "agency": "Department of the Navy",
+    "why": [
+      "Sustainment budgets",
+      "Fits session completion narrative"
+    ],
+    "scoreBand": "~84–87",
+    "revenueLikelihood": "⭐⭐⭐½"
+  },
+  {
+    "id": "B1-15",
+    "title": "Information Assurance Services",
+    "agency": "Air Force",
+    "why": [
+      "IA + compliance"
+    ],
+    "scoreBand": "~84–86",
+    "revenueLikelihood": "⭐⭐⭐½"
+  },
+  {
+    "id": "B1-16",
+    "title": "Knowledge Management & Decision Support Tools",
+    "agency": "Department of the Army",
+    "why": [
+      "Direct alignment with OPTR / canon / ledger"
+    ],
+    "scoreBand": "~84–86",
+    "revenueLikelihood": "⭐⭐⭐½"
+  },
+  {
+    "id": "B1-17",
+    "title": "Program Control & Reporting Services",
+    "agency": "Defense Logistics Agency (DLA)",
+    "why": [
+      "Execution visibility"
+    ],
+    "scoreBand": "~83–86",
+    "revenueLikelihood": "⭐⭐⭐½"
+  },
+  {
+    "id": "B1-18",
+    "title": "IT Governance Framework Support",
+    "agency": "Department of Veterans Affairs",
+    "why": [
+      "Governance buyers understand value"
+    ],
+    "scoreBand": "~83–85",
+    "revenueLikelihood": "⭐⭐⭐½"
+  },
+  {
+    "id": "B1-19",
+    "title": "Application Sustainment & Operations",
+    "agency": "Department of the Army",
+    "why": [
+      "Recurring revenue"
+    ],
+    "scoreBand": "~82–85",
+    "revenueLikelihood": "⭐⭐⭐½"
+  },
+  {
+    "id": "B1-20",
+    "title": "Enterprise Data Platform Support",
+    "agency": "Department of Defense",
+    "why": [
+      "Platform operations, not research"
+    ],
+    "scoreBand": "~82–85",
+    "revenueLikelihood": "⭐⭐⭐½"
+  },
+  {
+    "id": "B1-21",
+    "title": "Digital Transformation Support Services",
+    "agency": "Department of Veterans Affairs",
+    "why": [
+      "Broad scope, services-heavy"
+    ],
+    "scoreBand": "~82–84",
+    "revenueLikelihood": "⭐⭐⭐"
+  },
+  {
+    "id": "B1-22",
+    "title": "IT Portfolio Management Support",
+    "agency": "Department of the Navy",
+    "why": [
+      "Decision tracking + prioritization"
+    ],
+    "scoreBand": "~81–84",
+    "revenueLikelihood": "⭐⭐⭐"
+  },
+  {
+    "id": "B1-23",
+    "title": "Analytics & Reporting Services",
+    "agency": "Air Force",
+    "why": [
+      "Data → decisions → execution"
+    ],
+    "scoreBand": "~81–83",
+    "revenueLikelihood": "⭐⭐⭐"
+  },
+  {
+    "id": "B1-24",
+    "title": "Systems Documentation & Process Automation",
+    "agency": "Department of the Army",
+    "why": [
+      "Low risk, low friction"
+    ],
+    "scoreBand": "~80–83",
+    "revenueLikelihood": "⭐⭐⭐"
+  },
+  {
+    "id": "B1-25",
+    "title": "IT Advisory & Consulting Services",
+    "agency": "DoD Component",
+    "why": [
+      "Entry-point contract"
+    ],
+    "scoreBand": "~80–82",
+    "revenueLikelihood": "⭐⭐⭐"
+  }
+]

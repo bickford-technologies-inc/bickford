@@ -1,0 +1,20 @@
+
+> @bickford/canon@1.0.0 test
+> echo 'No tests yet'
+
+No tests yet
+
+> bickford-mobile-ui@0.1.0 test
+> echo 'No tests yet'
+
+No tests yet
+
+> demo-dashboard@0.0.0 test
+> echo 'No tests yet'
+
+No tests yet
+
+> @bickford/session-completion-runtime@1.0.0 test
+> echo 'No tests yet'
+
+No tests yet

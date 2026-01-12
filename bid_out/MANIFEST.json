@@ -1,0 +1,237 @@
+{
+  "generatedAt": "2025-12-31T04:50:42.266Z",
+  "config": {
+    "customer": "DoD",
+    "solicitationId": "REPLACE_ME",
+    "programName": "REPLACE_ME",
+    "pointOfContact": "REPLACE_ME",
+    "outputDir": "bid_out",
+    "include": [
+      "README.md",
+      "QUICKSTART.md",
+      "DEPLOY_AUTOMATION.md",
+      "IMPLEMENTATION_STATUS.md",
+      "PROOF_TLA_OUTPUT.txt",
+      "PROOF_TEST_OUTPUT.txt",
+      "docs/financial/DEAL_VALUATION_DEFENSE.md",
+      "docs/financial/EXECUTION_GOVERNANCE_RUNTIME_ONE_PAGER.md",
+      "docs/legal/README.md",
+      "docs/legal/ECONOMIC_PARTICIPATION_EXHIBIT.md",
+      "docs/legal/IPO_INDEPENDENT_EQUITY_CLAUSE.md",
+      "docs/technical/ARCHITECTURE.md",
+      "docs/technical/INTEGRATION_GUIDE.md",
+      "docs/technical/DEMO_GUIDE.md",
+      "docs/technical/RUNTIME_COMMERCIALIZATION_PATTERNS.md",
+      "demo/DEMO_A_SCREENS.md",
+      "demo/DEMO_C_SCREENS.md",
+      "demo/demo-a.ts",
+      "demo/demo-c.ts",
+      "bickford/**",
+      "packages/bickford/api/**",
+      "packages/bickford/src/**",
+      "packages/session-completion-runtime/src/**"
+    ],
+    "exclude": [
+      "**/node_modules/**",
+      "**/.git/**",
+      "**/dist/**",
+      "**/android/**",
+      "**/ios/**",
+      "**/.expo/**",
+      "**/.next/**",
+      "**/.vercel/**"
+    ]
+  },
+  "files": [
+    {
+      "path": "bickford/index.ts",
+      "bytes": 170,
+      "sha256": "ed83515fa87a4db698c604650017bb3aca192049ad6956e010f4ce22104cf632"
+    },
+    {
+      "path": "BIDPACK_README.md",
+      "bytes": 586,
+      "sha256": "f9b9f233cb71ad382beb143162c23e33a1e245f39a6f0639998ee0388b11af39"
+    },
+    {
+      "path": "COMPLIANCE_MATRIX.md",
+      "bytes": 1036,
+      "sha256": "cfb421ff22be0f93e0d5ac90c0fd54c9860404e440fa01ec8ca8e23091e88c02"
+    },
+    {
+      "path": "demo/DEMO_A_SCREENS.md",
+      "bytes": 8423,
+      "sha256": "24cea1d231c68dbf4b329a8eb13877a0ffcb2d5e0503d5adf895bc1c57ff5a6a"
+    },
+    {
+      "path": "demo/DEMO_C_SCREENS.md",
+      "bytes": 11699,
+      "sha256": "a3dbaca5d574cc17580017e62aa9c9cc6a4ea74108c73b647effd05d4f725560"
+    },
+    {
+      "path": "demo/demo-a.ts",
+      "bytes": 8897,
+      "sha256": "93eafcde89deabacb6e3324ebff3c0e5f8ce66ef456bd2089fec0bd3418483cc"
+    },
+    {
+      "path": "demo/demo-c.ts",
+      "bytes": 13986,
+      "sha256": "831997a567e8200adc7767a1a1583f9c8a8866ad131140e4d0c9e3f78e53821c"
+    },
+    {
+      "path": "DEPLOY_AUTOMATION.md",
+      "bytes": 1092,
+      "sha256": "9722c814098362e6af45e60e279777dcfe1c36b15bd217d8de6fba35c7096ec1"
+    },
+    {
+      "path": "docs/financial/DEAL_VALUATION_DEFENSE.md",
+      "bytes": 9574,
+      "sha256": "4b7a5a7c3686a32c3d545012a491ed631fb5ad760cfa864dfaf1dc4761d20106"
+    },
+    {
+      "path": "docs/financial/EXECUTION_GOVERNANCE_RUNTIME_ONE_PAGER.md",
+      "bytes": 4285,
+      "sha256": "3fc6f4c4f92bcd77549ed020965d9a7a3b9ce55d65235b7859a7815184f5b04c"
+    },
+    {
+      "path": "docs/legal/ECONOMIC_PARTICIPATION_EXHIBIT.md",
+      "bytes": 11886,
+      "sha256": "9f3b3e20465383deecc98dc463fc1e4867bf3f4afd4914ad93a4593127d5ef17"
+    },
+    {
+      "path": "docs/legal/IPO_INDEPENDENT_EQUITY_CLAUSE.md",
+      "bytes": 7768,
+      "sha256": "efb42a84956cc57dea8c12e57dbe58ca54c604b41a6dfd146cb00bb5cd99a3ce"
+    },
+    {
+      "path": "docs/legal/README.md",
+      "bytes": 863,
+      "sha256": "fcf4c314ca7e100c6fa1bdff955b25c5b4d5331fc91acc12b6e4bf32e843c4cb"
+    },
+    {
+      "path": "docs/technical/ARCHITECTURE.md",
+      "bytes": 13179,
+      "sha256": "00092dc3df8c9b3ad491806680179253eeca09776be8435027583dc3badbf285"
+    },
+    {
+      "path": "docs/technical/DEMO_GUIDE.md",
+      "bytes": 22453,
+      "sha256": "c4816b2042b4961e16b304a0d69d914737087721c7a4f6af2e9647cdc9f048ec"
+    },
+    {
+      "path": "docs/technical/INTEGRATION_GUIDE.md",
+      "bytes": 15829,
+      "sha256": "1978e6f5d2dc8245870c615540a353b3f508661c57885595e43f82ad756118ef"
+    },
+    {
+      "path": "docs/technical/RUNTIME_COMMERCIALIZATION_PATTERNS.md",
+      "bytes": 6003,
+      "sha256": "f4d02e18425ee308ecb3b4ff4ad7561dc35f0b778881c2a340a2fffd2ffeaeb3"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS.md",
+      "bytes": 7644,
+      "sha256": "efa62a882304f6cce23e56c06dead140ab265c62e71aae2b6d13e3ba1a6b0d7c"
+    },
+    {
+      "path": "packages/bickford/api/decide.contract.ts",
+      "bytes": 3713,
+      "sha256": "36c92b1896520d0960310ac06a20921b0ae6fef80949ef901d12a365cfb1b18b"
+    },
+    {
+      "path": "packages/bickford/api/noninterference.contract.ts",
+      "bytes": 3140,
+      "sha256": "98991b09fee071d83155c33f9ad1ca9de13e5a6e59183151c807bad0964c4e2f"
+    },
+    {
+      "path": "packages/bickford/api/notary.s3.ts",
+      "bytes": 1435,
+      "sha256": "0dfed1e18d92faee1099a03560a169c478b153a3d68fffb5a4d44fc5497ec33a"
+    },
+    {
+      "path": "packages/bickford/api/pg-canon-migration-hashchain.sql",
+      "bytes": 390,
+      "sha256": "dbda23af03ec67b4bbe740807be24a7a03f3e46a741199dc5d70669bd596a682"
+    },
+    {
+      "path": "packages/bickford/api/pg-canon-migration-notary.sql",
+      "bytes": 524,
+      "sha256": "522b1fb8b18669aeae71c50ec53f43f6c0934f66fbc7187f60f1c22e005b2646"
+    },
+    {
+      "path": "packages/bickford/api/pg-canon-migration.sql",
+      "bytes": 1214,
+      "sha256": "cec9b52e5132a9f6ca4f58f0ae632ed869c849cf8624decf72feda407a9fc3f0"
+    },
+    {
+      "path": "packages/bickford/api/promote.contract.ts",
+      "bytes": 3403,
+      "sha256": "1ad87e3d52eda0cc872413b80bc10d1a2ad0508faadc28e811358ed2494bda9b"
+    },
+    {
+      "path": "packages/bickford/api/server.ts",
+      "bytes": 28558,
+      "sha256": "2ab613fbdb3b25c9996a7ee7d3d7d77d1f623cbefb6ab2e53ea2325a6473a9bd"
+    },
+    {
+      "path": "packages/bickford/api/storage.pg.ts",
+      "bytes": 6616,
+      "sha256": "22d6415311d7a4017e271627ad05a605918f2bc9445fa96104dd0ef1a4dd8c44"
+    },
+    {
+      "path": "packages/bickford/api/storage.redis.ts",
+      "bytes": 4460,
+      "sha256": "161b696e7c09cb254db74a6ffd859e7f77f5f5820c792885abb7ed8007d21ae7"
+    },
+    {
+      "path": "packages/bickford/api/whynot.contract.ts",
+      "bytes": 592,
+      "sha256": "22efd151118c5ddc7731f3c8b2b4c54279ef05c1e8463cc27177019ce7bb200e"
+    },
+    {
+      "path": "packages/session-completion-runtime/src/index.ts",
+      "bytes": 261,
+      "sha256": "0b22099d806bba34a8958b292954307a56060a5e4ee9dd799203dccba6735e9a"
+    },
+    {
+      "path": "packages/session-completion-runtime/src/integration.ts",
+      "bytes": 3549,
+      "sha256": "94596298cc4e6275d43972ce4db61cabff89359675b94f2f195c9680921524a5"
+    },
+    {
+      "path": "packages/session-completion-runtime/src/runtime.ts",
+      "bytes": 10073,
+      "sha256": "10803c73ffa706078dd978dbb9687f7f83b6c71be6460f0e57652f20802c7fc7"
+    },
+    {
+      "path": "packages/session-completion-runtime/src/types.ts",
+      "bytes": 2492,
+      "sha256": "21e6fce96664552f33ddb4c4dbe930fea22011b7212bec577cfd4a2aa4989dc2"
+    },
+    {
+      "path": "PROOF_TEST_OUTPUT.txt",
+      "bytes": 287,
+      "sha256": "af7e67c50e567b457d0912408448d3cd6fa95dbdafeb9371689f5697c6cdfdd5"
+    },
+    {
+      "path": "PROOF_TLA_OUTPUT.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "QUICKSTART.md",
+      "bytes": 3607,
+      "sha256": "fd936317ff03a4121a81672dc2420526951e3e413c64856ea80028cbad26f1e7"
+    },
+    {
+      "path": "README.md",
+      "bytes": 10099,
+      "sha256": "92d39e6b5968a1beb69217589e0b14adb1d7a2bf299c14496826a22d6882571a"
+    },
+    {
+      "path": "SUBMISSION_CHECKLIST.md",
+      "bytes": 847,
+      "sha256": "51e5c3c5ac6e9396443b8dd4b30c8967c8c1deb9ef5547cd7a2c22eec9d6a317"
+    }
+  ]
+}

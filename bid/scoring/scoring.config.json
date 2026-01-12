@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "weights": {
+    "eligibility": 30,
+    "technicalFit": 25,
+    "strategicValue": 15,
+    "bidFriction": 15,
+    "risk": 15
+  },
+  "eligibility": {
+    "requireSetAsideMatch": false,
+    "requireNaicsMatch": false,
+    "requirePscMatch": false
+  },
+  "technicalFit": {
+    "keywordHitCap": 12,
+    "keywordWeightPerHit": 3,
+    "negativeKeywordPenalty": 2
+  },
+  "bidFriction": {
+    "deadline": {
+      "minDaysFullScore": 21,
+      "minDaysZeroScore": 2
+    }
+  },
+  "risk": {
+    "unknownFieldPenalty": 1,
+    "maxUnknownPenalty": 8
+  }
+}
