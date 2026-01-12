@@ -1,0 +1,68 @@
+name: iOS Build & Submit to App Store
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to build and submit'
+        required: true
+        type: choice
+        options:
+          - production
+          - staging
+  push:
+    branches: [main]
+    paths:
+      - 'packages/bickford-mobile-expo/**'
+
+env:
+  NODE_VERSION: '20.x'
+  EXPO_WORKING_DIR: packages/bickford-mobile-expo
+
+jobs:
+  build-and-submit-ios:
+    name: Build & Submit iOS to App Store Connect
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        working-directory: ${{ env.EXPO_WORKING_DIR }}
+        run: npm ci
+
+      - name: Build iOS app with EAS
+        working-directory: ${{ env.EXPO_WORKING_DIR }}
+        run: |
+          echo "🏗️ Building iOS app with EAS..."
+          eas build --platform ios --profile production --non-interactive --no-wait
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Submit to App Store Connect
+        working-directory: ${{ env.EXPO_WORKING_DIR }}
+        run: |
+          echo "🚀 Submitting to App Store Connect..."
+          eas submit --platform ios --profile production --latest --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD }}
+
+      - name: Notify submission complete
+        run: |
+          echo "✅ iOS build submitted to App Store Connect successfully!"
+          echo "📱 Check your App Store Connect dashboard for review status"
