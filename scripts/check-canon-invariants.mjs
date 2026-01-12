@@ -41,8 +41,8 @@ function readFile(p) {
 
 console.log("🔍 Checking Canon invariants...\n");
 
-// ---------- 1) Canon package must exist ----------
-const canonPackagePath = path.join(ROOT, "packages/canon/package.json");
+// ---------- 1) Canon package (bickford) must exist ----------
+const canonPackagePath = path.join(ROOT, "packages/bickford/package.json");
 requireFile(canonPackagePath);
 
 const canonPkg = JSON.parse(readFile(canonPackagePath));
@@ -51,7 +51,7 @@ assert(
   "Canon package must be named @bickford/canon"
 );
 
-// ---------- 2) All canon modules must exist ----------
+// ---------- 2) All canon modules must exist in bickford package ----------
 const requiredModules = [
   "types.ts",
   "invariants.ts",
@@ -66,12 +66,12 @@ const requiredModules = [
 ];
 
 for (const mod of requiredModules) {
-  const modPath = path.join(ROOT, "packages/canon/src", mod);
+  const modPath = path.join(ROOT, "packages/bickford/src/canon", mod);
   requireFile(modPath);
 }
 
 // ---------- 3) Canon index must export all modules ----------
-const canonIndexPath = path.join(ROOT, "packages/canon/src/index.ts");
+const canonIndexPath = path.join(ROOT, "packages/bickford/src/canon/index.ts");
 const canonIndex = readFile(canonIndexPath);
 
 const requiredExports = [
@@ -115,7 +115,7 @@ assert(
 );
 
 // ---------- 5) Promotion gate must have 4 tests ----------
-const promotionPath = path.join(ROOT, "packages/canon/src/promotion.ts");
+const promotionPath = path.join(ROOT, "packages/bickford/src/canon/promotion.ts");
 const promotionFile = readFile(promotionPath);
 
 assert(
@@ -127,7 +127,7 @@ assert(
 );
 
 // ---------- 6) OPTR must include cached features (upgrade #3) ----------
-const optrPath = path.join(ROOT, "packages/canon/src/optr.ts");
+const optrPath = path.join(ROOT, "packages/bickford/src/canon/optr.ts");
 const optrFile = readFile(optrPath);
 
 assert(
@@ -136,7 +136,7 @@ assert(
 );
 
 // ---------- 7) Invariants must include requireCanonRefs ----------
-const invariantsPath = path.join(ROOT, "packages/canon/src/invariants.ts");
+const invariantsPath = path.join(ROOT, "packages/bickford/src/canon/invariants.ts");
 const invariantsFile = readFile(invariantsPath);
 
 assert(
@@ -145,7 +145,7 @@ assert(
 );
 
 // ---------- 8) Types must include WhyNot taxonomy ----------
-const typesPath = path.join(ROOT, "packages/canon/src/types.ts");
+const typesPath = path.join(ROOT, "packages/bickford/src/canon/types.ts");
 const typesFile = readFile(typesPath);
 
 assert(
@@ -155,17 +155,18 @@ assert(
 );
 
 // ---------- 9) Runtime must validate environment ----------
-const runtimePath = path.join(ROOT, "packages/canon/src/runtime.ts");
+const runtimePath = path.join(ROOT, "packages/bickford/src/canon/runtime.ts");
 const runtimeFile = readFile(runtimePath);
 
 assert(
-  runtimeFile.includes("validateEnvironment") ||
-  runtimeFile.includes("assertPrismaRuntime"),
+  runtimeFile.includes("getRuntimeContext") ||
+  runtimeFile.includes("assertNodeRuntime") ||
+  runtimeFile.includes("gatePrismaContext"),
   "Runtime must validate execution environment"
 );
 
 // ---------- 10) Execution must gate on mode ----------
-const executionPath = path.join(ROOT, "packages/canon/src/execution.ts");
+const executionPath = path.join(ROOT, "packages/bickford/src/canon/execution.ts");
 const executionFile = readFile(executionPath);
 
 assert(
