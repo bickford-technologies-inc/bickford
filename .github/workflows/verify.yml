@@ -1,0 +1,45 @@
+name: Scheduled Verification
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Verify Ledger Chain
+        id: verify
+        run: |
+          RESULT=$(curl -s ${{ secrets.RAILWAY_URL }}/api/ledger/verify)
+          echo "result=$RESULT" >> $GITHUB_OUTPUT
+          
+          if echo "$RESULT" | grep -q '"valid":false'; then
+            echo "❌ Ledger chain verification FAILED"
+            exit 1
+          fi
+          
+          echo "✅ Ledger chain verified"
+
+      - name: Check Health
+        run: |
+          curl -f ${{ secrets.RAILWAY_URL }}/api/health || exit 1
+
+      - name: Check Metrics
+        run: |
+          curl -s ${{ secrets.RAILWAY_URL }}/api/metrics
+
+      - name: Notify on Failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Ledger Verification Failed',
+              body: '## Alert\n\nScheduled ledger verification failed.\n\n**Time:** ' + new Date().toISOString() + '\n**Action:** Manual investigation required.\n\n[View workflow run](' + context.payload.repository.html_url + '/actions/runs/' + context.runId + ')',
+              labels: ['alert', 'verification-failure']
+            })
