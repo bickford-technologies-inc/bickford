@@ -55,7 +55,11 @@ export async function recordBuildEvent(
   branch: string,
   status: "success" | "failure" | "in_progress"
 ): Promise<{ id: string; ledgerHash: string | null }> {
-  const id = crypto.randomUUID();
+  // crypto.randomUUID() is available in Node.js 14.17.0+
+  // For older versions, fallback to timestamp-based ID
+  const id = typeof crypto.randomUUID === 'function' 
+    ? crypto.randomUUID() 
+    : `build-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   
   const event = await prisma.buildEvent.create({
     data: {

@@ -22,9 +22,13 @@ export function assertNodeRuntime(): void {
 function createPrismaClient(config?: DbConfig) {
   assertNodeRuntime();
 
+  // Connection string priority: config parameter > environment variable
+  // If neither provided, throw explicit error
   const connectionString = config?.connectionString || process.env.DATABASE_URL;
   if (!connectionString) {
-    throw new Error("DATABASE_URL environment variable is required");
+    throw new Error(
+      "DATABASE_URL is required. Provide via config parameter or environment variable."
+    );
   }
 
   const pool =
