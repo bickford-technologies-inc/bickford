@@ -1,3 +1,18 @@
+/**
+ * Chat Replay API Route
+ * 
+ * Deterministic, side-effect-free replay of chat threads.
+ * CANONICAL INVARIANT: Replay mode cannot execute.
+ * 
+ * Features:
+ * - Read-only thread replay
+ * - Canon linkage preservation
+ * - Intent derivation replay
+ * - No mutation of canon or execution state
+ * 
+ * TIMESTAMP: 2026-02-08T00:00:00Z
+ */
+
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 
@@ -13,12 +28,17 @@ export async function GET(req: NextRequest) {
   }
 
   // Fetch thread with messages, including canon linkage
+  // This is read-only and does NOT trigger execution
   const thread = await prisma.chatThread.findUnique({
     where: { id: threadId },
     include: {
       messages: {
         include: {
-          intent: true,
+          intent: {
+            include: {
+              execution: true,
+            },
+          },
           canonEntry: true,
         },
         orderBy: { createdAt: "asc" },
@@ -30,18 +50,21 @@ export async function GET(req: NextRequest) {
     return Response.json({ error: "Thread not found" }, { status: 404 });
   }
 
-  // Update lastReplayedAt timestamp
+  // Update lastReplayedAt timestamp (only DB write allowed in replay)
+  const now = new Date();
   await prisma.chatThread.update({
     where: { id: threadId },
-    data: { lastReplayedAt: new Date() },
+    data: { lastReplayedAt: now },
   });
 
-  // Return thread with canon linkage (side-effect free replay)
+  // Return thread with full canon linkage (side-effect free replay)
+  // Execution state is returned but NOT executed
   return Response.json({
+    mode: "replay",
     thread: {
       id: thread.id,
       createdAt: thread.createdAt,
-      lastReplayedAt: new Date().toISOString(),
+      lastReplayedAt: now.toISOString(),
       messages: thread.messages.map((msg) => ({
         id: msg.id,
         createdAt: msg.createdAt,
@@ -55,6 +78,13 @@ export async function GET(req: NextRequest) {
               goal: msg.intent.goal,
               admissibility: msg.intent.admissibility,
               denialReason: msg.intent.denialReason,
+              execution: msg.intent.execution
+                ? {
+                    id: msg.intent.execution.id,
+                    status: msg.intent.execution.status,
+                    artifacts: msg.intent.execution.artifacts,
+                  }
+                : null,
             }
           : null,
         canonEntry: msg.canonEntry
@@ -62,6 +92,7 @@ export async function GET(req: NextRequest) {
               id: msg.canonEntry.id,
               kind: msg.canonEntry.kind,
               title: msg.canonEntry.title,
+              content: msg.canonEntry.content,
             }
           : null,
       })),
