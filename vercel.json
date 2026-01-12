@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "installCommand": "npm install --workspaces",
+  "buildCommand": "node scripts/vercel-build.mjs",
+  "outputDirectory": "packages/demo-dashboard/dist"
+}
