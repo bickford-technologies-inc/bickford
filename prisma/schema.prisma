@@ -1,28 +1,95 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+// CANONICAL SCHEMA - Single source of truth at /prisma/schema.prisma
+// TIMESTAMP: 2026-01-12T18:44:00Z
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
+// Core ledger for intent-decision pairs
 model LedgerEntry {
   id        String   @id
   intent    Json
   decision  Json
   hash      String
   createdAt DateTime @default(now())
+  tenantId  String?  // Per-tenant isolation support
 
   @@index([createdAt])
+  @@index([tenantId])
+  @@map("LedgerEntry")
 }
 
+// Agent state tracking for non-interference
 model AgentState {
   agentId     String   @id
   ttvBaseline Float
   updatedAt   DateTime @updatedAt
+
+  @@map("AgentState")
+}
+
+// Build/Deploy event tracking
+model BuildEvent {
+  id          String   @id
+  commitSha   String
+  branch      String
+  status      String   // success, failure, in_progress
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+  ledgerHash  String?  // Hash of ledger entry for this build
+  artifacts   Json?    // Build artifact metadata
+
+  @@index([commitSha])
+  @@index([status])
+  @@map("BuildEvent")
+}
+
+model DeployEvent {
+  id          String   @id
+  buildId     String?
+  environment String   // staging, production
+  commitSha   String
+  deployedAt  DateTime @default(now())
+  ledgerHash  String   // Mandatory ledger proof
+  status      String   // success, failure, rolled_back
+
+  @@index([commitSha])
+  @@index([environment])
+  @@map("DeployEvent")
+}
+
+// Schema evolution tracking with hashchain
+model SchemaVersion {
+  id            String   @id
+  schemaHash    String   @unique
+  previousHash  String?  // Hashchain link
+  appliedAt     DateTime @default(now())
+  migrationName String?
+  ledgerHash    String   // Notarized in ledger
+
+  @@index([appliedAt])
+  @@map("SchemaVersion")
+}
+
+// Migration risk scoring
+model MigrationScore {
+  id               String   @id
+  migrationName    String   @unique
+  riskScore        Float    // 0.0 (safe) to 1.0 (high risk)
+  isRegressive     Boolean  @default(false)
+  impactAnalysis   Json     // Detailed impact breakdown
+  approvalStatus   String   // pending, approved, denied
+  scoredAt         DateTime @default(now())
+
+  @@index([approvalStatus])
+  @@map("MigrationScore")
 }
 
 model ChatMessage {
