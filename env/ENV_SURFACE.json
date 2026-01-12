@@ -1,0 +1,6 @@
+{
+  "DATABASE_URL": {
+    "value": "<your-actual-db-url>",
+    "environments": ["production", "preview"]
+  }
+}
