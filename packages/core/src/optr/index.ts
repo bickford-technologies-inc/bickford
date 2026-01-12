@@ -4,3 +4,4 @@ export function scorePath(): number {
 
 export { evaluateNonInterference } from "./nonInterference";
 export * from "./engine";
+export * from "./selectPolicy";

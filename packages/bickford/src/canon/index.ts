@@ -86,8 +86,8 @@ export const BICKFORD_CANON_TIMESTAMP = "2026-02-08T00:00:00Z";
 /**
  * Bickford Canon Version
  */
-export const BICKFORD_CANON_VERSION = "1.1.0";
-export const BICKFORD_CANON_TIMESTAMP = "2026-01-12T18:44:00Z";
+export const BICKFORD_CANON_VERSION = "1.3.0";
+export const BICKFORD_CANON_TIMESTAMP = "2026-02-08T00:00:00Z";
 
 /**
  * Canonical formula (for reference):
@@ -109,6 +109,9 @@ export const BICKFORD_CANON_TIMESTAMP = "2026-01-12T18:44:00Z";
  * 4. Non-interference (∀i≠j: ΔE[TTV_j | π_i] ≤ 0)
  * 5. Trust-first denial traces
  * 6. Session completions are ledger events
+ * 7. Replay cannot execute (Chat v2)
+ * 8. Intent cannot exist without evidence (Chat v2)
+ * 9. Canon cannot mutate during replay (Chat v2)
  * 
  * Upgrades applied:
  * 1. Mechanical authority enforcement (requireCanonRefs gate)
@@ -116,4 +119,6 @@ export const BICKFORD_CANON_TIMESTAMP = "2026-01-12T18:44:00Z";
  * 3. Fixed OPTR selection bug (cached features)
  * 4. Migration scoring and regression prevention
  * 5. Runtime environment validation (Prisma/Node, Edge isolation)
+ * 6. Chat v2 execution surface (immutable threads, evidence-bound intents, replay gating)
+ * 7. Phase 3 Trust UX (denial ledger, WhyNot API, CI enforcement)
  */

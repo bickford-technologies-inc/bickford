@@ -1,0 +1,43 @@
+name: Trust Invariants (Phase 3)
+
+# CI enforcement preventing silent denials or non-persisted rejections
+# Guarantees after merge:
+# - No silent denials
+# - No unexplained rejection
+# - Every denial is ledgered and replayable
+# - CI blocks regression permanently
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+jobs:
+  trust-invariants:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: npm ci --workspaces
+        
+      - name: Run trust invariants check
+        run: node scripts/check-trust-invariants.mjs
+        
+      - name: Report status
+        if: always()
+        run: |
+          echo "Trust UX invariants check completed"
+          echo "This check ensures:"
+          echo "  ✓ All denials are ledgered"
+          echo "  ✓ WhyNot explanations available"
+          echo "  ✓ Structured denial taxonomy"
+          echo "  ✓ No silent rejections"
