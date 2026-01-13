@@ -1,7 +1,9 @@
-<<<<<<< HEAD
-import { prisma } from "../../db/dist/client";
-=======
-import { prisma } from "@bickford/db";
->>>>>>> 24c38a3 (intent(ledger): import prisma from @bickford/db, not dist/; remove explicit PrismaClient types)
+/* eslint-disable @typescript-eslint/no-var-requires */
+const Prisma = require("@prisma/client");
 
-export default prisma;
+export const prisma = new Prisma.PrismaClient({
+  log:
+    process.env.NODE_ENV === "development"
+      ? ["query", "warn", "error"]
+      : ["error"],
+});

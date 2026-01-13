@@ -1,9 +1,6 @@
 import * as crypto from "crypto";
 import { Intent, LedgerEntry, Decision } from "@bickford/types";
-import { prisma, assertNodeRuntime } from "./db";
-
-// Ensure we're running in Node.js
-assertNodeRuntime();
+import { prisma, withLedgerTx } from "./db";
 
 export async function appendLedger(
   intent: Intent,
@@ -41,7 +38,7 @@ export async function getLedger(tenantId?: string): Promise<LedgerEntry[]> {
     orderBy: { createdAt: "desc" },
   });
 
-  return rows.map((r) => {
+  return rows.map((r: any) => {
     const entry: LedgerEntry = {
       id: r.id,
       intent: r.intent as Intent,
@@ -177,5 +174,4 @@ export async function recordSchemaChange(
   return { schemaHash, ledgerHash: ledgerEntry.hash };
 }
 
-export { default as prisma } from "./prisma";
 export * from "./db";
