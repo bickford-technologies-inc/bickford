@@ -1,9 +1,12 @@
 /**
  * Bickford Canon - Public API
- * TIMESTAMP: 2025-12-21T14:41:00-05:00
+ * TIMESTAMP: 2026-02-08T00:00:00Z
  * LOCKED: This is the canonical Bickford decision framework
  * 
  * Mathematical foundation: Minimizes E[Time-to-Value] subject to invariants
+ * 
+ * This module loads canon from the canonical @bickford/canon package.
+ * It provides runtime integration for canon-constrained execution.
  * 
  * Exports:
  * - Types: Core type definitions
@@ -11,6 +14,7 @@
  * - OPTR: Decision engine with 3 upgrades applied
  * - Promotion: 4-test gate for structural changes
  * - NonInterference: Multi-agent equilibrium checks
+ * - Authority: Authority boundary enforcement
  */
 
 // Types
@@ -28,11 +32,17 @@ export * from "./promotion";
 // Non-Interference
 export * from "./nonInterference";
 
+// Authority Enforcement
+export * from "./authority";
+
+// Authority Enforcement
+export * from "./authority";
+
 /**
  * Bickford Canon Version
  */
-export const BICKFORD_CANON_VERSION = "1.0.0";
-export const BICKFORD_CANON_TIMESTAMP = "2025-12-21T14:41:00-05:00";
+export const BICKFORD_CANON_VERSION = "1.2.0";
+export const BICKFORD_CANON_TIMESTAMP = "2026-02-08T00:00:00Z";
 
 /**
  * Canonical formula (for reference):
