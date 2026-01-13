@@ -1,6 +1,7 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 import { Pool } from "pg";
+import type { DbConfig } from "@bickford/types";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

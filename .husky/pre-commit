@@ -1,12 +1,2 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-CHANGED=$(git diff --cached --name-only)
-
-if echo "$CHANGED" | grep -E 'vercel.json|turbo.json|.github/workflows|\.env'; then
-  echo "ℹ️ Infra-only change detected — skipping hooks"
-  exit 0
-fi
-
 npm run lint
-

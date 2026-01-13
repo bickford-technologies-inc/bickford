@@ -6,7 +6,7 @@
  * to ledger endpoints instead of direct database access.
  */
 
-import type { Intent, LedgerEntry } from "@bickford/types";
+import type { Intent, LedgerEntry, Decision } from "@bickford/types";
 
 export class EdgeLedgerClient {
   private apiUrl: string;
