@@ -1,11 +1,6 @@
 {
-  "version": 2,
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "env": {
-    "DATABASE_URL": "DATABASE_URL",
-    "GITHUB_TOKEN": "GITHUB_TOKEN"
-  }
+  "framework": null,
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm run build",
+  "outputDirectory": "apps/web/.next"
 }
