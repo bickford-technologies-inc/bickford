@@ -1,5 +1,9 @@
 /**
  * Canon Promotion Logic
+<<<<<<< HEAD
+ * Canon Stub — Implementation follows
+ */
+
  * 
  * Handles promotion of canon items from EVIDENCE -> PROPOSED -> CANON.
  * Enforces 4-test promotion gate.
@@ -83,3 +87,4 @@ export function createPromotionTests(
     evidenceRefs,
   };
 }
+  return {

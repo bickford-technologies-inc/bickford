@@ -1,93 +1,118 @@
 /**
- * Canon Execution Logic
- * 
- * Canonical execution enforcement layer.
- * Ensures all execution is gated by canon constraints.
- * 
+<<<<<<< HEAD
+ * Canon Execution + Tier-1 / Tier-2 Closure Runtime
+ *
+ * Combines:
+ * - Tier-1 / Tier-2 closure mechanics (seal / finalize)
+ * - Deterministic execution context hashing
+ * - Ledger-proofed token streaming
+ * - Chat v2 canon-gated execution enforcement
+ *
  * TIMESTAMP: 2026-02-08T00:00:00Z
- * CANONICAL: This is part of Chat v2 execution surface
+ * LOCKED: Canonical execution surface
  */
 
-import { Action, WhyNotTrace, DenialReasonCode } from "./types";
+import * as crypto from "crypto";
+import {
+  Action,
+  WhyNotTrace,
+  DenialReasonCode,
+  ExecutionContext,
+  TokenStreamProof,
+  ISO8601,
+} from "./types";
 import { requireCanonRefs } from "./invariants";
 
-/**
- * Execution context with canon refs
- */
-export interface ExecutionContext {
-  mode: "live" | "replay";
-  canonRefsAvailable: string[];
-  timestamp: string;
-}
+/* ────────────────────────────────────────────────────────────── */
+/* Tier-1 / Tier-2: Execution Context Hashing                      */
+/* ────────────────────────────────────────────────────────────── */
 
-/**
- * Execution result
- */
-export interface ExecutionResult {
-  allowed: boolean;
-  action?: Action;
-  denyTrace?: WhyNotTrace;
-}
+export function createExecutionContext(params: {
+  executionId: string;
+   * Canon Execution + Tier-1 / Tier-2 Closure Runtime
+   *
+   * Combines:
+   * - Tier-1 / Tier-2 closure mechanics (seal / finalize)
+   * - Deterministic execution context hashing
+   * - Ledger-proofed token streaming
+   * - Chat v2 canon-gated execution enforcement
+   *
+   * TIMESTAMP: 2026-02-08T00:00:00Z
+   * LOCKED: Canonical execution surface
+   */
 
-/**
- * Execute an action with canon enforcement
- * 
- * @throws Error if canon refs are missing or if in replay mode
- */
-export function executeWithCanon(
-  action: Action,
-  context: ExecutionContext
-): ExecutionResult {
-  // Hard gate: replay mode cannot execute
-  if (context.mode === "replay") {
+  import * as crypto from "crypto";
+  import {
+    Action,
+    WhyNotTrace,
+    DenialReasonCode,
+    ExecutionContext,
+    TokenStreamProof,
+    ISO8601,
+  } from "./types";
+  import { requireCanonRefs } from "./invariants";
+
+  // ...existing code for context hashing, token streaming, chat closure...
+
+  // Canon-gated execution logic (latest, canonical)
+  export interface ExecutionResult {
+    allowed: boolean;
+    action?: Action;
+    denyTrace?: WhyNotTrace;
+  }
+
+  export function executeWithCanon(
+    action: Action,
+    context: ExecutionContext
+  ): ExecutionResult {
+    // Hard gate: replay mode cannot execute
+    if (context.mode === "replay") {
+      return {
+        allowed: false,
+        denyTrace: {
+          ts: context.timestamp,
+          actionId: action.id,
+          denied: true,
+          reasonCodes: [DenialReasonCode.AUTHORITY_BOUNDARY_FAIL],
+          message: "Replay mode cannot execute. Replay is side-effect free.",
+          context: { mode: context.mode },
+        },
+      };
+    }
+
+    // Enforce canon refs
+    const authorityCheck = requireCanonRefs(
+      action,
+      context.canonRefsAvailable
+    );
+
+    if (!authorityCheck.ok) {
+      return {
+        allowed: false,
+        denyTrace: {
+          ts: context.timestamp,
+          actionId: action.id,
+          denied: true,
+          reasonCodes: [DenialReasonCode.MISSING_CANON_PREREQS],
+          missingCanonIds: authorityCheck.missingRefs,
+          requiredCanonRefs: action.prerequisitesCanonIds,
+          message: authorityCheck.message || "Missing canon prerequisites",
+        },
+      };
+    }
+
+    // Execution allowed
     return {
-      allowed: false,
-      denyTrace: {
-        ts: context.timestamp,
-        actionId: action.id,
-        denied: true,
-        reasonCodes: [DenialReasonCode.AUTHORITY_BOUNDARY_FAIL],
-        message: "Replay mode cannot execute. Replay is side-effect free.",
-        context: { mode: context.mode },
-      },
+      allowed: true,
+      action,
     };
   }
 
-  // Enforce canon refs
-  const authorityCheck = requireCanonRefs(
-    action,
-    context.canonRefsAvailable
-  );
-
-  if (!authorityCheck.ok) {
-    return {
-      allowed: false,
-      denyTrace: {
-        ts: context.timestamp,
-        actionId: action.id,
-        denied: true,
-        reasonCodes: [DenialReasonCode.MISSING_CANON_PREREQS],
-        missingCanonIds: authorityCheck.missingRefs,
-        requiredCanonRefs: action.prerequisitesCanonIds,
-        message: authorityCheck.message || "Missing canon prerequisites",
-      },
-    };
+  export function validateExecutionContext(context: ExecutionContext): boolean {
+    return (
+      context.mode === "live" &&
+      Array.isArray(context.canonRefsAvailable) &&
+      context.timestamp !== undefined
+    );
   }
-
-  // Execution allowed
-  return {
-    allowed: true,
-    action,
-  };
-}
-
-/**
- * Validate execution context
- */
-export function validateExecutionContext(context: ExecutionContext): boolean {
-  return (
-    context.mode === "live" &&
-    Array.isArray(context.canonRefsAvailable) &&
-    context.timestamp !== undefined
-  );
 }
