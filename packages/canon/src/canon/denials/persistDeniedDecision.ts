@@ -7,6 +7,7 @@
  */
 
 import { DeniedDecisionPayload } from "@bickford/types";
+import { prisma } from "@bickford/db";
 
 /**
  * Persist a denied decision to the ledger
@@ -19,11 +20,6 @@ import { DeniedDecisionPayload } from "@bickford/types";
 export async function persistDeniedDecision(
   payload: DeniedDecisionPayload
 ): Promise<{ id: string; success: boolean }> {
-  // Import Prisma client dynamically to avoid circular dependencies
-  // This is safe because Prisma is always available in runtime
-  const { PrismaClient } = await import("@prisma/client");
-  const prisma = new PrismaClient();
-
   try {
     const deniedDecision = await prisma.deniedDecision.create({
       data: {
@@ -35,15 +31,11 @@ export async function persistDeniedDecision(
       },
     });
 
-    await prisma.$disconnect();
-
     return {
       id: deniedDecision.id,
       success: true,
     };
   } catch (error) {
-    await prisma.$disconnect();
-
     // Log error but don't throw - denial tracking failure should not block execution
     console.error("Failed to persist denied decision:", error);
 
@@ -63,9 +55,6 @@ export async function getDeniedDecisions(params: {
   tenantId?: string;
   limit?: number;
 }): Promise<DeniedDecisionPayload[]> {
-  const { PrismaClient } = await import("@prisma/client");
-  const prisma = new PrismaClient();
-
   try {
     const records = await prisma.deniedDecision.findMany({
       where: {
@@ -76,8 +65,6 @@ export async function getDeniedDecisions(params: {
       take: params.limit || 100,
     });
 
-    await prisma.$disconnect();
-
     return records.map((r) => ({
       ts: typeof r.ts === "string" ? r.ts : r.ts.toISOString(),
       actionId: r.actionId,
@@ -87,7 +74,6 @@ export async function getDeniedDecisions(params: {
       message: r.message || "Denied decision record",
     }));
   } catch (error) {
-    await prisma.$disconnect();
     console.error("Failed to retrieve denied decisions:", error);
     return [];
   }

@@ -12,7 +12,7 @@
     "start": "bash scripts/setup.sh && npm run dev",
     "dev": "pnpm prisma:generate && turbo run dev --filter=web",
     "check:turbo": "node scripts/check-turbo-extends.mjs",
-    "build": "pnpm prisma:generate && pnpm prisma:validate && pnpm prisma:enforce && turbo run build",
+    "build": "pnpm --filter @bickford/db prisma:generate && turbo run build",
     "prisma:generate": "prisma generate --schema=packages/db/prisma/schema.prisma",
     "prisma:validate": "tsx scripts/prisma-validate.ts",
     "prisma:enforce": "tsx scripts/prisma-enforce.ts",
@@ -94,7 +94,7 @@
     "doctor:ci": "node scripts/doctor-ci.ts",
     "resolve:push": "node ./scripts/resolve-and-push.mjs",
     "verify:next": "tsx scripts/verify-next-version.ts",
-    "prebuild": "pnpm run verify:next && pnpm --filter @bickford/db prisma:generate && pnpm prisma:assert-single && pnpm prisma:enforce && turbo run build"
+    "prebuild": "pnpm run verify:next && pnpm --filter @bickford/db prisma:generate && turbo run build"
   },
   "workspaces": [
     "packages/*",

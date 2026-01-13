@@ -5,13 +5,13 @@
   "types": "dist/client.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/client.d.ts",
-      "default": "./dist/client.js"
+      "default": "./dist/client.js",
+      "types": "./dist/client.d.ts"
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate",
+    "build": "pnpm prisma:generate && tsc -p tsconfig.json"
   },
   "dependencies": {
     "@prisma/client": "6.19.2"
