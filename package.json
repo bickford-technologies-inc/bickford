@@ -92,7 +92,9 @@
     "doctor": "sh scripts/bickford-doctor.sh",
     "doctor:fix": "sh scripts/bickford-doctor-fix.sh",
     "doctor:ci": "node scripts/doctor-ci.ts",
-    "resolve:push": "node ./scripts/resolve-and-push.mjs"
+    "resolve:push": "node ./scripts/resolve-and-push.mjs",
+    "verify:next": "tsx scripts/verify-next-version.ts",
+    "prebuild": "pnpm run verify:next && pnpm prisma:generate && pnpm prisma:assert-single && pnpm prisma:enforce && turbo run build"
   },
   "workspaces": [
     "packages/*",
