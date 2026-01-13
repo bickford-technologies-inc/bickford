@@ -179,29 +179,3 @@ export async function recordSchemaChange(
 
 export { prisma } from "./db";
 export * from "./db";
-
-import type { Decision } from "@bickford/types";
-
-export interface RecordDecisionInput {
-  id: string;
-  intent: string;
-  reason?: string | null;
-  denied?: boolean;
-}
-
-export function recordDecision(input: RecordDecisionInput) {
-  const decision: Decision = {
-    id: input.id,
-    intent: input.intent,
-    timestamp: Date.now(),
-    denied: input.denied ?? false,
-    reason: input.reason ?? undefined,
-  };
-
-  return persistDecision(decision);
-}
-
-function persistDecision(decision: Decision) {
-  // persistence unchanged
-  return decision;
-}

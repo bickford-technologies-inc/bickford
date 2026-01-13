@@ -1,4 +1,4 @@
-import { prisma } from "./prisma";
+import { prisma } from "./db";
 
 export async function recordDeployEvent(input: {
   id: string;
