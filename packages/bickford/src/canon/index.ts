@@ -1,3 +1,24 @@
+import { assertWorkspaceDeps } from "./invariants/workspaceDeps";
+import fs from "fs";
+import path from "path";
+
+const SRC = path.join(__dirname);
+const imports: string[] = [];
+function collectImports(dir: string) {
+  for (const f of fs.readdirSync(dir)) {
+    const p = path.join(dir, f);
+    if (fs.statSync(p).isDirectory()) collectImports(p);
+    else if (p.endsWith(".ts")) {
+      const c = fs.readFileSync(p, "utf8");
+      for (const m of c.matchAll(/from\s+['"](@bickford\/[^'\"]+)['"]/g)) {
+        imports.push(m[1]);
+      }
+    }
+  }
+}
+collectImports(SRC);
+assertWorkspaceDeps(path.resolve(__dirname, "..", ".."), imports);
+
 /**
  * Bickford Canon - Public API (FULL Surface)
  * TIMESTAMP: 2026-02-08T00:00:00Z
