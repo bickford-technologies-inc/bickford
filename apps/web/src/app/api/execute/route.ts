@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   const { intentId } = await req.json();
-  const prisma = getPrisma();
 
   const intent = await prisma.intent.findUniqueOrThrow({
     where: { id: intentId },
