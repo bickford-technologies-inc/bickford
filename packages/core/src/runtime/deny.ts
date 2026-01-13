@@ -10,7 +10,11 @@
  */
 
 import { WhyNotTrace, DeniedDecisionPayload, Action } from "@bickford/types";
-import { persistDeniedDecision } from "@bickford/bickford";
+
+function persistDeniedDecision(_: DeniedDecisionPayload) {
+  // TODO: wire to @bickford/canon persistence
+  return { success: true, id: "stub-denial-id" };
+}
 
 /**
  * Mechanically deny an action and persist to ledger
@@ -31,16 +35,10 @@ export async function mechanicalDeny(params: {
   const payload: DeniedDecisionPayload = {
     ts: trace.ts,
     actionId: trace.actionId,
-    actionName: action?.name,
     tenantId,
-    goal,
     reasonCodes: trace.reasonCodes,
-    missingCanonIds: trace.missingCanonIds,
-    violatedInvariantIds: trace.violatedInvariantIds,
-    requiredCanonRefs: trace.requiredCanonRefs,
     message: trace.message,
-    context: trace.context,
-    optrRunId,
+    denied: true,
   };
 
   // Persist to ledger (non-blocking on failure)

@@ -2,19 +2,19 @@
  * Promotion Gate (False Structural Change Detector)
  * TIMESTAMP: 2025-12-21T14:41:00-05:00
  * LOCKED: Canonical promotion gate implementation
- * 
+ *
  * Prevents unpromoted evidence from expanding admissible action set.
  * Requires 4 tests: (A) resistance, (B) reproducibility, (C) invariant safety, (D) feasibility impact
  */
 
-import { PromotionDecision, PromotionTests, CanonLevel } from "./types";
+import { PromotionDecision, PromotionTests, CanonLevel } from "@bickford/types";
 
 /**
  * Promotion gate decision function
- * 
+ *
  * All 4 tests must pass for promotion to CANON:
  * A) Resistance: failure was possible; constraints bound the system
- * B) Reproducibility: stable across trials/contexts  
+ * B) Reproducibility: stable across trials/contexts
  * C) Invariant safety: cannot enable an invariant violation
  * D) Feasibility impact: materially changes Π_adm or scoring
  */
@@ -24,8 +24,10 @@ export function promotionGate(args: {
   from: "EVIDENCE" | "PROPOSED";
   tests: PromotionTests;
 }): PromotionDecision {
-  const { resistance, reproducible, invariantSafe, feasibilityImpact } = args.tests;
-  const approved = resistance && reproducible && invariantSafe && feasibilityImpact;
+  const { resistance, reproducible, invariantSafe, feasibilityImpact } =
+    args.tests;
+  const approved =
+    resistance && reproducible && invariantSafe && feasibilityImpact;
 
   return {
     ts: args.ts,
@@ -36,7 +38,7 @@ export function promotionGate(args: {
     approved,
     reason: approved
       ? "Promotion approved: all four tests passed (A: resistance, B: reproducibility, C: invariant safety, D: feasibility impact)."
-      : generateDenialReason(args.tests)
+      : generateDenialReason(args.tests),
   };
 }
 
@@ -45,9 +47,11 @@ export function promotionGate(args: {
  */
 function generateDenialReason(tests: PromotionTests): string {
   const failures: string[] = [];
-  
+
   if (!tests.resistance) {
-    failures.push("(A) resistance: no evidence of failure modes or constraints");
+    failures.push(
+      "(A) resistance: no evidence of failure modes or constraints"
+    );
   }
   if (!tests.reproducible) {
     failures.push("(B) reproducibility: unstable across trials/contexts");
@@ -59,7 +63,9 @@ function generateDenialReason(tests: PromotionTests): string {
     failures.push("(D) feasibility impact: does not materially change Π_adm");
   }
 
-  return `Promotion denied: failed ${failures.join("; ")}. Keep as evidence (no expansion of admissible action set).`;
+  return `Promotion denied: failed ${failures.join(
+    "; "
+  )}. Keep as evidence (no expansion of admissible action set).`;
 }
 
 /**
@@ -74,12 +80,13 @@ export async function runPromotionTests(args: {
   checkInvariantSafety: () => Promise<boolean>;
   checkFeasibilityImpact: () => Promise<boolean>;
 }): Promise<PromotionTests> {
-  const [resistance, reproducible, invariantSafe, feasibilityImpact] = await Promise.all([
-    args.checkResistance(),
-    args.checkReproducibility(),
-    args.checkInvariantSafety(),
-    args.checkFeasibilityImpact(),
-  ]);
+  const [resistance, reproducible, invariantSafe, feasibilityImpact] =
+    await Promise.all([
+      args.checkResistance(),
+      args.checkReproducibility(),
+      args.checkInvariantSafety(),
+      args.checkFeasibilityImpact(),
+    ]);
 
   return {
     resistance,

@@ -1,3 +1,5 @@
+import { AgentContext, InterferenceResult } from "@bickford/types";
+
 /**
  * Returns allowed=false if any other agent's TTV increases
  * Pure, deterministic, testable, replayable

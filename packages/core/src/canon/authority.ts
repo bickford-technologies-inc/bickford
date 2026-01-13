@@ -1,4 +1,5 @@
-import { Intent } from "@bickford/types";
+import { Intent, Decision } from "@bickford/types";
+import crypto from "crypto";
 
 /**
  * Authorization logic for intent validation and decision
@@ -9,6 +10,8 @@ export function authorize(intent: Intent): Decision {
   // Basic validation
   if (!intent || !intent.action) {
     return {
+      id: crypto.randomUUID(),
+      intent: intent?.action || "",
       outcome: "DENY",
       reason: "Invalid intent: missing action",
       timestamp: new Date().toISOString(),
@@ -17,6 +20,8 @@ export function authorize(intent: Intent): Decision {
 
   // For now, allow all valid intents
   return {
+    id: crypto.randomUUID(),
+    intent: intent.action,
     outcome: "ALLOW",
     reason: "Intent authorized",
     timestamp: new Date().toISOString(),
