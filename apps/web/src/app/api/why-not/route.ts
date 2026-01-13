@@ -1,15 +1,15 @@
 /**
  * WhyNot API Route (Phase 3: Trust UX)
  * TIMESTAMP: 2026-01-12T21:35:00Z
- * 
+ *
  * Replayable WhyNot explanations from denied decision ledger.
- * 
+ *
  * GET /api/why-not?actionId=...&tenantId=...
- * 
+ *
  * Returns all denied decisions for the specified action and/or tenant.
  */
 
-import { getDeniedDecisions } from "@bickford/bickford/src/canon/denials/persistDeniedDecision";
+import { getDeniedDecisions } from "../../../../packages/bickford/src/canon/denials/persistDeniedDecision";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
 
 /**
  * POST /api/why-not
- * 
+ *
  * Query denied decisions with more complex filters (future extension)
  */
 export async function POST(request: NextRequest) {

@@ -2,7 +2,7 @@
  * OPTR (Opportunity Targeting & Response) Engine
  * TIMESTAMP: 2025-12-21T14:41:00-05:00
  * LOCKED: Canonical OPTR loop implementation
- * 
+ *
  * Minimizes E[Time-to-Value] subject to constraints:
  * π* = argmin_{π ∈ Π_adm} E[TTV(π) + λC·C(π) + λR·R(π) − λP·log p(π)]
  */
@@ -31,12 +31,12 @@ export function scorePath(
   weights: OPTRWeights
 ): OPTRScore {
   const { ttv, cost, risk, successProb } = features;
-  const total = 
-    ttv + 
-    weights.lambdaC * cost + 
-    weights.lambdaR * risk - 
+  const total =
+    ttv +
+    weights.lambdaC * cost +
+    weights.lambdaR * risk -
     weights.lambdaP * Math.log(Math.max(successProb, 1e-9));
-  
+
   return {
     ttv,
     cost,
@@ -47,8 +47,8 @@ export function scorePath(
       ttv,
       cost: weights.lambdaC * cost,
       risk: weights.lambdaR * risk,
-      prob: -weights.lambdaP * Math.log(Math.max(successProb, 1e-9))
-    }
+      prob: -weights.lambdaP * Math.log(Math.max(successProb, 1e-9)),
+    },
   };
 }
 
@@ -62,9 +62,9 @@ export function gateSecondActionTooEarly(
   nowIso: string
 ): WhyNotTrace | null {
   const missing = nextAction.prerequisitesCanonIds.filter(
-    id => !canonIdsPresent.has(id)
+    (id) => !canonIdsPresent.has(id)
   );
-  
+
   if (missing.length === 0) return null;
 
   return {
@@ -74,7 +74,9 @@ export function gateSecondActionTooEarly(
     reasonCodes: [DenialReasonCode.MISSING_CANON_PREREQS],
     missingCanonIds: missing,
     requiredCanonRefs: missing,
-    message: `Denied: "${nextAction.name}" is too early. Missing prerequisite canon items: ${missing.join(", ")}.`
+    message: `Denied: "${
+      nextAction.name
+    }" is too early. Missing prerequisite canon items: ${missing.join(", ")}.`,
   };
 }
 
@@ -89,7 +91,7 @@ export function gateAuthorityBoundary(
   nowIso: string
 ): WhyNotTrace | null {
   const authCheck = requireCanonRefs(action.id, canonRefsUsed, canonStore);
-  
+
   if (authCheck.ok) return null;
 
   return {
@@ -102,7 +104,7 @@ export function gateAuthorityBoundary(
     message: authCheck.message || "Authority boundary violation",
     context: {
       invalidRefs: authCheck.invalidRefs,
-    }
+    },
   };
 }
 
@@ -121,8 +123,10 @@ export function gateRiskBounds(
     actionId: features.nextAction.id,
     denied: true,
     reasonCodes: [DenialReasonCode.RISK_BOUND_EXCEEDED],
-    message: `Denied: Risk ${features.risk.toFixed(2)} exceeds bound ${maxRisk.toFixed(2)}`,
-    context: { risk: features.risk, maxRisk }
+    message: `Denied: Risk ${features.risk.toFixed(
+      2
+    )} exceeds bound ${maxRisk.toFixed(2)}`,
+    context: { risk: features.risk, maxRisk },
   };
 }
 
@@ -141,14 +145,16 @@ export function gateCostBounds(
     actionId: features.nextAction.id,
     denied: true,
     reasonCodes: [DenialReasonCode.COST_BOUND_EXCEEDED],
-    message: `Denied: Cost ${features.cost.toFixed(2)} exceeds bound ${maxCost.toFixed(2)}`,
-    context: { cost: features.cost, maxCost }
+    message: `Denied: Cost ${features.cost.toFixed(
+      2
+    )} exceeds bound ${maxCost.toFixed(2)}`,
+    context: { cost: features.cost, maxCost },
   };
 }
 
 /**
  * OPTR Resolve: Select optimal path from candidates
- * 
+ *
  * UPGRADE #3: Fixed selection bug by caching features during scoring
  */
 export function optrResolve(params: {
@@ -171,14 +177,19 @@ export function optrResolve(params: {
     // Compute and cache features ONCE
     const features = params.featureFn(candidate);
     candidate.features = features;
-    
+
     // Score using cached features
     candidate.score = scorePath(candidate, features, params.weights);
 
     // Run all gates using cached features
     const gates: (WhyNotTrace | null)[] = [
       gateSecondActionTooEarly(features.nextAction, canonSet, params.ts),
-      gateAuthorityBoundary(features.nextAction, params.canonRefsUsed, params.canonStore, params.ts),
+      gateAuthorityBoundary(
+        features.nextAction,
+        params.canonRefsUsed,
+        params.canonStore,
+        params.ts
+      ),
     ];
 
     if (params.bounds?.maxRisk !== undefined) {
@@ -203,7 +214,7 @@ export function optrResolve(params: {
   const sorted = [...params.candidates].sort(
     (a, b) => (a.score?.total ?? Infinity) - (b.score?.total ?? Infinity)
   );
-  
+
   const selected = sorted[0];
   const nextAction = selected?.features?.nextAction;
 
@@ -215,7 +226,7 @@ export function optrResolve(params: {
     selectedPathId: selected?.id,
     selectedNextActionId: nextAction?.id,
     denyTraces: denyTraces.length ? denyTraces : undefined,
-    canonRefsUsed: params.canonRefsUsed
+    canonRefsUsed: params.canonRefsUsed,
   };
 }
 
@@ -223,75 +234,83 @@ export function optrResolve(params: {
  * Default OPTR weights (can be tuned per use case)
  */
 export const DEFAULT_WEIGHTS: OPTRWeights = {
-  lambdaC: 0.1,  // Cost coefficient
-  lambdaR: 0.2,  // Risk coefficient
+  lambdaC: 0.1, // Cost coefficient
+  lambdaR: 0.2, // Risk coefficient
   lambdaP: 0.05, // Success probability coefficient
 };
 
 /**
  * UPGRADE #8: Ingest canon knowledge as path constraints
- * 
+ *
  * Converts canon knowledge items into OPTR path constraints.
  * This enables canon-level knowledge to directly influence admissibility.
  */
 export function ingestCanonAsConstraints(
-  canonStore: Map<string, { level: string; kind: string; statement: string; confidence?: ConfidenceEnvelope }>,
+  canonStore: Map<
+    string,
+    {
+      level: string;
+      kind: string;
+      statement: string;
+      confidence?: ConfidenceEnvelope;
+    }
+  >,
   targetActions: Action[]
 ): PathConstraint[] {
   const constraints: PathConstraint[] = [];
-  
+
   for (const [canonId, item] of canonStore.entries()) {
     if (item.level !== "CANON") continue; // Only CANON level affects admissibility
-    
+
     // Convert INVARIANT to constraints
     if (item.kind === "INVARIANT") {
       // Extract constraint type from statement
       const statement = item.statement.toLowerCase();
-      
+
       // Example: Risk invariants become risk bounds
       if (statement.includes("risk") && statement.includes("bound")) {
         constraints.push({
           id: `constraint_${canonId}`,
           canonRefId: canonId,
           constraintType: "RISK_BOUND",
-          appliesTo: targetActions.map(a => a.id),
+          appliesTo: targetActions.map((a) => a.id),
           params: { maxRisk: 0.3 }, // Default, should be parsed from statement
-          confidence: item.confidence || { confidence: 1.0, trust: 1.0 }
+          confidence: item.confidence || { confidence: 1.0, trust: 1.0 },
         });
       }
-      
+
       // Example: Cost invariants become cost bounds
       if (statement.includes("cost") && statement.includes("bound")) {
         constraints.push({
           id: `constraint_${canonId}`,
           canonRefId: canonId,
           constraintType: "COST_BOUND",
-          appliesTo: targetActions.map(a => a.id),
+          appliesTo: targetActions.map((a) => a.id),
           params: { maxCost: 100 }, // Default, should be parsed from statement
-          confidence: item.confidence || { confidence: 1.0, trust: 1.0 }
+          confidence: item.confidence || { confidence: 1.0, trust: 1.0 },
         });
       }
     }
-    
+
     // Convert CONSTRAINT to path constraints
     if (item.kind === "CONSTRAINT") {
       constraints.push({
         id: `constraint_${canonId}`,
         canonRefId: canonId,
         constraintType: "PREREQUISITE",
-        appliesTo: targetActions.map(a => a.id),
+        appliesTo: targetActions.map((a) => a.id),
         params: { rule: item.statement },
-        confidence: item.confidence || { confidence: 1.0, trust: 1.0 }
+        confidence: item.confidence || { confidence: 1.0, trust: 1.0 },
       });
     }
   }
-  
+
   return constraints;
 }
 
 /**
  * Apply path constraints to OPTR candidate evaluation
- * 
+ *
  * Constraints derived from canon knowledge further restrict admissibility
  * beyond the standard OPTR gates.
  */
@@ -301,52 +320,64 @@ export function applyPathConstraints(
   nowIso: string
 ): WhyNotTrace[] {
   const denials: WhyNotTrace[] = [];
-  
+
   if (!candidate.features) return denials;
-  
+
   for (const constraint of constraints) {
     const actionId = candidate.features.nextAction.id;
     if (!constraint.appliesTo.includes(actionId)) continue;
-    
+
     // Apply constraint based on type
     switch (constraint.constraintType) {
       case "RISK_BOUND":
-        if (constraint.params.maxRisk !== undefined && 
-            candidate.features.risk > constraint.params.maxRisk) {
+        if (
+          constraint.params.maxRisk !== undefined &&
+          candidate.features.risk > constraint.params.maxRisk
+        ) {
           denials.push({
             ts: nowIso,
             actionId,
             denied: true,
             reasonCodes: [DenialReasonCode.RISK_BOUND_EXCEEDED],
             requiredCanonRefs: [constraint.canonRefId],
-            message: `Canon constraint violation: risk ${candidate.features.risk.toFixed(2)} exceeds bound ${constraint.params.maxRisk.toFixed(2)} (from ${constraint.canonRefId})`,
+            message: `Canon constraint violation: risk ${candidate.features.risk.toFixed(
+              2
+            )} exceeds bound ${constraint.params.maxRisk.toFixed(2)} (from ${
+              constraint.canonRefId
+            })`,
             context: {
               constraintId: constraint.id,
-              confidence: constraint.confidence
-            }
+              confidence: constraint.confidence,
+            },
           });
         }
         break;
-        
+
       case "COST_BOUND":
-        if (constraint.params.maxCost !== undefined && 
-            candidate.features.cost > constraint.params.maxCost) {
+        if (
+          constraint.params.maxCost !== undefined &&
+          candidate.features.cost > constraint.params.maxCost
+        ) {
           denials.push({
             ts: nowIso,
             actionId,
             denied: true,
             reasonCodes: [DenialReasonCode.COST_BOUND_EXCEEDED],
             requiredCanonRefs: [constraint.canonRefId],
-            message: `Canon constraint violation: cost ${candidate.features.cost.toFixed(2)} exceeds bound ${constraint.params.maxCost.toFixed(2)} (from ${constraint.canonRefId})`,
+            message: `Canon constraint violation: cost ${candidate.features.cost.toFixed(
+              2
+            )} exceeds bound ${constraint.params.maxCost.toFixed(2)} (from ${
+              constraint.canonRefId
+            })`,
             context: {
               constraintId: constraint.id,
-              confidence: constraint.confidence
-            }
+              confidence: constraint.confidence,
+            },
           });
         }
         break;
     }
   }
-  
+
   return denials;
 }

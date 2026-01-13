@@ -1,7 +1,7 @@
 /**
  * OPTR Policy Selection with Structured Denial Binding (Phase 3: Trust UX)
  * TIMESTAMP: 2026-01-12T21:35:00Z
- * 
+ *
  * Wires OPTR decision engine to mechanical denial system.
  * Guarantees:
  * - All OPTR denials are ledgered
@@ -16,12 +16,12 @@ import {
   CandidateFeatures,
   Action,
 } from "@bickford/bickford/src/canon/types";
-import { optrResolve } from "@bickford/bickford/src/canon/optr";
+import { optrResolve } from "../../../bickford/src/canon/optr";
 import { mechanicalDenyBatch } from "../runtime/deny";
 
 /**
  * Select optimal policy using OPTR with automatic denial ledgering
- * 
+ *
  * This wraps the core OPTR resolution with mechanical denial persistence.
  */
 export async function selectPolicyWithDenialTracking(params: {
@@ -74,7 +74,7 @@ export async function selectPolicyWithDenialTracking(params: {
 
 /**
  * Simplified policy selection (synchronous OPTR without persistence)
- * 
+ *
  * Use this for testing or when persistence is handled separately.
  * For production, prefer selectPolicyWithDenialTracking.
  */

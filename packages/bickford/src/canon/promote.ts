@@ -1,13 +1,7 @@
 /**
  * Canon Promotion Logic
-<<<<<<< HEAD
- * Canon Stub — Implementation follows
- */
-
- * 
  * Handles promotion of canon items from EVIDENCE -> PROPOSED -> CANON.
  * Enforces 4-test promotion gate.
- * 
  * TIMESTAMP: 2026-02-08T00:00:00Z
  * CANONICAL: This is part of Chat v2 execution surface
  */
@@ -18,7 +12,6 @@ import {
   PromotionTests,
   PromotionDecision,
 } from "./types";
-import { canPromote } from "./promotion";
 
 /**
  * Promote a canon item to a higher level
@@ -38,12 +31,16 @@ export function promoteCanonItem(
     reason: "",
   };
 
-  // Use canonical promotion gate
-  const promotionCheck = canPromote(tests);
+  // Canonical promotion gate: all tests must be true
+  const allPassed =
+    tests.resistance &&
+    tests.reproducible &&
+    tests.invariantSafe &&
+    tests.feasibilityImpact;
 
-  if (!promotionCheck.ok) {
+  if (!allPassed) {
     decision.approved = false;
-    decision.reason = promotionCheck.reason;
+    decision.reason = "One or more promotion tests failed";
     return decision;
   }
 
@@ -87,4 +84,3 @@ export function createPromotionTests(
     evidenceRefs,
   };
 }
-  return {

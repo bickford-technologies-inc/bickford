@@ -1,12 +1,12 @@
 /**
  * Edge-compatible ledger API
  * INVARIANT: This module MUST NOT import Prisma Client
- * 
+ *
  * For Edge runtimes (Vercel Edge, Cloudflare Workers), use fetch-based API calls
  * to ledger endpoints instead of direct database access.
  */
 
-import type { Intent, Decision, LedgerEntry } from "@bickford/types";
+import type { Intent, LedgerEntry } from "@bickford/types";
 
 export class EdgeLedgerClient {
   private apiUrl: string;
@@ -59,9 +59,9 @@ export function assertEdgeRuntime(): void {
   if (!isEdge) {
     console.warn(
       "Warning: @bickford/ledger/edge loaded in non-edge environment. " +
-      "Consider using @bickford/ledger instead for better performance."
+        "Consider using @bickford/ledger instead for better performance."
     );
   }
 }
 
-export { Intent, Decision, LedgerEntry };
+export { Intent, LedgerEntry };

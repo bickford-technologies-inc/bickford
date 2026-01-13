@@ -1,7 +1,6 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 import { Pool } from "pg";
-import type { DbConfig } from "@bickford/types";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -14,7 +13,7 @@ export function assertNodeRuntime(): void {
   if (typeof (globalThis as any).EdgeRuntime !== "undefined") {
     throw new Error(
       "INVARIANT VIOLATION: Prisma Client cannot run in Edge runtime. " +
-      "Use @bickford/ledger/edge for Edge-compatible APIs."
+        "Use @bickford/ledger/edge for Edge-compatible APIs."
     );
   }
 }
@@ -70,16 +69,17 @@ function createReadReplicaPool(config: DbConfig): Pool | undefined {
   return readPool;
 }
 
-export const prisma =
-  globalForPrisma.prisma ??
-  createPrismaClient();
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
 
 // Tenant-isolated Prisma client factory
-export function createTenantClient(tenantId: string, config?: DbConfig): PrismaClient {
+export function createTenantClient(
+  tenantId: string,
+  config?: DbConfig
+): PrismaClient {
   assertNodeRuntime();
 
   if (!config?.tenantIsolation?.enabled) {
@@ -96,7 +96,10 @@ export function createTenantClient(tenantId: string, config?: DbConfig): PrismaC
 }
 
 // Read-replica aware query executor
-export function getQueryPool(readOnly: boolean = false, config?: DbConfig): Pool {
+export function getQueryPool(
+  readOnly: boolean = false,
+  config?: DbConfig
+): Pool {
   assertNodeRuntime();
 
   if (readOnly && config?.readReplica?.enabled) {

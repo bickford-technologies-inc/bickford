@@ -2,7 +2,7 @@
  * Multi-Agent Non-Interference Check
  * TIMESTAMP: 2025-12-21T14:41:00-05:00
  * LOCKED: Canonical non-interference implementation
- * 
+ *
  * Enforces: ∀i≠j: admissible(π_i) ⇒ ΔE[TTV_j | π_i] ≤ 0
  * An action is inadmissible if it increases any other agent's Time-to-Value.
  */
@@ -50,17 +50,17 @@ export function gateNonInterference(
     message: `Denied: Action increases TTV for ${check.violations.length} other agent(s)`,
     context: {
       actingAgent: actingAgentId,
-      violations: check.violations.map(v => ({
+      violations: check.violations.map((v) => ({
         agent: v.agentId,
-        deltaMS: v.delta
-      }))
-    }
+        deltaMS: v.delta,
+      })),
+    },
   };
 }
 
 /**
  * Estimate impact of an action on other agents' Time-to-Value
- * 
+ *
  * Simplified estimator - production would use more sophisticated modeling.
  */
 export function estimateTTVImpact(args: {
@@ -78,13 +78,13 @@ export function estimateTTVImpact(args: {
     let delta = 0;
 
     // Resource contention
-    const resourceConflicts = (args.action.resourcesUsed || []).filter(r =>
+    const resourceConflicts = (args.action.resourcesUsed || []).filter((r) =>
       (agent.dependsOnResources || []).includes(r)
     );
     delta += resourceConflicts.length * 50; // +50ms per conflict
 
     // Shared state modification
-    const stateConflicts = (args.action.sharedStateModified || []).filter(s =>
+    const stateConflicts = (args.action.sharedStateModified || []).filter((s) =>
       (agent.dependsOnState || []).includes(s)
     );
     delta += stateConflicts.length * 100; // +100ms per conflict
@@ -97,7 +97,7 @@ export function estimateTTVImpact(args: {
 
 /**
  * Multi-agent equilibrium check
- * 
+ *
  * Joint admissible set:
  * Π_adm = { (π_1,...,π_N) : InvariantsHold ∧ ∀i≠j: ΔE[TTV_j | π_i] ≤ 0 }
  */

@@ -1,0 +1,19 @@
+name: Merge Marker Guard
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail if merge markers exist
+        run: |
+          if rg "<<<<<<<|=======|>>>>>>>" .; then
+            echo "❌ Merge markers detected — illegal state"
+            exit 1
+          fi

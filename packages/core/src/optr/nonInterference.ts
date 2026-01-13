@@ -1,5 +1,3 @@
-import { AgentContext, InterferenceResult } from "@bickford/types";
-
 /**
  * Returns allowed=false if any other agent's TTV increases
  * Pure, deterministic, testable, replayable
@@ -22,7 +20,9 @@ export function evaluateNonInterference(
         allowed: false,
         violatedAgent: agent.agentId,
         deltaTTV: delta,
-        rationale: `Action increases TTV for agent ${agent.agentId} by ${delta.toFixed(2)}`,
+        rationale: `Action increases TTV for agent ${
+          agent.agentId
+        } by ${delta.toFixed(2)}`,
       };
     }
   }

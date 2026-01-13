@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { Intent, Decision, LedgerEntry as LedgerType } from "@bickford/types";
+import { Intent, LedgerEntry as LedgerType } from "@bickford/types";
 import { prisma } from "./db";
 
 export async function appendLedger(
@@ -32,7 +32,7 @@ export async function getLedger(): Promise<LedgerType[]> {
     orderBy: { createdAt: "desc" },
   });
 
-  return rows.map(r => ({
+  return rows.map((r) => ({
     id: r.id,
     intent: r.intent as any,
     decision: r.decision as any,
