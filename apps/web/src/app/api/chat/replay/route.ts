@@ -1,19 +1,19 @@
 /**
  * Chat Replay API Route
- * 
+ *
  * Deterministic, side-effect-free replay of chat threads.
  * CANONICAL INVARIANT: Replay mode cannot execute.
- * 
+ *
  * Features:
  * - Read-only thread replay
  * - Canon linkage preservation
  * - Intent derivation replay
  * - No mutation of canon or execution state
- * 
+ *
  * TIMESTAMP: 2026-02-08T00:00:00Z
  */
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@bickford/ledger";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
       id: thread.id,
       createdAt: thread.createdAt,
       lastReplayedAt: now.toISOString(),
-      messages: thread.messages.map((msg) => ({
+      messages: thread.messages.map((msg: any) => ({
         id: msg.id,
         createdAt: msg.createdAt,
         author: msg.author,
