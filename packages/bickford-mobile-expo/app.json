@@ -13,7 +13,15 @@
       "bundleIdentifier": "com.bickfordd.bickford",
       "buildNumber": "1",
       "infoPlist": {
-        "UIDeviceFamily": [1]
+        "UIDeviceFamily": [1],
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": false
+        }
+      }
+    },
+    "extra": {
+      "crashReporting": {
+        "enabled": true
       }
     }
   }
