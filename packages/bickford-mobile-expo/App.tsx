@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Platform, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { ErrorBoundary } from './src/components/ErrorBoundary';
+import { setupGlobalErrorHandlers, withCrashGuard } from './src/utils/errorRecovery';
+import { setupErrorLogging } from './src/services/errorLogger';
 
-export default function App() {
+function AppContent() {
   // Failsafe: gracefully handle iPad launch instead of crashing
   // Note: Platform.OS check is necessary for TypeScript type narrowing
   if (Platform.OS === 'ios' && Platform.isPad) {
@@ -24,6 +27,25 @@ export default function App() {
         </Text>
       </View>
     </SafeAreaView>
+  );
+}
+
+export default function App() {
+  // Setup error recovery on app launch - CRITICAL for crash prevention
+  useEffect(() => {
+    // Initialize global error handlers to prevent SIGABRT crashes
+    withCrashGuard(() => {
+      setupGlobalErrorHandlers();
+      setupErrorLogging();
+      console.log('✅ Error recovery initialized');
+    }, 'App initialization');
+  }, []);
+
+  // Wrap entire app in ErrorBoundary to catch React errors
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
   );
 }
 
