@@ -255,6 +255,9 @@ importers:
 
   packages/canon:
     dependencies:
+      '@bickford/db':
+        specifier: workspace:*
+        version: link:../db
       '@bickford/types':
         specifier: workspace:*
         version: link:../types

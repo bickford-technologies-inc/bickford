@@ -1,6 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "src",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "baseUrl": ".",
@@ -8,5 +12,9 @@
       "@bickford/*": ["../*/src"]
     }
   },
+  "references": [
+    { "path": "../types" },
+    { "path": "../db" }
+  ],
   "include": ["src"]
 }
