@@ -6,14 +6,14 @@ export async function POST(req: Request) {
     const { agentId, ttvBaseline } = body;
 
     // Validate input
-    if (!agentId || typeof agentId !== 'string' || agentId.trim() === '') {
+    if (!agentId || typeof agentId !== "string" || agentId.trim() === "") {
       return Response.json(
         { error: "Missing or invalid 'agentId' field" },
         { status: 400 }
       );
     }
 
-    if (typeof ttvBaseline !== 'number' || ttvBaseline < 0) {
+    if (typeof ttvBaseline !== "number" || ttvBaseline < 0) {
       return Response.json(
         { error: "'ttvBaseline' must be a non-negative number" },
         { status: 400 }
@@ -30,7 +30,10 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Error in POST /api/agents:", error);
     return Response.json(
-      { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 }
     );
   }
@@ -43,7 +46,10 @@ export async function GET() {
   } catch (error) {
     console.error("Error in GET /api/agents:", error);
     return Response.json(
-      { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 }
     );
   }

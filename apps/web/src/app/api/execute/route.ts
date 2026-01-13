@@ -1,6 +1,6 @@
 export const maxDuration = 300;
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@bickford/ledger";
 
 export async function POST(req: Request) {
   const { intentId } = await req.json();

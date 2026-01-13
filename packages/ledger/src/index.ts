@@ -177,5 +177,5 @@ export async function recordSchemaChange(
   return { schemaHash, ledgerHash: ledgerEntry.hash };
 }
 
-export { prisma } from "./db";
+export { prisma } from "./prisma";
 export * from "./db";

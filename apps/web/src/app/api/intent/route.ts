@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@bickford/ledger";
 
 export async function POST(req: Request) {
   const { chatMessageId } = await req.json();
