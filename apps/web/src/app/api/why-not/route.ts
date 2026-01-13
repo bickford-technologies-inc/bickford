@@ -9,7 +9,7 @@
  * Returns all denied decisions for the specified action and/or tenant.
  */
 
-import { getDeniedDecisions } from "../../../../packages/bickford/src/canon/denials/persistDeniedDecision";
+import { getDeniedDecisions } from "@bickford/canon";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {

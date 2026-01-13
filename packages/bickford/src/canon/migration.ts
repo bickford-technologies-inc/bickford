@@ -10,6 +10,7 @@
  */
 
 import { DenialReasonCode } from "./types";
+import { DeniedDecisionPayload } from "@bickford/types";
 
 export interface MigrationAnalysis {
   migrationName: string;
@@ -203,7 +204,7 @@ export function analyzeMigration(
 export function gateMigrationRegression(
   analysis: MigrationAnalysis,
   nowIso: string
-): null | undefined {
+): DeniedDecisionPayload | null {
   if (!analysis.isRegressive) return null;
 
   const regressiveOps = analysis.operations.filter((op) => {
@@ -238,7 +239,7 @@ export function gateMigrationRisk(
   analysis: MigrationAnalysis,
   maxRiskScore: number,
   nowIso: string
-): null | undefined {
+): DeniedDecisionPayload | null {
   if (analysis.riskScore <= maxRiskScore) return null;
 
   return {
