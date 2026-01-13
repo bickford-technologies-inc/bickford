@@ -73,7 +73,7 @@ model ChatMessage {
   threadId  String?
   thread    ChatThread? @relation(fields: [threadId], references: [id])
   intentId  String?
-  intent    Intent? @relation("MessageIntent", fields: [intentId], references: [id])
+  intent    Intent? @relation("MessageIntent")
   canonEntryId String?
   canonEntry   CanonEntry? @relation(fields: [canonEntryId], references: [id])
   supersedesMessageId String?
@@ -86,11 +86,7 @@ model Intent {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   sourceMessageId String   @unique
-  sourceMessage   ChatMessage @relation(
-    "MessageIntent",
-    fields: [sourceMessageId],
-    references: [id]
-  )
+  sourceMessage   ChatMessage @relation("MessageIntent", fields: [sourceMessageId], references: [id])
   intentType IntentType
   goal       String
   constraints String[]
@@ -122,6 +118,23 @@ model CanonEntry {
   provenance Json?
 
   messages   ChatMessage[]
+}
+
+model DeniedDecision {
+  id                String   @id @default(cuid())
+  ts                DateTime
+  actionId          String
+  actionName        String?
+  tenantId          String
+  goal              String?
+  reasonCodes       String[]
+  missingCanonIds   String[]
+  violatedInvariantIds String[]
+  requiredCanonRefs String[]
+  message           String
+  context           Json?
+  optrRunId         String?
+  createdAt         DateTime @default(now())
 }
 
 enum ChatAuthor {

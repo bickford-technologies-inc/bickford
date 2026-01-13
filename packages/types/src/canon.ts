@@ -73,13 +73,13 @@ export enum DenialReasonCode {
 export type WhyNotTrace = {
   ts: ISO8601;
   actionId: string;
-  denied: true;
+  denied?: true;
   reasonCodes: DenialReasonCode[]; // STABLE TAXONOMY
   missingCanonIds?: string[];
   violatedInvariantIds?: string[];
   requiredCanonRefs?: string[];
   message: string;
-  context?: Record<string, any>;
+  context?: unknown;
 };
 
 /**
@@ -89,15 +89,16 @@ export type DeniedDecisionPayload = {
   ts: ISO8601;
   actionId: string;
   actionName?: string;
-  tenantId: string;
+  tenantId?: string;
   goal?: string;
   reasonCodes: DenialReasonCode[];
   missingCanonIds?: string[];
   violatedInvariantIds?: string[];
   requiredCanonRefs?: string[];
   message: string;
-  context?: Record<string, any>;
+  context?: unknown;
   optrRunId?: string;
+  denied: true;
 };
 
 export type LedgerEvent = {
@@ -274,11 +275,3 @@ export type PathConstraint = {
   params: Record<string, any>; // Constraint-specific parameters
   confidence: ConfidenceEnvelope;
 };
-
-/**
- * Canon authority types
- * Re-exported from @bickford/types
- * DO NOT define types here.
- */
-
-export * from "@bickford/types";

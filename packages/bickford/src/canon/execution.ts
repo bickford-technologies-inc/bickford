@@ -19,7 +19,7 @@ import {
   ExecutionContext,
   TokenStreamProof,
   ISO8601,
-} from "../types";
+} from "@bickford/types";
 import { requireCanonRefs } from "./invariants";
 
 // Canon-gated execution logic (latest, canonical)

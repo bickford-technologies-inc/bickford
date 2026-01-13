@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+grep -Eq '^intent\([a-z\-]+\): .+' "$1" || {
+  echo "❌ Commit message must match:"
+  echo "   intent(<scope>): <description>"
+  exit 1
+}

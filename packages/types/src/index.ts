@@ -116,3 +116,6 @@ export interface DbConfig {
     tenantId?: string;
   };
 }
+
+export * from "./optr";
+export * from "./canon";

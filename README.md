@@ -88,6 +88,82 @@ Optional:
 - [Architecture](docs/ARCHITECTURE.md)
 - [Acquisition Docs](docs/ACQUISITION.md)
 
+## Quick Conflict Resolution Script
+
+To automate staging, committing, and pushing after resolving merge conflicts, use the provided script:
+
+```sh
+./resolve-and-push.sh <your-branch>
+```
+
+- Stages all changes, commits with a standard message, and pushes your branch.
+- Place resolved files in the index before running, or let the script add all changes.
+- Script location: `resolve-and-push.sh` (repo root)
+- Make executable if needed:
+  ```sh
+  chmod +x resolve-and-push.sh
+  ```
+
+**Example:**
+
+```sh
+./resolve-and-push.sh copilot/lovely-pig
+```
+
+After pushing, you can merge the PR on GitHub.
+
+## 🔁 One-Command Conflict Resolution (All Platforms)
+
+### 1️⃣ Canonical Shell Script (macOS/Linux)
+
+- Location: `scripts/resolve-and-push.sh`
+- Usage:
+  ```sh
+  ./scripts/resolve-and-push.sh <branch>
+  # or via npm:
+  npm run resolve:push -- <branch>
+  ```
+- Makes sure you rebase on main, commit, and push in one go.
+
+### 2️⃣ Windows PowerShell Variant
+
+- Location: `scripts/resolve-and-push.ps1`
+- Usage:
+  ```powershell
+  .\scripts\resolve-and-push.ps1 <branch>
+  ```
+
+### 3️⃣ npm Script (Cross-Platform)
+
+- In `package.json`:
+  ```json
+  "scripts": {
+    "resolve:push": "sh ./scripts/resolve-and-push.sh"
+  }
+  ```
+- Usage:
+  ```sh
+  npm run resolve:push -- <branch>
+  ```
+
+### 4️⃣ VS Code Task (One-Click)
+
+- Location: `.vscode/tasks.json`
+- Usage:
+  - Cmd-Shift-P → "Run Task" → Resolve & Push Branch
+  - Enter branch name when prompted
+
+---
+
+**Intent → Execution:**
+
+- No partial state, no forgotten push, no branch drift.
+- All resolution paths converge to a single executable action.
+
+---
+
+For further hardening (build checks, OPTR-aware commits, CI bot, etc.), see script comments or ask for an advanced variant.
+
 ## If This Repo Exists, Bickford Is Usable
 
 Test:
@@ -98,3 +174,46 @@ Test:
 4. Get ledger hash back in <5 seconds
 
 If any step fails, the consolidation is incomplete.
+
+## 🔒 Canonical Merge Boundary (Bickford Law)
+
+### 1️⃣ Local Script (Shell/Node)
+
+- `scripts/resolve-and-push.sh` (shell)
+- `scripts/resolve-and-push.mjs` (Node.js, cross-platform)
+- Both require: clean tree, rebase on main, build passes, intent-encoded commit, push, and print PR merge URL.
+
+### 2️⃣ npm Script (Canonical Entry)
+
+- In `package.json`:
+  ```json
+  "resolve:push": "node ./scripts/resolve-and-push.mjs"
+  ```
+- Usage:
+  ```sh
+  npm run resolve:push -- <branch>
+  ```
+
+### 3️⃣ Commit Message Enforcement (Intent Law)
+
+- `.husky/commit-msg` blocks non-`intent(<scope>): ...` commits.
+- Example: `intent(canon): promote authority types`
+
+### 4️⃣ CI Merge Gate (Server-Side)
+
+- `.github/workflows/merge-gate.yml` enforces build on PRs to main.
+- No PR merges unless build passes (identical to local law).
+
+### 5️⃣ Merge URL Auto-Open
+
+- After push, both scripts print the PR merge URL for immediate action.
+
+---
+
+**Invariant:**
+
+> No branch can reach main unless it rebases, builds, encodes intent, and passes CI. No alternate path.
+
+---
+
+This is the only supported merge path. All other routes are blocked by law.

@@ -84,7 +84,8 @@
     "env:vercel": "ts-node scripts/provision-vercel-env.ts",
     "doctor": "sh scripts/bickford-doctor.sh",
     "doctor:fix": "sh scripts/bickford-doctor-fix.sh",
-    "doctor:ci": "node scripts/doctor-ci.ts"
+    "doctor:ci": "node scripts/doctor-ci.ts",
+    "resolve:push": "node ./scripts/resolve-and-push.mjs"
   },
   "workspaces": [
     "packages/*",

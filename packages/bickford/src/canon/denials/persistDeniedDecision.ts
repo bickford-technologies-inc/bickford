@@ -6,7 +6,7 @@
  * Guarantees: No silent denials, every denial is persisted and replayable.
  */
 
-import { DeniedDecisionPayload } from "../types";
+import { DeniedDecisionPayload } from "@bickford/types";
 
 /**
  * Persist a denied decision to the ledger
@@ -30,14 +30,14 @@ export async function persistDeniedDecision(
         ts: payload.ts,
         actionId: payload.actionId,
         actionName: payload.actionName || null,
-        tenantId: payload.tenantId,
+        tenantId: payload.tenantId!,
         goal: payload.goal || null,
         reasonCodes: payload.reasonCodes,
         missingCanonIds: payload.missingCanonIds || [],
         violatedInvariantIds: payload.violatedInvariantIds || [],
         requiredCanonRefs: payload.requiredCanonRefs || [],
         message: payload.message,
-        context: payload.context || null,
+        context: payload.context ?? undefined,
         optrRunId: payload.optrRunId || null,
       },
     });
@@ -86,7 +86,7 @@ export async function getDeniedDecisions(params: {
     await prisma.$disconnect();
 
     return records.map((r) => ({
-      ts: r.ts,
+      ts: typeof r.ts === "string" ? r.ts : r.ts.toISOString(),
       actionId: r.actionId,
       actionName: r.actionName || undefined,
       tenantId: r.tenantId,
@@ -96,8 +96,9 @@ export async function getDeniedDecisions(params: {
       violatedInvariantIds: r.violatedInvariantIds,
       requiredCanonRefs: r.requiredCanonRefs,
       message: r.message,
-      context: r.context as Record<string, any> | undefined,
+      context: r.context,
       optrRunId: r.optrRunId || undefined,
+      denied: true,
     }));
   } catch (error) {
     await prisma.$disconnect();
