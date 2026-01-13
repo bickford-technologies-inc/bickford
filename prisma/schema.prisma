@@ -28,36 +28,45 @@ model AgentState {
 model ChatThread {
   id         String    @id @default(cuid())
   createdAt  DateTime  @default(now())
-  sealedAt   DateTime? // Tier-1 closure: immutable after seal
-  finalized  Boolean   @default(false) // Tier-2 closure: canonical immutability
-  
+  sealedAt   DateTime?
+  finalized  Boolean   @default(false)
+
   messages   ChatMessage[]
-  
+
   @@index([sealedAt])
   @@index([finalized])
+  @@map("ChatThread")
 }
 
 model ChatMessage {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  sealedAt  DateTime? // Tier-1 closure: immutable after seal
-  finalized Boolean  @default(false) // Tier-2 closure: canonical immutability
 
-  author    ChatAuthor
-  text      String
+  sealedAt  DateTime? // Tier-1 closure
+  finalized Boolean   @default(false) // Tier-2 closure
+
+  author ChatAuthor
+  text   String
 
   resolution ChatResolution
 
-  intentId  String?
-  intent    Intent? @relation(fields: [intentId], references: [id])
+  intent   Intent? @relation("MessageIntent", fields: [intentId], references: [id])
+  intentId String? @unique
+
+  sourceIntent Intent[] @relation("SourceMessage")
 
   supersedesMessageId String?
-  
-  threadId  String?
-  thread    ChatThread? @relation(fields: [threadId], references: [id])
-  
+
+  threadId String?
+  thread   ChatThread? @relation(fields: [threadId], references: [id])
+
+  canonEntryId String?
+  canonEntry   CanonEntry? @relation(fields: [canonEntryId], references: [id])
+
   @@index([sealedAt])
   @@index([finalized])
+  @@index([threadId])
+  @@index([canonEntryId])
 }
 
 model Intent {
@@ -65,10 +74,11 @@ model Intent {
   createdAt DateTime @default(now())
 
   sourceMessageId String
-  sourceMessage   ChatMessage @relation(fields: [sourceMessageId], references: [id])
+  sourceMessage   ChatMessage   @relation("SourceMessage", fields: [sourceMessageId], references: [id])
+  chatMessages    ChatMessage[] @relation("MessageIntent")
 
-  intentType IntentType
-  goal       String
+  intentType  IntentType
+  goal        String
   constraints String[]
 
   admissibility AdmissibilityStatus
@@ -81,32 +91,32 @@ model Execution {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
-  intentId  String @unique
-  intent    Intent @relation(fields: [intentId], references: [id])
+  intentId String @unique
+  intent   Intent @relation(fields: [intentId], references: [id])
 
-  status ExecutionStatus
+  status    ExecutionStatus
   artifacts String[]
-  
+
   executionContextHash String? // Snapshot of execution scope
-  tokenBuffer          Json?   // Buffered tokens for ledger-proofed streaming
-  
+  tokenBuffer          Json? // Buffered tokens for ledger-proofed streaming
+
   @@index([executionContextHash])
 }
 
 model DeniedDecision {
-  id             String   @id @default(cuid())
-  createdAt      DateTime @default(now())
-  
-  actionId       String
-  reasonCodes    String[] // DenialReasonCode enum values
-  missingCanonIds String[]
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  actionId             String
+  reasonCodes          String[] // DenialReasonCode enum values
+  missingCanonIds      String[]
   violatedInvariantIds String[]
-  requiredCanonRefs String[]
-  message        String
-  context        Json?
-  
-  proofHash      String   // Hash of denial proof for audit
-  
+  requiredCanonRefs    String[]
+  message              String
+  context              Json?
+
+  proofHash String // Hash of denial proof for audit
+
   @@index([actionId])
   @@index([proofHash])
 }
@@ -115,22 +125,29 @@ model CanonKnowledge {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  level     String   // CanonLevel: EVIDENCE, PROPOSED, CANON
-  itemId    String   @unique
-  kind      String   // DEFINITION, INVARIANT, CONSTRAINT
-  
+
+  level  String // CanonLevel: EVIDENCE, PROPOSED, CANON
+  itemId String @unique
+  kind   String // DEFINITION, INVARIANT, CONSTRAINT
+
   title     String
   statement String
-  
-  confidence Float   @default(1.0) // ConfidenceEnvelope weight
-  trust     Float   @default(1.0) // ConfidenceEnvelope trust
-  
+
+  confidence Float @default(1.0) // ConfidenceEnvelope weight
+  trust      Float @default(1.0) // ConfidenceEnvelope trust
+
   promotedAt DateTime?
-  
+
   @@index([level])
   @@index([kind])
   @@index([promotedAt])
+}
+
+model CanonEntry {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  messages ChatMessage[]
 }
 
 enum ChatAuthor {

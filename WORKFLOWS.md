@@ -7,6 +7,7 @@ This repo includes automated CI/CD pipelines for testing, building, and deployme
 ### GitHub Actions Workflows
 
 **Continuous Integration** (`.github/workflows/ci.yml`):
+
 - Runs on push to `main` or `develop` branches
 - Runs on all pull requests to `main`
 - Steps:
@@ -16,6 +17,7 @@ This repo includes automated CI/CD pipelines for testing, building, and deployme
   4. **Deploy to Production**: Auto-deploys to production on `main` branch
 
 **Auto-merge** (`.github/workflows/auto-merge.yml`):
+
 - Automatically merges Copilot bot PRs after checks pass
 - Waits for all CI checks to complete
 - Adds comment when auto-merge is enabled
@@ -48,6 +50,7 @@ npm run build             # Build all packages
 ### Quality Enforcement
 
 Quality checks are enforced via **GitHub Actions CI**, not local git hooks:
+
 - ✅ Works seamlessly in CI/CD and Vercel environments
 - ✅ No setup required - runs automatically on push/PR
 - ✅ PRs cannot merge until all checks pass
@@ -104,3 +107,35 @@ GIT_SYNC_MESSAGE="auto: savepoint" npm run git:sync
 - This will run indefinitely **while the process is running**.
 - If your Codespace stops/rebuilds, you’ll need to start it again.
 - If a merge conflict happens, the loop will stop making progress until you resolve it manually.
+
+## TypeScript Type Completeness Guard (TS7016)
+
+A CI script is provided to enforce that no TypeScript build emits TS7016 (missing type declaration) errors. This ensures all required @types/\* devDependencies are present and type safety is never masked.
+
+**Usage in CI:**
+
+1. Pipe your build output to a log file (e.g., `npm run build > build.log 2>&1`)
+2. Run the guard script:
+
+```bash
+bash ci/check-ts7016.sh build.log
+```
+
+If any TS7016 errors are found, CI will fail with a clear message and instructions to add the missing @types/\* package.
+
+- Script: `ci/check-ts7016.sh`
+- Canon: Additive type artifacts only; never mask TS errors
+
+## Workspace Type Parity Script
+
+A script is provided to check that all workspace packages using React/ReactDOM have the corresponding @types/\* devDependencies. This prevents accidental type drift and enforces type parity.
+
+**Usage:**
+
+```bash
+node scripts/check-types-parity.js
+```
+
+- Fails with a clear message if any package is missing required @types/\*
+- Can be run locally or in CI
+- Script: `scripts/check-types-parity.js`

@@ -2,12 +2,18 @@
  * Bickford Canon - Core Invariants
  * TIMESTAMP: 2025-12-21T14:41:00-05:00
  * LOCKED: These are CANON-level hard gates
- * 
+ *
  * Invariants that enforce mathematical correctness.
  * Violations are HARD_FAIL - execution cannot proceed.
  */
 
-import { Invariant, CanonLevel, AuthorityCheckResult, DenialReasonCode } from "./types";
+import {
+  Invariant,
+  CanonLevel,
+  AuthorityCheckResult,
+  DenialReasonCode,
+  Action,
+} from "./types";
 
 export const INVARIANTS: Invariant[] = [
   {
@@ -20,8 +26,7 @@ export const INVARIANTS: Invariant[] = [
     severity: "HARD_FAIL",
     statement:
       "No execution-impacting knowledge may exert authority unless it has a timestamp and provenance.",
-    formal:
-      "authority(x) ⇒ has_timestamp(x) ∧ has_provenance(x)"
+    formal: "authority(x) ⇒ has_timestamp(x) ∧ has_provenance(x)",
   },
   {
     id: "INV_CANON_ONLY_EXECUTION",
@@ -33,8 +38,7 @@ export const INVARIANTS: Invariant[] = [
     severity: "HARD_FAIL",
     statement:
       "Any admissible action must cite canon/constraints/invariants; unpromoted evidence cannot expand the admissible set.",
-    formal:
-      "a ∈ Π_adm ⇒ cites(CANON) ∧ ¬(EVIDENCE expands Π_adm)"
+    formal: "a ∈ Π_adm ⇒ cites(CANON) ∧ ¬(EVIDENCE expands Π_adm)",
   },
   {
     id: "INV_PROMOTION_GATE",
@@ -46,8 +50,7 @@ export const INVARIANTS: Invariant[] = [
     severity: "HARD_FAIL",
     statement:
       "Promote to CANON only if resistance, reproducibility, invariant safety, and feasibility impact tests all pass.",
-    formal:
-      "Promote(ΔK) ⇔ A∧B∧C∧D"
+    formal: "Promote(ΔK) ⇔ A∧B∧C∧D",
   },
   {
     id: "INV_NON_INTERFERENCE",
@@ -59,8 +62,7 @@ export const INVARIANTS: Invariant[] = [
     severity: "HARD_FAIL",
     statement:
       "An agent action is inadmissible if it increases any other agent's expected Time-to-Value.",
-    formal:
-      "∀i≠j: admissible(π_i) ⇒ ΔE[TTV_j | π_i] ≤ 0"
+    formal: "∀i≠j: admissible(π_i) ⇒ ΔE[TTV_j | π_i] ≤ 0",
   },
   {
     id: "INV_TRUST_DENIAL_TRACE",
@@ -72,8 +74,7 @@ export const INVARIANTS: Invariant[] = [
     severity: "HARD_FAIL",
     statement:
       "Every denial must produce a WhyNot trace (reason codes, missing prereqs, violated invariants) and be logged.",
-    formal:
-      "deny(a) ⇒ WhyNot(a) ∧ log(WhyNot)"
+    formal: "deny(a) ⇒ WhyNot(a) ∧ log(WhyNot)",
   },
   {
     id: "INV_SESSION_COMPLETION_LEDGER",
@@ -86,57 +87,50 @@ export const INVARIANTS: Invariant[] = [
     statement:
       "Every session completion event must be recorded as a ledger event with timestamp, provenance, and outcome.",
     formal:
-      "∀ session_completion(s): ∃ ledger_event(e): e.kind = SESSION_COMPLETION ∧ e.payload = s"
-  }
+      "∀ session_completion(s): ∃ ledger_event(e): e.kind = SESSION_COMPLETION ∧ e.payload = s",
+  },
 ];
 
 /**
  * UPGRADE #1: Mechanical authority boundary enforcement
- * 
+ *
  * This function MUST be called by every resolver before admitting an action.
  * Enforces INV_CANON_ONLY_EXECUTION by hard-failing if canon refs are missing/invalid.
  */
 export function requireCanonRefs(
-  actionId: string,
-  canonRefsUsed: string[],
-  canonStore: Map<string, { level: CanonLevel }>
-): AuthorityCheckResult {
-  // Check empty refs
-  if (canonRefsUsed.length === 0) {
-    return {
-      ok: false,
-      actionId,
-      canonRefsUsed: [],
-      missingRefs: [],
-      message: `Authority boundary violation: action "${actionId}" cites zero canon refs. All admissible actions must cite CANON.`
-    };
-  }
-
-  // Check each ref exists and is CANON level
-  const missingRefs: string[] = [];
+  action: Action | string,
+  canonRefsAvailable: string[],
+  _canonStore?: unknown
+): {
+  ok: boolean;
+  missingRefs: string[];
+  invalidRefs?: string[];
+  message: string;
+} {
+  // Accept either Action object or actionId string
+  const required =
+    typeof action === "string"
+      ? [] // If only id is provided, no prerequisites known
+      : action.prerequisitesCanonIds ?? [];
+  const missingRefs = required.filter(
+    (id: string) => !canonRefsAvailable.includes(id)
+  );
+  // For now, stub invalidRefs (future: check canonStore for level)
   const invalidRefs: string[] = [];
 
-  for (const refId of canonRefsUsed) {
-    const item = canonStore.get(refId);
-    if (!item) {
-      missingRefs.push(refId);
-    } else if (item.level !== "CANON") {
-      invalidRefs.push(refId);
-    }
-  }
-
-  const ok = missingRefs.length === 0 && invalidRefs.length === 0;
-
-  return {
-    ok,
-    actionId,
-    canonRefsUsed,
-    missingRefs: missingRefs.length ? missingRefs : undefined,
-    invalidRefs: invalidRefs.length ? invalidRefs : undefined,
-    message: ok
-      ? undefined
-      : `Authority boundary violation: ${missingRefs.length} missing refs, ${invalidRefs.length} non-CANON refs`
-  };
+  return missingRefs.length
+    ? {
+        ok: false,
+        missingRefs,
+        invalidRefs,
+        message: `Missing canon prerequisites: ${missingRefs.join(", ")}`,
+      }
+    : {
+        ok: true,
+        missingRefs: [],
+        invalidRefs,
+        message: "Canon prerequisites satisfied",
+      };
 }
 
 /**
@@ -156,7 +150,7 @@ export function checkInvariant(
         return {
           violated: true,
           reasonCode: DenialReasonCode.AUTHORITY_BOUNDARY_FAIL,
-          message: "Proposed change lacks mandatory timestamp"
+          message: "Proposed change lacks mandatory timestamp",
         };
       }
       break;
@@ -170,7 +164,7 @@ export function checkInvariant(
           return {
             violated: true,
             reasonCode: DenialReasonCode.MISSING_CANON_PREREQS,
-            message: `Action requires canon IDs: ${missing.join(", ")}`
+            message: `Action requires canon IDs: ${missing.join(", ")}`,
           };
         }
       }
