@@ -16,7 +16,7 @@
     "@bickford/ledger": "workspace:*",
     "@bickford/optr": "workspace:*",
     "@bickford/ui": "workspace:*",
-    "@bickford/canon": "file:../../packages/bickford",
+    "@bickford/canon": "workspace:*",
     "next": "^16.1.1"
   },
   "devDependencies": {

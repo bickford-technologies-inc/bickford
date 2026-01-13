@@ -142,8 +142,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/authority
       '@bickford/canon':
-        specifier: file:../../packages/bickford
-        version: file:packages/bickford
+        specifier: workspace:*
+        version: link:../../packages/canon
       '@bickford/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -176,19 +176,6 @@ importers:
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/bickford:
-    dependencies:
-      '@bickford/types':
-        specifier: workspace:*
-        version: link:../types
-    devDependencies:
-      tsx:
-        specifier: ^4.7.0
-        version: 4.21.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -258,6 +245,19 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0(vite@7.3.1(@types/node@25.0.7)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))(workbox-build@7.4.0(@types/babel__core@7.20.5))(workbox-window@7.4.0)
 
+  packages/canon:
+    dependencies:
+      '@bickford/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      tsx:
+        specifier: ^4.7.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/claude-integration:
     dependencies:
       '@bickford/core':
@@ -275,7 +275,7 @@ importers:
     dependencies:
       '@bickford/canon':
         specifier: workspace:*
-        version: link:../bickford
+        version: link:../canon
       '@bickford/types':
         specifier: workspace:*
         version: link:../types
@@ -354,6 +354,9 @@ importers:
       '@bickford/types':
         specifier: workspace:*
         version: link:../types
+      '@prisma/adapter-pg':
+        specifier: ^7.2.0
+        version: 7.2.0
       pg:
         specifier: ^8.11.3
         version: 8.16.3
@@ -1445,9 +1448,6 @@ packages:
 
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
-
-  '@bickford/canon@file:packages/bickford':
-    resolution: {directory: packages/bickford, type: directory}
 
   '@chevrotain/cst-dts-gen@10.5.0':
     resolution: {integrity: sha512-lhmC/FyqQ2o7pGK4Om+hzuDrm9rhFYIJ/AXoQBeongmn870Xeb0L6oGEiuR8nohFNL5sMaQEJWCxr1oIVIVXrw==}
@@ -10735,10 +10735,6 @@ snapshots:
       '@babel/helper-validator-identifier': 7.28.5
 
   '@bcoe/v8-coverage@0.2.3': {}
-
-  '@bickford/canon@file:packages/bickford':
-    dependencies:
-      '@bickford/types': link:packages/types
 
   '@chevrotain/cst-dts-gen@10.5.0':
     dependencies:
