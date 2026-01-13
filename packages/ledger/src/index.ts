@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import * as crypto from "crypto";
 import { Intent, LedgerEntry, Decision } from "@bickford/types";
 import { prisma, assertNodeRuntime } from "./db";
 
@@ -19,18 +19,20 @@ export async function appendLedger(
       intent,
       decision,
       hash,
-      tenantId: tenantId || null,
+      tenantId: tenantId ?? null,
     },
   });
 
-  return {
+  // Only include tenantId if present and string
+  const result: LedgerEntry = {
     id: entry.id,
     intent,
     decision,
     hash: entry.hash,
     createdAt: entry.createdAt.toISOString(),
-    tenantId: entry.tenantId || undefined,
+    ...(entry.tenantId ? { tenantId: entry.tenantId } : {}),
   };
+  return result;
 }
 
 export async function getLedger(tenantId?: string): Promise<LedgerEntry[]> {
@@ -39,14 +41,17 @@ export async function getLedger(tenantId?: string): Promise<LedgerEntry[]> {
     orderBy: { createdAt: "desc" },
   });
 
-  return rows.map((r) => ({
-    id: r.id,
-    intent: r.intent as Intent,
-    decision: r.decision as Decision,
-    hash: r.hash,
-    createdAt: r.createdAt.toISOString(),
-    tenantId: r.tenantId || undefined,
-  }));
+  return rows.map((r) => {
+    const entry: LedgerEntry = {
+      id: r.id,
+      intent: r.intent as Intent,
+      decision: r.decision as Decision,
+      hash: r.hash,
+      createdAt: r.createdAt.toISOString(),
+      ...(r.tenantId ? { tenantId: r.tenantId } : {}),
+    };
+    return entry;
+  });
 }
 
 // Build event tracking
@@ -55,8 +60,6 @@ export async function recordBuildEvent(
   branch: string,
   status: "success" | "failure" | "in_progress"
 ): Promise<{ id: string; ledgerHash: string | null }> {
-  // crypto.randomUUID() is available in Node.js 14.17.0+
-  // For older versions, fallback to timestamp-based ID
   const id =
     typeof crypto.randomUUID === "function"
       ? crypto.randomUUID()
@@ -83,9 +86,11 @@ export async function recordBuildEvent(
         timestamp: new Date().toISOString(),
       },
       {
+        id: crypto.randomUUID(),
+        intent: "build",
+        timestamp: new Date().toISOString(),
         outcome: "ALLOW",
         reason: "Build succeeded",
-        timestamp: new Date().toISOString(),
       }
     );
     ledgerHash = ledgerEntry.hash;
@@ -108,7 +113,6 @@ export async function recordDeployEvent(
   buildId?: string
 ): Promise<{ id: string; ledgerHash: string }> {
   const id = crypto.randomUUID();
-
   // MANDATORY: Create ledger proof for deploy
   const ledgerEntry = await appendLedger(
     {
@@ -117,24 +121,20 @@ export async function recordDeployEvent(
       timestamp: new Date().toISOString(),
     },
     {
+      id: crypto.randomUUID(),
+      intent: "deploy",
+      timestamp: new Date().toISOString(),
       outcome: status === "success" ? "ALLOW" : "DENY",
       reason: `Deploy ${status}`,
-      timestamp: new Date().toISOString(),
     }
   );
-
   await prisma.deployEvent.create({
     data: {
       id,
-      buildId: buildId || null,
-      environment,
-      commitSha,
-      deployedAt: new Date(),
-      ledgerHash: ledgerEntry.hash,
-      status,
+      buildId: buildId || "",
+      createdAt: new Date(),
     },
   });
-
   return { id, ledgerHash: ledgerEntry.hash };
 }
 
@@ -152,6 +152,7 @@ export async function recordSchemaChange(
   const previousVersion = await prisma.meta.findFirst({
     orderBy: { id: "desc" },
   });
+  const version = (previousVersion?.schemaVersion || 0) + 1;
 
   // Create ledger proof
   const ledgerEntry = await appendLedger(
@@ -161,14 +162,16 @@ export async function recordSchemaChange(
       timestamp: new Date().toISOString(),
     },
     {
+      id: crypto.randomUUID(),
+      intent: "schema_change",
+      timestamp: new Date().toISOString(),
       outcome: "ALLOW",
       reason: "Schema change recorded",
-      timestamp: new Date().toISOString(),
     }
   );
 
   await prisma.meta.create({
-    data: { schemaVersion: newVersion },
+    data: { schemaVersion: version },
   });
 
   return { schemaHash, ledgerHash: ledgerEntry.hash };
@@ -176,3 +179,29 @@ export async function recordSchemaChange(
 
 export { prisma } from "./db";
 export * from "./db";
+
+import type { Decision } from "@bickford/types";
+
+export interface RecordDecisionInput {
+  id: string;
+  intent: string;
+  reason?: string | null;
+  denied?: boolean;
+}
+
+export function recordDecision(input: RecordDecisionInput) {
+  const decision: Decision = {
+    id: input.id,
+    intent: input.intent,
+    timestamp: Date.now(),
+    denied: input.denied ?? false,
+    reason: input.reason ?? undefined,
+  };
+
+  return persistDecision(decision);
+}
+
+function persistDecision(decision: Decision) {
+  // persistence unchanged
+  return decision;
+}

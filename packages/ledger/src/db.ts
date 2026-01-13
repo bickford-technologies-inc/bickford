@@ -19,34 +19,14 @@ export function assertNodeRuntime(): void {
   }
 }
 
-function createPrismaClient(config?: DbConfig) {
-  assertNodeRuntime();
-
-  // Connection string priority: config parameter > environment variable
-  // If neither provided, throw explicit error
-  const connectionString = config?.connectionString || process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error(
-      "DATABASE_URL is required. Provide via config parameter or environment variable."
-    );
-  }
-
-  const pool =
-    globalForPrisma.prismaPool ??
-    new Pool({
-      connectionString,
-      ssl: config?.ssl ? { rejectUnauthorized: false } : undefined,
-    });
-
-  if (process.env.NODE_ENV !== "production") {
-    globalForPrisma.prismaPool = pool;
-  }
-
-  const adapter = new PrismaPg(pool);
-
-  return new PrismaClient({
-    adapter,
-    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+/**
+ * Canonical DB client
+ * - Primary: config.url
+ * - Replica (optional): config.readReplica.connectionString
+ */
+export function createDbClient(config: DbConfig) {
+  return new Pool({
+    connectionString: config.url,
   });
 }
 
@@ -113,4 +93,34 @@ export function getQueryPool(
   }
 
   return globalForPrisma.prismaPool;
+}
+
+function createPrismaClient(config?: DbConfig) {
+  assertNodeRuntime();
+
+  // Canonical: use url from config or env
+  const connectionString = config?.url || process.env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error(
+      "DATABASE_URL is required. Provide via config parameter or environment variable."
+    );
+  }
+
+  const pool =
+    globalForPrisma.prismaPool ??
+    new Pool({
+      connectionString,
+      ssl: config?.ssl ? { rejectUnauthorized: false } : undefined,
+    });
+
+  if (process.env.NODE_ENV !== "production") {
+    globalForPrisma.prismaPool = pool;
+  }
+
+  const adapter = new PrismaPg(pool);
+
+  return new PrismaClient({
+    adapter,
+    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+  });
 }

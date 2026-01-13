@@ -7,6 +7,7 @@
  */
 
 import type { Intent, LedgerEntry, Decision } from "@bickford/types";
+import * as crypto from "crypto";
 
 export class EdgeLedgerClient {
   private apiUrl: string;
