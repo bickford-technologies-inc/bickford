@@ -1,10 +1,14 @@
 import { PrismaPg } from "@prisma/adapter-pg";
+<<<<<<< HEAD
 import { prisma } from "../../db/dist/client";
+=======
+import { prisma } from "@bickford/db";
+>>>>>>> 24c38a3 (intent(ledger): import prisma from @bickford/db, not dist/; remove explicit PrismaClient types)
 import { Pool } from "pg";
 import type { DbConfig } from "@bickford/types";
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
+  prisma: typeof prisma | undefined;
   prismaPool: Pool | undefined;
   prismaReadPool: Pool | undefined;
 };
@@ -119,7 +123,8 @@ function createPrismaClient(config?: DbConfig) {
 
   const adapter = new PrismaPg(pool);
 
-  return new PrismaClient({
+  // Use the type of the imported prisma for return type inference
+  return new (prisma.constructor as typeof prisma)({
     adapter,
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
