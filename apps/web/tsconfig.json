@@ -4,14 +4,31 @@
     "composite": true,
     "declaration": true,
     "outDir": "../dist",
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": [
+        "*"
+      ]
     },
     "typeRoots": [
       "../../node_modules/@types",
       "../../node_modules/.prisma/client"
+    ],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
     ]
   },
   "include": [
@@ -22,6 +39,8 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "../../prisma-test.ts",
+    "../../tests"
   ]
 }

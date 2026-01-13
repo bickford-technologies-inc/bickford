@@ -158,5 +158,8 @@
       "vite-plugin-pwa": "0.19.8",
       "workbox-build": "6.5.4"
     }
-  }
+  },
+  "exclude": [
+    "prisma-test.ts"
+  ]
 }
