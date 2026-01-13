@@ -2,7 +2,7 @@
  * Bickford Canon - Core Types
  * TIMESTAMP: 2025-12-21T14:41:00-05:00
  * LOCKED: This is canonical authority - changes require promotion gate
- * 
+ *
  * Mathematical foundation for Bickford decision framework.
  * Minimizes E[Time-to-Value] subject to invariant constraints.
  */
@@ -11,9 +11,9 @@ export type ISO8601 = string;
 
 export type Provenance = {
   source: "chat" | "repo" | "test" | "prod" | "import";
-  ref?: string;           // commit SHA, doc path, conversation id
-  author?: string;        // human or agent identity
-  hash?: string;          // sha256 of artifact
+  ref?: string; // commit SHA, doc path, conversation id
+  author?: string; // human or agent identity
+  hash?: string; // sha256 of artifact
 };
 
 export type CanonLevel = "EVIDENCE" | "PROPOSED" | "CANON";
@@ -21,7 +21,7 @@ export type CanonLevel = "EVIDENCE" | "PROPOSED" | "CANON";
 export type CanonItemBase = {
   id: string;
   title: string;
-  ts: ISO8601;            // MANDATORY (INV_TS_MANDATORY)
+  ts: ISO8601; // MANDATORY (INV_TS_MANDATORY)
   provenance: Provenance; // MANDATORY (INV_TS_MANDATORY)
   level: CanonLevel;
   notes?: string;
@@ -52,8 +52,8 @@ export type Action = {
   description: string;
   prerequisitesCanonIds: string[]; // Gates "second action too early"
   riskLevel: "LOW" | "MEDIUM" | "HIGH";
-  resourcesUsed?: string[];        // For non-interference check
-  sharedStateModified?: string[];  // For non-interference check
+  resourcesUsed?: string[]; // For non-interference check
+  sharedStateModified?: string[]; // For non-interference check
 };
 
 /**
@@ -74,7 +74,7 @@ export type WhyNotTrace = {
   ts: ISO8601;
   actionId: string;
   denied: true;
-  reasonCodes: DenialReasonCode[];  // STABLE TAXONOMY
+  reasonCodes: DenialReasonCode[]; // STABLE TAXONOMY
   missingCanonIds?: string[];
   violatedInvariantIds?: string[];
   requiredCanonRefs?: string[];
@@ -105,15 +105,23 @@ export type LedgerEvent = {
   ts: ISO8601;
   actor: string;
   tenantId: string;
-  kind: "INTENT" | "PLAN" | "ACTION" | "OBSERVATION" | "DENY" | "PROMOTION" | "STRUCTURE_UPDATE" | "SESSION_COMPLETION";
+  kind:
+    | "INTENT"
+    | "PLAN"
+    | "ACTION"
+    | "OBSERVATION"
+    | "DENY"
+    | "PROMOTION"
+    | "STRUCTURE_UPDATE"
+    | "SESSION_COMPLETION";
   payload: any;
   provenance: Provenance;
 };
 
 export type PromotionTests = {
-  resistance: boolean;        // A: failure was possible
-  reproducible: boolean;      // B: stable across trials
-  invariantSafe: boolean;     // C: no invariant violations
+  resistance: boolean; // A: failure was possible
+  reproducible: boolean; // B: stable across trials
+  invariantSafe: boolean; // C: no invariant violations
   feasibilityImpact: boolean; // D: changes admissible set
   evidenceRefs: string[];
 };
@@ -129,11 +137,11 @@ export type PromotionDecision = {
 };
 
 export type OPTRScore = {
-  ttv: number;                // Expected Time-to-Value
+  ttv: number; // Expected Time-to-Value
   cost: number;
   risk: number;
   successProb: number;
-  total: number;              // ttv + λC·cost + λR·risk − λP·log(p)
+  total: number; // ttv + λC·cost + λR·risk − λP·log(p)
   components: Record<string, number>;
 };
 
@@ -164,7 +172,7 @@ export type OPTRRun = {
   selectedPathId?: string;
   selectedNextActionId?: string;
   denyTraces?: WhyNotTrace[];
-  canonRefsUsed: string[];    // REQUIRED: authority boundary
+  canonRefsUsed: string[]; // REQUIRED: authority boundary
 };
 
 /**
@@ -187,4 +195,82 @@ export type AuthorityCheckResult = {
   missingRefs?: string[];
   invalidRefs?: string[]; // Refs that exist but aren't CANON level
   message?: string;
+};
+
+/**
+ * ConfidenceEnvelope: Trust and weight of knowledge
+ * UPGRADE #9: Trust/weight metadata for canon knowledge
+ */
+export type ConfidenceEnvelope = {
+  confidence: number; // 0.0 to 1.0: statistical confidence in the knowledge
+  trust: number; // 0.0 to 1.0: epistemic trust (source reliability)
+  weight?: number; // Combined metric: confidence * trust
+  sourceRefs?: string[]; // References supporting this knowledge
+};
+
+/**
+ * ExecutionContext: Snapshot of scope for each execution
+ * UPGRADE #6: Execution context hash for deterministic scope tracking
+ */
+export interface ExecutionContext {
+  executionId: string;
+  timestamp: ISO8601;
+  tenantId: string;
+  actorId: string;
+
+  canonRefsSnapshot: string[];
+  constraintsSnapshot: string[];
+
+  environmentHash: string;
+  contextHash: string;
+
+  // Canon authority + replay
+  mode: "live" | "replay";
+  canonRefsAvailable: string[];
+}
+
+/**
+ * TokenStreamProof: Ledger proof for token streaming
+ * UPGRADE #5: Token streaming with ledger proof
+ */
+export type TokenStreamProof = {
+  executionId: string;
+  streamId: string;
+  tokens: string[]; // Buffered tokens
+  ledgerHash: string; // Hash of ledger state before streaming
+  proofHash: string; // Hash proving tokens are authorized
+  approved: boolean;
+  timestamp: ISO8601;
+};
+
+/**
+ * PromotionRequest: Request for canon knowledge promotion
+ * UPGRADE #7: Canon promotion endpoint
+ */
+export type PromotionRequest = {
+  itemId: string;
+  from: CanonLevel;
+  to: CanonLevel;
+  evidenceRefs: string[];
+  reason: string;
+  requestedBy: string;
+  requestedAt: ISO8601;
+};
+
+/**
+ * PathConstraint: Constraint derived from canon knowledge for OPTR
+ * UPGRADE #8: OPTR ingestion of canon knowledge
+ */
+export type PathConstraint = {
+  id: string;
+  canonRefId: string; // Canon item this constraint is derived from
+  constraintType:
+    | "PREREQUISITE"
+    | "RISK_BOUND"
+    | "COST_BOUND"
+    | "TIME_BOUND"
+    | "RESOURCE_LIMIT";
+  appliesTo: string[]; // Action IDs this constraint applies to
+  params: Record<string, any>; // Constraint-specific parameters
+  confidence: ConfidenceEnvelope;
 };

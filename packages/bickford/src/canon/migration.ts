@@ -1,4 +1,21 @@
 /**
+<<<<<<< HEAD
+ * Migration Scoring & Regression Prevention
+ * Canon Stub — Implementation follows
+ */
+
+export interface MigrationAssessment {
+  migrationName: string;
+  riskScore: number;
+  isRegressive: boolean;
+}
+
+export function scoreMigration(_: unknown): MigrationAssessment {
+  return {
+    migrationName: "unknown",
+    riskScore: 0,
+    isRegressive: false,
+=======
  * Migration Scoring for OPTR
  * TIMESTAMP: 2026-01-12T18:44:00Z
  * 
@@ -27,228 +44,256 @@ export interface MigrationAnalysis {
 export interface MigrationOperation {
   type: "CREATE" | "ALTER" | "DROP" | "RENAME" | "DATA";
   target: string; // table, column, index name
-  details: string;
-  riskLevel: "LOW" | "MEDIUM" | "HIGH";
-}
+   * Migration Scoring for OPTR
+   * TIMESTAMP: 2026-01-12T18:44:00Z
+   * 
+   * Scores database migrations for risk and regression potential.
+   * Only non-regressive migrations are permitted.
+   * 
+   * INVARIANT: All migrations must be scored before application.
+   * INVARIANT: Regressive migrations (backward incompatible) must be denied.
+   */
 
-/**
- * Score a migration based on its operations
- */
-export function scoreMigration(analysis: MigrationAnalysis): number {
-  let score = 0.0;
+  import { DenialReasonCode, WhyNotTrace } from "./types";
 
-  // High-risk operations
-  const highRiskOps = analysis.operations.filter(op => op.riskLevel === "HIGH");
-  score += highRiskOps.length * 0.3;
-
-  // Data loss risk
-  if (analysis.impactAnalysis.dataLossRisk) {
-    score += 0.4;
+  export interface MigrationAnalysis {
+    migrationName: string;
+    riskScore: number; // 0.0 (safe) to 1.0 (high risk)
+    isRegressive: boolean;
+    operations: MigrationOperation[];
+    impactAnalysis: {
+      tablesAffected: string[];
+      dataLossRisk: boolean;
+      downTimeRequired: boolean;
+      rollbackPossible: boolean;
+    };
   }
 
-  // Rollback difficulty
-  if (!analysis.impactAnalysis.rollbackPossible) {
-    score += 0.2;
+  export interface MigrationOperation {
+    type: "CREATE" | "ALTER" | "DROP" | "RENAME" | "DATA";
+    target: string; // table, column, index name
+    details: string;
+    riskLevel: "LOW" | "MEDIUM" | "HIGH";
   }
 
-  // Downtime requirement
-  if (analysis.impactAnalysis.downTimeRequired) {
-    score += 0.1;
-  }
+  /**
+   * Score a migration based on its operations
+   */
+  export function scoreMigration(analysis: MigrationAnalysis): number {
+    let score = 0.0;
 
-  return Math.min(score, 1.0);
-}
+    // High-risk operations
+    const highRiskOps = analysis.operations.filter(op => op.riskLevel === "HIGH");
+    score += highRiskOps.length * 0.3;
 
-/**
- * Determine if migration is regressive (backward incompatible)
- */
-export function isRegressiveMigration(analysis: MigrationAnalysis): boolean {
-  const regressiveOps = analysis.operations.filter(op => {
-    // DROP operations are always regressive
-    if (op.type === "DROP") return true;
-
-    // RENAME without alias is regressive
-    if (op.type === "RENAME" && !op.details.includes("alias")) return true;
-
-    // ALTER that removes columns is regressive
-    if (
-      op.type === "ALTER" &&
-      (op.details.includes("DROP COLUMN") || op.details.includes("REMOVE"))
-    ) {
-      return true;
+    // Data loss risk
+    if (analysis.impactAnalysis.dataLossRisk) {
+      score += 0.4;
     }
 
-    return false;
-  });
+    // Rollback difficulty
+    if (!analysis.impactAnalysis.rollbackPossible) {
+      score += 0.2;
+    }
 
-  return regressiveOps.length > 0;
-}
+    // Downtime requirement
+    if (analysis.impactAnalysis.downTimeRequired) {
+      score += 0.1;
+    }
 
-/**
- * Parse Prisma migration SQL to extract operations
- * 
- * Note: This is a simplified parser for common Prisma migrations.
- * Limitations:
- * - Does not handle schema-qualified tables (e.g., schema.table)
- * - May miss complex ALTER statements
- * - Assumes standard PostgreSQL syntax
- * 
- * For production use, consider using a proper SQL parser.
- */
-export function parseMigrationSQL(sql: string): MigrationOperation[] {
-  const operations: MigrationOperation[] = [];
-  const lines = sql.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+    return Math.min(score, 1.0);
+  }
 
-  for (const line of lines) {
-    const upper = line.toUpperCase();
+  /**
+   * Determine if migration is regressive (backward incompatible)
+   */
+  export function isRegressiveMigration(analysis: MigrationAnalysis): boolean {
+    const regressiveOps = analysis.operations.filter(op => {
+      // DROP operations are always regressive
+      if (op.type === "DROP") return true;
 
-    if (upper.startsWith("CREATE TABLE")) {
-      // Match: CREATE TABLE "table" or CREATE TABLE table
-      const match = line.match(/CREATE TABLE\s+["']?(\w+)["']?/i);
-      operations.push({
-        type: "CREATE",
-        target: match?.[1] || "unknown",
-        details: line,
-        riskLevel: "LOW",
-      });
-    } else if (upper.startsWith("DROP TABLE")) {
-      const match = line.match(/DROP TABLE\s+["']?(\w+)["']?/i);
-      operations.push({
-        type: "DROP",
-        target: match?.[1] || "unknown",
-        details: line,
-        riskLevel: "HIGH",
-      });
-    } else if (upper.startsWith("ALTER TABLE")) {
-      const match = line.match(/ALTER TABLE\s+["']?(\w+)["']?/i);
-      let riskLevel: "LOW" | "MEDIUM" | "HIGH" = "MEDIUM";
+      // RENAME without alias is regressive
+      if (op.type === "RENAME" && !op.details.includes("alias")) return true;
 
-      if (upper.includes("DROP COLUMN") || upper.includes("DROP CONSTRAINT")) {
-        riskLevel = "HIGH";
-      } else if (upper.includes("ADD COLUMN") || upper.includes("ADD INDEX")) {
-        riskLevel = "LOW";
+      // ALTER that removes columns is regressive
+      if (
+        op.type === "ALTER" &&
+        (op.details.includes("DROP COLUMN") || op.details.includes("REMOVE"))
+      ) {
+        return true;
       }
 
-      operations.push({
-        type: "ALTER",
-        target: match?.[1] || "unknown",
-        details: line,
-        riskLevel,
-      });
-    } else if (upper.startsWith("RENAME")) {
-      const match = line.match(/RENAME\s+["']?(\w+)["']?/i);
-      operations.push({
-        type: "RENAME",
-        target: match?.[1] || "unknown",
-        details: line,
-        riskLevel: "MEDIUM",
-      });
-    }
+      return false;
+    });
+
+    return regressiveOps.length > 0;
   }
 
-  return operations;
-}
+  /**
+   * Parse Prisma migration SQL to extract operations
+   * 
+   * Note: This is a simplified parser for common Prisma migrations.
+   * Limitations:
+   * - Does not handle schema-qualified tables (e.g., schema.table)
+   * - May miss complex ALTER statements
+   * - Assumes standard PostgreSQL syntax
+   * 
+   * For production use, consider using a proper SQL parser.
+   */
+  export function parseMigrationSQL(sql: string): MigrationOperation[] {
+    const operations: MigrationOperation[] = [];
+    const lines = sql.split("\n").map(l => l.trim()).filter(l => l.length > 0);
 
-/**
- * Analyze migration and produce full analysis
- */
-export function analyzeMigration(
-  migrationName: string,
-  sql: string
-): MigrationAnalysis {
-  const operations = parseMigrationSQL(sql);
+    for (const line of lines) {
+      const upper = line.toUpperCase();
 
-  const tablesAffected = Array.from(
-    new Set(operations.map(op => op.target))
-  );
+      if (upper.startsWith("CREATE TABLE")) {
+        // Match: CREATE TABLE "table" or CREATE TABLE table
+        const match = line.match(/CREATE TABLE\s+["']?(\w+)["']?/i);
+        operations.push({
+          type: "CREATE",
+          target: match?.[1] || "unknown",
+          details: line,
+          riskLevel: "LOW",
+        });
+      } else if (upper.startsWith("DROP TABLE")) {
+        const match = line.match(/DROP TABLE\s+["']?(\w+)["']?/i);
+        operations.push({
+          type: "DROP",
+          target: match?.[1] || "unknown",
+          details: line,
+          riskLevel: "HIGH",
+        });
+      } else if (upper.startsWith("ALTER TABLE")) {
+        const match = line.match(/ALTER TABLE\s+["']?(\w+)["']?/i);
+        let riskLevel: "LOW" | "MEDIUM" | "HIGH" = "MEDIUM";
 
-  const dataLossRisk = operations.some(
-    op => op.type === "DROP" || (op.type === "ALTER" && op.riskLevel === "HIGH")
-  );
+        if (upper.includes("DROP COLUMN") || upper.includes("DROP CONSTRAINT")) {
+          riskLevel = "HIGH";
+        } else if (upper.includes("ADD COLUMN") || upper.includes("ADD INDEX")) {
+          riskLevel = "LOW";
+        }
 
-  const downTimeRequired = operations.some(
-    op => op.type === "DROP" || op.type === "RENAME"
-  );
+        operations.push({
+          type: "ALTER",
+          target: match?.[1] || "unknown",
+          details: line,
+          riskLevel,
+        });
+      } else if (upper.startsWith("RENAME")) {
+        const match = line.match(/RENAME\s+["']?(\w+)["']?/i);
+        operations.push({
+          type: "RENAME",
+          target: match?.[1] || "unknown",
+          details: line,
+          riskLevel: "MEDIUM",
+        });
+      }
+    }
 
-  const rollbackPossible = !operations.some(
-    op => op.type === "DROP" || op.type === "DATA"
-  );
+    return operations;
+  }
 
-  const analysis: MigrationAnalysis = {
-    migrationName,
-    riskScore: 0,
-    isRegressive: false,
-    operations,
-    impactAnalysis: {
-      tablesAffected,
-      dataLossRisk,
-      downTimeRequired,
-      rollbackPossible,
-    },
-  };
+  /**
+   * Analyze migration and produce full analysis
+   */
+  export function analyzeMigration(
+    migrationName: string,
+    sql: string
+  ): MigrationAnalysis {
+    const operations = parseMigrationSQL(sql);
 
-  analysis.riskScore = scoreMigration(analysis);
-  analysis.isRegressive = isRegressiveMigration(analysis);
-
-  return analysis;
-}
-
-/**
- * OPTR Gate: Migration regression check
- */
-export function gateMigrationRegression(
-  analysis: MigrationAnalysis,
-  nowIso: string
-): WhyNotTrace | null {
-  if (!analysis.isRegressive) return null;
-
-  const regressiveOps = analysis.operations.filter(op => {
-    return (
-      op.type === "DROP" ||
-      (op.type === "RENAME" && !op.details.includes("alias")) ||
-      (op.type === "ALTER" && op.riskLevel === "HIGH")
+    const tablesAffected = Array.from(
+      new Set(operations.map(op => op.target))
     );
-  });
 
-  return {
-    ts: nowIso,
-    actionId: `migration:${analysis.migrationName}`,
-    denied: true,
-    reasonCodes: [DenialReasonCode.INVARIANT_VIOLATION],
-    message: `Migration "${analysis.migrationName}" is regressive (backward incompatible)`,
-    context: {
-      riskScore: analysis.riskScore,
-      regressiveOps: regressiveOps.map(op => ({
-        type: op.type,
-        target: op.target,
-      })),
-      impactAnalysis: analysis.impactAnalysis,
-    },
-  };
-}
+    const dataLossRisk = operations.some(
+      op => op.type === "DROP" || (op.type === "ALTER" && op.riskLevel === "HIGH")
+    );
 
-/**
- * OPTR Gate: Migration risk bounds
- */
-export function gateMigrationRisk(
-  analysis: MigrationAnalysis,
-  maxRiskScore: number,
-  nowIso: string
-): WhyNotTrace | null {
-  if (analysis.riskScore <= maxRiskScore) return null;
+    const downTimeRequired = operations.some(
+      op => op.type === "DROP" || op.type === "RENAME"
+    );
 
-  return {
-    ts: nowIso,
-    actionId: `migration:${analysis.migrationName}`,
-    denied: true,
-    reasonCodes: [DenialReasonCode.RISK_BOUND_EXCEEDED],
-    message: `Migration risk score ${analysis.riskScore.toFixed(2)} exceeds threshold ${maxRiskScore.toFixed(2)}`,
-    context: {
-      riskScore: analysis.riskScore,
-      maxRiskScore,
-      highRiskOps: analysis.operations
-        .filter(op => op.riskLevel === "HIGH")
-        .map(op => ({ type: op.type, target: op.target })),
-    },
-  };
-}
+    const rollbackPossible = !operations.some(
+      op => op.type === "DROP" || op.type === "DATA"
+    );
+
+    const analysis: MigrationAnalysis = {
+      migrationName,
+      riskScore: 0,
+      isRegressive: false,
+      operations,
+      impactAnalysis: {
+        tablesAffected,
+        dataLossRisk,
+        downTimeRequired,
+        rollbackPossible,
+      },
+    };
+
+    analysis.riskScore = scoreMigration(analysis);
+    analysis.isRegressive = isRegressiveMigration(analysis);
+
+    return analysis;
+  }
+
+  /**
+   * OPTR Gate: Migration regression check
+   */
+  export function gateMigrationRegression(
+    analysis: MigrationAnalysis,
+    nowIso: string
+  ): WhyNotTrace | null {
+    if (!analysis.isRegressive) return null;
+
+    const regressiveOps = analysis.operations.filter(op => {
+      return (
+        op.type === "DROP" ||
+        (op.type === "RENAME" && !op.details.includes("alias")) ||
+        (op.type === "ALTER" && op.riskLevel === "HIGH")
+      );
+    });
+
+    return {
+      ts: nowIso,
+      actionId: `migration:${analysis.migrationName}`,
+      denied: true,
+      reasonCodes: [DenialReasonCode.INVARIANT_VIOLATION],
+      message: `Migration "${analysis.migrationName}" is regressive (backward incompatible)`,
+      context: {
+        riskScore: analysis.riskScore,
+        regressiveOps: regressiveOps.map(op => ({
+          type: op.type,
+          target: op.target,
+        })),
+        impactAnalysis: analysis.impactAnalysis,
+      },
+    };
+  }
+
+  /**
+   * OPTR Gate: Migration risk bounds
+   */
+  export function gateMigrationRisk(
+    analysis: MigrationAnalysis,
+    maxRiskScore: number,
+    nowIso: string
+  ): WhyNotTrace | null {
+    if (analysis.riskScore <= maxRiskScore) return null;
+
+    return {
+      ts: nowIso,
+      actionId: `migration:${analysis.migrationName}`,
+      denied: true,
+      reasonCodes: [DenialReasonCode.RISK_BOUND_EXCEEDED],
+      message: `Migration risk score ${analysis.riskScore.toFixed(2)} exceeds threshold ${maxRiskScore.toFixed(2)}`,
+      context: {
+        riskScore: analysis.riskScore,
+        maxRiskScore,
+        highRiskOps: analysis.operations
+          .filter(op => op.riskLevel === "HIGH")
+          .map(op => ({ type: op.type, target: op.target })),
+      },
+    };
+  }

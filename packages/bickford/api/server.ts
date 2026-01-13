@@ -1058,6 +1058,320 @@ app.get('/api/ledger/verify', async (req, res) => {
   }
 });
 
+// ---------- Canon Promotion Endpoint ----------
+// POST /api/canon/promote
+import { 
+  validatePromoteRequest, 
+  processPromoteRequest,
+  type PromoteRequestBody,
+  type PromoteResponseBody,
+} from "./promote-canon.contract";
+
+app.post("/api/canon/promote", async (req, res) => {
+  try {
+    // Validate request
+    const validation = validatePromoteRequest(req.body);
+    if (!validation.valid) {
+      return res.status(400).json({
+        ok: false,
+        error: validation.error,
+      });
+    }
+    
+    const request = validation.request!;
+    
+    // Build canon store from Redis/Postgres
+    const canonStore = new Map<string, any>();
+    const canonItems = await pgStore.getAllCanon();
+    for (const item of canonItems) {
+      canonStore.set(item.id, item);
+    }
+    
+    // Process promotion
+    const response = await processPromoteRequest(request, canonStore);
+    
+    // Save to database if approved
+    if (response.ok) {
+      await pool.query(
+        `INSERT INTO "CanonKnowledge" (id, "itemId", level, kind, title, statement, "promotedAt", "createdAt", "updatedAt")
+         VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
+         ON CONFLICT ("itemId") DO UPDATE SET level = $3, "promotedAt" = $7, "updatedAt" = NOW()`,
+        [
+          `canon_${Date.now()}`,
+          request.itemId,
+          response.decision.to,
+          "PROMOTED",
+          `Promoted ${request.itemId}`,
+          response.decision.reason,
+          response.decision.ts,
+        ]
+      );
+    }
+    
+    res.json(response);
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
+// ---------- WhyNot Panel Endpoint ----------
+// GET /api/canon/whynot/:actionId
+import { formatWhyNotPanel, type WhyNotPanelData } from "./whynot-panel";
+
+app.get("/api/canon/whynot/:actionId", async (req, res) => {
+  try {
+    const actionId = req.params.actionId;
+    
+    // Look up denial in database
+    const result = await pool.query(
+      `SELECT * FROM "DeniedDecision" WHERE "actionId" = $1 ORDER BY "createdAt" DESC LIMIT 1`,
+      [actionId]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        ok: false,
+        error: "No denial found for this action",
+      });
+    }
+    
+    const denial = result.rows[0];
+    
+    // Convert to WhyNotTrace format
+    const trace = {
+      ts: denial.createdAt.toISOString(),
+      actionId: denial.actionId,
+      denied: true,
+      reasonCodes: denial.reasonCodes,
+      missingCanonIds: denial.missingCanonIds,
+      violatedInvariantIds: denial.violatedInvariantIds,
+      requiredCanonRefs: denial.requiredCanonRefs,
+      message: denial.message,
+      context: denial.context,
+    };
+    
+    // Format for panel display
+    const panelData = formatWhyNotPanel(trace);
+    
+    res.json({
+      ok: true,
+      panel: panelData,
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
+// ---------- Execution Context Endpoint ----------
+// POST /api/canon/execution/context
+import { createExecutionContext, type ExecutionContext } from "../src/canon/execution";
+
+app.post("/api/canon/execution/context", async (req, res) => {
+  try {
+    const { executionId, tenantId, actorId, canonRefsSnapshot, constraintsSnapshot, environment } = req.body;
+    
+    if (!executionId || !tenantId || !actorId) {
+      return res.status(400).json({
+        ok: false,
+        error: "Missing required fields: executionId, tenantId, actorId",
+      });
+    }
+    
+    const context = createExecutionContext({
+      executionId,
+      timestamp: new Date().toISOString(),
+      tenantId,
+      actorId,
+      canonRefsSnapshot: canonRefsSnapshot || [],
+      constraintsSnapshot: constraintsSnapshot || [],
+      environment,
+    });
+    
+    // Save to database
+    await pool.query(
+      `UPDATE "Execution" SET "executionContextHash" = $1 WHERE id = $2`,
+      [context.contextHash, executionId]
+    );
+    
+    res.json({
+      ok: true,
+      context,
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
+// ---------- Token Streaming Endpoint ----------
+// POST /api/canon/execution/stream
+import { bufferTokensWithProof, verifyTokenStreamProof, type TokenStreamProof } from "../src/canon/execution";
+
+app.post("/api/canon/execution/stream", async (req, res) => {
+  try {
+    const { executionId, streamId, tokens } = req.body;
+    
+    if (!executionId || !streamId || !Array.isArray(tokens)) {
+      return res.status(400).json({
+        ok: false,
+        error: "Missing required fields: executionId, streamId, tokens (array)",
+      });
+    }
+    
+    // Get current ledger state for proof
+    const ledgerResult = await pool.query(
+      `SELECT * FROM "LedgerEntry" ORDER BY "createdAt" DESC LIMIT 10`
+    );
+    const ledgerState = ledgerResult.rows;
+    
+    // Create proof
+    const proof = bufferTokensWithProof({
+      executionId,
+      streamId,
+      tokens,
+      ledgerState,
+      authCheck: (tokens, state) => {
+        // Simple auth check: ensure ledger has entries
+        return state.length > 0;
+      },
+      timestamp: new Date().toISOString(),
+    });
+    
+    // Save buffered tokens to execution
+    await pool.query(
+      `UPDATE "Execution" SET "tokenBuffer" = $1 WHERE id = $2`,
+      [JSON.stringify(proof), executionId]
+    );
+    
+    res.json({
+      ok: true,
+      proof,
+      approved: proof.approved,
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
+// ---------- Chat Seal/Finalize Endpoints ----------
+// POST /api/chat/seal
+import { sealChatItem, finalizeChatItem } from "../src/canon/execution";
+
+app.post("/api/chat/seal", async (req, res) => {
+  try {
+    const { itemId, itemType } = req.body;
+    
+    if (!itemId || !itemType || !["thread", "message"].includes(itemType)) {
+      return res.status(400).json({
+        ok: false,
+        error: "Missing or invalid fields: itemId, itemType (thread or message)",
+      });
+    }
+    
+    const timestamp = new Date().toISOString();
+    const sealed = sealChatItem({ itemId, timestamp });
+    
+    // Update database
+    const table = itemType === "thread" ? "ChatThread" : "ChatMessage";
+    await pool.query(
+      `UPDATE "${table}" SET "sealedAt" = $1 WHERE id = $2`,
+      [sealed.sealedAt, itemId]
+    );
+    
+    res.json({
+      ok: true,
+      itemId,
+      sealedAt: sealed.sealedAt,
+      hash: sealed.hash,
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
+// POST /api/chat/finalize
+app.post("/api/chat/finalize", async (req, res) => {
+  try {
+    const { itemId, itemType, canonRefs } = req.body;
+    
+    if (!itemId || !itemType || !["thread", "message"].includes(itemType)) {
+      return res.status(400).json({
+        ok: false,
+        error: "Missing or invalid fields: itemId, itemType (thread or message)",
+      });
+    }
+    
+    // Get current seal time
+    const table = itemType === "thread" ? "ChatThread" : "ChatMessage";
+    const result = await pool.query(
+      `SELECT "sealedAt" FROM "${table}" WHERE id = $1`,
+      [itemId]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        ok: false,
+        error: "Item not found",
+      });
+    }
+    
+    const sealedAt = result.rows[0].sealedAt;
+    if (!sealedAt) {
+      return res.status(400).json({
+        ok: false,
+        error: "Item must be sealed before finalization",
+      });
+    }
+    
+    const timestamp = new Date().toISOString();
+    const finalized = finalizeChatItem({
+      itemId,
+      sealedAt,
+      timestamp,
+      canonRefs: canonRefs || [],
+    });
+    
+    if (!finalized.finalized) {
+      return res.status(400).json({
+        ok: false,
+        error: finalized.reason,
+      });
+    }
+    
+    // Update database
+    await pool.query(
+      `UPDATE "${table}" SET finalized = true WHERE id = $1`,
+      [itemId]
+    );
+    
+    res.json({
+      ok: true,
+      itemId,
+      finalized: true,
+      hash: finalized.hash,
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Bickford Canon API server running on port ${PORT}`);
