@@ -29,7 +29,11 @@
         "CI"
       ]
     },
-    "prisma:generate": {}
+    "prisma:generate": {},
+    "prebuild": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    }
   },
   "globalEnv": [
     "DATABASE_URL",
