@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint .",
-    "prebuild": "node -e \"require('./src/lib/prisma.build-guard')\""
+    "prebuild": "tsx ./src/lib/prisma.build-guard.ts"
   },
   "dependencies": {
     "@bickford/core": "workspace:*",
