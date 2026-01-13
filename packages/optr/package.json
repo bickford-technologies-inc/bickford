@@ -18,7 +18,7 @@
   "author": "Bickford",
   "license": "PROPRIETARY",
   "dependencies": {
-    "@bickford/types": "*"
+    "@bickford/types": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.0.0"

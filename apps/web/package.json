@@ -10,12 +10,12 @@
     "lint": "next lint ."
   },
   "dependencies": {
-    "@bickford/core": "*",
-    "@bickford/types": "*",
-    "@bickford/authority": "*",
-    "@bickford/ledger": "*",
-    "@bickford/optr": "*",
-    "@bickford/ui": "*",
+    "@bickford/core": "workspace:*",
+    "@bickford/types": "workspace:*",
+    "@bickford/authority": "workspace:*",
+    "@bickford/ledger": "workspace:*",
+    "@bickford/optr": "workspace:*",
+    "@bickford/ui": "workspace:*",
     "@bickford/canon": "file:../../packages/bickford",
     "next": "^16.1.1"
   },
