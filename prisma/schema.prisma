@@ -10,6 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model LedgerEntry {
@@ -31,11 +32,11 @@ model AgentState {
 }
 
 model BuildEvent {
-  id          String   @id
+  id          String    @id
   commitSha   String
   branch      String
   status      String
-  startedAt   DateTime @default(now())
+  startedAt   DateTime  @default(now())
   completedAt DateTime?
   ledgerHash  String?
   artifacts   Json?
@@ -43,18 +44,19 @@ model BuildEvent {
 }
 
 model DeployEvent {
-  id        String @id @default(uuid())
+  id        String   @id @default(uuid())
   buildId   String
   createdAt DateTime @default(now())
 }
 
 model ChatThread {
-  id             String    @id @default(cuid())
-  createdAt      DateTime  @default(now())
+  id             String        @id @default(cuid())
+  createdAt      DateTime      @default(now())
   sealedAt       DateTime?
-  finalized      Boolean   @default(false)
+  finalized      Boolean       @default(false)
   lastReplayedAt DateTime?
   messages       ChatMessage[]
+
   @@index([sealedAt])
   @@index([finalized])
   @@map("ChatThread")
@@ -62,45 +64,51 @@ model ChatThread {
 
 model ChatMessage {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  sealedAt  DateTime?
-  finalized Boolean  @default(false)
-  author    ChatAuthor
+  author    String
   text      String
-  resolution ChatResolution
-  threadId  String?
-  thread    ChatThread? @relation(fields: [threadId], references: [id])
-  intentId  String?
-  intent    Intent? @relation("MessageIntent")
+  createdAt DateTime @default(now())
+
+  // ─────────────────────────────────────────────
+  // Relations required by existing canon models
+  // ─────────────────────────────────────────────
+
+  // ChatThread.messages
+  threadId String?
+  thread   ChatThread? @relation(fields: [threadId], references: [id])
+
+  // CanonEntry.messages
   canonEntryId String?
   canonEntry   CanonEntry? @relation(fields: [canonEntryId], references: [id])
-  supersedesMessageId String?
+
+  // Intent.sourceMessage
+  intent Intent? @relation("MessageIntent")
+
+  @@index([createdAt])
   @@index([threadId])
-  @@index([sealedAt])
-  @@index([finalized])
+  @@index([canonEntryId])
 }
 
 model Intent {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  sourceMessageId String   @unique
-  sourceMessage   ChatMessage @relation("MessageIntent", fields: [sourceMessageId], references: [id])
-  intentType IntentType
-  goal       String
-  constraints String[]
-  admissibility AdmissibilityStatus
-  denialReason  String?
-  execution Execution?
+  id              String              @id @default(cuid())
+  createdAt       DateTime            @default(now())
+  sourceMessageId String              @unique
+  sourceMessage   ChatMessage         @relation("MessageIntent", fields: [sourceMessageId], references: [id])
+  intentType      IntentType
+  goal            String
+  constraints     String[]
+  admissibility   AdmissibilityStatus
+  denialReason    String?
+  execution       Execution?
 }
 
 model Execution {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
-  intentId  String @unique
-  intent    Intent @relation(fields: [intentId], references: [id])
+  intentId String @unique
+  intent   Intent @relation(fields: [intentId], references: [id])
 
-  status ExecutionStatus
+  status    ExecutionStatus
   artifacts String[]
 
   executionContextHash String?
@@ -115,24 +123,24 @@ model CanonEntry {
   content    String
   provenance Json?
 
-  messages   ChatMessage[]
+  messages ChatMessage[]
 }
 
 model DeniedDecision {
-  id                String   @id @default(cuid())
-  ts                DateTime
-  actionId          String
-  actionName        String?
-  tenantId          String
-  goal              String?
-  reasonCodes       String[]
-  missingCanonIds   String[]
+  id                   String   @id @default(cuid())
+  ts                   DateTime
+  actionId             String
+  actionName           String?
+  tenantId             String
+  goal                 String?
+  reasonCodes          String[]
+  missingCanonIds      String[]
   violatedInvariantIds String[]
-  requiredCanonRefs String[]
-  message           String
-  context           Json?
-  optrRunId         String?
-  createdAt         DateTime @default(now())
+  requiredCanonRefs    String[]
+  message              String
+  context              Json?
+  optrRunId            String?
+  createdAt            DateTime @default(now())
 }
 
 enum ChatAuthor {
