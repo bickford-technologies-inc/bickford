@@ -1,9 +1,11 @@
+export const runtime = "nodejs";
 export const maxDuration = 300;
 
-import { prisma } from "@bickford/ledger";
+import { getPrisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   const { intentId } = await req.json();
+  const prisma = getPrisma();
 
   const intent = await prisma.intent.findUniqueOrThrow({
     where: { id: intentId },
