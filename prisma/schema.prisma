@@ -39,6 +39,7 @@ model BuildEvent {
   completedAt DateTime?
   ledgerHash  String?
   artifacts   Json?
+  buildId     String? // Added for buildId support
 }
 
 model DeployEvent {
@@ -48,6 +49,7 @@ model DeployEvent {
   deployedAt  DateTime @default(now())
   ledgerHash  String
   status      String
+  buildId     String? // Added for buildId support
 }
 
 model ChatThread {
@@ -167,4 +169,9 @@ enum ExecutionStatus {
   RUNNING
   FAILED
   SUCCEEDED
+}
+
+model Meta {
+  id            Int @id @default(1)
+  schemaVersion Int
 }
