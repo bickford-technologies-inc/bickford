@@ -41,6 +41,22 @@ services:
       interval: 20s
       timeout: 5s
       retries: 5
+  bickford-postgres:
+    image: postgres:16
+    container_name: bickford-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bickford
+    volumes:
+      - bickford_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   demo-dashboard:
     build:
       context: ./packages/demo-dashboard
@@ -53,3 +69,4 @@ services:
     restart: unless-stopped
 volumes:
   pgdata:
+  bickford_pgdata:
