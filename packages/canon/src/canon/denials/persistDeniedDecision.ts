@@ -65,13 +65,13 @@ export async function getDeniedDecisions(params: {
       take: params.limit || 100,
     });
 
-    return records.map((r) => ({
-      ts: typeof r.ts === "string" ? r.ts : r.ts.toISOString(),
+    return records.map((r: any) => ({
+      denied: true,
+      ts: r.ts,
       actionId: r.actionId,
       tenantId: r.tenantId,
       reasonCodes: r.reasonCodes,
-      denied: true,
-      message: r.message || "Denied decision record",
+      message: r.message,
     }));
   } catch (error) {
     console.error("Failed to retrieve denied decisions:", error);
