@@ -221,6 +221,7 @@ export function gateMigrationRegression(
     actionId: `migration:${analysis.migrationName}`,
     tenantId: "tenantId",
     reasonCodes: [DenialReasonCode.INVARIANT_VIOLATION],
+    message: `Migration "${analysis.migrationName}" is regressive (backward incompatible)`,
   };
 }
 
@@ -240,5 +241,6 @@ export function gateMigrationRisk(
     actionId: `migration:${analysis.migrationName}`,
     tenantId: "tenantId",
     reasonCodes: [DenialReasonCode.RISK_BOUND_EXCEEDED],
+    message: "Migration is risky",
   };
 }
