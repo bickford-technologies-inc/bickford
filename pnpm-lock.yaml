@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@bickford/*': workspace:*
+
 importers:
 
   .:
@@ -270,6 +273,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@bickford/canon':
+        specifier: workspace:*
+        version: link:../bickford
       '@bickford/types':
         specifier: workspace:*
         version: link:../types
