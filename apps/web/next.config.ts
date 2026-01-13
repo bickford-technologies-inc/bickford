@@ -1,14 +1,14 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   transpilePackages: [
-    '@bickford/core',
-    '@bickford/types',
-    '@bickford/authority',
-    '@bickford/ledger',
-    '@bickford/optr',
-    '@bickford/ui',
+    "@bickford/core",
+    "@bickford/types",
+    "@bickford/authority",
+    "@bickford/ledger",
+    "@bickford/optr",
+    "@bickford/ui",
   ],
 };
 
