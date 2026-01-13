@@ -1,28 +1,104 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+// CANONICAL SCHEMA - Single source of truth at /prisma/schema.prisma
+// TIMESTAMP: 2026-01-12T18:44:00Z
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
+// Core ledger for intent-decision pairs
 model LedgerEntry {
   id        String   @id
   intent    Json
   decision  Json
   hash      String
   createdAt DateTime @default(now())
+  tenantId  String?  // Per-tenant isolation support
 
   @@index([createdAt])
+  @@index([tenantId])
+  @@map("LedgerEntry")
 }
 
+// Agent state tracking for non-interference
 model AgentState {
   agentId     String   @id
   ttvBaseline Float
   updatedAt   DateTime @updatedAt
+
+  @@map("AgentState")
+}
+
+// Build/Deploy event tracking
+model BuildEvent {
+  id          String   @id
+  commitSha   String
+  branch      String
+  status      String   // success, failure, in_progress
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+  ledgerHash  String?  // Hash of ledger entry for this build
+  artifacts   Json?    // Build artifact metadata
+
+  @@index([commitSha])
+  @@index([status])
+  @@map("BuildEvent")
+}
+
+model DeployEvent {
+  id          String   @id
+  buildId     String?
+  environment String   // staging, production
+  commitSha   String
+  deployedAt  DateTime @default(now())
+  ledgerHash  String   // Mandatory ledger proof
+  status      String   // success, failure, rolled_back
+
+  @@index([commitSha])
+  @@index([environment])
+  @@map("DeployEvent")
+}
+
+// Schema evolution tracking with hashchain
+model SchemaVersion {
+  id            String   @id
+  schemaHash    String   @unique
+  previousHash  String?  // Hashchain link
+  appliedAt     DateTime @default(now())
+  migrationName String?
+  ledgerHash    String   // Notarized in ledger
+
+  @@index([appliedAt])
+  @@map("SchemaVersion")
+}
+
+// Migration risk scoring
+model MigrationScore {
+  id               String   @id
+  migrationName    String   @unique
+  riskScore        Float    // 0.0 (safe) to 1.0 (high risk)
+  isRegressive     Boolean  @default(false)
+  impactAnalysis   Json     // Detailed impact breakdown
+  approvalStatus   String   // pending, approved, denied
+  scoredAt         DateTime @default(now())
+
+  @@index([approvalStatus])
+  @@map("MigrationScore")
+}
+
+model ChatThread {
+  id             String    @id @default(cuid())
+  createdAt      DateTime  @default(now())
+  lastReplayedAt DateTime?
+  messages       ChatMessage[]
+
+  @@map("ChatThread")
 }
 
 model ChatThread {
@@ -50,6 +126,7 @@ model ChatMessage {
 
   resolution ChatResolution
 
+<<<<<<< HEAD
   intent   Intent? @relation("MessageIntent", fields: [intentId], references: [id])
   intentId String? @unique
 
@@ -65,6 +142,19 @@ model ChatMessage {
 
   @@index([sealedAt])
   @@index([finalized])
+=======
+  intent    Intent?  @relation("MessageIntent")
+  intentId  String?  @unique
+
+  supersedesMessageId String?
+
+  threadId       String?
+  thread         ChatThread? @relation(fields: [threadId], references: [id])
+
+  canonEntryId   String?
+  canonEntry     CanonEntry? @relation(fields: [canonEntryId], references: [id])
+
+>>>>>>> de56a73fa68ba02746cb9466204ccdb4037988bf
   @@index([threadId])
   @@index([canonEntryId])
 }
@@ -73,9 +163,14 @@ model Intent {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
+<<<<<<< HEAD
   sourceMessageId String
   sourceMessage   ChatMessage   @relation("SourceMessage", fields: [sourceMessageId], references: [id])
   chatMessages    ChatMessage[] @relation("MessageIntent")
+=======
+  sourceMessage   ChatMessage @relation("MessageIntent", fields: [sourceMessageId], references: [id])
+  sourceMessageId String   @unique
+>>>>>>> de56a73fa68ba02746cb9466204ccdb4037988bf
 
   intentType  IntentType
   goal        String
@@ -180,4 +275,51 @@ enum ExecutionStatus {
   RUNNING
   FAILED
   SUCCEEDED
+}
+
+// Stable taxonomy for denial reasons (Phase 3: Trust UX)
+enum DenialReasonCode {
+  MISSING_CANON_PREREQS
+  INVARIANT_VIOLATION
+  NON_INTERFERENCE_VIOLATION
+  AUTHORITY_BOUNDARY_FAIL
+  RISK_BOUND_EXCEEDED
+  COST_BOUND_EXCEEDED
+  SUCCESS_PROB_TOO_LOW
+}
+
+// Denied decision ledger (Phase 3: Trust UX)
+model DeniedDecision {
+  id                    String              @id @default(cuid())
+  createdAt             DateTime            @default(now())
+  ts                    String              // ISO8601 timestamp from denial trace
+  actionId              String
+  actionName            String?
+  tenantId              String
+  goal                  String?
+  reasonCodes           DenialReasonCode[]
+  missingCanonIds       String[]            @default([])
+  violatedInvariantIds  String[]            @default([])
+  requiredCanonRefs     String[]            @default([])
+  message               String
+  context               Json?
+  optrRunId             String?             // Link to OPTR run if applicable
+
+  @@index([actionId])
+  @@index([tenantId])
+  @@index([createdAt])
+  @@map("DeniedDecision")
+}
+
+// Canon entry tracking for chat-canon linkage
+model CanonEntry {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  kind        String
+  title       String
+  content     String
+  provenance  Json?
+  messages    ChatMessage[]
+
+  @@map("CanonEntry")
 }
