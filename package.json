@@ -94,7 +94,8 @@
     "doctor:ci": "node scripts/doctor-ci.ts",
     "resolve:push": "node ./scripts/resolve-and-push.mjs",
     "verify:next": "tsx scripts/verify-next-version.ts",
-    "prebuild": "pnpm run verify:next && pnpm --filter @bickford/db prisma:generate && turbo run build"
+    "prebuild": "pnpm run verify:next && pnpm --filter @bickford/db prisma:generate && turbo run build",
+    "ci:verify:turbo": "tsx scripts/ci/verify-turbo-ordering.ts"
   },
   "workspaces": [
     "packages/*",
