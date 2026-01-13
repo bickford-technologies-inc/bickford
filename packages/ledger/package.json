@@ -17,7 +17,8 @@
   "license": "PROPRIETARY",
   "dependencies": {
     "@bickford/types": "workspace:*",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "@prisma/adapter-pg": "^7.2.0"
   },
   "devDependencies": {
     "prisma": "^7.2.0",
