@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 echo "🏥 Starting Health Monitor (checks every 30s)"
-echo "=============================================="
 echo ""
 
 while true; do

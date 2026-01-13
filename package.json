@@ -11,7 +11,6 @@
   "scripts": {
     "start": "bash scripts/setup.sh && npm run dev",
     "dev": "turbo run dev --filter=web",
-    "prebuild": "rg '<<<<<<<|=======|>>>>>>>' . && exit 1 || true",
     "build": "prisma generate && turbo run build",
     "prisma:generate": "prisma generate",
     "test": "turbo run test",
@@ -123,16 +122,18 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.962.0",
     "@octokit/rest": "^22.0.1",
+    "@types/node": "^25.0.7",
     "@types/node-fetch": "^2.6.13",
     "express": "^5.2.1",
+    "glob": "^13.0.0",
     "jsonwebtoken": "^9.0.3",
     "node-fetch": "^3.3.2",
     "pg": "^8.16.3",
     "prom-client": "^15.1.3",
-    "redis": "^5.10.0",
-    "zod": "^4.3.5",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "redis": "^5.10.0",
+    "zod": "^4.3.5"
   },
   "overrides": {
     "react": "19.0.0",

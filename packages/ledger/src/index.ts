@@ -149,8 +149,8 @@ export async function recordSchemaChange(
     .digest("hex");
 
   // Get previous version for hashchain
-  const previousVersion = await prisma.schemaVersion.findFirst({
-    orderBy: { appliedAt: "desc" },
+  const previousVersion = await prisma.meta.findFirst({
+    orderBy: { id: "desc" },
   });
 
   // Create ledger proof
@@ -167,15 +167,8 @@ export async function recordSchemaChange(
     }
   );
 
-  await prisma.schemaVersion.create({
-    data: {
-      id: crypto.randomUUID(),
-      schemaHash,
-      previousHash: previousVersion?.schemaHash || null,
-      appliedAt: new Date(),
-      migrationName: migrationName || null,
-      ledgerHash: ledgerEntry.hash,
-    },
+  await prisma.meta.create({
+    data: { schemaVersion: newVersion },
   });
 
   return { schemaHash, ledgerHash: ledgerEntry.hash };

@@ -4,7 +4,6 @@ set -euo pipefail
 ENVIRONMENT=${1:-staging}
 
 echo "🚀 Deploying to $ENVIRONMENT..."
-echo "================================"
 echo ""
 
 # Build all packages

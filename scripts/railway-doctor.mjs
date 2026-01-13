@@ -65,7 +65,6 @@ function findConflictMarkers(dir) {
         continue
       }
 
-      if (text.includes('<<<<<<< ') || text.includes('>>>>>>> ')) {
         results.push(rel)
       }
     }

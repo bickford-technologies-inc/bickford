@@ -18,7 +18,6 @@ const errors = []
 const warnings = []
 
 console.log('🏥 Vercel Deployment Health Check')
-console.log('==================================\n')
 
 /**
  * Check if build output exists for a workspace
@@ -92,7 +91,6 @@ if (existsSync(join(rootDir, 'node_modules'))) {
 }
 
 // Summary
-console.log('\n==================================')
 console.log('📊 Health Check Summary\n')
 
 if (errors.length > 0) {
@@ -114,6 +112,5 @@ if (errors.length === 0 && warnings.length === 0) {
   exitCode = 0
 }
 
-console.log('==================================\n')
 
 process.exit(exitCode)

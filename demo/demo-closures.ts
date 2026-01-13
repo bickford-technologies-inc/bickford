@@ -48,9 +48,7 @@ console.log("  BICKFORD DEMO: TIER-1 AND TIER-2 CLOSURES (CHAT LAYERS 1-6)");
 console.log("  TIMESTAMP: 2026-01-12T20:50:00-05:00");
 console.log("═".repeat(80));
 
-// ============================================================================
 // SCREEN 1: Chat Message Immutability (Tier-1 and Tier-2 Closures)
-// ============================================================================
 console.log("\n\n📝 SCREEN 1: CHAT MESSAGE IMMUTABILITY\n");
 console.log("─".repeat(80));
 
@@ -87,9 +85,7 @@ if (finalized.finalized) {
   console.log(`    ✗ Finalization failed: ${finalized.reason}`);
 }
 
-// ============================================================================
 // SCREEN 2: Authority Decision Gate with Silent Denial
-// ============================================================================
 console.log("\n\n🚪 SCREEN 2: AUTHORITY DECISION GATE\n");
 console.log("─".repeat(80));
 
@@ -166,9 +162,7 @@ if (optrRun.denyTraces && optrRun.denyTraces.length > 0) {
   console.log(`    ✓ Selected action: ${optrRun.selectedNextActionId}`);
 }
 
-// ============================================================================
 // SCREEN 3: WhyNot Panel (Trust UX)
-// ============================================================================
 console.log("\n\n❓ SCREEN 3: WHYNOT PANEL (TRUST UX)\n");
 console.log("─".repeat(80));
 
@@ -231,9 +225,7 @@ if (optrRun.denyTraces && optrRun.denyTraces.length > 0) {
   console.log(`    ✓ Proof verified: ${verification.valid}`);
 }
 
-// ============================================================================
 // SCREEN 4: Execution Context Hash
-// ============================================================================
 console.log("\n\n🔐 SCREEN 4: EXECUTION CONTEXT HASH\n");
 console.log("─".repeat(80));
 
@@ -262,9 +254,7 @@ console.log(
 );
 console.log("    → Deterministic snapshot of execution scope for audit");
 
-// ============================================================================
 // SCREEN 5: Token Streaming with Ledger Proof
-// ============================================================================
 console.log("\n\n📡 SCREEN 5: TOKEN STREAMING WITH LEDGER PROOF\n");
 console.log("─".repeat(80));
 
@@ -297,9 +287,7 @@ if (streamProof.approved) {
   console.log("\n    → Tokens BLOCKED (not authorized by ledger)");
 }
 
-// ============================================================================
 // SCREEN 6: Canon Promotion
-// ============================================================================
 console.log("\n\n⬆️  SCREEN 6: CANON PROMOTION\n");
 console.log("─".repeat(80));
 
@@ -330,9 +318,7 @@ console.log(
   }/4`
 );
 
-// ============================================================================
 // SCREEN 7: OPTR Canon Knowledge Ingestion
-// ============================================================================
 console.log("\n\n🧠 SCREEN 7: OPTR CANON KNOWLEDGE INGESTION\n");
 console.log("─".repeat(80));
 
@@ -395,9 +381,7 @@ for (const denial of constraintDenials) {
   console.log(`      ✗ ${denial.message}`);
 }
 
-// ============================================================================
 // SUMMARY
-// ============================================================================
 console.log("\n\n✅ SUMMARY: TIER-1 AND TIER-2 CLOSURES IMPLEMENTED\n");
 console.log("─".repeat(80));
 console.log("\n  Demonstrated features:");

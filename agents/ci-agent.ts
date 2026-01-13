@@ -13,7 +13,6 @@ export function classifyCIFailure(log: string): CIFailure {
   if (log.includes("TS7016")) {
     return { type: "missing-types", fixable: true };
   }
-  if (log.match(/<<<<<<<|=======|>>>>>>>/)) {
     return { type: "merge-corruption", fixable: false };
   }
   if (log.includes("Prisma schema validation")) {

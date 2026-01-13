@@ -216,19 +216,11 @@ export function gateMigrationRegression(
   });
 
   return {
+    denied: true,
     ts: nowIso,
     actionId: `migration:${analysis.migrationName}`,
-    denied: true,
+    tenantId: "tenantId",
     reasonCodes: [DenialReasonCode.INVARIANT_VIOLATION],
-    message: `Migration "${analysis.migrationName}" is regressive (backward incompatible)`,
-    context: {
-      riskScore: analysis.riskScore,
-      regressiveOps: regressiveOps.map((op) => ({
-        type: op.type,
-        target: op.target,
-      })),
-      impactAnalysis: analysis.impactAnalysis,
-    },
   };
 }
 
@@ -243,19 +235,10 @@ export function gateMigrationRisk(
   if (analysis.riskScore <= maxRiskScore) return null;
 
   return {
+    denied: true,
     ts: nowIso,
     actionId: `migration:${analysis.migrationName}`,
-    denied: true,
+    tenantId: "tenantId",
     reasonCodes: [DenialReasonCode.RISK_BOUND_EXCEEDED],
-    message: `Migration risk score ${analysis.riskScore.toFixed(
-      2
-    )} exceeds threshold ${maxRiskScore.toFixed(2)}`,
-    context: {
-      riskScore: analysis.riskScore,
-      maxRiskScore,
-      highRiskOps: analysis.operations
-        .filter((op) => op.riskLevel === "HIGH")
-        .map((op) => ({ type: op.type, target: op.target })),
-    },
   };
 }

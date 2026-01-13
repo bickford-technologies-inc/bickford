@@ -5,7 +5,6 @@ set -euo pipefail
 trap 'echo "❌ Error on line $LINENO"; exit 1' ERR
 
 echo "🚀 Bickford Startup Automation"
-echo "=============================="
 echo ""
 
 ENV_FILE="packages/bickford/.env"
@@ -15,7 +14,6 @@ if [ ! -f "$ENV_FILE" ]; then
 trap 'echo "❌ Error on line $LINENO"; bash scripts/auto-recover.sh 2>/dev/null || true; exit 1' ERR
 
 echo "🚀 Bickford Startup with Auto-Recovery"
-echo "======================================="
 echo ""
 
 # Run initial recovery check

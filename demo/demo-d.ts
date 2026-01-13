@@ -40,9 +40,7 @@ function pause(): void {
   // In automated demo, we skip actual pause
 }
 
-// ============================================================================
 // SCREEN 1: THE ADVERSARIAL PROBLEM
-// ============================================================================
 function screen1(): void {
   console.clear();
   box('DEMO D: ADVERSARIAL AGENT INJECTION ATTEMPT', 80);
@@ -75,9 +73,7 @@ function screen1(): void {
   pause();
 }
 
-// ============================================================================
 // SCREEN 2: BASELINE MISSION STATE
-// ============================================================================
 function screen2(): void {
   console.clear();
   box('SCREEN 2: BASELINE MISSION STATE', 80);
@@ -107,9 +103,7 @@ function screen2(): void {
   pause();
 }
 
-// ============================================================================
 // SCREEN 3: ADVERSARY ENTERS
-// ============================================================================
 function screen3(): void {
   console.clear();
   box('SCREEN 3: ADVERSARY INJECTION', 80);
@@ -141,9 +135,7 @@ function screen3(): void {
   pause();
 }
 
-// ============================================================================
 // SCREEN 4: FIRST ATTACK ATTEMPT
-// ============================================================================
 function screen4(): void {
   console.clear();
   box('SCREEN 4: ADVERSARIAL ACTION PROPOSED', 80);
@@ -191,9 +183,7 @@ function screen4(): void {
   pause();
 }
 
-// ============================================================================
 // SCREEN 5: SECOND ATTACK ATTEMPT
-// ============================================================================
 function screen5(): void {
   console.clear();
   box('SCREEN 5: ADVERSARY ADAPTS', 80);
@@ -237,9 +227,7 @@ function screen5(): void {
   pause();
 }
 
-// ============================================================================
 // SCREEN 6: MISSION OUTCOME
-// ============================================================================
 function screen6(): void {
   console.clear();
   box('SCREEN 6: MISSION OUTCOME', 80);
@@ -272,9 +260,7 @@ function screen6(): void {
   pause();
 }
 
-// ============================================================================
 // SCREEN 7: KEY TAKEAWAY
-// ============================================================================
 function screen7(): void {
   console.clear();
   box('SCREEN 7: ADVERSARIAL ROBUSTNESS VIA STRUCTURE', 80);
@@ -328,9 +314,7 @@ function screen7(): void {
   console.log('');
 }
 
-// ============================================================================
 // MAIN
-// ============================================================================
 async function main() {
   screen1();
   screen2();

@@ -2,7 +2,6 @@
 set -euo pipefail
 
 echo "🔍 System Diagnostics"
-echo "===================="
 echo ""
 
 # Check 1: Node.js version
