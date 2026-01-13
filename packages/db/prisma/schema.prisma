@@ -67,6 +67,7 @@ model ChatMessage {
   author    ChatAuthor
   text      String
   createdAt DateTime   @default(now())
+  resolution ChatResolution @default(CAPTURED)
 
   // ─────────────────────────────────────────────
   // Relations required by existing canon models

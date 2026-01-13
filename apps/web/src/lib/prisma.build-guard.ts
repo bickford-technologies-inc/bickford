@@ -6,16 +6,15 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const prismaFile = path.resolve(
-  process.cwd(),
-  "src/lib/prisma.ts"
-);
+const prismaFile = path.resolve(process.cwd(), "src/lib/prisma.ts");
 
 const source = fs.readFileSync(prismaFile, "utf8");
 
 // Canonical export check
-if (!source.includes("export const prisma")) {
-  console.error("❌ prisma.ts must export `prisma`");
+if (!/export\s+(\{[^}]*\bprisma\b[^}]*\}|const\s+prisma)/.test(source)) {
+  console.error(
+    "❌ prisma.ts must export `prisma` (directly or via re-export)"
+  );
   process.exit(1);
 }
 
@@ -26,7 +25,7 @@ if (source.includes("getPrisma")) {
 }
 
 // Runtime safety: Prisma must never run on edge
-if (source.includes("runtime = \"edge\"") || source.includes("runtime=\"edge\"")) {
+if (source.includes('runtime = "edge"') || source.includes('runtime="edge"')) {
   console.error("❌ Prisma cannot be used in Edge runtime");
   process.exit(1);
 }

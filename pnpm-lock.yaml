@@ -309,6 +309,16 @@ importers:
 
   packages/credentials: {}
 
+  packages/db:
+    dependencies:
+      '@prisma/client':
+        specifier: 6.19.2
+        version: 6.19.2(prisma@6.19.2(typescript@5.9.3))(typescript@5.9.3)
+    devDependencies:
+      prisma:
+        specifier: 6.19.2
+        version: 6.19.2(typescript@5.9.3)
+
   packages/demo-dashboard:
     dependencies:
       '@eslint/js':
