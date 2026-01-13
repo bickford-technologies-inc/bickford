@@ -27,7 +27,7 @@
   "timestamp": "2025-12-21T14:41:00-05:00",
   "locked": true,
   "dependencies": {
-    "@bickford/types": "*"
+    "@bickford/types": "workspace:*"
   },
   "devDependencies": {    "tsx": "^4.7.0",    "typescript": "^5.9.3"
   }
