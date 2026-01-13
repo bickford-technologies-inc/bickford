@@ -3,8 +3,12 @@
   "compilerOptions": {
     "composite": true,
     "declaration": true,
-    "outDir": "dist",
-    "jsx": "react-jsx"
+    "outDir": "../dist",
+    "jsx": "react-jsx",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    }
   },
   "include": [
     "next-env.d.ts",
