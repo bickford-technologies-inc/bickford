@@ -1,4 +1,4 @@
-import { prisma } from "@bickford/ledger/db";
+import { prisma } from "@bickford/ledger";
 
 export async function POST(req: Request) {
   try {
