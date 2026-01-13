@@ -63,10 +63,10 @@ model ChatThread {
 }
 
 model ChatMessage {
-  id        String   @id @default(cuid())
-  author    String
+  id        String     @id @default(cuid())
+  author    ChatAuthor
   text      String
-  createdAt DateTime @default(now())
+  createdAt DateTime   @default(now())
 
   // ─────────────────────────────────────────────
   // Relations required by existing canon models
