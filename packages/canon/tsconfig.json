@@ -1,12 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "declaration": true,
-    "declarationDir": "dist",
-    "rootDir": "src",
-    "outDir": "dist"
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "baseUrl": ".",
+    "paths": {
+      "@bickford/*": ["../*/src"]
+    }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }
