@@ -14,6 +14,8 @@ export type Decision = {
   intent: string;
   timestamp: string;
   denied?: boolean;
+  outcome?: string;
+  reason?: string;
 };
 
 export type LedgerEntry = {
@@ -103,6 +105,7 @@ export interface DbConfig {
   url: string;
   readReplicaUrl?: string;
   ssl?: boolean;
+  connectionString?: string;
   // Read-replica configuration
   readReplica?: {
     enabled: boolean;
