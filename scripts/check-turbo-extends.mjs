@@ -26,7 +26,7 @@ function walk(dir) {
   return results;
 }
 
-const bad = walk(process.cwd()).filter(file => {
+const bad = walk(process.cwd()).filter((file) => {
   const json = JSON.parse(fs.readFileSync(file, "utf8"));
   return !Array.isArray(json.extends) || !json.extends.includes("//");
 });
