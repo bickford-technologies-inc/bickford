@@ -9,12 +9,8 @@
  * - Structured denial payloads with stable taxonomy
  */
 
-import {
-  WhyNotTrace,
-  DeniedDecisionPayload,
-  Action,
-} from "@bickford/bickford/src/canon/types";
-import { persistDeniedDecision } from "../../../bickford/src/canon/denials/persistDeniedDecision";
+import { WhyNotTrace, DeniedDecisionPayload, Action } from "@bickford/types";
+import { persistDeniedDecision } from "@bickford/bickford";
 
 /**
  * Mechanically deny an action and persist to ledger

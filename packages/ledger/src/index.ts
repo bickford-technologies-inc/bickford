@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { Intent, LedgerEntry } from "@bickford/types";
+import { Intent, LedgerEntry, Decision } from "@bickford/types";
 import { prisma, assertNodeRuntime } from "./db";
 
 // Ensure we're running in Node.js
