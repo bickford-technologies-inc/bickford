@@ -11,13 +11,7 @@ declare global {
   var __bickfordPrisma: PrismaClient | undefined;
 }
 
-export const prisma =
-  globalThis.__bickfordPrisma ??
-  new PrismaClient(
-    process.env.VERCEL
-      ? {} // Let Prisma auto-select engine on Vercel
-      : { engineType: "client" }
-  );
+export { prisma } from "@bickford/db";
 
 if (process.env.NODE_ENV !== "production") {
   globalThis.__bickfordPrisma = prisma;
