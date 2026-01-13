@@ -3,7 +3,6 @@
 set -e
 
 echo "🚂 Bickford Railway Setup Automation"
-echo "===================================="
 echo ""
 
 # Colors
@@ -84,7 +83,6 @@ if DOMAIN=$(railway domain 2>&1); then
     echo -e "${GREEN}✓ Domain generated: ${DOMAIN}${NC}"
     echo ""
     
-    echo "===================================="
     echo -e "${GREEN}✓ Setup Complete!${NC}"
     echo ""
     echo "Your Bickford deployment:"
@@ -102,7 +100,6 @@ else
     echo -e "${YELLOW}⚠ Domain generation failed or not ready yet${NC}"
     echo ""
     
-    echo "===================================="
     echo -e "${GREEN}✓ Setup Complete!${NC}"
     echo ""
     echo "Railway project created and deployment initiated."

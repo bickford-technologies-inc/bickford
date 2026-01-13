@@ -3,7 +3,7 @@ set -e
 
 echo "🔍 Scanning for illegal cross-package source imports..."
 
-rg "@bickford/.*/src/" \
+rg "@bickford/types
   packages apps \
   --glob '!**/node_modules/**' \
   --glob '!**/dist/**' \

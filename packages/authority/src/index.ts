@@ -9,16 +9,17 @@ export function authorize(intent: Intent): Decision {
   // Basic validation
   if (!intent || !intent.action) {
     return {
-      outcome: "DENY",
-      reason: "Invalid intent: missing action",
+      id: crypto.randomUUID(),
+      intent: "DENY",
       timestamp: new Date().toISOString(),
+      denied: true,
     };
   }
 
   // For now, allow all valid intents
   return {
-    outcome: "ALLOW",
-    reason: "Intent authorized",
+    id: crypto.randomUUID(),
+    intent: "ALLOW",
     timestamp: new Date().toISOString(),
   };
 }

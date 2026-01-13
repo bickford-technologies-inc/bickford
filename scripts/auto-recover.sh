@@ -2,7 +2,6 @@
 set -euo pipefail
 
 echo "🔧 Auto-Recovery System"
-echo "======================="
 echo ""
 
 # Function to check if services are healthy
@@ -120,7 +119,6 @@ fi
 
 echo ""
 echo "📊 Recovery Summary"
-echo "==================="
 echo "Backend:  $(if $backend_healthy; then echo "✅ Healthy"; else echo "❌ Still unhealthy"; fi)"
 echo "Frontend: $(if $frontend_healthy; then echo "✅ Healthy"; else echo "❌ Still unhealthy"; fi)"
 echo ""

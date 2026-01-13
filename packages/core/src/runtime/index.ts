@@ -1,6 +1,6 @@
 /**
  * Runtime Module - Chat v2 Execution Surface
- * 
+ *
  * Exports all runtime components for Chat v2:
  * - mode: Execution mode gating (live vs replay)
  * - execute: Forbid execution in replay mode

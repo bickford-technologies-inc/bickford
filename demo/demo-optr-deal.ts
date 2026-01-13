@@ -53,9 +53,7 @@ console.log('Current State: Legal review pending (Stage 1)');
 console.log('Target State: Deal closed, terms accepted');
 console.log('\n');
 
-// ============================================================================
 // SCREEN 1: CURRENT STATE ANALYSIS
-// ============================================================================
 section('SCREEN 1: CURRENT STATE ANALYSIS');
 
 const currentState = states.find(s => s.state === 'CURRENT');
@@ -81,9 +79,7 @@ console.log(`\n   Optimal Path T2V: ${weeksToReadable(optimalPath?.metadata.ttv_
 console.log(`   Expected Close Date: Late April 2026`);
 console.log(`   Critical Path: Legal approval → Warm intro → Initial call → Pilot → LOI → Close`);
 
-// ============================================================================
 // SCREEN 2: DECISION TREE (STAGE 1)
-// ============================================================================
 section('SCREEN 2: LEGAL REVIEW DECISION TREE');
 
 console.log('\n🔀 STAGE 1 OUTCOMES (Expected Dec 30, 2025):');
@@ -112,9 +108,7 @@ console.log('═'.repeat(100));
 console.log('RECOMMENDATION: Wait for Scenario A (70% probability). Do NOT pre-optimize for Scenario C.');
 console.log('═'.repeat(100));
 
-// ============================================================================
 // SCREEN 3: OPTIMAL PATH ENUMERATION
-// ============================================================================
 section('SCREEN 3: OPTIMAL PATH TO CLOSE (18 WEEKS)');
 
 console.log('\n🎯 ADMISSIBLE PATH (Maximizes probability × minimizes T2V):');
@@ -146,9 +140,7 @@ console.log('TOTAL T2V: 18 weeks (126 days) from legal approval to close');
 console.log('Success Probability: 0.70 × 0.60 × 0.50 × 0.70 × 0.80 = 16.8% (base case)');
 console.log('═'.repeat(100));
 
-// ============================================================================
 // SCREEN 4: INADMISSIBLE PATHS (WHY-NOT ANALYSIS)
-// ============================================================================
 section('SCREEN 4: INADMISSIBLE PATHS (OPTR DENIAL TRACES)');
 
 console.log('\n🚫 ACTIONS DENIED BY NON-INTERFERENCE INVARIANT:');
@@ -168,9 +160,7 @@ console.log('═'.repeat(100));
 console.log('KEY INSIGHT: Actions that feel "faster" often increase total T2V or kill the deal entirely.');
 console.log('═'.repeat(100));
 
-// ============================================================================
 // SCREEN 5: CRITICAL GATES (PROMOTION CRITERIA)
-// ============================================================================
 section('SCREEN 5: CRITICAL GATES & PROMOTION CRITERIA');
 
 console.log('\nEach stage has a GATE that must be passed to proceed:');
@@ -199,9 +189,7 @@ console.log('═'.repeat(100));
 console.log('OPTR RULE: Each gate is a PROMOTION POINT. Cannot skip. Cannot reverse efficiently.');
 console.log('═'.repeat(100));
 
-// ============================================================================
 // SCREEN 6: RISK MITIGATION & CONTINGENCIES
-// ============================================================================
 section('SCREEN 6: RISK MITIGATION STRATEGIES');
 
 console.log('\n⚠️  HIGH-RISK GATES & CONTINGENCY PLANS:');
@@ -242,9 +230,7 @@ risks.forEach((risk, idx) => {
   console.log('');
 });
 
-// ============================================================================
 // SCREEN 7: AUTOMATED RECOMMENDATIONS (NEXT ACTIONS)
-// ============================================================================
 section('SCREEN 7: AUTOMATED OPTR RECOMMENDATIONS');
 
 console.log('\n🤖 SYSTEM-GENERATED ACTION PLAN:');
@@ -313,9 +299,7 @@ console.log('═'.repeat(100));
 console.log('TOTAL T2V REDUCTION FROM PARALLEL PREP: -9 days (1.3 weeks faster to close)');
 console.log('═'.repeat(100));
 
-// ============================================================================
 // FINAL SUMMARY
-// ============================================================================
 console.log('\n\n');
 box('OPTR ANALYSIS COMPLETE', 100);
 console.log('\n');

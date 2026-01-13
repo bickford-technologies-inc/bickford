@@ -29,16 +29,8 @@ export async function persistDeniedDecision(
       data: {
         ts: payload.ts,
         actionId: payload.actionId,
-        actionName: payload.actionName || null,
         tenantId: payload.tenantId!,
-        goal: payload.goal || null,
         reasonCodes: payload.reasonCodes,
-        missingCanonIds: payload.missingCanonIds || [],
-        violatedInvariantIds: payload.violatedInvariantIds || [],
-        requiredCanonRefs: payload.requiredCanonRefs || [],
-        message: payload.message,
-        context: payload.context ?? undefined,
-        optrRunId: payload.optrRunId || null,
       },
     });
 
@@ -88,16 +80,8 @@ export async function getDeniedDecisions(params: {
     return records.map((r) => ({
       ts: typeof r.ts === "string" ? r.ts : r.ts.toISOString(),
       actionId: r.actionId,
-      actionName: r.actionName || undefined,
       tenantId: r.tenantId,
-      goal: r.goal || undefined,
       reasonCodes: r.reasonCodes as any[],
-      missingCanonIds: r.missingCanonIds,
-      violatedInvariantIds: r.violatedInvariantIds,
-      requiredCanonRefs: r.requiredCanonRefs,
-      message: r.message,
-      context: r.context,
-      optrRunId: r.optrRunId || undefined,
       denied: true,
     }));
   } catch (error) {

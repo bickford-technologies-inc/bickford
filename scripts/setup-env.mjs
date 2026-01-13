@@ -12,7 +12,6 @@ const question = (q) => new Promise((resolve) => rl.question(q, resolve));
 
 async function setup() {
   console.log('🔧 Bickford Environment Setup');
-  console.log('==============================\n');
 
   const envFile = 'packages/bickford/.env';
   const envExample = 'packages/bickford/.env.example';

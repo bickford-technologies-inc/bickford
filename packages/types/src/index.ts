@@ -10,15 +10,10 @@ export type Intent = {
 };
 
 export type Decision = {
-  outcome: "ALLOW" | "DENY";
-  reason?: string; // Legacy field for backward compatibility with existing code
-  timestamp?: string;
-  // Non-interference specific fields
-  allowed?: boolean;
-  canonId?: string;
-  rationale?: string; // Detailed rationale for non-interference denials
-  violatedAgent?: AgentId;
-  deltaTTV?: number;
+  id: string;
+  intent: string;
+  timestamp: string;
+  denied?: boolean;
 };
 
 export type LedgerEntry = {
@@ -45,10 +40,12 @@ export type AgentId = string;
 export interface AgentContext {
   agentId: AgentId;
   ttvBaseline: number; // current expected TTV
+  environment: "local" | "ci" | "prod";
 }
 
 export interface InterferenceResult {
   allowed: boolean;
+  reason?: string;
   violatedAgent?: AgentId;
   deltaTTV?: number;
   rationale: string;
@@ -103,7 +100,8 @@ export interface AgentStateRow {
 
 // Database configuration types
 export interface DbConfig {
-  connectionString: string;
+  url: string;
+  readReplicaUrl?: string;
   ssl?: boolean;
   // Read-replica configuration
   readReplica?: {
@@ -119,3 +117,11 @@ export interface DbConfig {
 
 export * from "./optr";
 export * from "./canon";
+
+export type DeniedDecisionPayload = {
+  denied: true;
+  ts: string;
+  actionId: string;
+  tenantId: string;
+  reasonCodes: string[];
+};

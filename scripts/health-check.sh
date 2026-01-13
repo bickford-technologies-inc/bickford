@@ -2,7 +2,6 @@
 set -euo pipefail
 
 echo "🏥 Running health checks..."
-echo "=========================="
 echo ""
 
 # Check if backend is configured
@@ -42,7 +41,6 @@ fi
 echo ""
 echo "✅ Health check complete!"
 echo "🏥 Health Check"
-echo "==============="
 echo ""
 
 backend_healthy=false

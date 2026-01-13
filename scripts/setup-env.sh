@@ -4,7 +4,6 @@ set -euo pipefail
 trap 'echo "❌ Setup failed on line $LINENO"; exit 1' ERR
 
 echo "🔧 Bickford Environment Setup"
-echo "=============================="
 echo ""
 
 ENV_FILE="packages/bickford/.env"

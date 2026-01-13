@@ -43,13 +43,9 @@ model BuildEvent {
 }
 
 model DeployEvent {
-  id          String   @id
-  environment String
-  commitSha   String
-  deployedAt  DateTime @default(now())
-  ledgerHash  String
-  status      String
-  buildId     String? // Added for buildId support
+  id        String @id @default(uuid())
+  buildId   String
+  createdAt DateTime @default(now())
 }
 
 model ChatThread {
