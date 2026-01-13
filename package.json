@@ -1,8 +1,8 @@
 {
+  "packageManager": "pnpm@9.15.0",
   "name": "bickford",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "npm@10.8.2",
   "description": "Intent → Reality in <5 seconds. Zero-approval execution runtime with OPTR gating, canon enforcement, and immutable ledger.",
   "engines": {
     "node": "20.x",
