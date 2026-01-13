@@ -16,7 +16,7 @@ import {
   CandidateFeatures,
   Action,
 } from "@bickford/types";
-import { optrResolve } from "../../../bickford/src/canon/optr";
+import { optrResolve } from "@bickford/canon";
 import { mechanicalDenyBatch } from "../runtime/deny";
 
 /**

@@ -1,11 +1,11 @@
 /**
  * Chat Executor Runtime
- * 
+ *
  * Enforces execution mode invariants for chat operations.
  * Replay mode is read-only and must never trigger execution.
  */
 
-export type ExecutionMode = "normal" | "replay";
+import type { ExecutionMode } from "./mode";
 
 export interface ChatExecutorConfig {
   mode: ExecutionMode;
@@ -13,7 +13,7 @@ export interface ChatExecutorConfig {
 
 /**
  * Execute a chat operation.
- * 
+ *
  * @throws Error if mode is "replay" - replay mode is read-only
  */
 export function executeChatOperation(
@@ -23,7 +23,7 @@ export function executeChatOperation(
   if (config.mode === "replay") {
     throw new Error(
       "INVARIANT VIOLATION: Cannot execute operations in replay mode. " +
-      "Replay mode is side-effect free and read-only."
+        "Replay mode is side-effect free and read-only."
     );
   }
 
@@ -38,7 +38,7 @@ export function assertNotReplayMode(mode: ExecutionMode): void {
   if (mode === "replay") {
     throw new Error(
       "INVARIANT VIOLATION: Operation not allowed in replay mode. " +
-      "Replay mode is side-effect free and read-only."
+        "Replay mode is side-effect free and read-only."
     );
   }
 }

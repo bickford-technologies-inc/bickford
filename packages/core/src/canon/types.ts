@@ -2,7 +2,7 @@
  * Bickford Canon - Core Types
  * TIMESTAMP: 2025-12-21T14:41:00-05:00
  * LOCKED: This is canonical authority - changes require promotion gate
- * 
+ *
  * Mathematical foundation for Bickford decision framework.
  * Minimizes E[Time-to-Value] subject to invariant constraints.
  */
@@ -11,9 +11,9 @@ export type ISO8601 = string;
 
 export type Provenance = {
   source: "chat" | "repo" | "test" | "prod" | "import";
-  ref?: string;           // commit SHA, doc path, conversation id
-  author?: string;        // human or agent identity
-  hash?: string;          // sha256 of artifact
+  ref?: string; // commit SHA, doc path, conversation id
+  author?: string; // human or agent identity
+  hash?: string; // sha256 of artifact
 };
 
 export type CanonLevel = "EVIDENCE" | "PROPOSED" | "CANON";
@@ -21,7 +21,7 @@ export type CanonLevel = "EVIDENCE" | "PROPOSED" | "CANON";
 export type CanonItemBase = {
   id: string;
   title: string;
-  ts: ISO8601;            // MANDATORY (INV_TS_MANDATORY)
+  ts: ISO8601; // MANDATORY (INV_TS_MANDATORY)
   provenance: Provenance; // MANDATORY (INV_TS_MANDATORY)
   level: CanonLevel;
   notes?: string;
@@ -52,8 +52,8 @@ export type Action = {
   description: string;
   prerequisitesCanonIds: string[]; // Gates "second action too early"
   riskLevel: "LOW" | "MEDIUM" | "HIGH";
-  resourcesUsed?: string[];        // For non-interference check
-  sharedStateModified?: string[];  // For non-interference check
+  resourcesUsed?: string[]; // For non-interference check
+  sharedStateModified?: string[]; // For non-interference check
 };
 
 /**
@@ -74,7 +74,7 @@ export type WhyNotTrace = {
   ts: ISO8601;
   actionId: string;
   denied: true;
-  reasonCodes: DenialReasonCode[];  // STABLE TAXONOMY
+  reasonCodes: DenialReasonCode[]; // STABLE TAXONOMY
   missingCanonIds?: string[];
   violatedInvariantIds?: string[];
   requiredCanonRefs?: string[];
@@ -87,15 +87,23 @@ export type LedgerEvent = {
   ts: ISO8601;
   actor: string;
   tenantId: string;
-  kind: "INTENT" | "PLAN" | "ACTION" | "OBSERVATION" | "DENY" | "PROMOTION" | "STRUCTURE_UPDATE" | "SESSION_COMPLETION";
+  kind:
+    | "INTENT"
+    | "PLAN"
+    | "ACTION"
+    | "OBSERVATION"
+    | "DENY"
+    | "PROMOTION"
+    | "STRUCTURE_UPDATE"
+    | "SESSION_COMPLETION";
   payload: any;
   provenance: Provenance;
 };
 
 export type PromotionTests = {
-  resistance: boolean;        // A: failure was possible
-  reproducible: boolean;      // B: stable across trials
-  invariantSafe: boolean;     // C: no invariant violations
+  resistance: boolean; // A: failure was possible
+  reproducible: boolean; // B: stable across trials
+  invariantSafe: boolean; // C: no invariant violations
   feasibilityImpact: boolean; // D: changes admissible set
   evidenceRefs: string[];
 };
@@ -111,11 +119,11 @@ export type PromotionDecision = {
 };
 
 export type OPTRScore = {
-  ttv: number;                // Expected Time-to-Value
+  ttv: number; // Expected Time-to-Value
   cost: number;
   risk: number;
   successProb: number;
-  total: number;              // ttv + λC·cost + λR·risk − λP·log(p)
+  total: number; // ttv + λC·cost + λR·risk − λP·log(p)
   components: Record<string, number>;
 };
 
@@ -146,7 +154,7 @@ export type OPTRRun = {
   selectedPathId?: string;
   selectedNextActionId?: string;
   denyTraces?: WhyNotTrace[];
-  canonRefsUsed: string[];    // REQUIRED: authority boundary
+  canonRefsUsed: string[]; // REQUIRED: authority boundary
 };
 
 /**

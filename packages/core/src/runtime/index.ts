@@ -11,4 +11,5 @@
 export * from "./mode";
 export * from "./execute";
 export * from "./context";
+// Do not re-export ExecutionMode from chatExecutor to avoid duplicate export
 export * from "./chatExecutor";
