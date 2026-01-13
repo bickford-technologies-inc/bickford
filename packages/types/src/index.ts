@@ -124,4 +124,5 @@ export type DeniedDecisionPayload = {
   actionId: string;
   tenantId: string;
   reasonCodes: string[];
+  message: string;
 };

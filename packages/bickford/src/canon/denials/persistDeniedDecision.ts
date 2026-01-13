@@ -31,6 +31,7 @@ export async function persistDeniedDecision(
         actionId: payload.actionId,
         tenantId: payload.tenantId!,
         reasonCodes: payload.reasonCodes,
+        message: payload.message,
       },
     });
 
@@ -81,8 +82,9 @@ export async function getDeniedDecisions(params: {
       ts: typeof r.ts === "string" ? r.ts : r.ts.toISOString(),
       actionId: r.actionId,
       tenantId: r.tenantId,
-      reasonCodes: r.reasonCodes as any[],
+      reasonCodes: r.reasonCodes,
       denied: true,
+      message: r.message || "Denied decision record",
     }));
   } catch (error) {
     await prisma.$disconnect();
