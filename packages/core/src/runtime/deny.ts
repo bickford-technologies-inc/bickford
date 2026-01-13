@@ -1,7 +1,7 @@
 /**
  * Mechanical Denial Runtime (Phase 3: Trust UX)
  * TIMESTAMP: 2026-01-12T21:35:00Z
- * 
+ *
  * Enforces mechanical denial with automatic ledger persistence.
  * Guarantees:
  * - No silent denials
@@ -14,11 +14,11 @@ import {
   DeniedDecisionPayload,
   Action,
 } from "@bickford/bickford/src/canon/types";
-import { persistDeniedDecision } from "@bickford/bickford/src/canon/denials/persistDeniedDecision";
+import { persistDeniedDecision } from "../../../bickford/src/canon/denials/persistDeniedDecision";
 
 /**
  * Mechanically deny an action and persist to ledger
- * 
+ *
  * This is the canonical denial function - all denials MUST flow through here
  * to ensure ledger persistence and trust UX guarantees.
  */
@@ -64,7 +64,7 @@ export async function mechanicalDeny(params: {
 
 /**
  * Batch deny multiple traces (e.g., from OPTR run)
- * 
+ *
  * Persists all denials in parallel for efficiency.
  */
 export async function mechanicalDenyBatch(params: {

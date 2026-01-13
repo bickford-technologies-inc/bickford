@@ -10,11 +10,11 @@ import {
   verifyTokenStreamProof,
   sealChatItem,
   finalizeChatItem,
-  
+
   // OPTR functions
   ingestCanonAsConstraints,
   applyPathConstraints,
-  
+
   // Types
   Action,
   CandidatePath,
@@ -69,8 +69,14 @@ const context2 = createExecutionContext({
   environment: { version: "1.0.0" },
 });
 
-assert(context1.contextHash === context2.contextHash, "Same inputs produce same context hash");
-assert(context1.contextHash.length === 64, "Context hash is SHA256 (64 hex chars)");
+assert(
+  context1.contextHash === context2.contextHash,
+  "Same inputs produce same context hash"
+);
+assert(
+  context1.contextHash.length === 64,
+  "Context hash is SHA256 (64 hex chars)"
+);
 
 // Test 2: Token Stream Proof Verification
 console.log("\nTest 2: Token Stream Proof Verification");
@@ -137,7 +143,10 @@ const denyTrace = {
 const panelData = formatWhyNotPanel(denyTrace);
 assert(panelData.title === "Action Denied", "Panel has correct title");
 assert(panelData.denialReasons.length === 1, "Panel includes denial reasons");
-assert(panelData.missingPrerequisites.length === 1, "Panel includes missing prereqs");
+assert(
+  panelData.missingPrerequisites.length === 1,
+  "Panel includes missing prereqs"
+);
 assert(panelData.proofHash.length === 64, "Panel includes proof hash");
 
 // Test 5: Denied Decision Proof

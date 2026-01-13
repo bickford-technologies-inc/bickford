@@ -2,13 +2,13 @@
 /**
  * Bickford Demo: Phase 3 Trust UX - Denial Ledger & WhyNot
  * TIMESTAMP: 2026-01-12T21:35:00Z
- * 
+ *
  * Demonstrates:
  * - Denial creation via gate functions
  * - Mechanical denial persistence
  * - WhyNot trace structure
  * - Replayable explanations
- * 
+ *
  * This is a simplified demonstration that doesn't require a database.
  */
 
@@ -64,7 +64,9 @@ const action3: Action = {
 console.log("\n\n🚪 SCREEN 1: Gate Functions (Denial Creation)\n");
 console.log("─".repeat(80));
 
-console.log("\n1️⃣  Testing gateSecondActionTooEarly (missing prerequisites):\n");
+console.log(
+  "\n1️⃣  Testing gateSecondActionTooEarly (missing prerequisites):\n"
+);
 
 const canonPresent = new Set(["canon-load-tests"]); // Missing security-review
 
@@ -80,7 +82,9 @@ if (denial1) {
   console.log("   ✅ Approved");
 }
 
-console.log("\n2️⃣  Testing gateAuthorityBoundary (missing canon references):\n");
+console.log(
+  "\n2️⃣  Testing gateAuthorityBoundary (missing canon references):\n"
+);
 
 const canonStore = new Map([
   ["canon-load-tests", { level: "CANON" }],
@@ -248,5 +252,8 @@ console.log("     → GitHub Actions enforces on every PR\n");
 console.log("\n" + "═".repeat(80));
 console.log("  ✅ PHASE 3 COMPLETE: Trust UX mechanically enforced");
 console.log("  Total denials in demo: " + collectedDenials.length);
-console.log("  Reason codes used: " + new Set(collectedDenials.flatMap(d => d.reasonCodes)).size);
+console.log(
+  "  Reason codes used: " +
+    new Set(collectedDenials.flatMap((d) => d.reasonCodes)).size
+);
 console.log("═".repeat(80) + "\n");

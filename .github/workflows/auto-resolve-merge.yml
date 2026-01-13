@@ -1,0 +1,47 @@
+name: Auto Resolve Merge Conflicts
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "bickford-bot"
+          git config user.email "bot@bickford.dev"
+
+      - name: Merge main into PR branch
+        run: |
+          git fetch origin main
+          git merge origin/main || true
+
+      - name: Remove merge markers (mechanical only)
+        run: |
+          if rg "<<<<<<<|=======|>>>>>>>" .; then
+            echo "❌ Merge markers detected"
+            exit 1
+          fi
+
+      - name: Install dependencies (lockfile regen)
+        run: |
+          npm install --ignore-scripts
+
+      - name: Commit resolved state
+        run: |
+          git add .
+          git commit -m "chore(auto): resolve merge conflicts + regenerate lockfile" || echo "Nothing to commit"
+          git push

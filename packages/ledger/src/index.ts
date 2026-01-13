@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { Intent, Decision, LedgerEntry, LedgerRow } from "@bickford/types";
+import { Intent, LedgerEntry } from "@bickford/types";
 import { prisma, assertNodeRuntime } from "./db";
 
 // Ensure we're running in Node.js
@@ -57,10 +57,11 @@ export async function recordBuildEvent(
 ): Promise<{ id: string; ledgerHash: string | null }> {
   // crypto.randomUUID() is available in Node.js 14.17.0+
   // For older versions, fallback to timestamp-based ID
-  const id = typeof crypto.randomUUID === 'function' 
-    ? crypto.randomUUID() 
-    : `build-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  
+  const id =
+    typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `build-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
   const event = await prisma.buildEvent.create({
     data: {
       id,
@@ -76,11 +77,19 @@ export async function recordBuildEvent(
   let ledgerHash: string | null = null;
   if (status === "success") {
     const ledgerEntry = await appendLedger(
-      { action: "build", context: { commitSha, branch }, timestamp: new Date().toISOString() },
-      { outcome: "ALLOW", reason: "Build succeeded", timestamp: new Date().toISOString() }
+      {
+        action: "build",
+        context: { commitSha, branch },
+        timestamp: new Date().toISOString(),
+      },
+      {
+        outcome: "ALLOW",
+        reason: "Build succeeded",
+        timestamp: new Date().toISOString(),
+      }
     );
     ledgerHash = ledgerEntry.hash;
-    
+
     // Update build event with ledger hash
     await prisma.buildEvent.update({
       where: { id },
@@ -102,15 +111,15 @@ export async function recordDeployEvent(
 
   // MANDATORY: Create ledger proof for deploy
   const ledgerEntry = await appendLedger(
-    { 
-      action: "deploy", 
-      context: { commitSha, environment, buildId }, 
-      timestamp: new Date().toISOString() 
+    {
+      action: "deploy",
+      context: { commitSha, environment, buildId },
+      timestamp: new Date().toISOString(),
     },
-    { 
-      outcome: status === "success" ? "ALLOW" : "DENY", 
-      reason: `Deploy ${status}`, 
-      timestamp: new Date().toISOString() 
+    {
+      outcome: status === "success" ? "ALLOW" : "DENY",
+      reason: `Deploy ${status}`,
+      timestamp: new Date().toISOString(),
     }
   );
 
@@ -134,7 +143,10 @@ export async function recordSchemaChange(
   schemaContent: string,
   migrationName?: string
 ): Promise<{ schemaHash: string; ledgerHash: string }> {
-  const schemaHash = crypto.createHash("sha256").update(schemaContent).digest("hex");
+  const schemaHash = crypto
+    .createHash("sha256")
+    .update(schemaContent)
+    .digest("hex");
 
   // Get previous version for hashchain
   const previousVersion = await prisma.schemaVersion.findFirst({
@@ -143,15 +155,15 @@ export async function recordSchemaChange(
 
   // Create ledger proof
   const ledgerEntry = await appendLedger(
-    { 
-      action: "schema_change", 
-      context: { schemaHash, migrationName }, 
-      timestamp: new Date().toISOString() 
+    {
+      action: "schema_change",
+      context: { schemaHash, migrationName },
+      timestamp: new Date().toISOString(),
     },
-    { 
-      outcome: "ALLOW", 
-      reason: "Schema change recorded", 
-      timestamp: new Date().toISOString() 
+    {
+      outcome: "ALLOW",
+      reason: "Schema change recorded",
+      timestamp: new Date().toISOString(),
     }
   );
 

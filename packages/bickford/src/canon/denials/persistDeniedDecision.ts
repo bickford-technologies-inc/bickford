@@ -1,7 +1,7 @@
 /**
  * Denied Decision Persistence (Phase 3: Trust UX)
  * TIMESTAMP: 2026-01-12T21:35:00Z
- * 
+ *
  * Ledgers denied decisions for replayable WhyNot explanations.
  * Guarantees: No silent denials, every denial is persisted and replayable.
  */
@@ -10,7 +10,7 @@ import { DeniedDecisionPayload } from "../types";
 
 /**
  * Persist a denied decision to the ledger
- * 
+ *
  * Guarantees:
  * - Every denial is ledgered
  * - Replayable with stable reason codes
@@ -50,10 +50,10 @@ export async function persistDeniedDecision(
     };
   } catch (error) {
     await prisma.$disconnect();
-    
+
     // Log error but don't throw - denial tracking failure should not block execution
     console.error("Failed to persist denied decision:", error);
-    
+
     return {
       id: "",
       success: false,
@@ -104,5 +104,4 @@ export async function getDeniedDecisions(params: {
     console.error("Failed to retrieve denied decisions:", error);
     return [];
   }
-}
 }

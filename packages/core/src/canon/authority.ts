@@ -1,4 +1,4 @@
-import { Intent, Decision } from "@bickford/types";
+import { Intent } from "@bickford/types";
 
 /**
  * Authorization logic for intent validation and decision

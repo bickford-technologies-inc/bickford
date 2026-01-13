@@ -11,6 +11,7 @@
   "scripts": {
     "start": "bash scripts/setup.sh && npm run dev",
     "dev": "turbo run dev --filter=web",
+    "prebuild": "rg '<<<<<<<|=======|>>>>>>>' . && exit 1 || true",
     "build": "prisma generate && turbo run build",
     "prisma:generate": "prisma generate",
     "test": "turbo run test",
