@@ -12,7 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // 🔒 ABSOLUTE PATH to the root-generated Prisma Client
 const ROOT_PRISMA_CLIENT = path.resolve(
   __dirname,
-  "../node_modules/.prisma/client"
+  "../node_modules/.prisma/client/index.js"
 );
 
 let PrismaClient;
