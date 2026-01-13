@@ -152,7 +152,9 @@
   "pnpm": {
     "neverBuiltDependencies": [],
     "overrides": {
-      "@bickford/*": "workspace:*"
+      "@bickford/*": "workspace:*",
+      "vite-plugin-pwa": "0.19.8",
+      "workbox-build": "6.5.4"
     }
   }
 }
