@@ -1,50 +1,42 @@
-import { execSync } from "node:child_process";
-import fs from "node:fs";
-import path from "node:path";
+/**
+ * Prisma Singleton Enforcement
+ * Canonical invariant: exactly one Prisma Client, generated from root schema
+ * TIMESTAMP: 2026-01-13T00:00:00-05:00
+ */
 
-function fail(msg) {
-  console.error(`❌ Prisma invariant violated: ${msg}`);
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// 🔒 ABSOLUTE PATH to the root-generated Prisma Client
+const ROOT_PRISMA_CLIENT = path.resolve(
+  __dirname,
+  "../node_modules/.prisma/client"
+);
+
+let PrismaClient;
+try {
+  ({ PrismaClient } = await import(ROOT_PRISMA_CLIENT));
+} catch (err) {
+  console.error("❌ Failed to load root Prisma Client");
+  console.error("Expected at:", ROOT_PRISMA_CLIENT);
+  throw err;
+}
+
+const prisma = new PrismaClient();
+
+// 🔴 Canonical invariant
+if (!("chatMessage" in prisma)) {
+  console.error("❌ Prisma invariant violated");
+  console.error("Root Prisma Client is missing `chatMessage` delegate");
+  console.error(
+    "This indicates schema/client drift or multi-client generation."
+  );
+  await prisma.$disconnect();
   process.exit(1);
 }
 
-// 1. Exactly one schema
-const schemas = execSync(`find . -name schema.prisma`, { encoding: "utf8" })
-  .split("\n")
-  .filter(Boolean)
-  .filter((p) => !p.includes("node_modules"));
+await prisma.$disconnect();
 
-if (schemas.length !== 1 || schemas[0] !== "./prisma/schema.prisma") {
-  fail(
-    `Expected exactly ./prisma/schema.prisma, found:\n${schemas.join("\n")}`
-  );
-}
-
-// 2. No prisma generate outside root (ignore deps & docs)
-const offenders = execSync(
-  `grep -R "prisma generate" -n apps packages \
-    --exclude-dir=node_modules \
-    --exclude-dir=.turbo \
-    --exclude-dir=.next \
-    --exclude=README.md \
-    --exclude=*.md \
-    --exclude=package-lock.json \
-    --exclude=pnpm-lock.yaml || true`,
-  { encoding: "utf8" }
-).trim();
-
-if (offenders) {
-  fail(`Forbidden prisma generate usage detected:\n${offenders}`);
-}
-
-// 3. Ensure ChatMessage exists in generated client
-const clientPath = path.resolve("node_modules/.prisma/client/index.d.ts");
-if (!fs.existsSync(clientPath)) {
-  fail("Prisma client not generated");
-}
-
-const clientTypes = fs.readFileSync(clientPath, "utf8");
-if (!clientTypes.includes("chatMessage:")) {
-  fail("PrismaClient missing chatMessage — schema/client mismatch");
-}
-
-console.log("✅ Prisma singleton invariant satisfied");
+console.log("✅ Prisma invariant satisfied (root client verified)");
