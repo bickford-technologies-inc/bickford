@@ -4,7 +4,10 @@
     "declaration": true,
     "declarationDir": "dist",
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "@bickford/db": ["../../db/dist"]
+    }
   },
   "include": [
     "src"

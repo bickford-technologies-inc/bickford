@@ -16,6 +16,7 @@
   "author": "Bickford",
   "license": "PROPRIETARY",
   "dependencies": {
+    "@bickford/db": "workspace:*",
     "@bickford/types": "workspace:*",
     "pg": "^8.11.3",
     "@prisma/adapter-pg": "^7.2.0"

@@ -1,5 +1,5 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../db/dist/client";
 import { Pool } from "pg";
 import type { DbConfig } from "@bickford/types";
 
@@ -124,3 +124,5 @@ function createPrismaClient(config?: DbConfig) {
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 }
+
+export default prisma;
