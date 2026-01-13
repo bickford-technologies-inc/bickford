@@ -1,19 +1,34 @@
 /**
- * This file is imported ONLY in build-time tests.
- * If Prisma is ever instantiated at build time, CI must fail.
+ * Prisma Build Guard
+ * Enforces canonical Prisma access + runtime constraints
  */
-import { PrismaClient } from "@prisma/client";
 
-if (process.env.NEXT_PHASE === "phase-production-build") {
-  throw new Error(
-    "❌ PrismaClient must never be imported or constructed during next build."
-  );
-}
+import fs from "node:fs";
+import path from "node:path";
 
-// This file should NEVER be used at runtime
-void PrismaClient;
+const prismaFile = path.resolve(
+  process.cwd(),
+  "src/lib/prisma.ts"
+);
 
-if (source.includes("edge")) {
-  console.error("\u274C Prisma cannot run in edge runtime");
+const source = fs.readFileSync(prismaFile, "utf8");
+
+// Canonical export check
+if (!source.includes("export const prisma")) {
+  console.error("❌ prisma.ts must export `prisma`");
   process.exit(1);
 }
+
+// Forbidden abstraction
+if (source.includes("getPrisma")) {
+  console.error("❌ getPrisma is forbidden. Import `prisma` directly.");
+  process.exit(1);
+}
+
+// Runtime safety: Prisma must never run on edge
+if (source.includes("runtime = \"edge\"") || source.includes("runtime=\"edge\"")) {
+  console.error("❌ Prisma cannot be used in Edge runtime");
+  process.exit(1);
+}
+
+console.log("✅ Prisma build guard passed");
