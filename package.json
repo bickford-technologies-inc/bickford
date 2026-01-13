@@ -40,6 +40,7 @@
     "install:all": "npm install --workspaces",
     "install:ci": "npm ci --workspaces",
     "postinstall": "node -e \"const cp=require('node:child_process'); if(process.env.VERCEL||process.env.CI){console.log('postinstall: skipping monorepo build on CI/Vercel');} else {cp.execSync('npm run build',{stdio:'inherit'});}\"",
+    "postinstall:prisma-fix": "node scripts/fix-prisma-imports.mjs",
     "dev:old": "concurrently -n API,WEB,MOBILE -c auto \"npm run dev:api\" \"npm run dev:web\" \"npm run dev:mobile\"",
     "dev:api": "npm -w packages/session-completion-runtime run dev",
     "dev:web": "npm -w packages/web-ui run dev",

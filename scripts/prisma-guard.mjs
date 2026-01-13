@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Prisma Guard - CI Guard for Prisma Invariant Enforcement
- * 
+ *
  * Ensures:
  * 1. Single canonical schema at /prisma/schema.prisma
  * 2. Prisma Client is generated before build
@@ -72,7 +72,10 @@ function checkNoMultipleSchemas() {
   if (schemas.length > 1) {
     log("error", `Found ${schemas.length} schema files:`);
     schemas.forEach((s) => console.log(`  - ${s}`));
-    log("error", "INVARIANT VIOLATION: Only one canonical schema allowed at /prisma/schema.prisma");
+    log(
+      "error",
+      "INVARIANT VIOLATION: Only one canonical schema allowed at /prisma/schema.prisma"
+    );
     process.exit(1);
   }
 
@@ -100,7 +103,10 @@ function checkPrismaGenerated() {
 
   const prismaClientPath = join(PROJECT_ROOT, "node_modules/.prisma/client");
   if (!existsSync(prismaClientPath)) {
-    log("error", "Prisma Client not generated. Run 'npm run prisma:generate' first.");
+    log(
+      "error",
+      "Prisma Client not generated. Run 'npm run prisma:generate' first."
+    );
     process.exit(1);
   }
 
@@ -116,17 +122,38 @@ function checkSchemaOutput() {
   );
 
   // Normalize whitespace for comparison
-  const normalizedContent = schemaContent.replace(/\s+/g, ' ');
-  const expectedOutput = 'output = "../node_modules/.prisma/client"'.replace(/\s+/g, ' ');
+  const normalizedContent = schemaContent.replace(/\s+/g, " ");
+  const expectedOutput = 'output = "../node_modules/.prisma/client"'.replace(
+    /\s+/g,
+    " "
+  );
 
   if (!normalizedContent.includes(expectedOutput)) {
     log(
       "warn",
-      "Schema should specify output path: output = \"../node_modules/.prisma/client\""
+      'Schema should specify output path: output = "../node_modules/.prisma/client"'
     );
   } else {
     log("success", "Schema output configuration is correct");
   }
+}
+
+function checkPrismaExport() {
+  const prismaFile = path.resolve(process.cwd(), "apps/web/src/lib/prisma.ts");
+
+  const source = fs.readFileSync(prismaFile, "utf8");
+
+  if (!source.includes("export const prisma")) {
+    console.error("\u274C prisma.ts must export `prisma`");
+    process.exit(1);
+  }
+
+  if (source.includes("getPrisma")) {
+    console.error("\u274C getPrisma is forbidden. Import `prisma` directly.");
+    process.exit(1);
+  }
+
+  console.log("\u2705 Prisma build guard passed");
 }
 
 function main() {
@@ -137,6 +164,7 @@ function main() {
   checkSchemaValid();
   checkSchemaOutput();
   checkPrismaGenerated();
+  checkPrismaExport();
 
   console.log(`\n${GREEN}✓ All Prisma invariants satisfied${RESET}\n`);
 }
