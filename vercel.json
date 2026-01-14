@@ -1,0 +1,3 @@
+{
+  "buildCommand": "bash ci/guards/workspace-integrity.sh && pnpm run build"
+}

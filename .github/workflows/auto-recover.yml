@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: "20.x"
 
       - name: Install dependencies
         run: npm ci --workspaces
@@ -107,3 +107,10 @@ jobs:
           echo "Environment: ${{ github.event.deployment_status.environment }}"
           echo "Time: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
           echo "Please check deployment logs manually"
+
+      - name: Attempt auto-recovery if unhealthy
+        if: steps.health.outputs.healthy == 'false'
+        run: |
+          bash scripts/auto-recover.sh
+          # Optionally, redeploy with Vercel CLI if fixes applied
+          # npx vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}

@@ -2,21 +2,26 @@
  * Chat Replay API Route
  *
  * Deterministic, side-effect-free replay of chat threads.
- * INVARIANT: Replay mode cannot execute.
+ *
+ * INVARIANTS:
+ * - Replay mode MUST NOT execute
+ * - No rule mutation
+ * - No intent mutation
+ * - Only allowed write: lastReplayedAt
  *
  * Features:
  * - Read-only thread replay
  * - Rule linkage preservation
  * - Intent derivation replay
- * - No mutation of rules or execution state
+ * - Execution state visibility (non-executing)
  *
  * TIMESTAMP: 2026-02-08T00:00:00Z
  */
 
 export const dynamic = "force-dynamic";
 
-import { getPrisma } from "@bickford/db";
 import { NextRequest } from "next/server";
+import { getPrisma } from "@bickford/db";
 
 export async function GET(req: NextRequest) {
   const prisma = getPrisma();
@@ -30,8 +35,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // Fetch thread with messages, including rule linkage
-  // This is read-only and does NOT trigger execution
+  // 🔍 Read-only fetch (includes rule linkage, no execution)
   const thread = await prisma.chatThread.findUnique({
     where: { id: threadId },
     include: {
@@ -39,7 +43,7 @@ export async function GET(req: NextRequest) {
         include: {
           intent: {
             include: {
-              execution: true,
+              execution: true, // visibility only
             },
           },
           ruleEntry: true,
@@ -53,15 +57,14 @@ export async function GET(req: NextRequest) {
     return Response.json({ error: "Thread not found" }, { status: 404 });
   }
 
-  // Update lastReplayedAt timestamp (only DB write allowed in replay)
+  // ⏱️ Allowed replay telemetry write
   const now = new Date();
   await prisma.chatThread.update({
     where: { id: threadId },
     data: { lastReplayedAt: now },
   });
 
-  // Return thread with full rule linkage (side-effect free replay)
-  // Execution state is returned but NOT executed
+  // 📦 Deterministic replay payload
   return Response.json({
     mode: "replay",
     thread: {
