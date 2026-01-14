@@ -1,9 +1,10 @@
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
+  const prisma = getPrisma();
   const { intentId } = await req.json();
 
   const intent = await prisma.intent.findUniqueOrThrow({

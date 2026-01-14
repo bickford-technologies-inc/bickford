@@ -13,10 +13,11 @@
  * TIMESTAMP: 2026-02-08T00:00:00Z
  */
 
-import { prisma } from "@bickford/ledger";
+import { getPrisma } from "@bickford/ledger";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
+  const prisma = getPrisma();
   const searchParams = req.nextUrl.searchParams;
   const threadId = searchParams.get("threadId");
 

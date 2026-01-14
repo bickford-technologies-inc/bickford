@@ -8,21 +8,16 @@
 */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const Prisma = require("@prisma/client");
+let prisma: any = null;
 
-declare global {
-  // eslint-disable-next-line no-var
-  var __bickford_prisma__: InstanceType<typeof Prisma.PrismaClient> | undefined;
+export function getPrisma() {
+  if (!prisma) {
+    const Prisma = require("@prisma/client");
+    prisma = new Prisma.PrismaClient({
+      log: ["error", "warn"],
+    });
+  }
+  return prisma;
 }
-
-export const prisma =
-  global.__bickford_prisma__ ??
-  new Prisma.PrismaClient({
-    log: ["error", "warn"],
-  });
 
 export type { PrismaClient } from "@prisma/client";
-
-if (process.env.NODE_ENV !== "production") {
-  global.__bickford_prisma__ = prisma;
-}

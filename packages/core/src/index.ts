@@ -11,7 +11,7 @@
  */
 
 // OPTR Engine
-export * as optr from "./optr";
+export { resolvePath, selectPolicy } from "./optr";
 
 // Canon Authority
 export * as canon from "./canon";
@@ -26,5 +26,4 @@ export * as runtime from "./runtime";
 export { BICKFORD_CANON_VERSION, BICKFORD_CANON_TIMESTAMP } from "./canon";
 export * from "./canon";
 export * from "./ledger";
-export * from "./optr";
 export * from "./runtime";
