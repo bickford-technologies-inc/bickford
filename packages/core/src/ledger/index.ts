@@ -1,5 +1,10 @@
 import crypto from "crypto";
-import { Intent, LedgerEntry as LedgerType, Decision, LedgerRow } from "@bickford/types";
+import {
+  Intent,
+  LedgerEntry as LedgerType,
+  Decision,
+  LedgerRow,
+} from "@bickford/types";
 import { prisma } from "./db";
 
 export async function appendLedger(
