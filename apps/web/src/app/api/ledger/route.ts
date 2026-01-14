@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getLedger } from "@bickford/core/src/ledger";
-import { getPrismaClient } from "@bickford/core/src/ledger/db";
+import { getLedger } from "@bickford/ledger";
 
 export async function GET() {
   // Build / CI / static export guard
@@ -11,9 +10,6 @@ export async function GET() {
   ) {
     return NextResponse.json({ entries: [] });
   }
-
-  // Ensure Prisma client is initialized (for environments that require explicit init)
-  getPrismaClient();
 
   const entries = await getLedger();
   return NextResponse.json({ entries });
