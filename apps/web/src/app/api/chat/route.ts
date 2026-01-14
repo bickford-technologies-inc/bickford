@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { getPrisma } from "@/lib/prisma";
+import { getPrisma } from "@bickford/db";
 
 export async function POST(req: Request) {
   const prisma = getPrisma();
