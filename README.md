@@ -217,3 +217,11 @@ If any step fails, the consolidation is incomplete.
 ---
 
 This is the only supported merge path. All other routes are blocked by law.
+
+## Source-First Mode (Launch Default)
+
+All internal `@bickford/*` packages are consumed as source by the web app. Next.js transpiles all workspace dependencies via `transpilePackages` in `apps/web/next.config.mjs`.
+
+- No `dist/` output is required for web builds.
+- No package is required to emit `dist/index.js` for the web app.
+- This is the canonical invariant for launch velocity and reproducibility.
