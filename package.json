@@ -104,7 +104,8 @@
     "lint:imports": "node scripts/check-no-cross-src-imports.mjs",
     "lint:ts-geometry": "node scripts/check-ts-geometry.mjs",
     "ci": "pnpm lint:imports && pnpm lint:ts-geometry && pnpm -r run build",
-    "canon:paths": "node scripts/check-no-cwd-paths.ts"
+    "canon:paths": "node scripts/check-no-cwd-paths.ts",
+    "canon:bundle": "node scripts/check-web-deps.ts"
   },
   "workspaces": [
     "packages/*",

@@ -31,4 +31,14 @@ if (!pkg.name || pkg.name !== "@bickford/web") {
   );
 }
 
+const REQUIRED = ["@bickford/ledger", "@bickford/core", "@bickford/canon"];
+
+for (const dep of REQUIRED) {
+  if (!pkg.dependencies?.[dep]) {
+    throw new Error(
+      `[CANON_VIOLATION] web imports ${dep} but it is not declared in dependencies`
+    );
+  }
+}
+
 console.log("✔ check-web-deps: web package path and identity verified");
