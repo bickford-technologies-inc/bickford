@@ -62,6 +62,78 @@ function fixPrismaEagerInit() {
   }
 }
 
+// --- PRISMA CONTRACT + PURITY AUTO-FIXES ---
+function fixLedgerGetPrismaImports() {
+  const { execSync } = require("child_process");
+  try {
+    execSync(
+      `rg "getPrisma" apps/web -l | xargs sed -i 's|@bickford/ledger|@bickford/db|g'`,
+      { stdio: "inherit" }
+    );
+    console.log("✔ rewrote getPrisma imports from ledger → db");
+  } catch {
+    /* no-op */
+  }
+}
+
+function fixCanonIndexExports() {
+  const fs = require("fs");
+  const path = "packages/canon/src/index.ts";
+  if (!fs.existsSync(path)) return;
+
+  let src = fs.readFileSync(path, "utf8");
+
+  const forbidden = [
+    "persistDeniedDecision",
+    "DenialReasonCode",
+    "requireCanonRefs",
+    "optrResolve",
+  ];
+
+  forbidden.forEach((token) => {
+    src = src
+      .split("\n")
+      .filter((l) => !l.includes(token))
+      .join("\n");
+  });
+
+  fs.writeFileSync(path, src.trim() + "\n");
+  console.log("✔ removed dead canon re-exports");
+}
+
+function fixCorePrismaImports() {
+  const { execSync } = require("child_process");
+  try {
+    execSync(
+      `rg "import \\{ prisma \\} from \\\"@bickford/db\\\"" packages/core -l | xargs sed -i 's|import { prisma } from "@bickford/db"|import { getPrisma } from "@bickford/db"|g'`,
+      { stdio: "inherit" }
+    );
+    console.log("✔ replaced prisma imports with getPrisma in core");
+  } catch {
+    /* no-op */
+  }
+}
+
+function fixTopLevelGetPrismaCalls() {
+  const fs = require("fs");
+  const glob = require("glob");
+
+  const files = glob.sync("apps/web/src/app/api/**/route.ts");
+
+  for (const file of files) {
+    let src = fs.readFileSync(file, "utf8");
+
+    if (
+      src.includes("getPrisma()") &&
+      !src.match(/export\s+async\s+function/)
+    ) {
+      src = src.replace(/const\s+\w+\s*=\s*getPrisma\(\);?/g, "");
+      fs.writeFileSync(file, src);
+      console.log(`✔ removed top-level getPrisma() from ${file}`);
+    }
+  }
+}
+
 /* -----------------------------
    EXECUTION DISPATCH
 -------------------------------- */
@@ -82,6 +154,14 @@ export function applyFix(failureClass: string) {
 
     case "PRISMA_EAGER_INIT":
       fixPrismaEagerInit();
+      return;
+
+    case "PRISMA_RUNTIME_PURITY_VIOLATION":
+    case "PRISMA_ILLEGAL_IMPORT":
+      fixLedgerGetPrismaImports();
+      fixCanonIndexExports();
+      fixCorePrismaImports();
+      fixTopLevelGetPrismaCalls();
       return;
 
     default:
