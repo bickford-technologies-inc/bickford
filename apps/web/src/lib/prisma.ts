@@ -1,18 +1,14 @@
-/**
- * Canonical Prisma Client
- * Build-safe, Turbopack-safe, Prisma v7 compliant
- */
-
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@bickford/db";
 
 declare global {
-  // Prevent multiple instances in dev
   // eslint-disable-next-line no-var
-  var __bickfordPrisma: PrismaClient | undefined;
+  var __bickfordPrisma: typeof prisma | undefined;
 }
 
-export { prisma } from "@bickford/db";
+const db = globalThis.__bickfordPrisma ?? prisma;
 
 if (process.env.NODE_ENV !== "production") {
-  globalThis.__bickfordPrisma = prisma;
+  globalThis.__bickfordPrisma = db;
 }
+
+export { db as prisma };

@@ -19,7 +19,8 @@
     "@bickford/ui": "workspace:*",
     "@bickford/canon": "workspace:*",
     "@bickford/db": "workspace:*",
-    "next": "14.1.0"
+    "next": "14.1.0",
+    "@prisma/client": "6.19.2"
   },
   "devDependencies": {
     "@types/node": "^25.0.6",
