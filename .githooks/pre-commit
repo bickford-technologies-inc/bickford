@@ -1,0 +1,2 @@
+#!/bin/sh
+git grep -n '<<<<<<<\|=======\|>>>>>>>' -- . ':!*.githooks/pre-commit' ':!.github/workflows/*' && exit 1 || exit 0
