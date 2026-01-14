@@ -6,7 +6,6 @@ const nextConfig = {
     "@bickford/db",
     "@bickford/ledger",
     "@bickford/optr",
-    "@bickford/types",
     "@bickford/ui",
   ],
   experimental: {
