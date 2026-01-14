@@ -2,14 +2,11 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": [".next/**"]
     },
     "clean": {
       "outputs": []
-    }
-  },
-  "tasks": {
+    },
     "db:generate": {
       "outputs": ["packages/db/node_modules/.prisma/**"]
     },
@@ -22,7 +19,6 @@
       ]
     },
     "test": {
-      "dependsOn": ["^build"],
       "outputs": ["coverage/**"],
       "env": [
         "DATABASE_URL",
@@ -32,7 +28,6 @@
     },
     "prisma:generate": {},
     "prebuild": {
-      "dependsOn": ["^build"],
       "outputs": []
     }
   },
