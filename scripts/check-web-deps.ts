@@ -1,7 +1,9 @@
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
-const webPkgPath = path.join("apps", "web", "package.json");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const webPkgPath = path.join(__dirname, "..", "apps", "web", "package.json");
 const webPkg = JSON.parse(fs.readFileSync(webPkgPath, "utf-8"));
 
 const REQUIRED = [
