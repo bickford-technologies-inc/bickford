@@ -9,15 +9,12 @@ export async function GET() {
       active: true,
       version: "1.0.0",
       timestamp: new Date().toISOString(),
-      canonRefs: ["authority", "optr", "ledger"],
+      canonRefs: ["ui-surface-only"], // UI-safe placeholder
     };
 
     return Response.json(status);
   } catch (error) {
     console.error("Error in /api/canon:", error);
-    return Response.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
