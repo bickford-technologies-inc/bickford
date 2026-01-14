@@ -1,6 +1,7 @@
-import { prisma } from "@bickford/ledger";
+import { getPrisma } from "@bickford/ledger";
 
 export async function POST(req: Request) {
+  const prisma = getPrisma();
   try {
     const body = await req.json();
     const { agentId, ttvBaseline } = body;
@@ -40,6 +41,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
+  const prisma = getPrisma();
   try {
     const agents = await prisma.agentState.findMany();
     return Response.json(agents);

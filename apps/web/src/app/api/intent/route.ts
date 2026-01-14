@@ -1,6 +1,7 @@
-import { prisma } from "@bickford/ledger";
+import { getPrisma } from "@bickford/ledger";
 
 export async function POST(req: Request) {
+  const prisma = getPrisma();
   const { chatMessageId } = await req.json();
 
   const msg = await prisma.chatMessage.findUniqueOrThrow({
