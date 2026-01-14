@@ -1,20 +1,18 @@
 /** @type {import('next').NextConfig} */
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 const nextConfig = {
-  reactStrictMode: true,
   transpilePackages: [
-    "@bickford/core",
-    "@bickford/types",
     "@bickford/authority",
+    "@bickford/canon",
+    "@bickford/core",
+    "@bickford/db",
     "@bickford/ledger",
     "@bickford/optr",
+    "@bickford/types",
     "@bickford/ui",
   ],
-  // Removed webpack customization - packages resolve naturally through workspace protocol
+  experimental: {
+    externalDir: true,
+  },
 };
 
 export default nextConfig;
