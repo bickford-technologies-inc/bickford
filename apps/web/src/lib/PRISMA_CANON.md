@@ -2,7 +2,7 @@
 
 ## Allowed
 
-- Import `prisma` from `@/lib/prisma`
+- Import `prisma` from `@bickford/db`
 - Node.js runtime only
 - Prisma v7+
 
