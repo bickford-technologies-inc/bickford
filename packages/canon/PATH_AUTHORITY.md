@@ -17,8 +17,9 @@ All paths MUST be resolved structurally from the script location.
 ## Enforcement
 
 Any script accessing:
-- apps/*
-- packages/*
+
+- apps/\*
+- packages/\*
 - root config files
 
 MUST derive repo root via `import.meta.url`.
