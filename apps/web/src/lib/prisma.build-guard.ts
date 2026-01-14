@@ -38,4 +38,5 @@ if (/\bexport\s+.*prisma\b/.test(src)) {
   fail("No prisma symbol may be exported from web.");
 }
 
+console.log("CANON_PRISMA_001 enforced");
 console.log("✔ prisma.build-guard: getPrisma-only invariant satisfied");
