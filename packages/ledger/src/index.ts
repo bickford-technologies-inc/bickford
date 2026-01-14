@@ -175,3 +175,7 @@ export async function recordSchemaChange(
 }
 
 export * from "./db";
+export * from "./deploy";
+export * from "./edge";
+export * from "./ledgerEntry";
+export * from "./prisma";

@@ -23,3 +23,5 @@ export function authorize(intent: Intent): Decision {
     timestamp: new Date().toISOString(),
   };
 }
+
+export * from "./index";

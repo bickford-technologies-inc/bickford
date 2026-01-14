@@ -1,19 +1,17 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**"]
+    },
+    "clean": {
+      "outputs": []
+    }
+  },
+  "tasks": {
     "db:generate": {
       "outputs": ["packages/db/node_modules/.prisma/**"]
-    },
-    "build": {
-      "dependsOn": ["^build", "db:generate"],
-      "outputs": ["dist/**", ".next/**", "*.tsbuildinfo"],
-      "env": [
-        "DATABASE_URL",
-        "NODE_ENV",
-        "VERCEL",
-        "CI",
-        "NEXT_RUNTIME"
-      ]
     },
     "dev": {
       "cache": false,
