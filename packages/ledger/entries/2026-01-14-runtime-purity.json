@@ -1,0 +1,18 @@
+{
+  "id": "LEDGER-2026-01-14-RUNTIME-PURITY",
+  "timestamp": "2026-01-14T02:36:00-05:00",
+  "type": "CANON_PROMOTION",
+  "canon": [
+    "CANON-PRISMA-RUNTIME-ONLY",
+    "CANON-RUNTIME-SIDE-EFFECTS"
+  ],
+  "assertion": "All side-effectful capabilities are runtime-only",
+  "enforcement": [
+    "CI hard gate",
+    "Codemod auto-repair",
+    "OPTR path rejection"
+  ],
+  "scope": "org-wide",
+  "immutability": true,
+  "audit_ready": true
+}
