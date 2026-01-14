@@ -23,9 +23,7 @@ for (const file of files) {
     fail(`Illegal @prisma/client import in ${file}`);
   }
 
-  if (
-    /\b(prisma\s*=|new\s+PrismaClient|export\s+.*prisma)\b/.test(src)
-  ) {
+  if (/\b(prisma\s*=|new\s+PrismaClient|export\s+.*prisma)\b/.test(src)) {
     fail(`Illegal concrete Prisma usage in ${file}`);
   }
 }
