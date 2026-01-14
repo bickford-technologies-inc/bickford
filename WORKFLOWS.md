@@ -139,3 +139,30 @@ node scripts/check-types-parity.js
 - Fails with a clear message if any package is missing required @types/\*
 - Can be run locally or in CI
 - Script: `scripts/check-types-parity.js`
+
+# CI Guards: Canon Authority Boundary & Turbo Graph
+
+## Canon Authority Boundary Guard
+
+- Script: `ci/check-canon-boundaries.mjs`
+- Enforces:
+  - All workspace imports must have explicit `package.json` dependency
+  - All composite TS projects must reference imported workspace packages in `tsconfig.json`
+- Failure mode: Hard fail with precise error message
+
+## Turbo Graph Validator
+
+- Script: `ci/check-turbo-graph.mjs`
+- Enforces:
+  - All TS project references must be present in Turbo build graph (`turbo.json`)
+  - No missing or reverse dependencies
+- Failure mode: Hard fail with precise error message
+
+## Usage
+
+Add to CI pipeline:
+
+```sh
+node ci/check-canon-boundaries.mjs
+node ci/check-turbo-graph.mjs
+```
