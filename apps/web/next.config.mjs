@@ -3,7 +3,6 @@ const nextConfig = {
   transpilePackages: [
     "@bickford/authority",
     "@bickford/canon",
-    "@bickford/core",
     "@bickford/db",
     "@bickford/ledger",
     "@bickford/optr",
