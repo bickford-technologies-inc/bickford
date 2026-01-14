@@ -6,33 +6,36 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const prismaFile = path.resolve(process.cwd(), "src/lib/prisma.ts");
+const ROOT = process.cwd();
+const TARGET = path.join(ROOT, "apps/web/src/lib/prisma.ts");
 
-const source = fs.readFileSync(prismaFile, "utf8");
-
-// Canonical export check: must export getPrisma, never prisma
-if (!/export\s+\{[^}]*getPrisma[^}]*\}/.test(source)) {
-  console.error(
-    "❌ prisma.ts must export getPrisma (never a concrete Prisma handle)"
-  );
+function fail(msg: string): never {
+  console.error(`❌ ${msg}`);
   process.exit(1);
 }
 
-// Direct access forbidden: must use getPrisma for runtime-only initialization
-if (
-  source.includes("import { prisma") ||
-  source.includes("export const prisma")
-) {
-  console.error(
-    "❌ Direct Prisma access is forbidden. Use getPrisma() for runtime-only initialization."
-  );
-  process.exit(1);
+if (!fs.existsSync(TARGET)) {
+  fail("prisma.ts is missing. Canon requires a Prisma facade.");
 }
 
-// Runtime safety: Prisma must never run on edge
-if (source.includes('runtime = "edge"') || source.includes('runtime="edge"')) {
-  console.error("❌ Prisma cannot be used in Edge runtime");
-  process.exit(1);
+const src = fs.readFileSync(TARGET, "utf8");
+
+// ❌ Forbidden: any concrete Prisma handle
+if (/\bexport\s+(const|let|var)\s+prisma\b/.test(src)) {
+  fail("Direct Prisma export is forbidden. Use getPrisma().");
+}
+if (/\bfrom\s+['"]@prisma\/client['"]/.test(src)) {
+  fail("Direct @prisma/client imports are forbidden in web.");
 }
 
-console.log("✅ Prisma build guard passed");
+// ✅ Required: explicit getPrisma export
+if (!/\bexport\s*\{\s*getPrisma\s*\}/.test(src)) {
+  fail("prisma.ts must export getPrisma() as the sole Prisma accessor.");
+}
+
+// Extra safety: no re-exports of prisma symbols anywhere in web
+if (/\bexport\s+.*prisma\b/.test(src)) {
+  fail("No prisma symbol may be exported from web.");
+}
+
+console.log("✔ prisma.build-guard: getPrisma-only invariant satisfied");

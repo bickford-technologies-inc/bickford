@@ -1,3 +1,8 @@
 import { getPrisma } from "@bickford/db";
 
-// Canonical: do not export prisma directly. Use getPrisma() in each module as needed.
+/**
+ * Canonical Prisma access for web runtime.
+ * No concrete Prisma handle may be exported.
+ * Runtime-only, lazy initialization via getPrisma().
+ */
+export { getPrisma };
