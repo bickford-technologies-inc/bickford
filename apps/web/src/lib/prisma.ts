@@ -1,3 +1,3 @@
 import { getPrisma } from "@bickford/db";
 
-export const prisma = getPrisma();
+// Canonical: do not export prisma directly. Use getPrisma() in each module as needed.
