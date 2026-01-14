@@ -52,6 +52,9 @@ importers:
       redis:
         specifier: ^5.10.0
         version: 5.10.0
+      tsx:
+        specifier: 3.14.0
+        version: 3.14.0
       zod:
         specifier: ^4.3.5
         version: 4.3.5
@@ -125,9 +128,6 @@ importers:
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@25.0.8)(typescript@5.9.3)
-      tsx:
-        specifier: 3.14.0
-        version: 3.14.0
       turbo:
         specifier: ^2.7.4
         version: 2.7.4
