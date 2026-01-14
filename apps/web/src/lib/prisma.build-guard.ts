@@ -10,10 +10,10 @@ const prismaFile = path.resolve(process.cwd(), "src/lib/prisma.ts");
 
 const source = fs.readFileSync(prismaFile, "utf8");
 
-// Canonical export check
-if (!/export\s+(\{[^}]*\bprisma\b[^}]*\}|const\s+prisma)/.test(source)) {
+// Canonical export check: must export getPrisma, never prisma
+if (!/export\s+\{[^}]*getPrisma[^}]*\}/.test(source)) {
   console.error(
-    "❌ prisma.ts must export `prisma` (directly or via re-export)"
+    "❌ prisma.ts must export getPrisma (never a concrete Prisma handle)"
   );
   process.exit(1);
 }
