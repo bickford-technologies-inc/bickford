@@ -4,8 +4,15 @@
   "description": "OPTR scoring and non-interference evaluation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "lint": "npm run typecheck",
     "test": "echo 'No tests yet'"
@@ -22,5 +29,6 @@
   },
   "devDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+  "type": "module"
 }

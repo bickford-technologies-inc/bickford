@@ -4,8 +4,17 @@
   "description": "Bickford Ledger: Durable Prisma/Postgres persistence for intent-decision pairs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "test": "vitest run"
   },
   "keywords": [
@@ -25,19 +34,5 @@
     "tsx": "^4.7.0",
     "typescript": "^5.9.3"
   },
-  "exports": {
-    ".": {
-      "node": "./dist/index.js",
-      "edge": "./dist/edge.js",
-      "default": "./dist/index.js"
-    },
-    "./db": {
-      "node": "./dist/db.js",
-      "types": "./dist/db.d.ts"
-    },
-    "./types": {
-      "types": "./dist/types.d.ts",
-      "default": "./dist/types.js"
-    }
-  }
+  "type": "module"
 }

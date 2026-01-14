@@ -4,8 +4,15 @@
   "description": "Bickford Core: OPTR engine, Canon authority, and Ledger consolidated",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "lint": "npm run typecheck",
     "test": "echo 'No tests yet'"
@@ -32,5 +39,6 @@
     "@types/node": "^25.0.6",
     "tsx": "^4.7.0",
     "typescript": "^5.9.3"
-  }
+  },
+  "type": "module"
 }
