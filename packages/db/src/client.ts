@@ -21,6 +21,8 @@ export const prisma =
     log: ["error", "warn"],
   });
 
+export type { PrismaClient } from "@prisma/client";
+
 if (process.env.NODE_ENV !== "production") {
   global.__bickford_prisma__ = prisma;
 }

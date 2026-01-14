@@ -22,13 +22,13 @@
   "license": "PROPRIETARY",
   "dependencies": {
     "@bickford/types": "workspace:*",
+    "@bickford/canon": "workspace:*",
     "@prisma/adapter-pg": "^7.2.0",
     "pg": "^8.16.3",
-    "@bickford/canon": "workspace:*"
+    "@prisma/client": "6.19.2"
   },
   "devDependencies": {
     "@types/node": "^25.0.6",
-    "prisma": "^7.2.0",
     "tsx": "^4.7.0",
     "typescript": "^5.9.3"
   }

@@ -12,5 +12,14 @@ module.exports = {
         ],
       },
     ],
+    "no-restricted-syntax": [
+      "error",
+      {
+        selector:
+          "IfStatement > ExportNamedDeclaration, IfStatement > ExportDefaultDeclaration",
+        message:
+          "❌ Conditional exports are forbidden. Move guards inside the exported function.",
+      },
+    ],
   },
 };

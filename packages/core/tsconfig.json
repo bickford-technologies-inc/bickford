@@ -8,6 +8,7 @@
   },
   "include": ["src"],
   "references": [
+    { "path": "../db" },
     { "path": "../types" },
     { "path": "../canon" }
   ]

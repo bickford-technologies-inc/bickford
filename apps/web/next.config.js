@@ -3,6 +3,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ["@bickford/db", "@bickford/canon"],
+  experimental: {
+    serverComponentsExternalPackages: ["@bickford/core"],
+  },
   // ...add any other workspace packages as needed
 };
 

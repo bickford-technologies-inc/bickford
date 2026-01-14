@@ -1,21 +1,20 @@
-import { getLedger } from "@bickford/ledger";
+import { NextResponse } from "next/server";
+import { getLedger } from "@bickford/core/src/ledger";
+import { getPrismaClient } from "@bickford/core/src/ledger/db";
 
-// Build-time/CI/Static export guard
-if (process.env.VERCEL || process.env.CI || process.env.NEXT_PHASE === 'phase-production-build') {
-  export async function GET() {
-    return Response.json({ entries: [] });
+export async function GET() {
+  // Build / CI / static export guard
+  if (
+    process.env.VERCEL ||
+    process.env.CI ||
+    process.env.NEXT_PHASE === "phase-production-build"
+  ) {
+    return NextResponse.json({ entries: [] });
   }
-} else {
-  export async function GET() {
-    try {
-      const ledger = await getLedger();
-      return Response.json(ledger);
-    } catch (error) {
-      console.error("Error in /api/ledger:", error);
-      return Response.json(
-        { error: "Internal server error" },
-        { status: 500 }
-      );
-    }
-  }
+
+  // Ensure Prisma client is initialized (for environments that require explicit init)
+  getPrismaClient();
+
+  const entries = await getLedger();
+  return NextResponse.json({ entries });
 }

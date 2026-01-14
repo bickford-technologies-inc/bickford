@@ -45,5 +45,8 @@
     "node_modules",
     "../../prisma-test.ts",
     "../../tests"
+  ],
+  "references": [
+    { "path": "../../packages/core" }
   ]
 }

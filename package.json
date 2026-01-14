@@ -73,6 +73,7 @@
     "check:canon": "node scripts/check-canon-invariants.mjs",
     "check:all": "npm run check:invariants && npm run check:chat && npm run check:canon",
     "check:prisma-canon": "node scripts/check-prisma-canon.mjs",
+    "check:esm": "node scripts/check-esm-invariants.mjs",
     "deploy:old": "bash scripts/deploy.sh",
     "deploy:staging": "bash scripts/deploy.sh staging",
     "deploy:production": "bash scripts/deploy.sh production",
@@ -109,8 +110,7 @@
     "@babel/preset-react": "^7.26.0",
     "@babel/preset-typescript": "^7.26.0",
     "@netlify/plugin-lighthouse": "^6.0.1",
-    "@prisma/client": "^6.19.2",
-    "prisma": "^6.19.2",
+    "@prisma/client": "6.19.2",
     "@sentry/netlify-build-plugin": "^1.1.1",
     "@snaplet/netlify-preview-database-plugin": "^2.0.0",
     "@types/jest": "^30.0.0",
@@ -129,7 +129,6 @@
     "netlify-plugin-visual-diff": "^2.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "tsx": "^4.7.0",
     "turbo": "^2.7.4",
     "typescript": "^5.0.0"
   },
@@ -147,7 +146,8 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "redis": "^5.10.0",
-    "zod": "^4.3.5"
+    "zod": "^4.3.5",
+    "tsx": "3.14.0"
   },
   "overrides": {
     "react": "18.3.1",

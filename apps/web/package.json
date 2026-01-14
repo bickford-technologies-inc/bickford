@@ -5,7 +5,7 @@
   "description": "Bickford Web Application - Next.js app",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "NEXT_TELEMETRY_DISABLED=1 next build --debug",
     "start": "next start",
     "lint": "next lint .",
     "prebuild": "tsx ./src/lib/prisma.build-guard.ts"
