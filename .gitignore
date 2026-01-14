@@ -51,3 +51,5 @@ STAGE2_*.md
 netlify-debug.log
 .vercel
 .env*.local
+
+.state/
