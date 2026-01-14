@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { allCanon } from "@/lib/bickford/canon";
-import { all as ledger } from "@/lib/bickford/ledger";
+// Canonical domain removed: UI surface only
+import { all as history } from "@/lib/bickford/ui-data";
 import { MOAT_TEXT } from "@/lib/bickford/moat";
 
 // Use a pure JS PDF generator for Vercel Node runtime
@@ -41,14 +41,12 @@ export async function GET() {
     );
   doc.moveDown();
 
-  doc.fontSize(16).text("Canon (Immutable Rules)", { underline: true });
-  doc.fontSize(10).text(JSON.stringify(allCanon(), null, 2));
+  doc.fontSize(16).text("Immutable Rules", { underline: true });
+  doc.fontSize(10).text("(rules hidden: UI surface only)");
   doc.moveDown();
 
-  doc
-    .fontSize(16)
-    .text("Ledger (Append-Only Execution History)", { underline: true });
-  doc.fontSize(10).text(JSON.stringify(ledger(), null, 2));
+  doc.fontSize(16).text("History (Append-Only Execution)", { underline: true });
+  doc.fontSize(10).text(JSON.stringify(history(), null, 2));
   doc.moveDown();
 
   doc.fontSize(16).text("Mathematics: Compounding Law", { underline: true });
@@ -59,9 +57,9 @@ export async function GET() {
   doc
     .fontSize(10)
     .text(
-      "• Canon promotion requires ΔTTV < 0\n" +
+      "• Promotion requires ΔTTV < 0\n" +
         "• Non-interference enforced: ΔE[TTV_j | π_i] ≤ 0\n" +
-        "• Canon is immutable\n" +
+        "• Rules are immutable\n" +
         "• Ledger is append-only\n" +
         "• No probabilistic memory\n" +
         "• No model fine-tuning\n"
@@ -72,7 +70,7 @@ export async function GET() {
   doc
     .fontSize(10)
     .text(
-      "Canon grows monotonically.\n" +
+      "Rules grow monotonically.\n" +
         "No probabilistic memory.\n" +
         "No retraining required.\n" +
         "Institutional memory compounds with every deployment.\n"

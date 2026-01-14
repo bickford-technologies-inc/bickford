@@ -5,13 +5,16 @@
   "private": true,
   "description": "Intent → Reality in <5 seconds. Zero-approval execution runtime with OPTR gating, canon enforcement, and immutable ledger.",
   "engines": {
-    "node": "20.x",
+    "node": ">=20 <25",
     "npm": ">=10.0.0"
   },
   "scripts": {
     "start": "bash scripts/setup.sh && npm run dev",
     "dev": "pnpm prisma:generate && turbo run dev --filter=web",
     "check:turbo": "node scripts/check-turbo-extends.mjs",
+    "preflight": "tsx scripts/preflight.ts",
+    "verify:workspace": "tsx scripts/verify-workspace.ts",
+    "enforce:web-boundary": "tsx scripts/enforce-web-boundary.ts",
     "build": "turbo run build",
     "build:strict": "pnpm --filter @bickford/db exec prisma generate && turbo run build",
     "prisma:generate": "pnpm --filter @bickford/db exec prisma generate",

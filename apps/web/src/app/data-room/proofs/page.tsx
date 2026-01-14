@@ -8,7 +8,7 @@ export default function ProofsPage() {
 
       <h2>Enforcement Point</h2>
       <p>
-        This invariant is enforced at canon promotion time, not review time, not
+        This invariant is enforced at rule promotion time, not review time, not
         post-hoc, and not probabilistically.
       </p>
 
@@ -19,7 +19,7 @@ export default function ProofsPage() {
         <li>Violations are rejected, not mitigated</li>
       </ul>
 
-      <p>Claude proposes. Bickford enforces. Canon remembers.</p>
+      <p>Claude proposes. Bickford enforces. Rules remembered.</p>
     </main>
   );
 }

@@ -10,13 +10,13 @@ export default function Page() {
           <Link href="/chat">Start an intent</Link>
         </li>
         <li>
-          <Link href="/ledger">Live ledger</Link>
+          <Link href="/history">Live History</Link>
         </li>
         <li>
-          <Link href="/canon">Canon</Link>
+          <Link href="/rules">Rules</Link>
         </li>
         <li>
-          <Link href="/optr">OPTR</Link>
+          <Link href="/score">Path Scoring</Link>
         </li>
         <li>
           <Link href="/data-room">Anthropic Data Room</Link>

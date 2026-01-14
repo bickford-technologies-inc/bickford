@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 
-export default function OPTRPage() {
+export default function ScorePage() {
   const [pathMs, setPathMs] = useState(1000);
   const [score, setScore] = useState<number | null>(null);
 
   async function getScore() {
-    const res = await fetch("/api/optr/score", {
+    const res = await fetch("/api/score", {
       method: "POST",
       body: JSON.stringify({ pathMs }),
     });
@@ -17,7 +17,7 @@ export default function OPTRPage() {
 
   return (
     <main style={{ padding: 48 }}>
-      <h1>OPTR Scoring</h1>
+      <h1>Path Scoring</h1>
       <div style={{ marginBottom: 16 }}>
         <label>
           Path time (ms):

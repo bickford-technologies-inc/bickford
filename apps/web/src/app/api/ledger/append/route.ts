@@ -1,7 +1,7 @@
-import { append } from "@/lib/bickford/ledger";
+import { persist } from "@/lib/bickford/ui-data";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  append(await req.json());
+  persist(await req.json());
   return NextResponse.json({ ok: true });
 }

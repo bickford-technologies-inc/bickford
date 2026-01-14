@@ -14,8 +14,8 @@ export default function DataRoomPage() {
       <h2>What This Demonstrates</h2>
       <ul>
         <li>Live Claude reasoning (advisory only)</li>
-        <li>Structural memory (ledger)</li>
-        <li>Canon promotion under ΔTTV + non-interference</li>
+        <li>Structural memory (history)</li>
+        <li>Rule promotion under ΔTTV + non-interference</li>
         <li>Mathematical compounding (no drift)</li>
       </ul>
 
@@ -25,19 +25,19 @@ export default function DataRoomPage() {
           <Link href="/chat">Claude → Bickford Chat</Link>
         </li>
         <li>
-          <Link href="/ledger">Append-Only Ledger</Link>
+          <Link href="/history">Append-Only History</Link>
         </li>
         <li>
-          <Link href="/canon">Canon (Immutable Rules)</Link>
+          <Link href="/rules">Rules (Immutable)</Link>
         </li>
         <li>
-          <Link href="/optr">OPTR / Time-to-Value</Link>
+          <Link href="/score">Path Scoring</Link>
         </li>
       </ul>
 
       <h2>Export</h2>
       <p>
-        All canon, ledger entries, and enforcement proofs can be exported as a
+        All rules, history entries, and enforcement proofs can be exported as a
         diligence bundle.
       </p>
 

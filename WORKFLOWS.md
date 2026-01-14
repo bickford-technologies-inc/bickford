@@ -166,3 +166,14 @@ Add to CI pipeline:
 node ci/check-canon-boundaries.mjs
 node ci/check-turbo-graph.mjs
 ```
+
+---
+
+## 🚦 Canonical Invariants Enforcement (Web Layer)
+
+- Forbidden tokens: `canon`, `optr`, `ledger`, `authority`, `@bickford/*` must never appear in `apps/web/src`.
+- All builds (local, CI, Vercel) are gated by `pnpm run preflight`.
+- Violations are blocked with actionable output.
+- See [`docs/INVARIANTS.md`](docs/INVARIANTS.md) for rules, examples, and remediation.
+
+---

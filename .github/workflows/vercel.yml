@@ -27,6 +27,9 @@ jobs:
       - name: Reconcile Vercel env (authoritative)
         run: node scripts/vercel-env-reconcile.ts
 
+      - name: Enforce web/canon boundary
+        run: pnpm run preflight
+
       - name: Deploy to Vercel
         run: |
           npx vercel deploy --prod \

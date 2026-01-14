@@ -374,3 +374,14 @@ All internal `@bickford/*` packages are consumed as source by the web app. Next.
 - No `dist/` output is required for web builds.
 - No package is required to emit `dist/index.js` for the web app.
 - This is the canonical invariant for launch velocity and reproducibility.
+
+---
+
+## 🚦 Canonical Invariants & Enforcement (Web Layer)
+
+- Forbidden tokens: `canon`, `optr`, `ledger`, `authority`, `@bickford/*` must never appear in `apps/web/src`.
+- All builds (local, CI, Vercel) are gated by `pnpm run preflight`.
+- Violations are blocked with actionable output.
+- See [`docs/INVARIANTS.md`](docs/INVARIANTS.md) for rules, examples, and remediation.
+
+---

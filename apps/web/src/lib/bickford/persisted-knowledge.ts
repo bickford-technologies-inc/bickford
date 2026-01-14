@@ -1,4 +1,4 @@
-import { append } from "./ledger";
+import { persist } from "./history";
 
 type Decision = {
   intent: string;
@@ -8,16 +8,16 @@ type Decision = {
 };
 
 export async function persistDecision(d: Decision & { agentId?: string }) {
-  // Append to in-memory ledger
-  append({
+  // Persist to in-memory history
+  persist({
     ts: Date.now(),
     agentId: d.agentId || "human-1",
     intent: d.intent,
     proposal: d.proposal,
   });
   // Later:
-  // - write to ledger
-  // - compute OPTR score
-  // - gate canon promotion
+  // - write to history
+  // - compute score
+  // - gate rule promotion (UI surface only)
   console.log("Bickford persisted decision:", d);
 }

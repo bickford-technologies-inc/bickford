@@ -2,13 +2,13 @@
  * Chat Replay API Route
  *
  * Deterministic, side-effect-free replay of chat threads.
- * CANONICAL INVARIANT: Replay mode cannot execute.
+ * INVARIANT: Replay mode cannot execute.
  *
  * Features:
  * - Read-only thread replay
- * - Canon linkage preservation
+ * - Rule linkage preservation
  * - Intent derivation replay
- * - No mutation of canon or execution state
+ * - No mutation of rules or execution state
  *
  * TIMESTAMP: 2026-02-08T00:00:00Z
  */
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // Fetch thread with messages, including canon linkage
+  // Fetch thread with messages, including rule linkage
   // This is read-only and does NOT trigger execution
   const thread = await prisma.chatThread.findUnique({
     where: { id: threadId },
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
               execution: true,
             },
           },
-          canonEntry: true,
+          ruleEntry: true,
         },
         orderBy: { createdAt: "asc" },
       },
@@ -60,7 +60,7 @@ export async function GET(req: NextRequest) {
     data: { lastReplayedAt: now },
   });
 
-  // Return thread with full canon linkage (side-effect free replay)
+  // Return thread with full rule linkage (side-effect free replay)
   // Execution state is returned but NOT executed
   return Response.json({
     mode: "replay",
@@ -90,12 +90,12 @@ export async function GET(req: NextRequest) {
                 : null,
             }
           : null,
-        canonEntry: msg.canonEntry
+        ruleEntry: msg.ruleEntry
           ? {
-              id: msg.canonEntry.id,
-              kind: msg.canonEntry.kind,
-              title: msg.canonEntry.title,
-              content: msg.canonEntry.content,
+              id: msg.ruleEntry.id,
+              kind: msg.ruleEntry.kind,
+              title: msg.ruleEntry.title,
+              content: msg.ruleEntry.content,
             }
           : null,
       })),
