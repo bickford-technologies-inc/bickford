@@ -1,0 +1,45 @@
+{
+  "@bickford/authority": [
+    "authorize"
+  ],
+  "@bickford/canon": [],
+  "@bickford/claude-integration": [
+    "executeGate",
+    "wrapTool"
+  ],
+  "@bickford/core": [],
+  "@bickford/db": [],
+  "@bickford/ledger": [
+    "appendLedger",
+    "getLedger",
+    "recordBuildEvent",
+    "recordDeployEvent",
+    "recordSchemaChange"
+  ],
+  "@bickford/optr": [
+    "scorePath"
+  ],
+  "@bickford/session-completion": [
+    "VERSION"
+  ],
+  "@bickford/session-completion-runtime": [
+    "VERSION"
+  ],
+  "@bickford/types": [
+    "AgentContext",
+    "AgentId",
+    "AgentStateRow",
+    "BuildEventRow",
+    "DbConfig",
+    "Decision",
+    "DeniedDecisionPayload",
+    "DeployEventRow",
+    "Intent",
+    "InterferenceResult",
+    "LedgerEntry",
+    "LedgerRow",
+    "MigrationScoreRow",
+    "SchemaVersionRow"
+  ],
+  "@bickford/ui": []
+}
