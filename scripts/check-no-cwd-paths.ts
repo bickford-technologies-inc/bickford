@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const ROOT = process.cwd();
-const FORBIDDEN = ["fs.readFileSync(\"apps/", "fs.readFileSync('apps/"];
+const FORBIDDEN = ['fs.readFileSync("apps/', "fs.readFileSync('apps/"];
 
 function scan(dir: string) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
