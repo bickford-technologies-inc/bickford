@@ -1,4 +1,3 @@
-"use strict";
 /*
   Prisma v6 Note:
   @bickford/db intentionally uses a CommonJS require("@prisma/client")
@@ -8,13 +7,11 @@
   not a workaround for missing generation.
 */
 /* eslint-disable @typescript-eslint/no-var-requires */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.prisma = void 0;
 const Prisma = require("@prisma/client");
-exports.prisma = global.__bickford_prisma__ ??
+export const prisma = global.__bickford_prisma__ ??
     new Prisma.PrismaClient({
         log: ["error", "warn"],
     });
 if (process.env.NODE_ENV !== "production") {
-    global.__bickford_prisma__ = exports.prisma;
+    global.__bickford_prisma__ = prisma;
 }

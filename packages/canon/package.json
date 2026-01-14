@@ -17,7 +17,8 @@
     "lint": "npm run typecheck",
     "example:optr": "tsx examples/optr-demo.ts",
     "api": "tsx api/server.ts",
-    "test": "echo 'No tests yet'"
+    "test": "echo 'No tests yet'",
+    "clean": "rm -rf dist"
   },
   "keywords": [
     "bickford",

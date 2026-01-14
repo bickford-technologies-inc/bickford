@@ -118,8 +118,8 @@ export interface DbConfig {
   };
 }
 
-export * from "./optr";
 export * from "./canon";
+export * from "./optr";
 
 export type DeniedDecisionPayload = {
   denied: true;

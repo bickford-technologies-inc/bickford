@@ -10,3 +10,5 @@ export function forbidDeepImports() {
     },
   };
 }
+
+export * from "./index";

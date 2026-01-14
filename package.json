@@ -87,7 +87,7 @@
     "doctor:ci": "node scripts/doctor-ci.ts",
     "resolve:push": "node ./scripts/resolve-and-push.mjs",
     "verify:next": "tsx scripts/verify-next-version.ts",
-    "prebuild": "pnpm run verify:next",
+    "prebuild": "node scripts/check-dist-exports.mjs",
     "ci:verify:turbo": "tsx scripts/ci/verify-turbo-ordering.ts",
     "predictive:review": "tsx scripts/predictive/review.ts",
     "predictive:scan": "tsx scripts/predictive/scan-runtime-boundaries.ts",
@@ -99,7 +99,11 @@
     "lint:exports": "node scripts/check-export-parity.mjs",
     "canon:check": "pnpm run lint:boundaries && pnpm run lint:exports",
     "canon:snapshot": "node scripts/snapshot-exports.mjs",
-    "canon:drift": "node scripts/check-export-drift.mjs"
+    "canon:drift": "node scripts/check-export-drift.mjs",
+    "clean": "turbo run clean",
+    "lint:imports": "node scripts/check-no-cross-src-imports.mjs",
+    "lint:ts-geometry": "node scripts/check-ts-geometry.mjs",
+    "ci": "pnpm lint:imports && pnpm lint:ts-geometry && pnpm -r run build"
   },
   "workspaces": [
     "packages/*",
