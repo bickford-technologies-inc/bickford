@@ -31,12 +31,21 @@ if (!pkg.name || pkg.name !== "@bickford/web") {
   );
 }
 
-const REQUIRED = ["@bickford/ledger", "@bickford/core", "@bickford/canon"];
+const REQUIRED = [
+  "@bickford/authority",
+  "@bickford/canon",
+  "@bickford/core",
+  "@bickford/db",
+  "@bickford/ledger",
+  "@bickford/optr",
+  "@bickford/types",
+  "@bickford/ui",
+];
 
 for (const dep of REQUIRED) {
   if (!pkg.dependencies?.[dep]) {
     throw new Error(
-      `[CANON_VIOLATION] web imports ${dep} but it is not declared in dependencies`
+      `[CANON_VIOLATION] apps/web imports ${dep} but does not declare it in package.json`
     );
   }
 }
