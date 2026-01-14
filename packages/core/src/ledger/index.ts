@@ -5,7 +5,7 @@ import {
   Decision,
   LedgerRow,
 } from "@bickford/types";
-import { prisma } from "./db";
+import { getPrismaClient } from "./db";
 
 export async function appendLedger(
   intent: Intent,
@@ -14,7 +14,7 @@ export async function appendLedger(
   const payload = JSON.stringify({ intent, decision });
   const hash = crypto.createHash("sha256").update(payload).digest("hex");
 
-  const entry = await prisma.ledgerEntry.create({
+  const entry = await getPrismaClient().ledgerEntry.create({
     data: {
       id: crypto.randomUUID(),
       intent,
@@ -33,11 +33,11 @@ export async function appendLedger(
 }
 
 export async function getLedger(): Promise<LedgerType[]> {
-  const rows = await prisma.ledgerEntry.findMany({
+  const rows = await getPrismaClient().ledgerEntry.findMany({
     orderBy: { createdAt: "desc" },
   });
 
-  return rows.map((r) => ({
+  return rows.map((r: any) => ({
     id: r.id,
     intent: (r.intent ?? {}) as Intent,
     decision: (r.decision ?? {}) as Decision,
