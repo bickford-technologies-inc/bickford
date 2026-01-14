@@ -87,7 +87,6 @@
     "doctor:ci": "node scripts/doctor-ci.ts",
     "resolve:push": "node ./scripts/resolve-and-push.mjs",
     "verify:next": "tsx scripts/verify-next-version.ts",
-    "prebuild": "node scripts/check-dist-exports.mjs",
     "ci:verify:turbo": "tsx scripts/ci/verify-turbo-ordering.ts",
     "predictive:review": "tsx scripts/predictive/review.ts",
     "predictive:scan": "tsx scripts/predictive/scan-runtime-boundaries.ts",

@@ -1,9 +1,6 @@
 {
   "extends": ["//"],
   "tasks": {
-    "build": {
-      "dependsOn": ["@bickford/types#build"],
-      "outputs": ["dist/**"]
-    }
+    "build": {}
   }
 }
