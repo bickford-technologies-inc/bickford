@@ -2,7 +2,20 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "build": {
-      "outputs": [".next/**"]
+      "outputs": [
+        "apps/web/.next/**",
+        "packages/canon/dist/**",
+        "packages/db/dist/**",
+        "packages/types/dist/**",
+        "packages/optr/dist/**",
+        "packages/authority/dist/**",
+        "packages/session-completion/dist/**",
+        "packages/session-completion-runtime/dist/**",
+        "packages/ledger/dist/**",
+        "packages/core/dist/**",
+        "packages/ui/dist/**",
+        "packages/demo-dashboard/dist/**"
+      ]
     },
     "clean": {
       "outputs": []

@@ -259,6 +259,8 @@ importers:
         specifier: 0.19.8
         version: 0.19.8(vite@7.3.1(@types/node@25.0.8)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))(workbox-build@6.5.4(@types/babel__core@7.20.5))(workbox-window@6.5.4)
 
+  packages/bickford-runtime-purity: {}
+
   packages/canon:
     dependencies:
       '@bickford/db':
