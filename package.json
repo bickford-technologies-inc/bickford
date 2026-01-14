@@ -90,7 +90,8 @@
     "ci:verify:turbo": "tsx scripts/ci/verify-turbo-ordering.ts",
     "predictive:review": "tsx scripts/predictive/review.ts",
     "predictive:scan": "tsx scripts/predictive/scan-runtime-boundaries.ts",
-    "predictive:autofix": "tsx scripts/predictive/autofix.ts"
+    "predictive:autofix": "tsx scripts/predictive/autofix.ts",
+    "ci:prisma-guard": "node ci/check-no-prisma-in-api-routes.mjs"
   },
   "workspaces": [
     "packages/*",
