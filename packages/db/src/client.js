@@ -7,11 +7,13 @@
   not a workaround for missing generation.
 */
 /* eslint-disable @typescript-eslint/no-var-requires */
-const Prisma = require("@prisma/client");
-export const prisma = global.__bickford_prisma__ ??
-    new Prisma.PrismaClient({
-        log: ["error", "warn"],
-    });
-if (process.env.NODE_ENV !== "production") {
-    global.__bickford_prisma__ = prisma;
+let prisma = null;
+export function getPrisma() {
+    if (!prisma) {
+        const Prisma = require("@prisma/client");
+        prisma = new Prisma.PrismaClient({
+            log: ["error", "warn"],
+        });
+    }
+    return prisma;
 }

@@ -1,3 +1,2 @@
-export { prisma } from "./client";
+export { getPrisma } from "./client";
 export type { PrismaClient } from "@prisma/client";
-export { getPrisma } from "./runtime";
