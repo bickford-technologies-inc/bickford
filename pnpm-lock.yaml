@@ -137,15 +137,9 @@ importers:
 
   apps/web:
     dependencies:
-      '@bickford/authority':
-        specifier: workspace:*
-        version: link:../../packages/authority
       '@bickford/canon':
         specifier: workspace:*
         version: link:../../packages/canon
-      '@bickford/core':
-        specifier: workspace:*
-        version: link:../../packages/core
       '@bickford/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -155,9 +149,6 @@ importers:
       '@bickford/optr':
         specifier: workspace:*
         version: link:../../packages/optr
-      '@bickford/types':
-        specifier: workspace:*
-        version: link:../../packages/types
       '@bickford/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -409,8 +400,6 @@ importers:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
-
-  packages/runtime-purity: {}
 
   packages/session-completion:
     devDependencies:
