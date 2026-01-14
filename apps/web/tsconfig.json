@@ -9,9 +9,6 @@
     "paths": {
       "@/*": [
         "*"
-      ],
-      "@bickford/db": [
-        "../../packages/db/dist"
       ]
     },
     "typeRoots": [

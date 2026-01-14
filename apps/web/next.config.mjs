@@ -14,14 +14,6 @@ const nextConfig = {
     "@bickford/optr",
     "@bickford/ui",
   ],
-  webpack: (config) => {
-    config.resolve = config.resolve || {};
-    config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      "@bickford/db": path.resolve(__dirname, "../../packages/db/dist"),
-    };
-    return config;
-  },
 };
 
 export default nextConfig;
