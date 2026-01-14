@@ -1,22 +1,28 @@
 export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
-import { ledger } from "@bickford/core";
+
+// TEMP web-local ledger adapter.
+// Canonical ledger lives outside web; this is a read-only UI surface.
+
+type LedgerEntry = {
+  id: string;
+  timestamp: string;
+  type: string;
+  payload: unknown;
+};
+
+const mockLedger: LedgerEntry[] = [
+  {
+    id: "init",
+    timestamp: new Date().toISOString(),
+    type: "SYSTEM",
+    payload: { message: "Web ledger initialized" },
+  },
+];
 
 export async function GET() {
-  // Build / CI / static export guard
-  if (
-    process.env.NODE_ENV === "production" &&
-    process.env.VERCEL_ENV === "preview"
-  ) {
-    return NextResponse.json(
-      { error: "Not available in preview." },
-      { status: 403 }
-    );
-  }
-
-  // Ensure Prisma client is initialized (for environments that require explicit init)
-  ledger.getPrismaClient();
-
-  const entries = await ledger.getLedger();
-  return NextResponse.json({ entries });
+  return Response.json({
+    entries: mockLedger,
+    note: "This is a web-surface ledger view. Canonical ledger enforcement lives outside the UI boundary.",
+  });
 }

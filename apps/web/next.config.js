@@ -3,9 +3,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ["@bickford/db", "@bickford/canon"],
-  experimental: {
-    serverComponentsExternalPackages: ["@bickford/core"],
-  },
+  experimental: {},
   eslint: {
     ignoreDuringBuilds: true,
   },
