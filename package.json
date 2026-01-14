@@ -71,7 +71,7 @@
     "deploy:production": "bash scripts/deploy.sh production",
     "lint:fix": "npm --workspaces --if-present run lint:fix",
     "fix-all": "npm run lint:fix && bash scripts/auto-recover.sh",
-    "prepare": "node -e \"if(process.env.CI||process.env.VERCEL){console.log('prepare: skipping husky in CI/Vercel')}else{try{require('node:child_process').execSync('husky',{stdio:'inherit'})}catch(e){}}\"",
+    "prepare": "chmod +x dist/cli/runbook.js || true",
     "restart:markitdown": "node scripts/restart-markitdown.mjs",
     "test:chat": "node scripts/test-chat.mjs",
     "architect:inventory": "node scripts/inventory-repos.mjs",
