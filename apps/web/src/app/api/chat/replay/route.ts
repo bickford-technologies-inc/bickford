@@ -13,6 +13,8 @@
  * TIMESTAMP: 2026-02-08T00:00:00Z
  */
 
+export const dynamic = "force-dynamic";
+
 import { getPrisma } from "@bickford/db";
 import { NextRequest } from "next/server";
 
