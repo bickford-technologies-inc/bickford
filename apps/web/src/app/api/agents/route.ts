@@ -1,4 +1,4 @@
-import { getPrisma } from "@bickford/ledger";
+import { getPrisma } from "@bickford/db";
 
 export async function POST(req: Request) {
   const prisma = getPrisma();

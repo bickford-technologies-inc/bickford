@@ -13,7 +13,7 @@
  * TIMESTAMP: 2026-02-08T00:00:00Z
  */
 
-import { getPrisma } from "@bickford/ledger";
+import { getPrisma } from "@bickford/db";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
