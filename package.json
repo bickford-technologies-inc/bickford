@@ -12,7 +12,7 @@
     "start": "bash scripts/setup.sh && npm run dev",
     "dev": "pnpm prisma:generate && turbo run dev --filter=web",
     "check:turbo": "node scripts/check-turbo-extends.mjs",
-    "build": "pnpm --filter @bickford/db prisma:generate && turbo run build",
+    "build": "pnpm predictive:review && pnpm predictive:scan && pnpm run verify:next && pnpm --filter @bickford/db prisma:generate && turbo run build",
     "prisma:generate": "prisma generate --schema=packages/db/prisma/schema.prisma",
     "prisma:validate": "tsx scripts/prisma-validate.ts",
     "prisma:enforce": "tsx scripts/prisma-enforce.ts",
@@ -95,7 +95,10 @@
     "resolve:push": "node ./scripts/resolve-and-push.mjs",
     "verify:next": "tsx scripts/verify-next-version.ts",
     "prebuild": "pnpm run verify:next && pnpm --filter @bickford/db prisma:generate && turbo run build",
-    "ci:verify:turbo": "tsx scripts/ci/verify-turbo-ordering.ts"
+    "ci:verify:turbo": "tsx scripts/ci/verify-turbo-ordering.ts",
+    "predictive:review": "tsx scripts/predictive/review.ts",
+    "predictive:scan": "tsx scripts/predictive/scan-runtime-boundaries.ts",
+    "predictive:autofix": "tsx scripts/predictive/autofix.ts"
   },
   "workspaces": [
     "packages/*",

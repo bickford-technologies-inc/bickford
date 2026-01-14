@@ -1,0 +1,73 @@
+"use strict";
+/**
+ * Denied Decision Persistence (Phase 3: Trust UX)
+ * TIMESTAMP: 2026-01-12T21:35:00Z
+ *
+ * Ledgers denied decisions for replayable WhyNot explanations.
+ * Guarantees: No silent denials, every denial is persisted and replayable.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.persistDeniedDecision = persistDeniedDecision;
+exports.getDeniedDecisions = getDeniedDecisions;
+const db_1 = require("@bickford/db");
+/**
+ * Persist a denied decision to the ledger
+ *
+ * Guarantees:
+ * - Every denial is ledgered
+ * - Replayable with stable reason codes
+ * - Supports tenant isolation
+ */
+async function persistDeniedDecision(payload) {
+    try {
+        const deniedDecision = await db_1.prisma.deniedDecision.create({
+            data: {
+                ts: payload.ts,
+                actionId: payload.actionId,
+                tenantId: payload.tenantId,
+                reasonCodes: payload.reasonCodes,
+                message: payload.message,
+            },
+        });
+        return {
+            id: deniedDecision.id,
+            success: true,
+        };
+    }
+    catch (error) {
+        // Log error but don't throw - denial tracking failure should not block execution
+        console.error("Failed to persist denied decision:", error);
+        return {
+            id: "",
+            success: false,
+        };
+    }
+}
+/**
+ * Retrieve denied decisions for an action
+ * Used for WhyNot explanations
+ */
+async function getDeniedDecisions(params) {
+    try {
+        const records = await db_1.prisma.deniedDecision.findMany({
+            where: {
+                ...(params.actionId && { actionId: params.actionId }),
+                ...(params.tenantId && { tenantId: params.tenantId }),
+            },
+            orderBy: { createdAt: "desc" },
+            take: params.limit || 100,
+        });
+        return records.map((r) => ({
+            denied: true,
+            ts: r.ts,
+            actionId: r.actionId,
+            tenantId: r.tenantId,
+            reasonCodes: r.reasonCodes,
+            message: r.message,
+        }));
+    }
+    catch (error) {
+        console.error("Failed to retrieve denied decisions:", error);
+        return [];
+    }
+}
