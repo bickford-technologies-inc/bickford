@@ -10,9 +10,9 @@
     }
   },
   "scripts": {
+    "prisma:generate": "prisma generate",
     "db:generate": "prisma generate",
-    "build": "tsc -b",
-    "prisma:generate": "prisma generate"
+    "build": "tsc -b"
   },
   "dependencies": {
     "@prisma/client": "6.19.2"
