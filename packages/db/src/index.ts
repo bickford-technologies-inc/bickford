@@ -1,2 +1,4 @@
-export { prisma } from "./client";
-export type { PrismaClient } from "./client";
+// Canonical DB entrypoint
+
+export { prisma } from "./prisma";
+export type { PrismaClient } from "@prisma/client";
