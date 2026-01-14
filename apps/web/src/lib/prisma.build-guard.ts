@@ -18,9 +18,9 @@ if (!/export\s+(\{[^}]*\bprisma\b[^}]*\}|const\s+prisma)/.test(source)) {
   process.exit(1);
 }
 
-// Forbidden abstraction
-if (source.includes("getPrisma")) {
-  console.error("❌ getPrisma is forbidden. Import `prisma` directly.");
+// Direct access forbidden: must use getPrisma for runtime-only initialization
+if (source.includes("import { prisma") || source.includes("export const prisma")) {
+  console.error("❌ Direct Prisma access is forbidden. Use getPrisma() for runtime-only initialization.");
   process.exit(1);
 }
 
