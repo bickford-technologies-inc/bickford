@@ -4,8 +4,15 @@
   "description": "Bickford Canon: Canonical decision framework minimizing Time-to-Value",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "lint": "npm run typecheck",
     "example:optr": "tsx examples/optr-demo.ts",
@@ -31,5 +38,6 @@
     "@bickford/db": "workspace:*"
   },
   "devDependencies": {    "tsx": "^4.7.0",    "typescript": "^5.9.3"
-  }
+  },
+  "type": "module"
 }

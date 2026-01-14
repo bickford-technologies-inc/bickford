@@ -4,8 +4,15 @@
   "description": "Bickford UI components - React components for Bickford interfaces",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "lint": "npm run typecheck",
     "test": "echo 'No tests yet'"
@@ -25,5 +32,6 @@
   },
   "devDependencies": {
     "@types/react": "^18.3.0"
-  }
+  },
+  "type": "module"
 }
