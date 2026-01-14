@@ -5,38 +5,29 @@
 
 import fs from "node:fs";
 import path from "node:path";
-
-const ROOT = process.cwd();
-const TARGET = path.join(ROOT, "apps/web/src/lib/prisma.ts");
+import glob from "fast-glob";
 
 function fail(msg: string): never {
   console.error(`❌ ${msg}`);
   process.exit(1);
 }
 
-if (!fs.existsSync(TARGET)) {
-  fail("prisma.ts is missing. Canon requires a Prisma facade.");
+const files = glob.sync("apps/web/**/*.{ts,tsx}", {
+  ignore: ["**/*.d.ts"],
+});
+
+for (const file of files) {
+  const src = fs.readFileSync(file, "utf8");
+
+  if (src.includes("@prisma/client")) {
+    fail(`Illegal @prisma/client import in ${file}`);
+  }
+
+  if (
+    /\b(prisma\s*=|new\s+PrismaClient|export\s+.*prisma)\b/.test(src)
+  ) {
+    fail(`Illegal concrete Prisma usage in ${file}`);
+  }
 }
 
-const src = fs.readFileSync(TARGET, "utf8");
-
-// ❌ Forbidden: any concrete Prisma handle
-if (/\bexport\s+(const|let|var)\s+prisma\b/.test(src)) {
-  fail("Direct Prisma export is forbidden. Use getPrisma().");
-}
-if (/\bfrom\s+['"]@prisma\/client['"]/.test(src)) {
-  fail("Direct @prisma/client imports are forbidden in web.");
-}
-
-// ✅ Required: explicit getPrisma export
-if (!/\bexport\s*\{\s*getPrisma\s*\}/.test(src)) {
-  fail("prisma.ts must export getPrisma() as the sole Prisma accessor.");
-}
-
-// Extra safety: no re-exports of prisma symbols anywhere in web
-if (/\bexport\s+.*prisma\b/.test(src)) {
-  fail("No prisma symbol may be exported from web.");
-}
-
-console.log("CANON_PRISMA_001 enforced");
-console.log("✔ prisma.build-guard: getPrisma-only invariant satisfied");
+console.log("✔ CANON_PRISMA_001 enforced: getPrisma-only access");
