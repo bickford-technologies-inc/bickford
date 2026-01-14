@@ -16,3 +16,5 @@ export default function GuestPage({ params }: { params: { token: string } }) {
     </main>
   );
 }
+
+// Canonical domain removed: UI surface only

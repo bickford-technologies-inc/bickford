@@ -1,0 +1,18 @@
+{
+  "law": "WORKSPACE_EXEC_001",
+  "timestamp": "2026-01-14T12:57:12-05:00",
+  "assertion": "All executions require cold workspace resolution",
+  "enforced_by": [
+    "ci/guards/workspace-integrity.sh",
+    "GitHub Actions",
+    "vercel.json buildCommand"
+  ],
+  "blocked_failure_classes": [
+    "ERR_PNPM_NO_MATCHING_VERSION_INSIDE_WORKSPACE",
+    "cached dependency masking",
+    "partial monorepo refactors",
+    "node-version-dependent resolution drift"
+  ],
+  "bypass_paths": [],
+  "status": "STRUCTURALLY IMPOSSIBLE"
+}
