@@ -1,0 +1,5 @@
+{
+  "outputDirectory": ".next",
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm run build"
+}
