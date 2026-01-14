@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { recordMetric } from "./ci/metrics";
 
 function removeLine(file: string, line: string) {
   if (!fs.existsSync(file)) return false;
@@ -138,34 +139,32 @@ function fixTopLevelGetPrismaCalls() {
    EXECUTION DISPATCH
 -------------------------------- */
 
-export function applyFix(failureClass: string) {
-  switch (failureClass) {
+export function hasFix(classification) {
+  return [
+    "PRISMA_CLIENT_TYPE_EXPORT_MISSING",
+    "PRISMA_RUNTIME_PURITY_VIOLATION",
+    "PRISMA_ILLEGAL_IMPORT",
+  ].includes(classification);
+}
+
+const oldApplyFix = applyFix;
+export function applyFix(classification) {
+  recordMetric({ type: "auto_fix", classification });
+  switch (classification) {
     case "PRISMA_CLIENT_TYPE_EXPORT_MISSING":
-      fixPrismaClientTypeExport();
-      return;
-
-    case "CANON_EXPORT_VIOLATION":
-      fixCanonExportViolation();
-      return;
-
-    case "STAR_EXPORT_CONFLICT":
-      fixStarExportConflict();
-      return;
-
-    case "PRISMA_EAGER_INIT":
-      fixPrismaEagerInit();
-      return;
-
     case "PRISMA_RUNTIME_PURITY_VIOLATION":
     case "PRISMA_ILLEGAL_IMPORT":
       fixLedgerGetPrismaImports();
       fixCanonIndexExports();
       fixCorePrismaImports();
       fixTopLevelGetPrismaCalls();
-      return;
-
+      break;
     default:
-      throw new Error("No executable fix for failure class: " + failureClass);
+      recordMetric({ type: "blocked", classification });
+      oldApplyFix(classification);
+      throw new Error(
+        `❌ No fix registered for failure class: ${classification}`
+      );
   }
 }
 
