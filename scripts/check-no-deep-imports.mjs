@@ -14,6 +14,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 
 const REPO_ROOT = path.resolve(process.cwd());
+const MAX_BUFFER_SIZE = 10 * 1024 * 1024; // 10MB
 
 function main() {
   console.log('[check-no-deep-imports] Scanning for deep cross-package imports...\n');
@@ -31,11 +32,12 @@ function main() {
 
     try {
       // Use grep to find violations
-      // Pattern: from ["']@bickford/[package-name]/(src|dist)/
+      // Pattern: @bickford/[package]/(src|dist)/
+      // Using simpler grep pattern that doesn't require complex shell escaping
       const result = execSync(
         `grep -rn --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" ` +
-        `-E '@bickford/[^"'"'"']*/(src|dist)/' "${fullPath}" || true`,
-        { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 }
+        `-E "@bickford/[^/]+/(src|dist)/" "${fullPath}" || true`,
+        { encoding: 'utf-8', maxBuffer: MAX_BUFFER_SIZE }
       );
 
       if (result.trim()) {
