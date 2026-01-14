@@ -1,6 +1,6 @@
 "use client";
 
-interface CanonEntry {
+interface RuleEntry {
   id: string;
   kind: string;
   title: string;
@@ -21,7 +21,7 @@ interface ChatMessageProps {
   resolution: string;
   createdAt: string;
   intent: Intent | null;
-  canonEntry: CanonEntry | null;
+  ruleEntry: RuleEntry | null;
 }
 
 export default function ChatMessageView({
@@ -31,7 +31,7 @@ export default function ChatMessageView({
   resolution,
   createdAt,
   intent,
-  canonEntry,
+  ruleEntry,
 }: ChatMessageProps) {
   return (
     <div className={`chat-message ${author.toLowerCase()}`}>
@@ -51,9 +51,9 @@ export default function ChatMessageView({
             Intent: {intent.intentType}
           </span>
         )}
-        {canonEntry && (
-          <span className="canon-badge" title={`Canon Entry: ${canonEntry.title}`}>
-            📚 Canon: {canonEntry.kind}
+        {ruleEntry && (
+          <span className="rule-badge" title={`Rule Entry: ${ruleEntry.title}`}>
+            📚 Rule: {ruleEntry.kind}
           </span>
         )}
       </div>

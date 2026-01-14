@@ -1,28 +1,28 @@
 export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 
-// TEMP web-local ledger adapter.
-// Canonical ledger lives outside web; this is a read-only UI surface.
+// TEMP web-local history adapter.
+// System history lives outside web; this is a read-only UI surface.
 
-type LedgerEntry = {
+type HistoryEntry = {
   id: string;
   timestamp: string;
   type: string;
   payload: unknown;
 };
 
-const mockLedger: LedgerEntry[] = [
+const mockHistory: HistoryEntry[] = [
   {
     id: "init",
     timestamp: new Date().toISOString(),
     type: "SYSTEM",
-    payload: { message: "Web ledger initialized" },
+    payload: { message: "Web history initialized" },
   },
 ];
 
 export async function GET() {
   return Response.json({
-    entries: mockLedger,
-    note: "This is a web-surface ledger view. Canonical ledger enforcement lives outside the UI boundary.",
+    entries: mockHistory,
+    note: "This is a web-surface history view. System enforcement lives outside the UI boundary.",
   });
 }

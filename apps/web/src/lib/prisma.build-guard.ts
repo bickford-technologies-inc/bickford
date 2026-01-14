@@ -1,6 +1,6 @@
 /**
  * Prisma Build Guard
- * Enforces canonical Prisma access + runtime constraints
+ * Enforces UI-surface Prisma access + runtime constraints
  */
 
 import fs from "node:fs";
@@ -28,4 +28,4 @@ for (const file of files) {
   }
 }
 
-console.log("✔ CANON_PRISMA_001 enforced: getPrisma-only access");
+console.log("✔ UI_PRISMA_001 enforced: getPrisma-only access");

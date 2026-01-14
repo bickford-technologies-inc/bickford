@@ -2,7 +2,7 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@bickford/db", "@bickford/canon"],
+  transpilePackages: ["@bickford/db"],
   experimental: {},
   eslint: {
     ignoreDuringBuilds: true,

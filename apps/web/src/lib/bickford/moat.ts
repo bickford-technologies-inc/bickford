@@ -3,12 +3,12 @@ The Compounding Intelligence Law
 
 Let:
 Dt = decisions required at time t
-Mt = decisions encoded in canon
+Mt = decisions encoded in rules
 Bt = human burden
 
 Bt = |Dt - Mt|
 
-Canon promotion rule:
+Promotion rule:
 Mt+1 = Mt + ΔM
 ΔM = { d ∈ Dt | d proven + enforced }
 
@@ -19,7 +19,7 @@ Bickford does not fine-tune.
 Bickford does not guess.
 Bickford learns structurally.
 
-Canon is immutable.
+Rules are immutable.
 Execution patterns become permanent law.
 Humans never re-explain known intent.
 

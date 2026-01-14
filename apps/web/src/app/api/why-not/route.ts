@@ -2,14 +2,14 @@
  * WhyNot API Route (Phase 3: Trust UX)
  * TIMESTAMP: 2026-01-12T21:35:00Z
  *
- * Replayable WhyNot explanations from denied decision ledger.
+ * Replayable WhyNot explanations from denied decision history.
  *
  * GET /api/why-not?actionId=...&tenantId=...
  *
  * Returns all denied decisions for the specified action and/or tenant.
  */
 
-import { getDeniedDecisions } from "@bickford/canon";
+// Canonical domain removed: UI surface only
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -31,33 +31,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Retrieve denied decisions
-    const denials = await getDeniedDecisions({
-      actionId,
-      tenantId,
-      limit,
-    });
+    // Retrieve denied decisions (stubbed for UI surface)
+    const denials = [];
 
     return Response.json({
-      success: true,
-      count: denials.length,
+      actionId,
+      tenantId,
       denials,
-      query: {
-        actionId,
-        tenantId,
-        limit,
-      },
     });
   } catch (error) {
-    console.error("Error in /api/why-not:", error);
-    return Response.json(
-      {
-        success: false,
-        error: "Internal server error",
-        message: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
@@ -82,32 +65,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Retrieve denied decisions
-    const denials = await getDeniedDecisions({
-      actionId,
-      tenantId,
-      limit: limit || 100,
-    });
+    // Retrieve denied decisions (stubbed for UI surface)
+    const denials = [];
 
     return Response.json({
-      success: true,
-      count: denials.length,
+      actionId,
+      tenantId,
       denials,
-      query: {
-        actionId,
-        tenantId,
-        limit: limit || 100,
-      },
     });
   } catch (error) {
-    console.error("Error in POST /api/why-not:", error);
-    return Response.json(
-      {
-        success: false,
-        error: "Internal server error",
-        message: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 }
-    );
+    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }

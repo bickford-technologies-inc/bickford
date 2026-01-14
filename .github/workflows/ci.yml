@@ -87,6 +87,9 @@ jobs:
       - name: Railway config sanity
         run: npm run railway:doctor
 
+      - name: Enforce web/canon boundary
+        run: pnpm run preflight
+
       - name: Build packages
         run: npm run build --if-present
 

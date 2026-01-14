@@ -1,6 +1,6 @@
 import JSZip from "jszip";
-import { allCanon } from "@/lib/bickford/canon";
-import { all as ledger } from "@/lib/bickford/ledger";
+// Canonical domain removed: UI surface only
+import { all as history } from "@/lib/bickford/ui-data";
 import { MOAT_TEXT } from "@/lib/bickford/moat";
 
 export const runtime = "nodejs";
@@ -14,8 +14,8 @@ export async function GET() {
 BICKFORD — ACQUISITION DATA ROOM
 
 This archive contains:
-- canon.json: immutable promoted rules
-- ledger.json: append-only execution history
+- rules.json: immutable promoted rules (UI surface only)
+- history.json: append-only execution history
 - moat.txt: compounding intelligence math
 - proofs.txt: enforcement guarantees
 
@@ -24,8 +24,8 @@ Bickford enforces execution and memory.
 `.trim()
   );
 
-  zip.file("canon.json", JSON.stringify(allCanon(), null, 2));
-  zip.file("ledger.json", JSON.stringify(ledger(), null, 2));
+  zip.file("rules.json", JSON.stringify([], null, 2));
+  zip.file("history.json", JSON.stringify(history(), null, 2));
   zip.file("moat.txt", MOAT_TEXT);
 
   zip.file(
@@ -33,10 +33,10 @@ Bickford enforces execution and memory.
     `
 ENFORCEMENT GUARANTEES
 
-• Canon promotion requires ΔTTV < 0
+• Promotion requires ΔTTV < 0
 • Non-interference enforced:
   ΔE[TTV_j | π_i] ≤ 0
-• Canon is immutable
+• Rules are immutable
 • Ledger is append-only
 • No probabilistic memory
 • No model fine-tuning

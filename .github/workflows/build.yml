@@ -20,5 +20,7 @@ jobs:
         run: pnpm install
       - name: Validate repo invariants
         run: pnpm tsx scripts/validate-repo.ts
+      - name: Enforce web/canon boundary
+        run: pnpm run preflight
       - name: Build
         run: pnpm build

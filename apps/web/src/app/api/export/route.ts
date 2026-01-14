@@ -1,5 +1,5 @@
-import { allCanon } from "@/lib/bickford/canon";
-import { all as ledger } from "@/lib/bickford/ledger";
+// Canonical domain removed: UI surface only
+import { all as history } from "@/lib/bickford/ui-data";
 import { MOAT_TEXT } from "@/lib/bickford/moat";
 
 export async function GET() {
@@ -16,15 +16,15 @@ export async function GET() {
       moat: "Compounding structural intelligence with zero model drift.",
     },
 
-    canon: {
+    rules: {
       description:
         "Immutable rules promoted only under ΔTTV improvement and non-interference.",
-      rules: allCanon(),
+      rules: [], // UI surface only
     },
 
-    ledger: {
+    history: {
       description: "Append-only execution history. No deletion. No mutation.",
-      entries: ledger(),
+      entries: history(),
     },
 
     mathematics: MOAT_TEXT,
@@ -35,7 +35,7 @@ export async function GET() {
     },
 
     diligence_notes: [
-      "Canon grows monotonically.",
+      "Rules grow monotonically.",
       "No probabilistic memory.",
       "No retraining required.",
       "Institutional memory compounds with every deployment.",
