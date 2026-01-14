@@ -1,16 +1,21 @@
 import { NextResponse } from "next/server";
-import { getLedger } from "@bickford/ledger";
+import { ledger } from "@bickford/core";
 
 export async function GET() {
   // Build / CI / static export guard
   if (
-    process.env.VERCEL ||
-    process.env.CI ||
-    process.env.NEXT_PHASE === "phase-production-build"
+    process.env.NODE_ENV === "production" &&
+    process.env.VERCEL_ENV === "preview"
   ) {
-    return NextResponse.json({ entries: [] });
+    return NextResponse.json(
+      { error: "Not available in preview." },
+      { status: 403 }
+    );
   }
 
-  const entries = await getLedger();
+  // Ensure Prisma client is initialized (for environments that require explicit init)
+  ledger.getPrismaClient();
+
+  const entries = await ledger.getLedger();
   return NextResponse.json({ entries });
 }

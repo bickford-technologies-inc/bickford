@@ -7,6 +7,9 @@ import {
 } from "@bickford/types";
 import { getPrismaClient } from "./db";
 
+// Re-export getPrismaClient for external consumers
+export { getPrismaClient } from "./db";
+
 export async function appendLedger(
   intent: Intent,
   decision: Decision
