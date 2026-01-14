@@ -3,9 +3,8 @@
  */
 
 export const metadata = {
-  title: "Bickford - Intent → Reality",
-  description:
-    "Zero-approval execution runtime with OPTR gating, canon enforcement, and immutable ledger",
+  title: "Bickford",
+  description: "Decision Continuity Runtime",
 };
 
 import type { ReactNode } from "react";
