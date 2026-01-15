@@ -35,10 +35,14 @@ function scanDirectory(dir: string): void {
 function findRepoRoot(): string {
   let dir = process.cwd();
   while (dir !== path.dirname(dir)) {
-    if (fs.existsSync(path.join(dir, "pnpm-workspace.yaml")) || 
-        (fs.existsSync(path.join(dir, "package.json")) && 
-         JSON.parse(fs.readFileSync(path.join(dir, "package.json"), "utf8")).workspaces)) {
-      return dir;
+    try {
+      if (fs.existsSync(path.join(dir, "pnpm-workspace.yaml")) || 
+          (fs.existsSync(path.join(dir, "package.json")) && 
+           JSON.parse(fs.readFileSync(path.join(dir, "package.json"), "utf8")).workspaces)) {
+        return dir;
+      }
+    } catch {
+      // Continue searching if JSON parse fails
     }
     dir = path.dirname(dir);
   }
