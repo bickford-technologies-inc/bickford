@@ -236,5 +236,3 @@ All internal `@bickford/*` packages are consumed as source by the web app. Next.
 - All builds (local, CI, Vercel) are gated by `pnpm run preflight`.
 - Violations are blocked with actionable output.
 - See [`docs/INVARIANTS.md`](docs/INVARIANTS.md) for rules, examples, and remediation.
-
----
