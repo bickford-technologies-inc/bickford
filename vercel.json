@@ -1,3 +1,4 @@
 {
-  "buildCommand": "bash ci/guards/workspace-integrity.sh && pnpm run build"
+  "buildCommand": "bash ci/guards/workspace-integrity.sh && pnpm run build",
+  "outputDirectory": "apps/web/.next"
 }
