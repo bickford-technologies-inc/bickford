@@ -1,6 +1,6 @@
 {
   "name": "@bickford/session-completion",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Session completion event capture, validation, and routing runtime",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
