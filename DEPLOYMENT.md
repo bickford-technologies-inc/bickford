@@ -214,14 +214,43 @@ This validates:
 
 ## Vercel Deploy (Mobile UI PWA)
 
-1. Push changes to `main` (or a branch you’ve connected in Vercel):
+### Prerequisites
+
+**Required Environment Variables** (set in Vercel Project Settings → Environment Variables):
+- `ENABLE_EXPERIMENTAL_COREPACK=1` - Critical for pnpm monorepo support
+
+### Setup Instructions
+
+1. **Configure Vercel Project Settings**:
+   - Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+   - Add: `ENABLE_EXPERIMENTAL_COREPACK` = `1` (for all environments: Production, Preview, Development)
+   - This enables Corepack to use the pinned pnpm version from package.json
+
+2. **Deploy**:
+   Push changes to `main` (or a branch you've connected in Vercel):
    ```bash
    git push origin main
    ```
 
-2. Vercel builds and deploys from `packages/bickford-mobile-ui`.
+3. Vercel builds and deploys from `packages/bickford-mobile-ui`.
 
-3. Open the deployed URL from Vercel.
+4. Open the deployed URL from Vercel.
+
+### Monorepo Configuration
+
+The repository uses pnpm workspaces with the following configuration:
+- Package manager pinned to `pnpm@9.15.0` in root `package.json`
+- All workspace dependencies use `workspace:*` protocol
+- The root `pnpm.overrides` enforces `@bickford/*: workspace:*` for all internal packages
+- Build command in `vercel.json` includes workspace integrity guard
+
+### Troubleshooting
+
+If you encounter `ERR_PNPM_NO_MATCHING_VERSION_INSIDE_WORKSPACE`:
+1. Verify `ENABLE_EXPERIMENTAL_COREPACK=1` is set in Vercel environment variables
+2. Ensure all `@bickford/*` dependencies use `workspace:*` in package.json files
+3. Check that the workspace package exists in `packages/` or `apps/` directory
+4. The root package.json should have `"packageManager": "pnpm@9.15.0"`
 
 ## Apple/iOS Install (Add to Home Screen)
 
