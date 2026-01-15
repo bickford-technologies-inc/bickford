@@ -5,7 +5,7 @@
   "private": true,
   "description": "Intent → Reality in <5 seconds. Zero-approval execution runtime with OPTR gating, canon enforcement, and immutable ledger.",
   "engines": {
-    "node": "20.11.1"
+    "node": "20.x"
   },
   "scripts": {
     "start": "bash scripts/setup.sh && npm run dev",
