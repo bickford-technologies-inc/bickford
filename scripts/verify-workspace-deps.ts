@@ -10,7 +10,7 @@ function checkPackageJson(pkgPath: string): void {
   };
 
   for (const [name, version] of Object.entries(allDeps || {})) {
-    if (name.startsWith("@bickford/") && version !== "workspace:*") {
+    if (name.startsWith("@bickford/") && (version as string) !== "workspace:*") {
       process.exit(1);
     }
   }
@@ -32,6 +32,19 @@ function scanDirectory(dir: string): void {
   }
 }
 
-const repoRoot = process.cwd();
+function findRepoRoot(): string {
+  let dir = process.cwd();
+  while (dir !== path.dirname(dir)) {
+    if (fs.existsSync(path.join(dir, "pnpm-workspace.yaml")) || 
+        (fs.existsSync(path.join(dir, "package.json")) && 
+         JSON.parse(fs.readFileSync(path.join(dir, "package.json"), "utf8")).workspaces)) {
+      return dir;
+    }
+    dir = path.dirname(dir);
+  }
+  return process.cwd();
+}
+
+const repoRoot = findRepoRoot();
 scanDirectory(path.join(repoRoot, "packages"));
 scanDirectory(path.join(repoRoot, "apps"));

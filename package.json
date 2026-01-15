@@ -15,7 +15,6 @@
     "dev": "pnpm prisma:generate && turbo run dev --filter=web",
     "check:turbo": "node scripts/check-turbo-extends.mjs",
     "preflight": "tsx scripts/preflight.ts",
-    "verify:workspace": "tsx scripts/verify-workspace.ts",
     "enforce:web-boundary": "tsx scripts/enforce-web-boundary.ts",
     "build": "turbo run build",
     "build:strict": "pnpm --filter @bickford/db exec prisma generate && turbo run build",
