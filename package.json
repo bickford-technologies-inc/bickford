@@ -8,6 +8,8 @@
     "node": "20.x"
   },
   "scripts": {
+    "check:workspace-deps": "ts-node scripts/check-workspace-deps.ts",
+    "prebuild": "pnpm check:workspace-deps",
     "start": "bash scripts/setup.sh && npm run dev",
     "dev": "pnpm prisma:generate && turbo run dev --filter=web",
     "check:turbo": "node scripts/check-turbo-extends.mjs",
