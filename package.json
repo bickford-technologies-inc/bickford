@@ -5,8 +5,7 @@
   "private": true,
   "description": "Intent → Reality in <5 seconds. Zero-approval execution runtime with OPTR gating, canon enforcement, and immutable ledger.",
   "engines": {
-    "node": ">=20 <25",
-    "npm": ">=10.0.0"
+    "node": "20.11.1"
   },
   "scripts": {
     "start": "bash scripts/setup.sh && npm run dev",
@@ -66,7 +65,13 @@
     "check:chat": "node scripts/check-chat-invariants.mjs",
     "check:canon": "node scripts/check-canon-invariants.mjs",
     "check:no-deep-imports": "node scripts/check-no-deep-imports.mjs",
-    "check:all": "npm run check:invariants && npm run check:chat && npm run check:canon && npm run check:no-deep-imports",
+    "check:runtime": "node scripts/check-runtime-purity.ts && node scripts/check-runtime-imports.ts",
+    "api:snapshot": "node scripts/extract-api.ts",
+    "api:check": "node scripts/check-api-breaking.ts",
+    "check:schema": "node scripts/check-migration-immutability.ts && node scripts/check-schema-breaking.ts",
+    "build:deterministic": "npm run build && node scripts/check-build-determinism.ts",
+    "check:deploy": "node scripts/check-build-env.ts",
+    "check:all": "npm run check:deps && npm run check:runtime && npm run api:check && npm run check:schema && npm run check:auth && npm run check:deploy && npm run check:tenant && npm run check:audit && npm run check:rollback",
     "check:prisma-canon": "node scripts/check-prisma-canon.mjs",
     "check:esm": "node scripts/check-esm-invariants.mjs",
     "deploy:old": "bash scripts/deploy.sh",
@@ -87,7 +92,12 @@
     "env:vercel": "ts-node scripts/provision-vercel-env.ts",
     "doctor:ci": "tsx scripts/doctor-ci.ts",
     "canon:paths": "tsx scripts/check-no-cwd-paths.ts",
-    "canon:bundle": "tsx scripts/check-web-deps.ts"
+    "canon:bundle": "tsx scripts/check-web-deps.ts",
+    "check:deps": "ts-node scripts/check-deps.ts",
+    "check:audit": "node scripts/check-audit-coverage.ts",
+    "audit:export": "node scripts/export-audit.ts",
+    "check:rollback": "node scripts/check-rollback-completeness.ts",
+    "rollback:export": "node scripts/export-rollback-proof.ts"
   },
   "workspaces": [
     "packages/*",

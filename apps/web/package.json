@@ -12,6 +12,8 @@
     "postbuild": "node ../../scripts/emit-canon-certificate.mjs"
   },
   "dependencies": {
+    "@bickford/authority": "workspace:*",
+    "@bickford/canon": "workspace:*",
     "@bickford/db": "workspace:*",
     "@bickford/ledger": "workspace:*",
     "@bickford/optr": "workspace:*",
