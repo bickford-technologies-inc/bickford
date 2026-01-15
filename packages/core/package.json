@@ -1,6 +1,6 @@
 {
   "name": "@bickford/core",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Bickford Core: OPTR engine, Canon authority, and Ledger consolidated",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

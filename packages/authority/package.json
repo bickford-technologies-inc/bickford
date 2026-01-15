@@ -1,6 +1,6 @@
 {
   "name": "@bickford/authority",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Bickford Authority: Decision logic for intent authorization",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

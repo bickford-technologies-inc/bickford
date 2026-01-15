@@ -1,6 +1,6 @@
 {
   "name": "@bickford/optr",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "OPTR scoring and non-interference evaluation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

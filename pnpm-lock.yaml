@@ -138,7 +138,7 @@ importers:
   apps/web:
     dependencies:
       '@bickford/authority':
-        specifier: workspace:1.0.0
+        specifier: workspace:*
         version: link:../../packages/authority
       '@bickford/canon':
         specifier: workspace:*
@@ -403,6 +403,8 @@ importers:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
+
+  packages/runtime-purity: {}
 
   packages/session-completion:
     devDependencies:

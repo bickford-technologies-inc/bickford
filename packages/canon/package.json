@@ -1,6 +1,6 @@
 {
   "name": "@bickford/canon",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Bickford Canon: Canonical decision framework minimizing Time-to-Value",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
