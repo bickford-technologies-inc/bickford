@@ -9,6 +9,7 @@
   },
   "scripts": {
     "check:workspace-deps": "ts-node scripts/check-workspace-deps.ts",
+    "verify:workspace": "tsx scripts/verify-workspace-deps.ts",
     "prebuild": "pnpm check:workspace-deps",
     "start": "bash scripts/setup.sh && npm run dev",
     "dev": "pnpm prisma:generate && turbo run dev --filter=web",
