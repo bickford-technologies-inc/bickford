@@ -27,7 +27,7 @@ find . -type d -path "*/node_modules/.prisma" -prune -exec rm -rf {} +
 echo "✅ Artifact clean complete"
 
 echo "📦 Reinstalling dependencies (locked)"
-pnpm install --frozen-lockfile
+bash ci/guards/ENVIRONMENT_PRECONDITION.sh && corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install --frozen-lockfile
 
 echo "🔁 Generating Prisma clients (authoritative schema)"
 pnpm prisma generate

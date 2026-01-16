@@ -13,5 +13,5 @@ jobs:
 
       - name: Enforce authority usage
         run: |
-          pnpm install --frozen-lockfile
+          bash ci/guards/ENVIRONMENT_PRECONDITION.sh && corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install --frozen-lockfile
           pnpm tsx scripts/check-authority-enforcement.ts
