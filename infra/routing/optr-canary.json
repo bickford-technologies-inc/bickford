@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "accel": {
+    "max_jump_stages": 1,
+    "min_hold_seconds": 60
+  },
+  "risk": {
+    "max_error_rate_pct": 0.5,
+    "max_latency_p95_ms": 350,
+    "volatility_guard": 1.5
+  },
+  "cooldown": {
+    "after_rollback_seconds": 900
+  }
+}

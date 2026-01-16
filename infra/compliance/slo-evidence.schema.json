@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "required": [
+    "tenantId",
+    "period",
+    "slos",
+    "metrics",
+    "decisions",
+    "rollbacks",
+    "attestations",
+    "hash"
+  ]
+}
