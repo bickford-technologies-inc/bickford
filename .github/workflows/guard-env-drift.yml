@@ -1,0 +1,33 @@
+name: Guard — Env Drift Detection
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  env-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deps
+        run: npm install
+
+      - name: Recompute env hash
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          node scripts/hash-env.ts
+
+      - name: Compare env hash
+        run: |
+          git diff --exit-code infra/env/env.hash || {
+            echo "❌ Environment drift detected"
+            echo "Env vars changed without updating canonical hash"
+            exit 1
+          }
+
+      - name: Env integrity verified
+        run: echo "✅ Environment matches canonical hash"

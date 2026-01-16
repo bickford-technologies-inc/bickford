@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "tenants": {
+    "core": {
+      "vercelProjectId": "prj_core_abc123",
+      "orgId": "org_bickford",
+      "envPrefix": "TENANT_CORE_"
+    },
+    "demo": {
+      "vercelProjectId": "prj_demo_def456",
+      "orgId": "org_bickford",
+      "envPrefix": "TENANT_DEMO_"
+    },
+    "enterprise": {
+      "vercelProjectId": "prj_ent_xyz789",
+      "orgId": "org_bickford",
+      "envPrefix": "TENANT_ENTERPRISE_"
+    }
+  }
+}

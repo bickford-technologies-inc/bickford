@@ -1,0 +1,26 @@
+name: Deploy — Tenant Env Health Gate
+
+on:
+  deployment_status:
+
+jobs:
+  tenant-health:
+    if: github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check tenant health
+        run: |
+          TENANTS=(core demo enterprise)
+          BASE="${{ github.event.deployment_status.environment_url }}"
+
+          for t in "${TENANTS[@]}"; do
+            URL="$BASE/api/tenant/$t/health"
+            if ! curl -fsS "$URL" | jq -e '.ok==true'; then
+              echo "❌ Tenant $t unhealthy — triggering rollback"
+              curl -X POST "$BASE/api/tenant/env/rollback" \
+                -H "Content-Type: application/json" \
+                -d "{\"tenantId\":\"$t\",\"reason\":\"health_gate\"}"
+            else
+              echo "✅ Tenant $t healthy"
+            fi
+          done
