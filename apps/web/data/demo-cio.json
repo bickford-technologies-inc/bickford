@@ -1,0 +1,29 @@
+{
+  "persona": "CIO",
+  "intent": "Gain real-time visibility into enterprise asset performance and reduce risk.",
+  "categories": [
+    "Enterprise Visibility",
+    "Risk Reduction",
+    "Strategic Analytics"
+  ],
+  "steps": [
+    {
+      "id": "overview",
+      "title": "Enterprise Asset Overview",
+      "category": "Enterprise Visibility",
+      "description": "Executive view of asset health and availability."
+    },
+    {
+      "id": "risk",
+      "title": "Risk & Alerts",
+      "category": "Risk Reduction",
+      "description": "Identify high-risk assets and business impact."
+    },
+    {
+      "id": "analytics",
+      "title": "Strategic Analytics",
+      "category": "Strategic Analytics",
+      "description": "Support capital planning and compliance."
+    }
+  ]
+}

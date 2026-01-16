@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "bash \"$VERCEL_PROJECT_DIR/ci/guards/ENVIRONMENT_PRECONDITION.sh\" && corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install --frozen-lockfile && pnpm run build",
-  "installCommand": "echo \"install handled by buildCommand\"",
+  "buildCommand": "pnpm build",
+  "outputDirectory": "apps/web/.next",
   "framework": "nextjs"
 }

@@ -1,11 +1,12 @@
 {
   "name": "@bickford/canon",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Bickford Canon: Canonical decision framework minimizing Time-to-Value",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts"
   },
   "files": ["dist"],
   "scripts": {
@@ -37,5 +38,6 @@
   },
   "devDependencies": {    "tsx": "^4.7.0",    "typescript": "^5.9.3"
   },
-  "type": "module"
+  "type": "module",
+  "private": true
 }
