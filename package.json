@@ -8,6 +8,8 @@
     "node": "20.x"
   },
   "scripts": {
+    "guard:trace-ids": "tsx ci/guards/NO_RANDOM_TRACE_IDS.ts",
+    "ci:guards": "pnpm run guard:trace-ids",
     "check:workspace-deps": "node scripts/check-bickford-workspace-deps.mjs",
     "verify:workspace": "tsx scripts/verify-workspace-deps.ts",
     "prebuild": "pnpm check:workspace-deps",
