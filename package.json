@@ -101,7 +101,12 @@
     "audit:export": "node scripts/export-audit.ts",
     "check:rollback": "node scripts/check-rollback-completeness.ts",
     "rollback:export": "node scripts/export-rollback-proof.ts",
-    "test:execution-convergence": "jest packages/execution-convergence/tests/converge.hardening.spec.ts"
+    "test:execution-convergence": "jest packages/execution-convergence/tests/converge.hardening.spec.ts",
+    "check:workspace": "ts-node scripts/check-workspace-globs.ts",
+    "check:bickford-deps": "ts-node scripts/check-bickford-workspace-deps.ts",
+    "check:bickford-versions": "ts-node scripts/check-bickford-workspace-versions.ts",
+    "check:workspace-namespace": "ts-node scripts/check-workspace-version-namespace.ts",
+    "preinstall": "pnpm run check:workspace && pnpm run check:bickford-deps && pnpm run check:bickford-versions && pnpm run check:workspace-namespace"
   },
   "workspaces": [
     "packages/*",
