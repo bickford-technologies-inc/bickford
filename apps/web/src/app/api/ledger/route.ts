@@ -1,28 +1,18 @@
 export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
-
-// TEMP web-local history adapter.
-// System history lives outside web; this is a read-only UI surface.
-
-type HistoryEntry = {
-  id: string;
-  timestamp: string;
-  type: string;
-  payload: unknown;
-};
-
-const mockHistory: HistoryEntry[] = [
-  {
-    id: "init",
-    timestamp: new Date().toISOString(),
-    type: "SYSTEM",
-    payload: { message: "Web history initialized" },
-  },
-];
+import { ledger } from "@bickford/core";
 
 export async function GET() {
-  return Response.json({
-    entries: mockHistory,
-    note: "This is a web-surface history view. System enforcement lives outside the UI boundary.",
-  });
+  // Build / CI / static export guard
+  if (
+    process.env.VERCEL ||
+    process.env.CI ||
+    process.env.NEXT_PHASE === "phase-production-build"
+  ) {
+    return NextResponse.json({ entries: [] });
+  }
+
+  ledger.getPrismaClient();
+  const entries = await ledger.getLedger();
+  return NextResponse.json({ entries });
 }

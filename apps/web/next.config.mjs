@@ -1,14 +1,19 @@
 /** @type {import('next').NextConfig} */
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const nextConfig = {
+  reactStrictMode: true,
   transpilePackages: [
-    "@bickford/db",
+    "@bickford/core",
+    "@bickford/types",
+    "@bickford/authority",
     "@bickford/ledger",
     "@bickford/optr",
     "@bickford/ui",
   ],
-  experimental: {
-    externalDir: true,
-  },
 };
 
 export default nextConfig;
