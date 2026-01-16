@@ -6,14 +6,7 @@ settings:
 
 importers:
 
-  .:
-    dependencies:
-      tsx:
-        specifier: ^4.21.0
-        version: 4.21.0
-      zod:
-        specifier: ^4.3.5
-        version: 4.3.5
+  .: {}
 
   apps/web:
     dependencies:
@@ -107,7 +100,7 @@ importers:
         version: 5.9.3
       vite:
         specifier: ^7.3.1
-        version: 7.3.1(@types/node@25.0.9)(tsx@4.21.0)
+        version: 7.3.1(@types/node@25.0.9)
       vite-plugin-pwa:
         specifier: 0.19.8
         version: 0.19.8(vite@7.3.1)(workbox-build@7.4.0)(workbox-window@7.4.0)
@@ -229,7 +222,7 @@ importers:
         version: 8.53.0(eslint@9.39.2)(typescript@5.9.3)
       vite:
         specifier: ^7.3.1
-        version: 7.3.1(@types/node@25.0.9)(tsx@4.21.0)
+        version: 7.3.1(@types/node@25.0.9)
 
   packages/execution-convergence: {}
 
@@ -378,7 +371,7 @@ importers:
         version: 8.53.0(eslint@9.39.2)(typescript@5.9.3)
       vite:
         specifier: ^7.3.1
-        version: 7.3.1(@types/node@25.0.9)(tsx@4.21.0)
+        version: 7.3.1(@types/node@25.0.9)
 
 packages:
 
@@ -3932,7 +3925,7 @@ packages:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 7.3.1(@types/node@25.0.9)(tsx@4.21.0)
+      vite: 7.3.1(@types/node@25.0.9)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3949,7 +3942,7 @@ packages:
       '@rolldown/pluginutils': 1.0.0-beta.53
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 7.3.1(@types/node@25.0.9)(tsx@4.21.0)
+      vite: 7.3.1(@types/node@25.0.9)
     transitivePeerDependencies:
       - supports-color
 
@@ -5717,6 +5710,7 @@ packages:
     resolution: {integrity: sha512-1VKTZJCwBrvbd+Wn3AOgQP/2Av+TfTCOlE4AcRJE72W1ksZXbAx8PPBR9RzgTeSPzlPMHrbANMH3LbltH73wxQ==}
     dependencies:
       resolve-pkg-maps: 1.0.0
+    dev: true
 
   /getenv@2.0.0:
     resolution: {integrity: sha512-VilgtJj/ALgGY77fiLam5iD336eSWi96Q15JSAG1zi8NRBysm3LXKdGnHb4m5cuyxvOLQQKWpBZAT6ni4FI2iQ==}
@@ -7895,6 +7889,7 @@ packages:
 
   /resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
+    dev: true
 
   /resolve-workspace-root@2.0.1:
     resolution: {integrity: sha512-nR23LHAvaI6aHtMg6RWoaHpdR4D881Nydkzi2CixINyg9T00KgaJdJI6Vwty+Ps8WLxZHuxsS0BseWjxSA4C+w==}
@@ -8604,6 +8599,7 @@ packages:
       get-tsconfig: 4.13.0
     optionalDependencies:
       fsevents: 2.3.3
+    dev: true
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -8804,14 +8800,14 @@ packages:
       debug: 4.4.3
       fast-glob: 3.3.3
       pretty-bytes: 6.1.1
-      vite: 7.3.1(@types/node@25.0.9)(tsx@4.21.0)
+      vite: 7.3.1(@types/node@25.0.9)
       workbox-build: 7.4.0
       workbox-window: 7.4.0
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /vite@7.3.1(@types/node@25.0.9)(tsx@4.21.0):
+  /vite@7.3.1(@types/node@25.0.9):
     resolution: {integrity: sha512-w+N7Hifpc3gRjZ63vYBXA56dvvRlNWRczTdmCBBa+CotUzAPf5b7YMdMR/8CQoeYE5LX3W4wj6RYTgonm1b9DA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
@@ -8858,7 +8854,6 @@ packages:
       postcss: 8.5.6
       rollup: 4.55.1
       tinyglobby: 0.2.15
-      tsx: 4.21.0
     optionalDependencies:
       fsevents: 2.3.3
 
