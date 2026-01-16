@@ -37,11 +37,11 @@ for (const pkgPath of allPackageJsons) {
   if (!allowedPackageJsons.has(pkgPath)) {
     fail(
       `Illegal package.json detected:\n\n` +
-      `  ${pkgPath}\n\n` +
-      `❌ This package.json is not covered by pnpm-workspace.yaml.\n\n` +
-      `Fix:\n` +
-      `  - Add its directory to pnpm-workspace.yaml\n` +
-      `  - OR remove the package.json`
+        `  ${pkgPath}\n\n` +
+        `❌ This package.json is not covered by pnpm-workspace.yaml.\n\n` +
+        `Fix:\n` +
+        `  - Add its directory to pnpm-workspace.yaml\n` +
+        `  - OR remove the package.json`
     );
   }
 }
