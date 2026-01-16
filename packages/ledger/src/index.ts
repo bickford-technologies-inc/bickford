@@ -78,13 +78,19 @@ export async function recordBuildEvent(
   if (status === "success") {
     const ledgerEntry = await appendLedger(
       {
+        id: crypto.randomUUID(),
         action: "build",
-        context: { commitSha, branch },
-        timestamp: new Date().toISOString(),
+        goal: `${commitSha}:${branch}`,
+        createdAt: new Date().toISOString(),
       },
       {
         id: crypto.randomUUID(),
-        intent: "build",
+        intent: {
+          id: crypto.randomUUID(),
+          action: "build",
+          goal: `${commitSha}:${branch}`,
+          createdAt: new Date().toISOString(),
+        },
         timestamp: new Date().toISOString(),
         outcome: "ALLOW",
         reason: "Build succeeded",
@@ -113,13 +119,19 @@ export async function recordDeployEvent(
   // MANDATORY: Create ledger proof for deploy
   const ledgerEntry = await appendLedger(
     {
+      id: crypto.randomUUID(),
       action: "deploy",
-      context: { commitSha, environment, buildId },
-      timestamp: new Date().toISOString(),
+      goal: `${commitSha}:${environment}:${buildId ?? ""}`,
+      createdAt: new Date().toISOString(),
     },
     {
       id: crypto.randomUUID(),
-      intent: "deploy",
+      intent: {
+        id: crypto.randomUUID(),
+        action: "deploy",
+        goal: `${commitSha}:${environment}:${buildId ?? ""}`,
+        createdAt: new Date().toISOString(),
+      },
       timestamp: new Date().toISOString(),
       outcome: status === "success" ? "ALLOW" : "DENY",
       reason: `Deploy ${status}`,
@@ -154,13 +166,19 @@ export async function recordSchemaChange(
   // Create ledger proof
   const ledgerEntry = await appendLedger(
     {
+      id: crypto.randomUUID(),
       action: "schema_change",
-      context: { schemaHash, migrationName },
-      timestamp: new Date().toISOString(),
+      goal: `${schemaHash}:${migrationName ?? ""}`,
+      createdAt: new Date().toISOString(),
     },
     {
       id: crypto.randomUUID(),
-      intent: "schema_change",
+      intent: {
+        id: crypto.randomUUID(),
+        action: "schema_change",
+        goal: `${schemaHash}:${migrationName ?? ""}`,
+        createdAt: new Date().toISOString(),
+      },
       timestamp: new Date().toISOString(),
       outcome: "ALLOW",
       reason: "Schema change recorded",

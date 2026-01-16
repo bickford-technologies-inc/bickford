@@ -1,35 +1,23 @@
 {
   "name": "@bickford/canon",
   "version": "1.0.0",
-  "description": "Bickford Canon: Canonical decision framework minimizing Time-to-Value",
+  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "typecheck": "tsc --noEmit",
-    "lint": "npm run typecheck",
-    "example:optr": "tsx examples/optr-demo.ts",
-    "api": "tsx api/server.ts",
-    "test": "echo 'No tests yet'"
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
-  "keywords": [
-    "bickford",
-    "canon",
-    "optr",
-    "decision-framework",
-    "time-to-value",
-    "ai-safety",
-    "promotion-gate",
-    "non-interference"
+  "files": [
+    "dist"
   ],
-  "author": "Bickford",
-  "license": "PROPRIETARY",
-  "timestamp": "2025-12-21T14:41:00-05:00",
-  "locked": true,
-  "dependencies": {
-    "@bickford/types": "workspace:*",
-    "@bickford/db": "workspace:*"
+  "scripts": {
+    "build": "tsc"
   },
-  "devDependencies": {    "tsx": "^4.7.0",    "typescript": "^5.9.3"
+  "dependencies": {
+    "@bickford/types": "*",
+    "@bickford/db": "*"
   }
 }
