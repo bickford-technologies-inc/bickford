@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "tenants": {
+    "core": {
+      "weights": {
+        "iad1": 90,
+        "pdx1": 10
+      }
+    },
+    "demo": {
+      "weights": {
+        "sfo1": 100
+      }
+    },
+    "enterprise": {
+      "weights": {
+        "fra1": 95,
+        "cdg1": 5
+      }
+    }
+  }
+}

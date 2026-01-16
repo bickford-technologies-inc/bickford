@@ -1,0 +1,38 @@
+name: Auto-Create Vercel Env Vars
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  vercel-env-autocreate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Ensure DATABASE_URL exists in Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [[ -z "$DATABASE_URL" ]]; then
+            echo "❌ DATABASE_URL missing in GitHub secrets — cannot auto-create"
+            exit 1
+          fi
+
+          echo "🔍 Checking Vercel env vars…"
+
+          if vercel env ls --token $VERCEL_TOKEN | grep -q DATABASE_URL; then
+            echo "✅ DATABASE_URL already exists in Vercel"
+            exit 0
+          fi
+
+          echo "➕ Creating DATABASE_URL in Vercel (all envs)"
+          printf "%s" "$DATABASE_URL" | vercel env add DATABASE_URL production --token $VERCEL_TOKEN
+          printf "%s" "$DATABASE_URL" | vercel env add DATABASE_URL preview --token $VERCEL_TOKEN
+          printf "%s" "$DATABASE_URL" | vercel env add DATABASE_URL development --token $VERCEL_TOKEN
+
+          echo "✅ DATABASE_URL created successfully"

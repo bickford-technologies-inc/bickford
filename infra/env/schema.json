@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "required": {
+    "DATABASE_URL": {
+      "type": "string",
+      "secret": true,
+      "description": "Primary database connection string"
+    },
+    "OPENAI_API_KEY": {
+      "type": "string",
+      "secret": true,
+      "description": "OpenAI API access"
+    }
+  }
+}

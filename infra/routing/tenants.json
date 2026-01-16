@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "tenants": {
+    "core": {
+      "primary": "iad1",
+      "allowed": ["iad1", "pdx1"],
+      "failover": ["pdx1"]
+    },
+    "demo": {
+      "primary": "sfo1",
+      "allowed": ["sfo1"],
+      "failover": []
+    },
+    "enterprise": {
+      "primary": "fra1",
+      "allowed": ["fra1", "cdg1"],
+      "failover": ["cdg1"]
+    }
+  }
+}

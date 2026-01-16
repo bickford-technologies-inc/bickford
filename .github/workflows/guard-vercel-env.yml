@@ -1,0 +1,28 @@
+name: Guard — Vercel Environment Variables
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  env-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate required env vars
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          required=(
+            DATABASE_URL
+          )
+
+          for v in "${required[@]}"; do
+            if [[ -z "${!v}" ]]; then
+              echo "❌ Missing required env var: $v"
+              echo "This will cause a Vercel deployment failure."
+              exit 1
+            fi
+          done
+
+          echo "✅ Required environment variables present"

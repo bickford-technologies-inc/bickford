@@ -1,0 +1,26 @@
+name: Guard — Tenant Env Integrity
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  tenant-env-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify tenant ledgers
+        run: |
+          node -e "
+          const { verifyTenantLedger } = require('./packages/bickford/src/runtime/tenantEnvLedger')
+          const tenants = ['core','demo','enterprise']
+          for (const t of tenants) {
+            if (!verifyTenantLedger(t)) {
+              console.error('❌ Ledger invalid for tenant', t)
+              process.exit(1)
+            }
+          }
+          console.log('✅ All tenant ledgers valid')
+          "

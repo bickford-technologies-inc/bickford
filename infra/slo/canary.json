@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "tenants": {
+    "core": {
+      "latency_p95_ms": 350,
+      "error_rate_pct": 0.5,
+      "availability_pct": 99.9,
+      "window_seconds": 60
+    },
+    "demo": {
+      "latency_p95_ms": 500,
+      "error_rate_pct": 1.0,
+      "availability_pct": 99.0,
+      "window_seconds": 60
+    },
+    "enterprise": {
+      "latency_p95_ms": 300,
+      "error_rate_pct": 0.2,
+      "availability_pct": 99.99,
+      "window_seconds": 120
+    }
+  }
+}

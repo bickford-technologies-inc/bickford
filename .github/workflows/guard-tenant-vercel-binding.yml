@@ -1,0 +1,20 @@
+name: Guard — Tenant ↔ Vercel Binding
+
+on:
+  push:
+  pull_request:
+  deployment:
+
+jobs:
+  binding-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify tenant-project binding
+        env:
+          TENANT_ID: ${{ secrets.TENANT_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          node scripts/assert-vercel-binding.ts
+          node scripts/assert-tenant-env-prefix.ts

@@ -1,0 +1,22 @@
+name: Guard — Env Ledger Integrity
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  env-ledger-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify env ledger integrity
+        run: |
+          node -e "
+          const { verifyEnvLedger } = require('./packages/bickford/src/runtime/envLedger')
+          if (!verifyEnvLedger()) {
+            console.error('❌ Env ledger verification failed')
+            process.exit(1)
+          }
+          console.log('✅ Env ledger verified')
+          "
