@@ -1,14 +1,12 @@
 {
   "name": "bickford",
   "private": true,
-  "packageManager": "pnpm@8.15.4",
   "scripts": {
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build",
     "start": "pnpm --filter web start"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "engines": {
     "node": "20.x"
   }
