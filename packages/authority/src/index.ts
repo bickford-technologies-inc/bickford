@@ -5,23 +5,24 @@ import { Intent, Decision } from "@bickford/types";
  * Currently validates intent structure and allows valid intents
  * This can be extended with more complex decision logic
  */
-export function authorize(intent: Intent): Decision {
+export function authorize(input: {
+  tenantId: string;
+  intent: string;
+}): AuthorityDecision {
   // Basic validation
-  if (!intent || !intent.action) {
+  if (!input || !input.intent) {
     return {
-      id: crypto.randomUUID(),
-      intent: "DENY",
-      timestamp: new Date().toISOString(),
-      denied: true,
+      allowed: false,
+      reason: "Invalid input",
     };
   }
 
   // For now, allow all valid intents
-  return {
-    id: crypto.randomUUID(),
-    intent: "ALLOW",
-    timestamp: new Date().toISOString(),
-  };
+  return { allowed: true };
 }
+
+export type AuthorityDecision =
+  | { allowed: true }
+  | { allowed: false; reason: string };
 
 export * from "./index";
