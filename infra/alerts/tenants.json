@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "tenants": {
+    "core": {
+      "slack": {
+        "webhook": "SLACK_WEBHOOK_CORE",
+        "channel": "#alerts-core"
+      },
+      "pagerduty": {
+        "integrationKey": "PD_KEY_CORE",
+        "severity": {
+          "SLO_BREACH": "critical",
+          "ROLLBACK": "critical",
+          "DEPLOY_FAIL": "error"
+        }
+      },
+      "rateLimit": {
+        "perMinute": 3
+      }
+    },
+    "demo": {
+      "slack": {
+        "webhook": "SLACK_WEBHOOK_DEMO",
+        "channel": "#alerts-demo"
+      },
+      "rateLimit": {
+        "perMinute": 1
+      }
+    },
+    "enterprise": {
+      "slack": {
+        "webhook": "SLACK_WEBHOOK_ENT",
+        "channel": "#alerts-enterprise"
+      },
+      "pagerduty": {
+        "integrationKey": "PD_KEY_ENT",
+        "severity": {
+          "SLO_BREACH": "critical",
+          "ROLLBACK": "critical",
+          "SECURITY": "critical"
+        }
+      },
+      "rateLimit": {
+        "perMinute": 5
+      }
+    }
+  }
+}

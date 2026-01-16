@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "contents": [
+    "slo-evidence.json",
+    "slo-attestation.txt",
+    "ledger-extract.json",
+    "hashes.sha256",
+    "README.txt"
+  ]
+}

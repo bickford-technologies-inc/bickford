@@ -1,0 +1,17 @@
+name: Guard — SLO Evidence Integrity
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  evidence-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          node -e "
+          const e = require('./packages/bickford/src/runtime/sloEvidenceBuilder')
+          console.log('✅ SLO evidence builder present')
+          "

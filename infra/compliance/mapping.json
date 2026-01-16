@@ -1,0 +1,12 @@
+{
+  "SOC2": {
+    "CC7.2": "Automated detection of operational anomalies",
+    "CC7.3": "Timely response to incidents and failures",
+    "CC8.1": "Change management with monitoring"
+  },
+  "FedRAMP": {
+    "SI-4": "System monitoring and alerting",
+    "IR-4": "Incident handling",
+    "CMF-3": "Configuration and change control"
+  }
+}
