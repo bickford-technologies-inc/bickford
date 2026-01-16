@@ -1,15 +1,19 @@
 {
   "name": "bickford",
   "private": true,
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@8.15.4",
   "scripts": {
-    "preinstall": "bash \"$VERCEL_PROJECT_DIR/ci/guards/ENVIRONMENT_PRECONDITION.sh\"",
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint"
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "start": "pnpm --filter web start",
+    "postinstall": "pnpm -r build"
   },
   "workspaces": [
-    "packages/*",
-    "apps/*"
-  ]
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "tsx": "^4.21.0",
+    "zod": "^4.3.5"
+  }
 }

@@ -1,11 +1,12 @@
 {
-  "name": "@bickford/web",
+  "name": "web",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "Bickford Web Application - Next.js app",
   "scripts": {
     "dev": "next dev",
-    "build": "NEXT_TELEMETRY_DISABLED=1 next build --debug",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint .",
     "prebuild": "tsx ../../scripts/check-web-deps.ts && tsx ./src/lib/prisma.build-guard.ts",
@@ -18,9 +19,9 @@
     "@bickford/ledger": "workspace:*",
     "@bickford/optr": "workspace:*",
     "@bickford/ui": "workspace:*",
-      "next": "^16.1.1",
-      "react": "^19.0.0",
-      "react-dom": "^19.0.0",
+      "next": "14.1.0",
+      "react": "18.2.0",
+      "react-dom": "18.2.0",
     "@prisma/client": "6.19.2"
   },
   "devDependencies": {
