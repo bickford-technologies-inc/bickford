@@ -256,3 +256,23 @@ pnpm install --frozen-lockfile
 ```
 
 See `ci/guards/check-guards.sh` for details.
+
+## Canonical Vercel Install Command (Absolute, Debug-Proof)
+
+To guarantee guard execution regardless of Vercel working directory or project root settings, use this install command:
+
+```bash
+echo "[DEBUG] pwd=$(pwd)" && \
+echo "[DEBUG] repo root files:" && \
+ls -l && \
+echo "[DEBUG] ci tree:" && \
+ls -lR ci || true && \
+bash "$(git rev-parse --show-toplevel)/ci/guards/ENVIRONMENT_PRECONDITION.sh" && \
+corepack enable && \
+corepack prepare pnpm@9.15.0 --activate && \
+pnpm install --frozen-lockfile
+```
+
+- This resolves the Git root and executes the guard by absolute path, bypassing all Vercel context ambiguity.
+- The `ls` output will prove file visibility in the build log.
+- Use this as your Vercel **Install Command** for deterministic, debug-proof enforcement.
