@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "stages": [1, 5, 25, 50, 100],
+  "hold_seconds": 300
+}

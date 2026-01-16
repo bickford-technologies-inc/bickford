@@ -1,15 +1,12 @@
-import { buildSLOEvidence } from "@bickford/runtime/sloEvidenceBuilder"
+import { buildSLOEvidence } from "@bickford/runtime/sloEvidenceBuilder";
 
 export async function POST(req: Request) {
-  const { tenantId, from, to } = await req.json()
+  const { tenantId, from, to } = await req.json();
 
-  const evidence = buildSLOEvidence(
-    tenantId,
-    { from, to }
-  )
+  const evidence = buildSLOEvidence(tenantId, { from, to });
 
   return Response.json({
     ok: true,
-    evidence
-  })
+    evidence,
+  });
 }

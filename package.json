@@ -8,7 +8,7 @@
     "node": "20.x"
   },
   "scripts": {
-    "check:workspace-deps": "ts-node scripts/check-workspace-deps.ts",
+    "check:workspace-deps": "node scripts/check-bickford-workspace-deps.mjs",
     "verify:workspace": "tsx scripts/verify-workspace-deps.ts",
     "prebuild": "pnpm check:workspace-deps",
     "start": "bash scripts/setup.sh && npm run dev",
@@ -109,7 +109,7 @@
     "check:workspace-boundary": "ts-node scripts/check-bickford-workspace-boundary.ts",
     "check:no-external-packages": "ts-node scripts/check-no-packagejson-outside-workspace.ts",
     "check:packagejson-schema": "ts-node scripts/check-packagejson-schema.ts",
-    "preinstall": "pnpm run check:workspace && pnpm run check:bickford-deps && pnpm run check:bickford-versions && pnpm run check:workspace-namespace && pnpm run check:workspace-boundary && pnpm run check:no-external-packages && pnpm run check:packagejson-schema"
+    "preinstall": "pnpm run check:workspace && pnpm run check:workspace-deps && pnpm run check:bickford-deps && pnpm run check:bickford-versions && pnpm run check:workspace-namespace && pnpm run check:workspace-boundary && pnpm run check:no-external-packages && pnpm run check:packagejson-schema && pnpm run check:tsconfig"
   },
   "workspaces": [
     "packages/*",
@@ -140,7 +140,8 @@
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "turbo": "^2.7.4",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "tsx": "^4.19.0"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.962.0",
@@ -156,8 +157,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "redis": "^5.10.0",
-    "zod": "^4.3.5",
-    "tsx": "3.14.0"
+    "zod": "^4.3.5"
   },
   "overrides": {
     "react": "18.3.1",

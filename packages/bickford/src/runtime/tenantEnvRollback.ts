@@ -1,19 +1,19 @@
-import { getTenantLedger, appendTenantEnv } from "./tenantEnvLedger"
+import { getTenantLedger, appendTenantEnv } from "./tenantEnvLedger";
 
 export function rollbackTenantEnv(
   tenantId: string,
   reason: string,
   actor = "system"
 ) {
-  const ledger = getTenantLedger(tenantId)
+  const ledger = getTenantLedger(tenantId);
 
   if (ledger.length < 2) {
-    throw new Error("No prior env state to roll back to")
+    throw new Error("No prior env state to roll back to");
   }
 
   // last entry is bad; previous is known-good
-  const bad = ledger.at(-1)!
-  const good = ledger.at(-2)!
+  const bad = ledger.at(-1)!;
+  const good = ledger.at(-2)!;
 
   return appendTenantEnv({
     ts: new Date().toISOString(),
@@ -24,6 +24,6 @@ export function rollbackTenantEnv(
     oldHash: bad.newHash,
     newHash: good.newHash,
     actor,
-    intentId: `rollback:${reason}`
-  })
+    intentId: `rollback:${reason}`,
+  });
 }

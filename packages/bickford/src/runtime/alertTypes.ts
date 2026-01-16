@@ -3,14 +3,14 @@ export type AlertKind =
   | "ROLLBACK"
   | "DEPLOY_FAIL"
   | "CANARY_HALT"
-  | "SECURITY"
+  | "SECURITY";
 
 export type AlertEvent = {
-  ts: string
-  tenantId: string
-  kind: AlertKind
-  severity?: string
-  title: string
-  message: string
-  details?: Record<string, unknown>
-}
+  ts: string;
+  tenantId: string;
+  kind: AlertKind;
+  severity?: string;
+  title: string;
+  message: string;
+  details?: Record<string, unknown>;
+};

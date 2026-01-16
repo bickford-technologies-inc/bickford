@@ -1,4 +1,4 @@
-import fetch from "node-fetch"
+import fetch from "node-fetch";
 
 export async function notifySlack(
   webhook: string,
@@ -10,7 +10,7 @@ export async function notifySlack(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       channel,
-      text
-    })
-  })
+      text,
+    }),
+  });
 }

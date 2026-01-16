@@ -6,6 +6,6 @@ export async function GET(
   return Response.json({
     ok: true,
     tenant: params.tenantId,
-    time: new Date().toISOString()
-  })
+    time: new Date().toISOString(),
+  });
 }
