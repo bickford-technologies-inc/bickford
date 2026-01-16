@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Minimal Vercel environment precondition guard for Bickford
 set -e
 
