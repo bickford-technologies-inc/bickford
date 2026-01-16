@@ -41,8 +41,7 @@ else
 fi
 
 echo "Step 4: Installing dependencies..."
-# corepack enable
-pnpm install
+bash ci/guards/ENVIRONMENT_PRECONDITION.sh && corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install --frozen-lockfile
 
 echo "Step 5: Running monorepo build..."
 pnpm exec turbo run build

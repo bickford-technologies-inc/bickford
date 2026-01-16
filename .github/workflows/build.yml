@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 20.x
       - name: Install deps
-        run: pnpm install
+        run: bash ci/guards/ENVIRONMENT_PRECONDITION.sh && corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install --frozen-lockfile
       - name: Validate repo invariants
         run: pnpm tsx scripts/validate-repo.ts
       - name: Enforce web/canon boundary

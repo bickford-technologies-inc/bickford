@@ -19,10 +19,6 @@ export PNPM_STORE_PATH=$(mktemp -d)
 export PNPM_DISABLE_SELF_UPDATE_CHECK=1
 export CI=1
 
-pnpm install \
-  --frozen-lockfile \
-  --ignore-scripts \
-  --prefer-offline=false \
-  --strict-peer-dependencies
+bash ci/guards/ENVIRONMENT_PRECONDITION.sh && corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install --frozen-lockfile --ignore-scripts --prefer-offline=false --strict-peer-dependencies
 
 echo "✅ WORKSPACE_EXEC_001 satisfied — world is admissible"

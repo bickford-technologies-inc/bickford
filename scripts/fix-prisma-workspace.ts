@@ -17,7 +17,7 @@ for (const path of prismaPaths) {
 console.log("✅ Removed old Prisma generated files");
 
 // Reinstall dependencies and regenerate client
-execSync("pnpm install", { stdio: "inherit" });
+execSync("bash ci/guards/ENVIRONMENT_PRECONDITION.sh && corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install --frozen-lockfile", { stdio: "inherit" });
 execSync("pnpm prisma generate --schema=prisma/schema.prisma", {
   stdio: "inherit",
 });

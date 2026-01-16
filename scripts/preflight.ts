@@ -7,5 +7,5 @@ function run(cmd: string) {
 
 run("tsx scripts/enforce-web-boundary.ts");
 run("tsx scripts/verify-workspace.ts");
-run("pnpm install");
+run("bash ci/guards/ENVIRONMENT_PRECONDITION.sh && corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install --frozen-lockfile");
 run("pnpm run build");
