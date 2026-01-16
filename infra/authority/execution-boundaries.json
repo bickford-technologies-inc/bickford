@@ -1,0 +1,11 @@
+{
+  "paths": [
+    "apps/**/api/**",
+    "packages/**/runtime/**",
+    "packages/**/optr/**",
+    "packages/**/ledger/**",
+    "packages/**/deploy/**"
+  ],
+  "requiredImport": "@bickford/authority",
+  "requiredSymbol": "authorize"
+}
