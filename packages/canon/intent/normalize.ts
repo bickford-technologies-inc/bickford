@@ -1,3 +1,4 @@
+import { generateUIMessageId } from "../../../lib/ids";
 import { Intent } from "./types";
 
 // Normalize any input into a canonical Intent object
@@ -5,7 +6,8 @@ export function normalizeIntent(
   input: Partial<Intent> & { goal: string }
 ): Intent {
   return {
-    id: input.id || generateId(),
+    // Note: id is for UI/runtime only, not for authority or audit linkage
+    id: input.id || generateUIMessageId(),
     goal: input.goal,
     constraints: input.constraints || [],
     canonRefs: input.canonRefs || [],
@@ -16,11 +18,4 @@ export function normalizeIntent(
   };
 }
 
-function generateId(): string {
-  return (
-    "intent-" +
-    Math.random().toString(36).slice(2, 10) +
-    "-" +
-    Date.now().toString(36)
-  );
-}
+// Removed local generateId(). All ID generation is now in lib/ids and for UI/runtime only.
