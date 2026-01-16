@@ -16,7 +16,7 @@
     "check:turbo": "node scripts/check-turbo-extends.mjs",
     "preflight": "tsx scripts/preflight.ts",
     "enforce:web-boundary": "tsx scripts/enforce-web-boundary.ts",
-    "build": "pnpm -r run build && pnpm run verify",
+    "build": "pnpm guard:trace-ids && pnpm -r run build && pnpm run verify",
     "verify": "node scripts/verify-adapter-non-interference.mjs && node scripts/ban-date-now.mjs && node scripts/ban-math-random.mjs && node scripts/ban-fs.mjs && node scripts/ban-process-env.mjs && node scripts/ban-network.mjs && node scripts/ban-crypto-random.mjs",
     "build:strict": "pnpm --filter @bickford/db exec prisma generate && turbo run build",
     "prisma:generate": "pnpm --filter @bickford/db exec prisma generate",
