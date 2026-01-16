@@ -106,7 +106,8 @@
     "check:bickford-deps": "ts-node scripts/check-bickford-workspace-deps.ts",
     "check:bickford-versions": "ts-node scripts/check-bickford-workspace-versions.ts",
     "check:workspace-namespace": "ts-node scripts/check-workspace-version-namespace.ts",
-    "preinstall": "pnpm run check:workspace && pnpm run check:bickford-deps && pnpm run check:bickford-versions && pnpm run check:workspace-namespace"
+    "check:workspace-boundary": "ts-node scripts/check-bickford-workspace-boundary.ts",
+    "preinstall": "pnpm run check:workspace && pnpm run check:bickford-deps && pnpm run check:bickford-versions && pnpm run check:workspace-namespace && pnpm run check:workspace-boundary"
   },
   "workspaces": [
     "packages/*",
