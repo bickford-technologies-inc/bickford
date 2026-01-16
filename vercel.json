@@ -1,4 +1,11 @@
 {
-  "buildCommand": "bash ci/guards/workspace-integrity.sh && pnpm run build",
-  "outputDirectory": "apps/web/.next"
+  "build": {
+    "env": {
+      "NODE_VERSION": "20"
+    }
+  },
+  "engines": {
+    "node": "20.x"
+  },
+  "buildCommand": "bash ci/guards/workspace-integrity.sh && pnpm run build"
 }
