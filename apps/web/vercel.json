@@ -1,5 +1,4 @@
 {
   "outputDirectory": ".next",
-  "installCommand": "bash ci/guards/ENVIRONMENT_PRECONDITION.sh && corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install --frozen-lockfile",
   "buildCommand": "pnpm run build"
 }
