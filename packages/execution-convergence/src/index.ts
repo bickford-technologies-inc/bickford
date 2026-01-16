@@ -8,7 +8,10 @@
 // Types
 export type { Agent, AgentRole } from "./types/agents.js";
 export type { Artifact, ArtifactType } from "./types/artifacts.js";
-export type { ConvergenceResult, ConvergenceState } from "./types/convergence.js";
+export type {
+  ConvergenceResult,
+  ConvergenceState,
+} from "./types/convergence.js";
 export type { UIContext, UIState } from "./types/ui.js";
 
 // Core functions
