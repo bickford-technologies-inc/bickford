@@ -143,9 +143,6 @@ importers:
       '@bickford/canon':
         specifier: workspace:*
         version: link:../../packages/canon
-      '@bickford/core':
-        specifier: workspace:*
-        version: link:../../packages/core
       '@bickford/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -256,18 +253,11 @@ importers:
   packages/canon:
     dependencies:
       '@bickford/db':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../db
       '@bickford/types':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../types
-    devDependencies:
-      tsx:
-        specifier: ^4.7.0
-        version: 4.21.0
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
 
   packages/claude-integration:
     dependencies:
@@ -426,11 +416,7 @@ importers:
         specifier: ^5.0.0
         version: 5.9.3
 
-  packages/types:
-    devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
+  packages/types: {}
 
   packages/ui:
     dependencies:
@@ -8718,7 +8704,7 @@ packages:
     resolution: {integrity: sha512-zIHwmZPRshsCdpMDyVsqGmgyP0yT8GAgXUnkdAoJisxvf33k7yO6OuoKmcTGuXPWSsm8Oh88nZicRLA9Y0rUeA==}
     engines: {node: '>=12'}
     dependencies:
-      dotenv: 16.6.1
+      dotenv: 16.4.7
     dev: false
 
   /dotenv@16.4.7:
@@ -9736,7 +9722,7 @@ packages:
       proxy-addr: 2.0.7
       rfdc: 1.4.1
       secure-json-parse: 2.7.0
-      semver: 7.7.3
+      semver: 7.6.2
       toad-cache: 3.7.0
     dev: true
 
