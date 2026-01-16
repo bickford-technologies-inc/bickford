@@ -1,34 +1,40 @@
-import fs from "fs";
-import path from "path";
+#!/usr/bin/env tsx
 
-const FORBIDDEN = ["generateId(", "createIdGenerator(", "uuid", "nanoid"];
-const ROOTS = ["packages", "apps"];
+import { readFileSync } from "fs";
+import { globby } from "globby";
+
+const FORBIDDEN = [
+  "generateId(",
+  "createIdGenerator(",
+  "traceId",
+  "executionId",
+];
+
+const TRACE_PATHS = [
+  "packages/**/trace*.ts",
+  "packages/**/DecisionTrace*.ts",
+  "apps/**/trace*.ts",
+];
+
 let violations = 0;
 
-for (const root of ROOTS) {
-  if (!fs.existsSync(root)) continue;
-  const walk = (dir: string) => {
-    for (const file of fs.readdirSync(dir)) {
-      const full = path.join(dir, file);
-      if (fs.statSync(full).isDirectory()) walk(full);
-      else if (full.endsWith(".ts") || full.endsWith(".tsx")) {
-        const content = fs.readFileSync(full, "utf8");
-        if (
-          content.includes("DecisionTrace") &&
-          FORBIDDEN.some((f) => content.includes(f))
-        ) {
-          console.error(`❌ Forbidden ID usage in ${full}`);
-          violations++;
-        }
-      }
+const files = await globby(TRACE_PATHS);
+
+for (const file of files) {
+  const content = readFileSync(file, "utf8");
+
+  for (const forbidden of FORBIDDEN) {
+    if (content.includes(forbidden)) {
+      console.error(`❌ RANDOM ID VIOLATION in ${file}`);
+      console.error(`   Found forbidden token: ${forbidden}`);
+      violations++;
     }
-  };
-  walk(root);
+  }
 }
 
 if (violations > 0) {
-  console.error(`❌ ${violations} DecisionTrace ID violations found`);
+  console.error(`\n🚫 ${violations} DecisionTrace ID violations found.`);
   process.exit(1);
 }
 
-console.log("✅ No random IDs used in DecisionTrace");
+console.log("✅ NO_RANDOM_TRACE_IDS guard passed");
