@@ -34,10 +34,10 @@ for (const pkgPath of packageJsons) {
       if (version !== REQUIRED_VERSION) {
         fail(
           `Package "${pkgName}" declares ${sectionName}:\n\n` +
-          `  "${depName}": "${version}"\n\n` +
-          `❌ Invalid internal version.\n` +
-          `✔ Required: "${REQUIRED_VERSION}"\n\n` +
-          `Fix: replace the version with "${REQUIRED_VERSION}".`
+            `  "${depName}": "${version}"\n\n` +
+            `❌ Invalid internal version.\n` +
+            `✔ Required: "${REQUIRED_VERSION}"\n\n` +
+            `Fix: replace the version with "${REQUIRED_VERSION}".`
         );
       }
     }

@@ -34,10 +34,10 @@ for (const pkgPath of packageJsons) {
       if (!depName.startsWith(INTERNAL_SCOPE)) {
         fail(
           `Package "${pkgName}" declares ${sectionName}:\n\n` +
-          `  "${depName}": "${version}"\n\n` +
-          `❌ workspace:* is forbidden for non-${INTERNAL_SCOPE} packages.\n` +
-          `✔ Only ${INTERNAL_SCOPE}* may use workspace linking.\n\n` +
-          `Fix: replace "${version}" with an explicit semver range.`
+            `  "${depName}": "${version}"\n\n` +
+            `❌ workspace:* is forbidden for non-${INTERNAL_SCOPE} packages.\n` +
+            `✔ Only ${INTERNAL_SCOPE}* may use workspace linking.\n\n` +
+            `Fix: replace "${version}" with an explicit semver range.`
         );
       }
     }
