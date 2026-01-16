@@ -17,27 +17,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@bickford/authority':
-        specifier: workspace:*
-        version: link:../../packages/authority
-      '@bickford/canon':
-        specifier: workspace:*
-        version: link:../../packages/canon
-      '@bickford/db':
-        specifier: workspace:*
-        version: link:../../packages/db
-      '@bickford/ledger':
-        specifier: workspace:*
-        version: link:../../packages/ledger
-      '@bickford/optr':
-        specifier: workspace:*
-        version: link:../../packages/optr
-      '@bickford/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      '@prisma/client':
-        specifier: 6.19.2
-        version: 6.19.2(typescript@5.9.3)
       next:
         specifier: 14.1.0
         version: 14.1.0(react-dom@18.2.0)(react@18.2.0)
