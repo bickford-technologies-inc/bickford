@@ -1,0 +1,4 @@
+!ci/
+!ci/guards/
+!ci/guards/ENVIRONMENT_PRECONDITION.sh
+!ci/guards/check-guards.sh

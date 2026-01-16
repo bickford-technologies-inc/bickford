@@ -236,3 +236,23 @@ All internal `@bickford/*` packages are consumed as source by the web app. Next.
 - All builds (local, CI, Vercel) are gated by `pnpm run preflight`.
 - Violations are blocked with actionable output.
 - See [`docs/INVARIANTS.md`](docs/INVARIANTS.md) for rules, examples, and remediation.
+
+## Execution Guard Enforcement & Diagnosis Artifact
+
+This repository enforces CI/CD execution authority using guard scripts and canonical failure artifacts.
+
+- **Guard check:** `ci/guards/check-guards.sh` ensures all required guard scripts exist and are executable before any install/build step.
+- **On failure:** Emits a deterministic, machine-verifiable `build-diagnosis.json` with root cause, canonical interpretation, and remediation steps.
+- **Invariant:** No execution step may occur unless all declared enforcement guards are present and executable.
+
+**Vercel Install Command Example:**
+
+```bash
+bash ci/guards/check-guards.sh && \
+bash ci/guards/ENVIRONMENT_PRECONDITION.sh && \
+corepack enable && \
+corepack prepare pnpm@9.15.0 --activate && \
+pnpm install --frozen-lockfile
+```
+
+See `ci/guards/check-guards.sh` for details.
