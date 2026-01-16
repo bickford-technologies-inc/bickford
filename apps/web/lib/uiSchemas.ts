@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const decisionTraceSchema = z.object({
   hash: z.string().length(64),
