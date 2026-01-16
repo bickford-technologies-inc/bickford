@@ -1,22 +1,19 @@
-import { scoreAction } from "./optrCanaryScorer"
-import { append } from "./ledger"
-import { maybeAdvanceRamp } from "./tenantRampController"
+import { scoreAction } from "./optrCanaryScorer";
+import { append } from "./ledger";
+import { maybeAdvanceRamp } from "./tenantRampController";
 
-export function optrDecide(
-  state,
-  signals
-) {
-  const { action, score } = scoreAction(signals)
+export function optrDecide(state, signals) {
+  const { action, score } = scoreAction(signals);
 
-  let next = state
+  let next = state;
   if (action === "ACCELERATE") {
-    next = maybeAdvanceRamp(state)
+    next = maybeAdvanceRamp(state);
   } else if (action === "DECELERATE" && state.stageIndex > 0) {
     next = {
       ...state,
       stageIndex: state.stageIndex - 1,
-      enteredAt: Date.now()
-    }
+      enteredAt: Date.now(),
+    };
   }
 
   append({
@@ -30,9 +27,9 @@ export function optrDecide(
       score,
       from: state.stageIndex,
       to: next.stageIndex,
-      region: state.region
-    }
-  })
+      region: state.region,
+    },
+  });
 
-  return next
+  return next;
 }

@@ -1,10 +1,10 @@
-import { appendEnv } from "@bickford/runtime/envLedger"
-import crypto from "crypto"
+import { appendEnv } from "@bickford/runtime/envLedger";
+import crypto from "crypto";
 
 export async function POST(req: Request) {
-  const { key, value, scope, intentId, actor } = await req.json()
+  const { key, value, scope, intentId, actor } = await req.json();
 
-  const newHash = crypto.createHash("sha256").update(value).digest("hex")
+  const newHash = crypto.createHash("sha256").update(value).digest("hex");
 
   const entry = appendEnv({
     ts: new Date().toISOString(),
@@ -14,8 +14,8 @@ export async function POST(req: Request) {
     oldHash: null,
     newHash,
     actor,
-    intentId
-  })
+    intentId,
+  });
 
-  return Response.json({ ok: true, entry })
+  return Response.json({ ok: true, entry });
 }
