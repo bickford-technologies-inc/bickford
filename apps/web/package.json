@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint .",
-    "prebuild": "tsx ../../scripts/check-web-deps.ts && tsx ./src/lib/prisma.build-guard.ts",
+    "prebuild": "npx tsx ../../scripts/check-web-deps.ts && npx tsx ./src/lib/prisma.build-guard.ts",
     "postbuild": "node ../../scripts/emit-canon-certificate.mjs"
   },
   "dependencies": {
