@@ -129,3 +129,4 @@ export type DeniedDecisionPayload = {
   reasonCodes: string[];
   message: string;
 };
+export {};
