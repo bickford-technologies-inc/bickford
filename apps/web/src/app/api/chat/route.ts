@@ -1,72 +1,40 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { BICKFORD_SYSTEM_PROMPT } from "@/lib/claude/system";
-import { persistDecision } from "@/lib/bickford/persisted-knowledge";
+import { streamText } from "ai";
+import { openai } from "@ai-sdk/openai";
+import { selectModel } from "@/lib/ai/modelRouter";
+import { adapter } from '@/lib/ai/adapter';
 
 export const runtime = "nodejs"; // 🔒 force Node runtime (required)
 
-const claude = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-});
+const RATE_LIMIT = 20; // requests per minute per IP
+const rateLimitMap = new Map();
 
-export async function POST(req: Request) {
-  const { input } = await req.json();
+function getIP(req) {
+  return req.headers.get("x-forwarded-for") || "unknown";
+}
 
-  const encoder = new TextEncoder();
+export async function POST(req) {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error("OPENAI_API_KEY is missing. Refusing to start.");
+  }
 
-  let fullText = "";
+  const ip = getIP(req);
+  const now = adapter.now();
+  const windowStart = now - 60_000;
 
-  const stream = new ReadableStream({
-    async start(controller) {
-      const messageStream = await claude.messages.stream({
-        model: "claude-3-5-sonnet-20240620",
-        system: BICKFORD_SYSTEM_PROMPT,
-        max_tokens: 1000,
-        messages: [
-          {
-            role: "user",
-            content: input,
-          },
-        ],
-      });
+  // Clean up old entries
+  for (const [key, timestamps] of rateLimitMap.entries()) {
+    rateLimitMap.set(key, timestamps.filter((ts) => ts > windowStart));
+  }
 
-      try {
-        for await (const event of messageStream) {
-          if (event.type === "content_block_delta") {
-            if (event.delta.type === "text_delta") {
-              fullText += event.delta.text;
-              controller.enqueue(
-                encoder.encode(`data: ${event.delta.text}\n\n`)
-              );
-            }
-          }
-        }
+  const timestamps = rateLimitMap.get(ip) || [];
+  if (timestamps.length >= RATE_LIMIT) {
+    return new Response("Rate limit exceeded", { status: 429 });
+  }
+  rateLimitMap.set(ip, [...timestamps, now]);
 
-        // 🔒 Persist structurally AFTER stream completes
-        await persistDecision({
-          intent: input,
-          proposal: fullText,
-          executed: false,
-          ttvDelta: null,
-        });
-
-        controller.enqueue(
-          encoder.encode(`event: done\ndata: [STREAM_COMPLETE]\n\n`)
-        );
-        controller.close();
-      } catch (err) {
-        controller.enqueue(
-          encoder.encode(`event: error\ndata: ${String(err)}\n\n`)
-        );
-        controller.close();
-      }
-    },
-  });
-
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache, no-transform",
-      Connection: "keep-alive",
-    },
+  const { messages } = await req.json();
+  return streamText({
+    model: openai(selectModel("chat")),
+    messages,
   });
 }

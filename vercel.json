@@ -7,5 +7,5 @@
   "engines": {
     "node": "20.x"
   },
-  "buildCommand": "bash ci/guards/workspace-integrity.sh && pnpm run build"
+  "buildCommand": "./ci/guards/workspace-integrity.sh && pnpm run build"
 }
