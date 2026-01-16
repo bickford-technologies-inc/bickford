@@ -1,6 +1,14 @@
 {
   "version": 2,
-  "buildCommand": "pnpm build",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
   "outputDirectory": "apps/web/.next",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "rootDirectory": "apps/web",
+  "engines": {
+    "node": "20.x"
+  },
+  "env": {
+    "PNPM_USE_NODE_FETCHER": "true"
+  }
 }

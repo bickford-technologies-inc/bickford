@@ -7,10 +7,9 @@
     "build": "pnpm --filter web build",
     "start": "pnpm --filter web start"
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "dependencies": {
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
