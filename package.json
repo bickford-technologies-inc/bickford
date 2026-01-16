@@ -16,7 +16,8 @@
     "preflight": "tsx scripts/preflight.ts",
     "verify:workspace": "tsx scripts/verify-workspace.ts",
     "enforce:web-boundary": "tsx scripts/enforce-web-boundary.ts",
-    "build": "turbo run build",
+    "build": "pnpm -r run build && pnpm run verify",
+    "verify": "node scripts/verify-adapter-non-interference.mjs && node scripts/ban-date-now.mjs && node scripts/ban-math-random.mjs && node scripts/ban-fs.mjs && node scripts/ban-process-env.mjs && node scripts/ban-network.mjs && node scripts/ban-crypto-random.mjs",
     "build:strict": "pnpm --filter @bickford/db exec prisma generate && turbo run build",
     "prisma:generate": "pnpm --filter @bickford/db exec prisma generate",
     "prisma:migrate:dev": "pnpm exec prisma migrate dev --schema=prisma/schema.prisma",
@@ -99,7 +100,16 @@
     "check:audit": "node scripts/check-audit-coverage.ts",
     "audit:export": "node scripts/export-audit.ts",
     "check:rollback": "node scripts/check-rollback-completeness.ts",
-    "rollback:export": "node scripts/export-rollback-proof.ts"
+    "rollback:export": "node scripts/export-rollback-proof.ts",
+    "test:execution-convergence": "jest packages/execution-convergence/tests/converge.hardening.spec.ts",
+    "check:workspace": "ts-node scripts/check-workspace-globs.ts",
+    "check:bickford-deps": "ts-node scripts/check-bickford-workspace-deps.ts",
+    "check:bickford-versions": "ts-node scripts/check-bickford-workspace-versions.ts",
+    "check:workspace-namespace": "ts-node scripts/check-workspace-version-namespace.ts",
+    "check:workspace-boundary": "ts-node scripts/check-bickford-workspace-boundary.ts",
+    "check:no-external-packages": "ts-node scripts/check-no-packagejson-outside-workspace.ts",
+    "check:packagejson-schema": "ts-node scripts/check-packagejson-schema.ts",
+    "preinstall": "pnpm run check:workspace && pnpm run check:bickford-deps && pnpm run check:bickford-versions && pnpm run check:workspace-namespace && pnpm run check:workspace-boundary && pnpm run check:no-external-packages && pnpm run check:packagejson-schema"
   },
   "workspaces": [
     "packages/*",

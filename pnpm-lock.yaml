@@ -28,6 +28,9 @@ importers:
       express:
         specifier: ^5.2.1
         version: 5.2.1
+      fast-glob:
+        specifier: ^3.3.2
+        version: 3.3.3
       glob:
         specifier: ^7.2.3
         version: 7.2.3
@@ -55,6 +58,9 @@ importers:
       tsx:
         specifier: 3.14.0
         version: 3.14.0
+      yaml:
+        specifier: ^2.8.2
+        version: 2.8.2
       zod:
         specifier: ^4.3.5
         version: 4.3.5
@@ -371,6 +377,8 @@ importers:
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@25.0.8)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+
+  packages/execution-convergence: {}
 
   packages/ledger:
     dependencies:
