@@ -1,19 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "🔒 ENVIRONMENT PRECONDITION CHECK"
+echo "🔒 BICKFORD ENVIRONMENT PRECONDITION — START"
 
-REQUIRED_NODE_MAJOR=20
-NODE_MAJOR=$(node -v | sed 's/v//' | cut -d. -f1)
-
-if [ "$NODE_MAJOR" -lt "$REQUIRED_NODE_MAJOR" ]; then
-  echo "❌ Node.js >= $REQUIRED_NODE_MAJOR required. Found $(node -v)"
+if [[ -z "${VERCEL_PROJECT_DIR:-}" ]]; then
+  echo "❌ VERCEL_PROJECT_DIR is not set"
+  echo "Execution root must be explicit. Refusing to continue."
   exit 1
 fi
 
-if ! command -v corepack >/dev/null 2>&1; then
-  echo "❌ corepack not available"
+if [[ ! -d "$VERCEL_PROJECT_DIR" ]]; then
+  echo "❌ Declared VERCEL_PROJECT_DIR does not exist: $VERCEL_PROJECT_DIR"
   exit 1
 fi
 
-echo "✅ Environment preconditions satisfied"
+if [[ ! -f "$VERCEL_PROJECT_DIR/pnpm-lock.yaml" ]]; then
+  echo "❌ pnpm-lock.yaml missing at workspace root"
+  exit 1
+fi
+
+NODE_VERSION=$(node -v)
+echo "✅ Node version: $NODE_VERSION"
+
+echo "✅ Workspace root resolved: $VERCEL_PROJECT_DIR"
+echo "🔒 ENVIRONMENT PRECONDITION — PASS"
