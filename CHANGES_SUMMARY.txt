@@ -95,3 +95,9 @@
 ║  STATUS: ✅ CONSOLIDATION COMPLETE                                          ║
 ║  The repository now has the canonical structure specified in requirements.   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+
+- Added HardwareAttestation interface and Nitro signing adapter to packages/types/src/HardwareAttestation.ts
+- Added ExecutionCertificate interface and certificate generation function to packages/core/src/certificate.ts
+- Added TTVSnapshot, ttvDelta, and ValueReport to packages/core/src/ttv.ts
+- Added formalAuthorityCheck script to scripts/formal-authority-check.mjs
+- Updated CONSOLIDATION_SUMMARY.md with institution-grade layer details

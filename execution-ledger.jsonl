@@ -1,0 +1,1 @@
+{"hash":"f0346c0c10dab43ca792e22b0c10dcc9d5bf3bb2bfd63f202e2909634a1954ee","authorityAgentId":"a1","executablePlan":[{"id":"step1","action":"do"}],"provenance":{"sourceAgents":["a1","a2"],"convergedAt":"2026-01-15T19:16:52.455Z","enforcedConstraints":[]},"recordedAt":"2026-01-15T19:16:52.455Z"}
