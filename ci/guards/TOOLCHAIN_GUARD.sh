@@ -10,7 +10,7 @@ echo "pnpm version: $PNPM_VERSION"
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "🔍 Verifying Bickford toolchain authority"
+echo "🔍 TOOLCHAIN AUTHORITY CHECK"
 
 NODE_VERSION=$(node -v)
 echo "Node: $NODE_VERSION"
@@ -24,14 +24,16 @@ if command -v pnpm >/dev/null 2>&1; then
   PNPM_VERSION=$(pnpm -v)
   echo "pnpm: $PNPM_VERSION"
 
-  if [[ "$PNPM_VERSION" != 9.* ]]; then
-    echo "⚠️ pnpm version drift (expected 9.x)"
+  if [[ "$PNPM_VERSION" != 10.* ]]; then
+    echo "❌ pnpm version drift detected (expected 10.x)"
+    exit 1
   fi
 else
-  echo "ℹ️ pnpm not present (acceptable during Vercel install phase)"
+  echo "❌ pnpm not found"
+  exit 1
 fi
 
-echo "✅ Toolchain verified"
+echo "✅ Toolchain authority satisfied"
 
 if [[ "$PNPM_VERSION" != 9.* ]]; then
   echo "❌ pnpm version drift detected. Expected pnpm 9.x"
