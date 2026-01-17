@@ -20,17 +20,11 @@ export function evaluateNonInterference(
     if (delta > 0) {
       return {
         allowed: false,
-        violatedAgent: agent.agentId,
-        deltaTTV: delta,
-        rationale: `Action increases TTV for agent ${
-          agent.agentId
-        } by ${delta.toFixed(2)}`,
       };
     }
   }
 
   return {
     allowed: true,
-    rationale: "No agent TTV increased",
   };
 }

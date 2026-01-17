@@ -15,3 +15,6 @@ export interface InterferenceResult {
   reason?: string;
   displacedAgents?: string[];
 }
+
+// Force TypeScript emit for this module
+export const __forceEmitOptr = true;

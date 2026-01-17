@@ -1,22 +1,19 @@
 {
   "name": "@bickford/types",
-  "version": "1.0.0",
-  "description": "Shared type definitions for Bickford",
+  "version": "0.1.0",
+  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "typecheck": "tsc --noEmit",
-    "lint": "npm run typecheck",
-    "test": "echo 'No tests yet'"
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
-  "keywords": [
-    "bickford",
-    "types"
+  "files": [
+    "dist"
   ],
-  "author": "Bickford",
-  "license": "PROPRIETARY",
-  "devDependencies": {
-    "typescript": "^5.9.3"
+  "scripts": {
+    "build": "tsc"
   }
 }

@@ -275,3 +275,42 @@ export type PathConstraint = {
   params: Record<string, any>; // Constraint-specific parameters
   confidence: ConfidenceEnvelope;
 };
+
+// LEGACY SHARED TYPES — restored for compatibility
+
+export interface Intent {
+  id: string;
+  action: string;
+  goal?: string;
+  createdAt?: string;
+}
+
+export interface Decision {
+  id: string;
+  intent: Intent;
+  outcome: string;
+  reason?: string;
+  timestamp: string;
+}
+
+export interface LedgerEntry {
+  id: string;
+  intent: Intent;
+  decision: Decision;
+  hash: string;
+  createdAt: string;
+  tenantId?: string;
+}
+
+export interface LedgerRow {
+  id: string;
+  intent: Intent;
+  decision: Decision;
+  hash: string;
+  createdAt: Date;
+  tenantId: string | null;
+  [key: string]: unknown; // Prisma compatibility
+}
+
+// Force TypeScript emit for this module
+export const __forceEmitCanon = true;
