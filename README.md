@@ -295,6 +295,7 @@ A failed build is an authority violation, not a transient error.
 Bickford treats Vercel as a programmable execution substrate.
 
 All actions:
+
 - Deployments
 - Environment variables
 - Domains
