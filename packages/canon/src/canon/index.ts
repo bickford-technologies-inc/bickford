@@ -42,19 +42,16 @@ assertWorkspaceDeps(path.resolve(__dirname, "..", ".."), imports);
 export * from "./types";
 
 // Invariants + Authority Enforcement
-export * from "./invariants";
+export { enforceInvariants } from "./invariants";
 
 // OPTR Decision Engine
-export * from "./optr";
-
-// Promotion Gate
-export * from "./promotion";
+export { optr } from "./optr";
 
 // Promotion Logic
-export * from "./promote";
+export { promoteCanon } from "./promote";
 
 // Non-Interference
-export * from "./nonInterference";
+export { nonInterference } from "./nonInterference";
 
 // Execution Context + Token Streaming
 export * from "./execution";
@@ -63,7 +60,7 @@ export * from "./execution";
 export * from "./migration";
 
 // Runtime Environment Validation
-export * from "./runtime";
+export { runtime } from "./runtime";
 
 /**
  * Bickford Canon Version

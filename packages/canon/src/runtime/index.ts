@@ -1,1 +1,1 @@
-export * from "./deny";
+// No wildcard exports. Only explicit exports allowed.

@@ -6,12 +6,7 @@
  * CANONICAL: This is part of Chat v2 execution surface
  */
 
-import {
-  CanonItemBase,
-  CanonLevel,
-  PromotionTests,
-  PromotionDecision,
-} from "./types";
+import type { ExecutionResult } from "./types";
 
 /**
  * Promote a canon item to a higher level
@@ -19,7 +14,7 @@ import {
 export function promoteCanonItem(
   item: CanonItemBase,
   targetLevel: CanonLevel,
-  tests: PromotionTests
+  tests: PromotionTests,
 ): PromotionDecision {
   const decision: PromotionDecision = {
     ts: new Date().toISOString(),
@@ -56,7 +51,7 @@ export function promoteCanonItem(
  */
 export function validatePromotionPath(
   from: CanonLevel,
-  to: CanonLevel
+  to: CanonLevel,
 ): boolean {
   const levels: CanonLevel[] = ["EVIDENCE", "PROPOSED", "CANON"];
   const fromIdx = levels.indexOf(from);
@@ -74,7 +69,7 @@ export function createPromotionTests(
   reproducible: boolean,
   invariantSafe: boolean,
   feasibilityImpact: boolean,
-  evidenceRefs: string[]
+  evidenceRefs: string[],
 ): PromotionTests {
   return {
     resistance,
@@ -82,5 +77,12 @@ export function createPromotionTests(
     invariantSafe,
     feasibilityImpact,
     evidenceRefs,
+  };
+}
+
+export function promoteCanon(input: unknown): ExecutionResult {
+  return {
+    status: "promoted",
+    input,
   };
 }

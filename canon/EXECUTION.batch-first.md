@@ -1,11 +1,17 @@
 # CANONICAL EXECUTION LAW — BATCH-FIRST REMEDIATION
+
 # STATUS: LOCKED · AUTHORITATIVE · NON-NEGOTIABLE
+
 # SCOPE: ALL EXECUTION SURFACES
+
 # TIMESTAMP: 2026-01-17T00:00:00-05:00
+
 # AUTHORITY: Bickford (Execution Is Law · Memory Is Structure · Learning Is Monotonic)
 
 ###############################################################################
+
 # LAW: BATCH-FIRST ERROR RESOLUTION
+
 ###############################################################################
 
 All execution engines operating under Bickford MUST evaluate whether a detected
@@ -13,7 +19,9 @@ failure can be resolved as a single, safe batch before performing incremental
 or serial fixes.
 
 ###############################################################################
+
 # DEFINITIONS
+
 ###############################################################################
 
 Batch-Fix Eligible:
@@ -28,7 +36,9 @@ A set of failures is batch-fix eligible if ALL of the following are true:
 7. Resolution does not introduce new authority
 
 ###############################################################################
+
 # MANDATORY EXECUTION RULE
+
 ###############################################################################
 
 ON EVERY FAILURE:
@@ -47,7 +57,9 @@ ON EVERY FAILURE:
 Failure to batch when eligible is an execution violation.
 
 ###############################################################################
+
 # ORDER OF OPERATIONS
+
 ###############################################################################
 
 Batch Fix Execution Order (when eligible):
@@ -60,7 +72,9 @@ Batch Fix Execution Order (when eligible):
 6. Resume execution
 
 ###############################################################################
+
 # PROHIBITIONS
+
 ###############################################################################
 
 The following are forbidden when a batch fix is available:
@@ -72,16 +86,21 @@ The following are forbidden when a batch fix is available:
 - Deferring cleanup "until later"
 
 ###############################################################################
+
 # TERMINATION CONDITION
+
 ###############################################################################
 
 This law is permanent.
 
 All future executions MUST:
+
 - Check for batch eligibility
 - Execute batch fixes when safe
 - Treat batching as the default optimization for correctness
 
 ###############################################################################
+
 # END — EXECUTION IS LAW
+
 ###############################################################################

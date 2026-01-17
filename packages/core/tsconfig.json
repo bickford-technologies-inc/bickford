@@ -4,7 +4,9 @@
     "composite": true,
     "declaration": true,
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "types": [],
+    "typeRoots": ["./node_modules/@types", "./node_modules"]
   },
   "include": ["src"],
   "references": [

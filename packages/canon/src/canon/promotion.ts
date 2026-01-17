@@ -19,7 +19,7 @@
  */
 
 // Types
-export * from "./types";
+// No wildcard exports allowed
 
 // Invariants + Authority Enforcement
 export * from "./invariants";
