@@ -1,15 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-NODE_VERSION=$(node -v)
-PNPM_VERSION=$(pnpm -v)
-
-echo "Node version: $NODE_VERSION"
-echo "pnpm version: $PNPM_VERSION"
-
-#!/usr/bin/env bash
-set -euo pipefail
-
 echo "🔍 TOOLCHAIN AUTHORITY CHECK"
 
 NODE_VERSION=$(node -v)
@@ -34,10 +25,5 @@ else
 fi
 
 echo "✅ Toolchain authority satisfied"
-
-if [[ "$PNPM_VERSION" != 9.* ]]; then
-  echo "❌ pnpm version drift detected. Expected pnpm 9.x"
-  exit 1
-fi
 
 echo "✅ Toolchain verified"
