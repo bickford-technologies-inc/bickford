@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "node --import ./scripts/node-websocket-polyfill.mjs ../../node_modules/vite/bin/vite.js",
-    "build": "tsc -b && vite build",
+    "build": "pnpm exec pnpm exec tsc -b && vite build",
     "start": "node scripts/start.mjs",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "pnpm exec pnpm exec tsc --noEmit",
     "lint": "eslint .",
     "preview": "vite preview"
   },

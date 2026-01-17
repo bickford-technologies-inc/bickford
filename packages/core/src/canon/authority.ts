@@ -11,7 +11,7 @@ export function authorize(intent: Intent): Decision {
   if (!intent || !intent.action) {
     return {
       id: crypto.randomUUID(),
-      intent: intent?.action || "",
+      intent,
       outcome: "DENY",
       reason: "Invalid intent: missing action",
       timestamp: new Date().toISOString(),
@@ -21,7 +21,7 @@ export function authorize(intent: Intent): Decision {
   // For now, allow all valid intents
   return {
     id: crypto.randomUUID(),
-    intent: intent.action,
+    intent,
     outcome: "ALLOW",
     reason: "Intent authorized",
     timestamp: new Date().toISOString(),

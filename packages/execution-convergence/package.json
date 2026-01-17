@@ -10,8 +10,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc --noEmit",
+    "build": "pnpm exec pnpm exec tsc -p tsconfig.json",
+    "typecheck": "pnpm exec pnpm exec tsc --noEmit",
     "lint": "npm run typecheck",
     "test": "echo \"No tests yet\"",
     "clean": "rm -rf dist"
@@ -25,5 +25,8 @@
     "reconciliation"
   ],
   "author": "Bickford",
-  "license": "PROPRIETARY"
+  "license": "PROPRIETARY",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
 }

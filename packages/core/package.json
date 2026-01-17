@@ -7,10 +7,12 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "typecheck": "tsc --noEmit",
+    "build": "pnpm exec pnpm exec tsc -p tsconfig.build.json",
+    "typecheck": "pnpm exec pnpm exec tsc --noEmit",
     "lint": "npm run typecheck",
     "test": "echo 'No tests yet'",
     "clean": "rm -rf dist"
@@ -31,7 +33,8 @@
     "@bickford/canon": "workspace:*",
     "@prisma/adapter-pg": "^7.2.0",
     "pg": "^8.16.3",
-    "@prisma/client": "6.19.2"
+    "@prisma/client": "6.19.2",
+    "uuid": "9.0.1"
   },
   "devDependencies": {
     "@types/node": "^25.0.6",

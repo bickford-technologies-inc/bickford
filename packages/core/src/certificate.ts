@@ -1,4 +1,4 @@
-import { HardwareAttestation } from "../../types/src/HardwareAttestation";
+import { HardwareAttestation } from "@bickford/types";
 import { v4 as uuid } from "uuid";
 
 export interface ExecutionCertificate {

@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-01-17T20:20:43.058Z",
+  "invariants": {
+    "noDeepImports": true,
+    "explicitDependencies": true,
+    "exportsLocked": true,
+    "exportParity": true,
+    "prismaGuardPassed": true
+  },
+  "build": {
+    "node": "v20.19.6",
+    "ci": false,
+    "vercel": false
+  },
+  "hash": "c109edaff94fa46a33d71a39097789badedcd8bcca7eaf4b38445c8ad6305bc1"
+}

@@ -1,0 +1,8 @@
+{
+  "allowed": [
+    "remove_merge_conflict_markers",
+    "delete_pages_router_when_app_router_present",
+    "run_prisma_generate",
+    "pin_dependency_from_root"
+  ]
+}

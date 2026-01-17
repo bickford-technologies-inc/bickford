@@ -9,7 +9,7 @@
     "build:native": "expo prebuild",
     "start": "vite preview",
     "preview": "vite preview",
-    "lint": "tsc -p tsconfig.json",
+    "lint": "pnpm exec pnpm exec tsc -p tsconfig.json",
     "eas:build:android": "eas build --platform android --profile production",
     "eas:build:ios": "eas build --platform ios --profile production",
     "eas:submit:android": "eas submit --platform android --profile production",
