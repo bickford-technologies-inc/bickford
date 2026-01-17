@@ -2,16 +2,16 @@ name: execute-vercel
 
 on:
   push:
-  pull_request:
+    branches: [main]
 
 jobs:
   execute:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
+      - uses: pnpm/action-setup@v3
         with:
-          node-version: 20
-      - run: npm install -g pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec ts-node execute.vercel.ts
+          version: 10
+
+      - run: ./ci/guards/prebuild-invariant.sh
