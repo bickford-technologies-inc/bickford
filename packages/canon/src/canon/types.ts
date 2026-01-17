@@ -281,4 +281,7 @@ export type PathConstraint = {
  * DO NOT define types here.
  */
 
-export * from "@bickford/types";
+export interface ExecutionResult {
+  status: "promoted" | "rejected";
+  input: unknown;
+}

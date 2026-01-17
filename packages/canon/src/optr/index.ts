@@ -1,1 +1,1 @@
-export * from "./intent-optr-wire";
+// No wildcard exports. Only explicit exports allowed.

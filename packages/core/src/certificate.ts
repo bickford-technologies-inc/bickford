@@ -1,5 +1,5 @@
 import { HardwareAttestation } from "@bickford/types";
-import { v4 as uuid } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 export interface ExecutionCertificate {
   certificateId: string;
@@ -18,7 +18,7 @@ export function generateCertificate(data: {
   version: string;
 }): ExecutionCertificate {
   return {
-    certificateId: uuid(),
+    certificateId: uuidv4(),
     intentHash: data.intentHash,
     executionHash: data.hash,
     coreVersion: data.version,

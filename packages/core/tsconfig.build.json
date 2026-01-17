@@ -6,7 +6,9 @@
     "emitDeclarationOnly": false,
     "noEmit": false,
     "module": "ESNext",
-    "moduleResolution": "Bundler"
+    "moduleResolution": "Bundler",
+    "types": [],
+    "typeRoots": ["./node_modules/@types", "./node_modules"]
   },
   "include": ["src"]
 }
