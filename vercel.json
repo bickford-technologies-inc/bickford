@@ -1,7 +1,8 @@
 {
-  "version": 2,
-  "installCommand": "corepack enable && corepack prepare pnpm@8.15.4 --activate && pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm build",
-  "outputDirectory": "apps/web/.next",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm run build",
+  "env": {
+    "NODE_ENV": "production"
+  }
 }

@@ -88,7 +88,8 @@
     "predictive:autofix": "tsx scripts/predictive/autofix.mjs",
     "ci:prisma-guard": "node ci/check-no-pnpm exec prisma-in-api-routes.mjs",
     "verify:prisma-boundary": "node ci/check-pnpm exec prisma-boundary.mjs",
-    "verify:runtime-purity": "node ci/check-runtime-purity.mjs"
+    "verify:runtime-purity": "node ci/check-runtime-purity.mjs",
+    "preinstall": "bash ./ci/guards/TOOLCHAIN_GUARD.sh"
   },
   "dependencies": {},
   "devDependencies": {
