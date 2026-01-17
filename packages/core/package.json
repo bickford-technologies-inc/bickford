@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./intent/validateIntent": "./src/intent/validateIntent.ts"
   },
   "files": [
     "dist"

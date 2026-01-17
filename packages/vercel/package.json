@@ -1,0 +1,15 @@
+{
+  "name": "@bickford/vercel",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./src/deploy.ts",
+    "./deploy": "./src/deploy.ts"
+  },
+  "files": ["dist", "src"],
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
