@@ -282,9 +282,26 @@ pnpm install --frozen-lockfile
 Bickford enforces deterministic execution and build authority.
 
 Invariants:
+
 - Node 20.x enforced across all environments
 - pnpm drift warned, not fatal
 - ESLint never blocks deployment
 - Runtime execution requires validated intent
 
 A failed build is an authority violation, not a transient error.
+
+## Vercel Execution Model
+
+Bickford treats Vercel as a programmable execution substrate.
+
+All actions:
+- Deployments
+- Environment variables
+- Domains
+- Logs
+- Rollouts
+- Security rules
+
+are executed via `@vercel/sdk`.
+
+The dashboard is non-authoritative.

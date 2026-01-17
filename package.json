@@ -91,7 +91,9 @@
     "verify:runtime-purity": "node ci/check-runtime-purity.mjs",
     "preinstall": "bash ./ci/guards/TOOLCHAIN_GUARD.sh"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@vercel/sdk": "^1.0.0"
+  },
   "devDependencies": {
     "prisma": "6.19.2",
     "@prisma/client": "6.19.2",
