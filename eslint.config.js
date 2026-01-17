@@ -10,13 +10,13 @@ module.exports = defineConfig([
       "node_modules/**",
       "next-env.d.ts",
       "**/*.generated.*",
-      "**/.turbo/**"
-    ]
+      "**/.turbo/**",
+    ],
   },
   {
     rules: {
       "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/no-explicit-any": "warn"
-    }
-  }
+      "@typescript-eslint/no-explicit-any": "warn",
+    },
+  },
 ]);

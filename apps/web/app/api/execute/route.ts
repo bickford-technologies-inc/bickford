@@ -11,17 +11,17 @@ export async function POST(req: NextRequest) {
     return new Response(
       JSON.stringify({
         status: "refused",
-        reason: result.reason
+        reason: result.reason,
       }),
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   return new Response(
     JSON.stringify({
       status: "accepted",
-      message: "Execution intent validated"
+      message: "Execution intent validated",
     }),
-    { status: 200 }
+    { status: 200 },
   );
 }
