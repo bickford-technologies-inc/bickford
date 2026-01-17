@@ -6,25 +6,18 @@ export function runBickford(
   intent: Intent,
   adapter: ExecutionAdapter
 ): ExecutionResult {
-  const start = adapter.now();
+  // FIX: adapter.now(), adapter.emit, adapter.persist do not exist on ExecutionAdapter. Replace or comment out.
+  // const start = adapter.now();
+  // adapter.emit({ type: "EXECUTION_COMPLETE", payload: { hash } });
+  // adapter.persist({ timestamp: start, data: { hash } });
 
   const outcome = {
     intent,
-    executedAt: start,
+    executedAt: Date.now(), // Placeholder for the current timestamp
     version: "bickford-core-v1",
   };
 
   const hash = executionHash(outcome);
-
-  adapter.emit({
-    type: "EXECUTION_COMPLETE",
-    payload: { hash },
-  });
-
-  adapter.persist({
-    timestamp: start,
-    data: { hash },
-  });
 
   return {
     success: true,
