@@ -11,7 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "pnpm exec pnpm exec tsc -p tsconfig.build.json",
     "test": "vitest run",
     "clean": "rm -rf dist"
   },

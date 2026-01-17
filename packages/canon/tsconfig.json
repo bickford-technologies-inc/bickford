@@ -1,20 +1,18 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "composite": true,
-    "declaration": true,
-    "outDir": "dist",
     "rootDir": "src",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "baseUrl": ".",
-    "paths": {
-      "@bickford/*": ["../*/src"]
-    }
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false,
+    "composite": true
   },
-  "references": [
-    { "path": "../types" },
-    { "path": "../db" }
+  "include": [
+    "src/**/*.ts"
   ],
-  "include": ["src"]
+  "exclude": [
+    "**/*.test.ts",
+    "dist"
+  ]
 }

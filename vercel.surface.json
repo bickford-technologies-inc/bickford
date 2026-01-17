@@ -1,0 +1,10 @@
+{
+  "node": ">=20 <21",
+  "pnpmLock": "immutable",
+  "routing": "app-only",
+  "prisma": {
+    "runtimeExport": "PrismaClient",
+    "typeExport": "PrismaClient",
+    "lifecycle": ["postinstall", "prebuild"]
+  }
+}

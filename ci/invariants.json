@@ -1,0 +1,8 @@
+{
+  "conflict_markers": {
+    "description": "No merge conflict markers may exist in the workspace",
+    "enforced_by": ["prebuild", "ci"],
+    "severity": "fatal",
+    "autoresolve": "head-only"
+  }
+}

@@ -1,0 +1,14 @@
+name: Structural Invariants
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  invariants:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm install -g pnpm
+      - run: pnpm install
+      - run: bash ./ci/guards/prebuild-invariant.sh

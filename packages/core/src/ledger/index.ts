@@ -6,6 +6,10 @@ import {
   LedgerRow,
 } from "@bickford/types";
 import { getPrismaClient } from "./db";
+import { toLegacyIntent, toLegacyDecision } from "../adapters/legacy";
+
+// Re-export getPrismaClient for external consumers
+export { getPrismaClient } from "./db";
 
 // Re-export getPrismaClient for external consumers
 export { getPrismaClient } from "./db";
@@ -20,16 +24,16 @@ export async function appendLedger(
   const entry = await getPrismaClient().ledgerEntry.create({
     data: {
       id: crypto.randomUUID(),
-      intent,
-      decision,
+      intent: toLegacyIntent(intent),
+      decision: toLegacyDecision(decision),
       hash,
     },
   });
 
   return {
     id: entry.id,
-    intent,
-    decision,
+    intent: entry.intent as unknown as Intent,
+    decision: entry.decision as unknown as Decision,
     hash: entry.hash,
     createdAt: entry.createdAt.toISOString(),
   };

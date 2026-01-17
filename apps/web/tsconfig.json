@@ -9,6 +9,22 @@
     "moduleResolution": "bundler",
     "jsx": "preserve",
     "strict": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": [
+        "*"
+      ]
+    },
+    "typeRoots": [
+      "../../node_modules/@types",
+      "../../node_modules/.prisma/client"
+    ],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
     "noEmit": true,
     "incremental": true,
     "resolveJsonModule": true,
@@ -17,13 +33,7 @@
       {
         "name": "next"
       }
-    ],
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true
+    ]
   },
   "include": [
     "next-env.d.ts",

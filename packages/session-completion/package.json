@@ -7,10 +7,10 @@
   "scripts": {
     "dev": "echo 'Use npm run dev from root to start the web app'",
     "start": "echo 'Use npm start from root to start the web app'",
-    "build": "tsc",
-    "typecheck": "tsc --noEmit",
+    "build": "pnpm exec pnpm exec tsc",
+    "typecheck": "pnpm exec pnpm exec tsc --noEmit",
     "lint": "npm run typecheck",
-    "example:capture": "tsx examples/capture-demo.ts",
+    "example:capture": "tsx examples/capture-demo.mjs",
     "test": "echo 'No tests yet'"
   },
   "keywords": [

@@ -13,7 +13,7 @@
     "prebuild": "expo prebuild --clean",
     "eas:build:ios": "eas build --platform ios --profile production",
     "eas:submit:ios": "eas submit --platform ios --profile production",
-    "lint": "tsc -p tsconfig.json"
+    "lint": "pnpm exec pnpm exec tsc -p tsconfig.json"
   },
   "dependencies": {
     "expo": "~54.0.30"
