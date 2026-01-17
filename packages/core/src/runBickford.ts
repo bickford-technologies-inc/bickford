@@ -4,7 +4,7 @@ import { executionHash } from "./hash";
 
 export function runBickford(
   intent: Intent,
-  adapter: ExecutionAdapter
+  adapter: ExecutionAdapter,
 ): ExecutionResult {
   // FIX: adapter.now(), adapter.emit, adapter.persist do not exist on ExecutionAdapter. Replace or comment out.
   // const start = adapter.now();

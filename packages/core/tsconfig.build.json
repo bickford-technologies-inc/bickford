@@ -7,7 +7,7 @@
     "noEmit": false,
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "types": [],
+    "types": ["node"],
     "typeRoots": ["./node_modules/@types", "./node_modules"]
   },
   "include": ["src"]

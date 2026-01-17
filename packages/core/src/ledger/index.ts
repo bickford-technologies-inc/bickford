@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 import {
   Intent,
   LedgerEntry as LedgerType,
@@ -11,12 +11,9 @@ import { toLegacyIntent, toLegacyDecision } from "../adapters/legacy";
 // Re-export getPrismaClient for external consumers
 export { getPrismaClient } from "./db";
 
-// Re-export getPrismaClient for external consumers
-export { getPrismaClient } from "./db";
-
 export async function appendLedger(
   intent: Intent,
-  decision: Decision
+  decision: Decision,
 ): Promise<LedgerType> {
   const payload = JSON.stringify({ intent, decision });
   const hash = crypto.createHash("sha256").update(payload).digest("hex");

@@ -7,7 +7,7 @@ import { AgentContext, InterferenceResult } from "@bickford/types";
 export function evaluateNonInterference(
   actor: AgentContext,
   others: AgentContext[],
-  projectedTTV: Record<string, number>
+  projectedTTV: Record<string, number>,
 ): InterferenceResult {
   for (const agent of others) {
     // FIX: ttvBaseline does not exist. Use a placeholder or remove the check.

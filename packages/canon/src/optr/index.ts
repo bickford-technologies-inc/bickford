@@ -1,1 +1,3 @@
-// No wildcard exports. Only explicit exports allowed.
+export function optr(): void {
+  // canonical placeholder
+}

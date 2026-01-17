@@ -30,9 +30,6 @@ export * from "./optr";
 // Promotion Gate
 export * from "./promotion";
 
-// Promotion Logic
-export * from "./promote";
-
 // Non-Interference
 export * from "./nonInterference";
 

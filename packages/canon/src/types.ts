@@ -1,4 +1,12 @@
+export type CanonLevel = "SYSTEM" | "PACKAGE" | "MODULE" | "FILE";
+
+export interface CanonItemBase {
+  id: string;
+  level: CanonLevel;
+  description: string;
+}
+
 export interface ExecutionResult {
-  status: "promoted" | "rejected";
-  input: unknown;
+  success: boolean;
+  reason?: string;
 }
