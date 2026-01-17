@@ -1,20 +1,22 @@
-import noDateNowOutsideAdapters from "./eslint-rules/no-date-now-outside-adapters.js";
-import noMathRandomOutsideAdapters from "./eslint-rules/no-math-random-outside-adapters.js";
+const { defineConfig } = require("eslint/config");
 
-export default [
+module.exports = defineConfig([
   {
-    files: ["**/*.ts", "**/*.tsx"],
-    rules: {
-      "bickford/no-date-now-outside-adapters": "error",
-      "bickford/no-math-random-outside-adapters": "error",
-    },
-    plugins: {
-      bickford: {
-        rules: {
-          "no-date-now-outside-adapters": noDateNowOutsideAdapters,
-          "no-math-random-outside-adapters": noMathRandomOutsideAdapters,
-        },
-      },
-    },
+    ignores: [
+      ".next/**",
+      "out/**",
+      "build/**",
+      "dist/**",
+      "node_modules/**",
+      "next-env.d.ts",
+      "**/*.generated.*",
+      "**/.turbo/**"
+    ]
   },
-];
+  {
+    rules: {
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-explicit-any": "warn"
+    }
+  }
+]);

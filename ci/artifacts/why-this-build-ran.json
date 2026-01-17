@@ -1,0 +1,10 @@
+{
+  "authority": "bickford",
+  "reason": "Canonical commit triggered build",
+  "toolchain": {
+    "node": "20.x enforced",
+    "pnpm": "9.x preferred"
+  },
+  "lint": "non-blocking",
+  "timestamp": "GENERATED_AT_BUILD_TIME"
+}

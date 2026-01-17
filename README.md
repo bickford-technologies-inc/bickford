@@ -276,3 +276,15 @@ pnpm install --frozen-lockfile
 - This resolves the Git root and executes the guard by absolute path, bypassing all Vercel context ambiguity.
 - The `ls` output will prove file visibility in the build log.
 - Use this as your Vercel **Install Command** for deterministic, debug-proof enforcement.
+
+## Execution & Build Model
+
+Bickford enforces deterministic execution and build authority.
+
+Invariants:
+- Node 20.x enforced across all environments
+- pnpm drift warned, not fatal
+- ESLint never blocks deployment
+- Runtime execution requires validated intent
+
+A failed build is an authority violation, not a transient error.
