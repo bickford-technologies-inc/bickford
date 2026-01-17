@@ -7,17 +7,20 @@
     ".": {
       "import": "./src/deploy.ts",
       "require": "./src/deploy.ts",
-      "types": "./src/deploy.d.ts"
+      "types": "./dist/deploy.d.ts"
     },
     "./deploy": {
       "import": "./src/deploy.ts",
       "require": "./src/deploy.ts",
-      "types": "./src/deploy.d.ts"
+      "types": "./dist/deploy.d.ts"
     }
   },
   "files": ["dist", "src"],
   "dependencies": {},
   "devDependencies": {
     "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json"
   }
 }
