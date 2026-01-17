@@ -1,1 +1,3 @@
-// No wildcard exports. Only explicit exports allowed.
+export function enforceInvariants(): void {
+  // canonical no-op runtime hook
+}

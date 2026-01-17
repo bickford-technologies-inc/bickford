@@ -1,5 +1,5 @@
 import { Intent, Decision } from "@bickford/types";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 /**
  * Authorization logic for intent validation and decision

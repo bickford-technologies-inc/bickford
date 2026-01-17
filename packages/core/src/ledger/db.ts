@@ -1,7 +1,11 @@
 import "server-only";
-import { getPrisma } from "@bickford/db";
-import type { PrismaClient } from "@bickford/db";
+import { PrismaClient } from "@prisma/client";
+
+let prisma: PrismaClient | null = null;
 
 export function getPrismaClient(): PrismaClient {
-  return getPrisma();
+  if (!prisma) {
+    prisma = new PrismaClient();
+  }
+  return prisma;
 }
