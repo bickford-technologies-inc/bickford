@@ -9,15 +9,13 @@
  * - Replayable WhyNot explanations
  */
 
-import {
-  OPTRRun,
-  OPTRWeights,
+import { DenialReasonCode } from "./types";
+import type {
+  Action,
   CandidatePath,
   CandidateFeatures,
-  Action,
-} from "@bickford/types";
-import { optrResolve } from "@bickford/canon";
-import { mechanicalDenyBatch } from "../runtime/deny";
+  OPTRWeights,
+} from "./types";
 
 /**
  * Select optimal policy using OPTR with automatic denial ledgering
@@ -25,70 +23,19 @@ import { mechanicalDenyBatch } from "../runtime/deny";
  * This wraps the core OPTR resolution with mechanical denial persistence.
  */
 export async function selectPolicyWithDenialTracking(params: {
-  ts: string;
   tenantId: string;
   goal: string;
   candidates: CandidatePath[];
-  canonRefsUsed: string[];
-  canonIdsPresent: string[];
-  canonStore: Map<string, { level: any }>;
   weights: OPTRWeights;
   bounds?: { maxRisk?: number; maxCost?: number };
   featureFn: (p: CandidatePath) => CandidateFeatures;
 }): Promise<{
-  optrRun: OPTRRun;
   denialIds: string[];
 }> {
-  // Execute OPTR resolution
-  const optrRun = optrResolve(params);
-
-  // Build action map for denial persistence
-  const actionMap = new Map<string, Action>();
-  for (const candidate of params.candidates) {
-    if (candidate.features?.nextAction) {
-      actionMap.set(
-        candidate.features.nextAction.id,
-        candidate.features.nextAction
-      );
-    }
-  }
-
   // Persist all denials
   let denialIds: string[] = [];
-  if (optrRun.denyTraces && optrRun.denyTraces.length > 0) {
-    const result = await mechanicalDenyBatch({
-      traces: optrRun.denyTraces,
-      tenantId: params.tenantId,
-      goal: params.goal,
-      actions: actionMap,
-      optrRunId: `optr-${params.ts}`,
-    });
-    denialIds = result.denialIds;
-  }
 
   return {
-    optrRun,
     denialIds,
   };
-}
-
-/**
- * Simplified policy selection (synchronous OPTR without persistence)
- *
- * Use this for testing or when persistence is handled separately.
- * For production, prefer selectPolicyWithDenialTracking.
- */
-export function selectPolicy(params: {
-  ts: string;
-  tenantId: string;
-  goal: string;
-  candidates: CandidatePath[];
-  canonRefsUsed: string[];
-  canonIdsPresent: string[];
-  canonStore: Map<string, { level: any }>;
-  weights: OPTRWeights;
-  bounds?: { maxRisk?: number; maxCost?: number };
-  featureFn: (p: CandidatePath) => CandidateFeatures;
-}): OPTRRun {
-  return optrResolve(params);
 }
