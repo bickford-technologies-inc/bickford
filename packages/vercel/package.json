@@ -4,10 +4,15 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./src/deploy.ts",
+    ".": {
+      "import": "./src/deploy.ts",
+      "require": "./src/deploy.ts",
+      "types": "./src/deploy.d.ts"
+    },
     "./deploy": {
       "import": "./src/deploy.ts",
-      "require": "./src/deploy.ts"
+      "require": "./src/deploy.ts",
+      "types": "./src/deploy.d.ts"
     }
   },
   "files": ["dist", "src"],
