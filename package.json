@@ -1,7 +1,10 @@
 {
   "name": "bickford",
   "private": true,
-  "packageManager": "pnpm@9.15.4",
+  "packageManager": "pnpm@10.0.0",
+  "pnpm": {
+    "overrides": {}
+  },
   "scripts": {
     "start": "bash scripts/setup.sh && npm run dev",
     "dev": "pnpm pnpm exec prisma:generate && pnpm exec pnpm exec turbo run dev --filter=web",

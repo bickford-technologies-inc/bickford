@@ -1,6 +1,10 @@
 {
   "node": ">=20 <21",
-  "pnpmLock": "immutable",
+  "pnpm": {
+    "version": "10.x",
+    "lockfile": "frozen",
+    "overrides": "must-match"
+  },
   "routing": "app-only",
   "prisma": {
     "runtimeExport": "PrismaClient",
