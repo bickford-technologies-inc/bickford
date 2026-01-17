@@ -1,3 +1,104 @@
+# BICKFORD × VERCEL EXECUTION COMPLIANCE GUIDE
+# STATUS: CANONICAL · ENFORCED
+# SCOPE: CI · BUILD · DEPLOY · PROD
+# TIMESTAMP: 2026-01-17T00:00:00-05:00
+
+###############################################################################
+# PRINCIPLE
+###############################################################################
+
+Vercel is not a preview environment.
+Vercel is a production execution surface.
+
+###############################################################################
+# REQUIRED INVARIANTS
+###############################################################################
+
+1. Builds must be deterministic
+2. All scripts must be path-explicit (no $PATH reliance)
+3. No hidden environment assumptions
+4. No UI-only configuration authority
+5. Git is the sole source of execution truth
+
+###############################################################################
+# BUILD COMMAND RULES
+###############################################################################
+
+- Use explicit relative paths:
+  ✔ ./ci/guards/script.sh
+  ✘ script.sh
+  ✘ $VERCEL_PROJECT_DIR/script.sh
+
+- No dynamic working-directory assumptions
+- No shell features unavailable in non-interactive CI
+
+###############################################################################
+# DEPENDENCY RULES
+###############################################################################
+
+- Lockfiles must be authoritative
+- Workspace filters must be explicit
+- No implicit postinstall side effects
+- Prisma / codegen must be explicitly invoked
+
+###############################################################################
+# ENVIRONMENT RULES
+###############################################################################
+
+- All required env vars must be validated at build start
+- Missing env vars are HARD FAILS
+- Guards must explain missing authority clearly
+
+###############################################################################
+# FAILURE CLASSIFICATION
+###############################################################################
+
+Allowed failures:
+- Mechanical
+- Deterministic
+- Fixable without guessing
+
+Disallowed failures:
+- Ambiguous
+- Heuristic
+- “Works locally”
+- “Probably”
+
+###############################################################################
+# CONTINUATION RULE
+###############################################################################
+
+If build fails:
+- Do not stop
+- Do not summarize
+- Do not ask questions
+- Apply mechanical fixes
+- Re-run build
+- Repeat until green
+
+###############################################################################
+# DEPLOYMENT RULES
+###############################################################################
+
+- Production deploy must be explicit:
+  vercel --prod --yes --force
+
+- URL must remain unchanged unless explicitly authorized
+- Successful deploy is a terminal condition
+
+###############################################################################
+# TERMINATION
+###############################################################################
+
+Execution HALTS ONLY WHEN:
+- CI build is GREEN
+- Workspace build is GREEN
+- Production deploy is GREEN
+- Runtime endpoint is live and unchanged
+
+###############################################################################
+# END — EXECUTION IS LAW
+###############################################################################
 # ================================================================
 
 # BICKFORD — VERCEL CODE COMPLIANCE GUIDE
