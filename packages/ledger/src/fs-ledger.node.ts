@@ -8,7 +8,7 @@ export async function writeThread(id: string, data: unknown) {
   await fs.writeFile(
     path.join(LEDGER_ROOT, `${id}.json`),
     JSON.stringify(data, null, 2),
-    "utf8"
+    "utf8",
   );
 }
 
