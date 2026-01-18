@@ -1,10 +1,10 @@
 import { converge } from "@bickford/execution-convergence";
+import { persist } from "@bickford/ledger";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   const body = await req.json();
-
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
@@ -19,12 +19,8 @@ export async function POST(req: Request) {
 
       send("status", { phase: "received" });
 
-      // simulate multi-agent arrival
-      body.outputs.forEach((o: any, i: number) => {
-        send("agent", {
-          agentId: o.agentId,
-          content: o.content
-        });
+      body.outputs.forEach((o: any) => {
+        send("agent", { agentId: o.agentId, content: o.content });
       });
 
       const result = converge({
@@ -33,6 +29,11 @@ export async function POST(req: Request) {
           timestamp: new Date().toISOString(),
           initiatedBy: "human"
         }
+      });
+
+      persist({
+        status: result.status,
+        payload: result
       });
 
       send("final", result);
