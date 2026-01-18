@@ -410,13 +410,13 @@ importers:
   packages/web-ui:
     dependencies:
       next:
-        specifier: 14.1.0
+        specifier: 14.x
         version: 14.1.0(@babel/core@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
-        specifier: 18.3.1
+        specifier: 18.x
         version: 18.3.1
       react-dom:
-        specifier: 18.3.1
+        specifier: 18.x
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@eslint/js':
