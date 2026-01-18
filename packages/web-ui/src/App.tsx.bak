@@ -13,10 +13,11 @@ import {
   Message
 } from "../lib/threadStore";
 import { ThreadSidebar } from "../components/ThreadSidebar";
-import { AuthorityPanel } from "../components/AuthorityPanel";
-
-export default function App() {
-  const [threads, setThreads] = useState<Thread[]>([]);
+{events.map((e, i) => (
+  <pre key={i} style={{ background:"#020", padding:12 }}>
+    {e.type === "agent" ? `[${e.agent}] ${e.token}` : JSON.stringify(e.data, null, 2)}
+  </pre>
+))}
   const [activeId, setActiveId] = useState<string | null>(null);
   const active = threads.find(t => t.id === activeId) || null;
   const [input, setInput] = useState("");
@@ -91,8 +92,9 @@ export default function App() {
           Send
         </button>
 
-        <AuthorityPanel result={result} />
-      </main>
-    </div>
-  );
+{events.map((e, i) => (
+  <pre key={i} style={{ background:"#020", padding:12 }}>
+    {e.type === "agent" ? `[${e.agent}] ${e.token}` : JSON.stringify(e.data, null, 2)}
+  </pre>
+))}
 }
