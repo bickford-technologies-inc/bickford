@@ -12,11 +12,8 @@
     "dev:codespace": "vite --host 0.0.0.0 --port 5173"
   },
   "dependencies": {
-    "@radix-ui/react-scroll-area": "^1.2.10",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-markdown": "^10.1.0",
-    "remark-gfm": "^4.0.1",
     "typescript": "~5.9.3"
   },
   "devDependencies": {
