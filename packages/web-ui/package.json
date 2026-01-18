@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "pnpm exec pnpm exec tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "dev:codespace": "vite --host 0.0.0.0 --port 5173"
   },
   "dependencies": {
     "react": "^18.3.1",
