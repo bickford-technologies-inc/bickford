@@ -1,6 +1,6 @@
 {
   "rootDirectory": "packages/web-ui",
-  "installCommand": "pnpm install --filter packages/web-ui...",
+  "installCommand": "npm ci",
   "buildCommand": "npm run build",
   "framework": "vite"
 }
