@@ -4,12 +4,16 @@
   "packageManager": "pnpm@10.0.0",
   "workspaces": [
     "packages/web-ui",
-    "packages/execution-convergence"
+    "packages/execution-convergence",
+    "packages/ledger"
   ],
   "scripts": {
-    "build": "pnpm --filter @bickford/web-ui run build"
+    "detect:promotions": "node scripts/detect-promotions.mjs",
+    "promote": "node scripts/promote-package.mjs",
+    "build": "pnpm detect:promotions && pnpm -r build"
   },
   "devDependencies": {
+    "@types/node": "25.0.9",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "next": "14.2.5",
