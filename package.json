@@ -81,7 +81,7 @@
     "doctor:ci": "node scripts/doctor-ci.mjs",
     "resolve:push": "node ./scripts/resolve-and-push.mjs",
     "verify:next": "tsx scripts/verify-next-version.mjs",
-    "prebuild": "bash ./ci/guards/prebuild-invariant.sh",
+    "prebuild": "bash ./ci/guards/vite-entry-guard.sh",
     "ci:verify:turbo": "tsx scripts/ci/verify-pnpm exec pnpm exec turbo-ordering.mjs",
     "predictive:review": "tsx scripts/predictive/review.mjs",
     "predictive:scan": "tsx scripts/predictive/scan-runtime-boundaries.mjs",
