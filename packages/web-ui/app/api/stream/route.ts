@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
+import { appendLedger } from "@/lib/ledger";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 function encode(data: unknown) {
   return `data: ${JSON.stringify(data)}\n\n`;
@@ -9,41 +10,42 @@ function encode(data: unknown) {
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
+  appendLedger({
+    id: crypto.randomUUID(),
+    timestamp: new Date().toISOString(),
+    type: "STREAM_START",
+    payload: body
+  });
+
   const stream = new ReadableStream({
     async start(controller) {
-      const agents = body.agents ?? [];
-
-      for (const agent of agents) {
+      for (const agent of body.agents ?? []) {
         controller.enqueue(
-          encode({
-            type: "agent-start",
-            agentId: agent.id,
-            role: agent.role
-          })
+          encode({ type: "agent-start", agentId: agent.id, role: agent.role })
         );
 
         const tokens = agent.message.split(" ");
         for (const t of tokens) {
           controller.enqueue(
-            encode({
-              type: "token",
-              agentId: agent.id,
-              value: t + " "
-            })
+            encode({ type: "token", agentId: agent.id, value: t + " " })
           );
-          await new Promise(r => setTimeout(r, 40));
+          await new Promise(r => setTimeout(r, 30));
         }
 
         controller.enqueue(
-          encode({
-            type: "agent-end",
-            agentId: agent.id
-          })
+          encode({ type: "agent-end", agentId: agent.id })
         );
       }
 
       controller.enqueue(encode({ type: "done" }));
       controller.close();
+
+      appendLedger({
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        type: "STREAM_END",
+        payload: { agents: body.agents?.map((a: any) => a.id) }
+      });
     }
   });
 
