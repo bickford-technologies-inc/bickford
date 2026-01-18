@@ -1,6 +1,6 @@
-import fs from "node:fs";
-import path from "node:path";
-import crypto from "node:crypto";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as crypto from "node:crypto";
 
 const ROOT = path.resolve(process.cwd(), ".bickford-ledger");
 if (!fs.existsSync(ROOT)) fs.mkdirSync(ROOT, { recursive: true });
