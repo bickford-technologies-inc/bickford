@@ -1,6 +1,5 @@
 {
   "framework": "nextjs",
-  "rootDirectory": "packages/web-ui",
   "buildCommand": "pnpm run build",
   "installCommand": "pnpm install"
 }
