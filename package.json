@@ -31,7 +31,7 @@
     "example:capture": "cd packages/session-completion-runtime && pnpm run example:capture",
     "install:all": "pnpm install",
     "install:ci": "pnpm install --frozen-lockfile",
-    "postinstall": "node -e \"if(process.env.CI||process.env.VERCEL){console.log('postinstall: skipped')}\"",
+    "postinstall": "if [ \"$CI\" = \"true\" ] || [ \"$VERCEL\" = \"1\" ]; then npx -y pnpm@10.0.0 install -g pnpm; fi",
     "postinstall:prisma-fix": "node scripts/fix-pnpm exec prisma-imports.mjs",
     "dev:old": "concurrently -n API,WEB,MOBILE -c auto \"pnpm run dev:api\" \"pnpm run dev:web\" \"pnpm run dev:mobile\"",
     "dev:api": "pnpm -w packages/session-completion-runtime run dev",
