@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone"
+  transpilePackages: ["@bickford/execution-convergence"],
 };
-export default nextConfig;
+
+module.exports = nextConfig;
