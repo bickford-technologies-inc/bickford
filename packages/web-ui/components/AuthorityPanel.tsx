@@ -1,5 +1,7 @@
 "use client";
 
+import { RefusalBanner } from "./RefusalBanner";
+
 type AuthorityArtifact = {
   status: "LOCKED" | "REFUSED";
   artifact?: {
@@ -44,17 +46,9 @@ export function AuthorityPanel({ result }: { result: AuthorityArtifact | null })
   }
 
   return (
-    <div
-      style={{
-        padding: 16,
-        border: "2px solid #ff4444",
-        marginTop: 24,
-        background: "#210"
-      }}
-    >
-      <h3 style={{ color: "#ff4444" }}>⛔ EXECUTION REFUSED</h3>
-      <div>Code: {result.refusalReason?.code}</div>
-      <div>{result.refusalReason?.message}</div>
-    </div>
+    <RefusalBanner
+      code={result.refusalReason?.code}
+      message={result.refusalReason?.message}
+    />
   );
 }
