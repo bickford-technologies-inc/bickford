@@ -1,12 +1,12 @@
-import { NextRequest } from "next/server";
+export async function POST(req: Request) {
+  let body: any;
 
-export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => null);
-
-  if (!body) {
-    return Response.json(
-      { error: "Invalid JSON body" },
-      { status: 400 }
+  try {
+    body = await req.json();
+  } catch {
+    return new Response(
+      JSON.stringify({ error: "Invalid JSON body" }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
     );
   }
 
@@ -17,20 +17,20 @@ export async function POST(req: NextRequest) {
     mode = "DEFAULT",
     actorId = "unknown",
     sessionId = "unknown",
-  } = body;
+  } = body ?? {};
 
   const resolvedIntent = intent ?? text ?? message;
 
   if (!resolvedIntent) {
-    return Response.json(
-      { error: "No intent provided" },
-      { status: 400 }
+    return new Response(
+      JSON.stringify({ error: "No intent provided" }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
     );
   }
 
-  const llmEnabled = Boolean(
-    process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY
-  );
+  const llmEnabled =
+    Boolean((globalThis as any).process?.env?.OPENAI_API_KEY) ||
+    Boolean((globalThis as any).process?.env?.ANTHROPIC_API_KEY);
 
   const decision = {
     id: crypto.randomUUID(),
@@ -45,8 +45,11 @@ export async function POST(req: NextRequest) {
       : "LLM intentionally disabled; authority-only execution",
   };
 
-  // 🔒 Ledger hook (replace later with persistence)
+  // 🔒 Ledger (stdout for now — replace with persistence later)
   console.log("[BICKFORD LEDGER]", decision);
 
-  return Response.json(decision, { status: 200 });
+  return new Response(JSON.stringify(decision), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 }
