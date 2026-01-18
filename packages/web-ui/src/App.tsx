@@ -1,141 +1,101 @@
-import React, { useEffect, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+"use client";
 
-
-
-const uid = () => crypto.randomUUID();
-
-
-
-
-
-
-
-
-
+import { useState } from "react";
+import { useChatPersistence } from "./hooks/useChatPersistence";
+import { appendLedger } from "./ledger/ledger";
 
 export default function App() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const {
+    threads,
+    activeThread,
+    setActiveThreadId,
+    newThread,
+    addMessage
+  } = useChatPersistence();
+
   const [input, setInput] = useState("");
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const [streaming, setStreaming] = useState(false);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  async function converge() {
+  async function send() {
     if (!input.trim()) return;
 
-    const userMsg: Message = { id: uid(), role: "user", content: input };
-    setMessages(prev => [...prev, userMsg]);
-    setInput("");
+    addMessage("user", input);
+    appendLedger({ type: "USER_INPUT", payload: input });
+    setStreaming(true);
 
-    const res = await fetch("/api/converge", {
+    const res = await fetch("/api/converge/stream", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: input
     });
 
-    const result = await res.json();
+    const reader = res.body!.getReader();
+    const decoder = new TextDecoder();
 
-    const assistantMsg: Message = {
-      id: uid(),
-      role: "assistant",
-      content: "```json\n" + JSON.stringify(result, null, 2) + "\n```"
-    };
+    let buffer = "";
 
-    setMessages(prev => [...prev, assistantMsg]);
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      const events = buffer.split("\n\n");
+      buffer = events.pop() || "";
+
+      for (const e of events) {
+        if (e.includes("event: result")) {
+          const data = JSON.parse(e.split("data: ")[1]);
+          addMessage("system", JSON.stringify(data, null, 2));
+          appendLedger({ type: "RESULT", payload: data });
+        }
+      }
+    }
+
+    setStreaming(false);
+    setInput("");
   }
 
   return (
-    <div style={{
-      display: "grid",
-      gridTemplateRows: "64px 1fr 96px",
-      height: "100vh",
-      background: "#0b0f14",
-      color: "#e5e7eb",
-      fontFamily: "ui-sans-serif, system-ui"
-    }}>
-      <header style={{
-        padding: "0 20px",
-        display: "flex",
-        alignItems: "center",
-        borderBottom: "1px solid #1f2937"
-      }}>
-        <strong>Bickford Chat</strong>
-      </header>
+    <div style={{ display: "flex", height: "100vh", fontFamily: "system-ui" }}>
+      <aside style={{ width: 260, borderRight: "1px solid #ddd", padding: 12 }}>
+        <button onClick={newThread}>+ New</button>
+        <ul>
+          {threads.map(t => (
+            <li
+              key={t.id}
+              onClick={() => setActiveThreadId(t.id)}
+              style={{
+                cursor: "pointer",
+                fontWeight: t.id === activeThread?.id ? "bold" : "normal"
+              }}
+            >
+              {t.title}
+            </li>
+          ))}
+        </ul>
+      </aside>
 
-      <main style={{
-        padding: 24,
-        overflowY: "auto"
-      }}>
-        {messages.map(m => (
-          <div key={m.id} style={{
-            display: "flex",
-            justifyContent: m.role === "user" ? "flex-end" : "flex-start",
-            marginBottom: 16
-          }}>
-            <div style={{
-              maxWidth: 760,
-              padding: 16,
-              borderRadius: 14,
-              background: m.role === "user"
-                ? "linear-gradient(180deg,#0ea5e9,#0284c7)"
-                : "#121823",
-              whiteSpace: "pre-wrap"
-            }}>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {m.content}
-              </ReactMarkdown>
+      <main style={{ flex: 1, padding: 16, display: "flex", flexDirection: "column" }}>
+        <div style={{ flex: 1, overflowY: "auto" }}>
+          {activeThread?.messages.map(m => (
+            <div key={m.id} style={{ marginBottom: 12 }}>
+              <strong>{m.role === "user" ? "You" : "Bickford"}:</strong>
+              <pre style={{ whiteSpace: "pre-wrap" }}>{m.content}</pre>
             </div>
-          </div>
-        ))}
-        <div ref={bottomRef} />
-      </main>
+          ))}
+          {streaming && <em>Streaming…</em>}
+        </div>
 
-      <footer style={{
-        padding: 16,
-        borderTop: "1px solid #1f2937",
-        display: "grid",
-        gridTemplateColumns: "1fr auto",
-        gap: 12
-      }}>
-        <textarea
-          placeholder="Paste ConvergenceInput JSON here…"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              converge();
-            }
-          }}
-          style={{
-            resize: "none",
-            height: 64,
-            padding: 12,
-            background: "#020617",
-            color: "#e5e7eb",
-            border: "1px solid #1f2937",
-            borderRadius: 10
-          }}
-        />
-        <button
-          onClick={converge}
-          style={{
-            padding: "0 20px",
-            borderRadius: 10,
-            border: "none",
-            fontWeight: 600,
-            background: "linear-gradient(180deg,#0ea5e9,#0284c7)",
-            color: "white",
-            cursor: "pointer"
-          }}
-        >
-          Converge
-        </button>
-      </footer>
+        <div style={{ display: "flex", gap: 8 }}>
+          <textarea
+            rows={3}
+            style={{ flex: 1 }}
+            value={input}
+            onChange={e => setInput(e.target.value)}
+          />
+          <button onClick={send}>Send</button>
+        </div>
+      </main>
     </div>
   );
 }
