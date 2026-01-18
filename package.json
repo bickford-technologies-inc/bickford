@@ -89,7 +89,8 @@
     "verify:prisma-boundary": "node ci/check-pnpm exec prisma-boundary.mjs",
     "verify:runtime-purity": "node ci/check-runtime-purity.mjs",
     "preinstall": "if [ -z \"$CI\" ] && [ -z \"$VERCEL\" ]; then bash ./ci/guards/TOOLCHAIN_GUARD.sh && bash ./ci/guards/no-npm.sh; fi",
-    "prebuild": "bash ./ci/guards/vite-entry-guard.sh"
+    "prebuild": "bash ./ci/guards/vite-entry-guard.sh",
+    "postbuild": "node ci/smoke/vercel-smoke.mjs"
   },
   "dependencies": {
     "@vercel/sdk": "^1.0.0"
