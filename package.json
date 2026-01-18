@@ -5,17 +5,18 @@
   "workspaces": [
     "packages/web-ui",
     "packages/execution-convergence",
-    "packages/ledger"
+    "packages/ledger",
+    "packages/types"
   ],
   "scripts": {
     "detect:promotions": "node scripts/detect-promotions.mjs",
     "promote": "node scripts/promote-package.mjs",
-    "build": "pnpm detect:promotions && pnpm -r build"
+    "build": "pnpm -r --filter @bickford/types build && pnpm -r --filter @bickford/ledger build && pnpm --filter @bickford/web-ui run build"
   },
   "devDependencies": {
-    "@types/node": "25.0.9",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
+    "@types/node": "25.0.9",
     "next": "14.2.5",
     "react": "18.3.1",
     "react-dom": "18.3.1"
