@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-17T23:43:41.505Z",
+  "timestamp": "2026-01-18T18:50:23.334Z",
   "invariants": {
     "noDeepImports": true,
     "explicitDependencies": true,
@@ -8,9 +8,9 @@
     "prismaGuardPassed": true
   },
   "build": {
-    "node": "v20.19.6",
+    "node": "v24.13.0",
     "ci": false,
     "vercel": false
   },
-  "hash": "cdda061c4ddb0da0b2977cd92496ba2136876adbcf7dcc6133facb0c55e7b12f"
+  "hash": "4d611b783c85e141b31321980c5566c4583a923a3e14abc04597742c60d7e843"
 }
