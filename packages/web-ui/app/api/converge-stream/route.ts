@@ -1,58 +1,61 @@
-import { writeThread } from "@/lib/ledger/fs-ledger";
-const threadId = crypto.randomUUID();
-
+import { NextResponse } from "next/server";
 import { converge } from "@bickford/execution-convergence";
+import { writeThread } from "@/lib/ledger/fs-ledger";
+
+export const runtime = "edge";
 
 export async function POST(req: Request) {
-  const body = await req.text();
+  const body = await req.json();
+  const threadId = crypto.randomUUID();
 
   const encoder = new TextEncoder();
+  let partial: any[] = [];
+
   const stream = new ReadableStream({
     async start(controller) {
-      function send(event: string, data: unknown) {
+      function send(event: string, data: any) {
         controller.enqueue(
-          encoder.encode(
-            `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`
-          )
+          encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)
         );
       }
 
-      // --- AGENT: AUTHORITY (streaming plan) ---
-      send("agent", { agent: "authority", token: "Analyzing intent…" });
-      await delay(400);
+      send("thread", { threadId });
 
-      send("agent", { agent: "authority", token: "Building executable plan…" });
-      await delay(400);
+      for (const agent of body.agents) {
+        send("agent:start", { agentId: agent.id });
 
-      // --- FINAL CONVERGENCE ---
+        // Simulated token streaming per agent
+        const content = body.outputs
+          .filter((o: any) => o.agentId === agent.id)
+          .map((o: any) => o.content)
+          .join(" ");
+
+        for (const token of content.split(" ")) {
+          send("agent:token", { agentId: agent.id, token });
+          await new Promise(r => setTimeout(r, 15));
+        }
+
+        partial.push({
+          agentId: agent.id,
+          content
+        });
+
+        send("agent:end", { agentId: agent.id });
+      }
+
       const result = converge({
-
-      writeThread(threadId, {
-        input: body,
-        result,
-        persistedAt: new Date().toISOString()
-      });
-
-        mode: "EXECUTION",
-        agents: [
-          { id: "auth", role: "EXECUTION_AUTHORITY", provider: "bickford" },
-          { id: "audit", role: "CONSTRAINT_AUDITOR", provider: "bickford" }
-        ],
-        outputs: [
-          {
-            agentId: "auth",
-            content: [{ id: "step-1", action: "deploy" }]
-          },
-          {
-            agentId: "audit",
-            content: "ok",
-            constraints: []
-          }
-        ],
+        ...body,
         metadata: {
           timestamp: new Date().toISOString(),
           initiatedBy: "human"
         }
+      });
+
+      writeThread(threadId, {
+        input: body,
+        partial,
+        result,
+        persistedAt: new Date().toISOString()
       });
 
       send("final", result);
@@ -67,8 +70,4 @@ export async function POST(req: Request) {
       Connection: "keep-alive"
     }
   });
-}
-
-function delay(ms: number) {
-  return new Promise(r => setTimeout(r, ms));
 }
