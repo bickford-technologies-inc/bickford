@@ -1,6 +1,6 @@
 {
+  "framework": "vite",
   "buildCommand": "pnpm run build",
-  "installCommand": "pnpm install",
-  "framework": "nextjs",
-  "nodeVersion": "20.x"
+  "outputDirectory": "dist",
+  "installCommand": "pnpm install"
 }
