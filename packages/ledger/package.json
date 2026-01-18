@@ -1,6 +1,5 @@
 {
   "name": "@bickford/ledger",
-  "version": "0.0.0",
   "private": true,
   "type": "module",
   "main": "dist/index.js",
@@ -11,10 +10,10 @@
       "default": "./dist/index.js"
     }
   },
-  "scripts": {
-    "build": "tsc -p tsconfig.json"
-  },
   "dependencies": {
     "@bickford/types": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
   }
 }
