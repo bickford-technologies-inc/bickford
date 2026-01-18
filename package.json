@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "pnpm@10.0.0",
   "scripts": {
-    "start": "bash scripts/setup.sh && pnpm run dev",
+    "start": "pnpm run runtime:guard && next start",
     "dev": "pnpm pnpm exec prisma:generate && pnpm exec pnpm exec turbo run dev --filter=web",
     "check:turbo": "node scripts/check-pnpm exec pnpm exec turbo-extends.mjs",
     "build": "turbo run build",
@@ -90,7 +90,8 @@
     "verify:runtime-purity": "node ci/check-runtime-purity.mjs",
     "preinstall": "if [ -z \"$CI\" ] && [ -z \"$VERCEL\" ]; then bash ./ci/guards/TOOLCHAIN_GUARD.sh && bash ./ci/guards/no-npm.sh; fi",
     "prebuild": "bash ./ci/guards/vite-entry-guard.sh",
-    "postbuild": "node ci/smoke/vercel-smoke.mjs"
+    "postbuild": "node ci/smoke/vercel-smoke.mjs",
+    "runtime:guard": "node ci/runtime/runtime-guard.mjs"
   },
   "dependencies": {
     "@vercel/sdk": "^1.0.0"
