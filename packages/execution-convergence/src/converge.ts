@@ -16,28 +16,20 @@ import { appendToLedger, ExecutionLedger } from "./ledger.js";
 export function converge(input: ConvergenceInput): ConvergenceResult {
   if (input.mode !== "EXECUTION") {
     return {
-      status: "REFUSED",
-      refusalReason: {
-        code: "INVALID_MODE",
-        message: "Convergence attempted outside EXECUTION mode",
-      },
+      converged: false,
+      reason: "invalid_mode",
     };
   }
 
   const authority = input.agents.filter(
-    (a) => a.role === "EXECUTION_AUTHORITY"
+    (a) => a.role === "EXECUTION_AUTHORITY",
   );
-  const auditors = input.agents.filter(
-    (a) => a.role === "CONSTRAINT_AUDITOR"
-  );
+  const auditors = input.agents.filter((a) => a.role === "CONSTRAINT_AUDITOR");
 
   if (auditors.length === 0) {
     return {
-      status: "REFUSED",
-      refusalReason: {
-        code: "NO_AUDITOR",
-        message: "Execution requires at least one constraint auditor",
-      },
+      converged: false,
+      reason: "no_auditor",
     };
   }
 
@@ -45,7 +37,7 @@ export function converge(input: ConvergenceInput): ConvergenceResult {
     assertSingleAuthority(authority.map((a) => a.id));
 
     const authorityOutput = input.outputs.find(
-      (o) => o.agentId === authority[0].id
+      (o) => o.agentId === authority[0].id,
     );
 
     if (!authorityOutput || !Array.isArray(authorityOutput.content)) {
@@ -57,43 +49,30 @@ export function converge(input: ConvergenceInput): ConvergenceResult {
     // HARDENING 1: structural enforcement
     assertExecutablePlan(executablePlan);
 
-    const allConstraints = input.outputs.flatMap(
-      (o) => o.constraints ?? []
-    );
+    const allConstraints = input.outputs.flatMap((o) => o.constraints ?? []);
 
     validateConstraints(executablePlan, allConstraints);
 
-    const artifactPayload = {
-      executablePlan,
-      authority: authority[0].id,
-      constraints: allConstraints.map((c) => c.id),
-    };
+    // Optionally compute score and trace here if needed
+    const score = undefined; // placeholder for future scoring logic
+    const trace = undefined; // placeholder for future trace logic
 
-    const artifact = {
-      hash: hashArtifact(artifactPayload),
-      authorityAgentId: authority[0].id,
-      executablePlan,
-      provenance: {
-        sourceAgents: input.agents.map((a) => a.id),
-        convergedAt: new Date().toISOString(),
-        enforcedConstraints: allConstraints.map((c) => c.id),
-      },
-    };
-
-    appendToLedger(artifact);
+    // Ledger/persistence owns artifact materialization
+    // If you need to persist, do so here, but do not return artifact
+    // const artifactPayload = { ... };
+    // const artifact = { ... };
+    // appendToLedger(artifact);
 
     return {
-      status: "LOCKED",
-      artifact,
+      converged: true,
+      score,
+      trace,
     };
   } catch (err) {
     if (err instanceof RefusalError) {
       return {
-        status: "REFUSED",
-        refusalReason: {
-          code: "REFUSAL",
-          message: err.message,
-        },
+        converged: false,
+        reason: "refusal",
       };
     }
     throw err;
@@ -102,7 +81,7 @@ export function converge(input: ConvergenceInput): ConvergenceResult {
 
 export async function convergeWithLedger(
   input: ConvergenceInput,
-  ledger?: ExecutionLedger
+  ledger?: ExecutionLedger,
 ): Promise<ConvergenceResult> {
   const result = converge(input);
   if (ledger) {
@@ -110,3 +89,9 @@ export async function convergeWithLedger(
   }
   return result;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type _NoExtraFieldsAllowed = ConvergenceResult & {
+  status?: never;
+  artifact?: never;
+};

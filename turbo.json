@@ -56,5 +56,11 @@
     "BICKFORD_API_TOKEN",
     "GITHUB_TOKEN",
     "PG_SSL"
-  ]
+  ],
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**"]
+    }
+  }
 }
