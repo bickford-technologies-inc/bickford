@@ -23,8 +23,35 @@ export * from "./ExecutionResult";
 export type LedgerEntry = {
   id: string;
   threadId: string;
-  payload: unknown;
+  role: "user" | "assistant" | "system";
+  content: string;
   ts: number;
+
+  /**
+   * Canonical intent payload associated with this entry.
+   * Required by ledgerEntry.ts and execution convergence.
+   */
+  intent?: {
+    id?: string;
+    type?: string;
+    payload?: unknown;
+  };
+
+  /**
+   * Canonical decision payload associated with this entry.
+   * Required by ledgerEntry.ts and execution convergence.
+   */
+  decision?: unknown;
+
+  /**
+   * Canonical hash for this entry (if present in runtime).
+   */
+  hash?: string;
+
+  /**
+   * Canonical createdAt timestamp (if present in runtime).
+   */
+  createdAt?: string;
 };
 
 export type EdgeContext = {

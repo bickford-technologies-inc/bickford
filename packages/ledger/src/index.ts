@@ -33,4 +33,7 @@ export function readAll(): LedgerEntry[] {
     .map((f) => JSON.parse(fs.readFileSync(path.join(ROOT, f), "utf8")));
 }
 
-export * from "./fs-ledger.node";
+export * from "./ledger";
+export * from "./persist";
+export * from "./ledgerEntry";
+export * from "./types";

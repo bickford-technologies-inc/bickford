@@ -11,6 +11,8 @@ export function listen(cb: (t: string) => void) {
   const r = new R();
   r.continuous = false;
   r.interimResults = false;
-  r.onresult = e => cb(e.results[0][0].transcript);
+  r.onresult = (e: any) => {
+    cb(e.results[0][0].transcript);
+  };
   r.start();
 }

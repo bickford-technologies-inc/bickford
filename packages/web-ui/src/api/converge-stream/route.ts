@@ -8,12 +8,10 @@ export async function POST(req: Request) {
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
-    start(controller) {
+    async start(controller) {
       const send = (event: string, data: any) => {
         controller.enqueue(
-          encoder.encode(
-            `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`
-          )
+          encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`),
         );
       };
 
@@ -23,29 +21,29 @@ export async function POST(req: Request) {
         send("agent", { agentId: o.agentId, content: o.content });
       });
 
-      const result = converge({
+      const result = await converge({
         ...body,
         metadata: {
           timestamp: new Date().toISOString(),
-          initiatedBy: "human"
-        }
+          initiatedBy: "human",
+        },
       });
 
       persist({
-        status: result.status,
-        payload: result
+        status: result.converged ? "LOCKED" : "REFUSED",
+        payload: result,
       });
 
       send("final", result);
       controller.close();
-    }
+    },
   });
 
   return new Response(stream, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
-      Connection: "keep-alive"
-    }
+      Connection: "keep-alive",
+    },
   });
 }
