@@ -1,27 +1,23 @@
 {
-  "name": "bickford-acquisition-automation",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:18",
+  "name": "bickford-dev",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
   "features": {
-    "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/node:1": {
+      "nodeGypDependencies": true
+    }
   },
-  "postCreateCommand": "npm install && npm run build",
-  "postStartCommand": "npm run status || true",
   "customizations": {
     "vscode": {
-      "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash",
-        "typescript.tsdk": "node_modules/typescript/lib",
-        "editor.formatOnSave": true
-      },
       "extensions": [
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
-        "ms-vscode.vscode-typescript-next"
+        "Prisma.prisma",
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
       ]
     }
   },
-  "remoteEnv": {
-    "NODE_ENV": "development"
-  }
+  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  "postStartCommand": "pnpm install",
+  "remoteUser": "node"
 }
