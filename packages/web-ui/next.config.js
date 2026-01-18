@@ -3,4 +3,4 @@ const nextConfig = {
   transpilePackages: ["@bickford/execution-convergence"],
 };
 
-module.exports = nextConfig;
+export default nextConfig;
