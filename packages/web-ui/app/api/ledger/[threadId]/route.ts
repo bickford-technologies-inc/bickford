@@ -1,19 +1,12 @@
-import { NextResponse } from "next/server";
-import { readThread, writeThread } from "@/lib/ledger/fs-ledger";
+export const runtime = "nodejs";
 
-export async function GET(
+import { NextResponse } from "next/server";
+import { writeThread } from "@/lib/ledger/fs-ledger.node";
+
+export async function POST(
   _req: Request,
   { params }: { params: { threadId: string } }
 ) {
-  const data = readThread(params.threadId);
-  return NextResponse.json(data ?? {});
-}
-
-export async function POST(
-  req: Request,
-  { params }: { params: { threadId: string } }
-) {
-  const body = await req.json();
-  writeThread(params.threadId, body);
+  await writeThread(params.threadId, {});
   return NextResponse.json({ ok: true });
 }
