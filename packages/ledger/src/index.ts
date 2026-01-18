@@ -34,5 +34,4 @@ export function readAll(): LedgerEntry[] {
 }
 
 export * from "./ledger";
-export * from "./persist";
 export * from "./types";

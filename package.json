@@ -11,7 +11,10 @@
   "scripts": {
     "detect:promotions": "node scripts/detect-promotions.mjs",
     "promote": "node scripts/promote-package.mjs",
-    "build": "pnpm --filter @bickford/types build && pnpm --filter @bickford/ledger build && pnpm --filter @bickford/web-ui build"
+    "preflight": "node scripts/preflight.mjs",
+    "build": "pnpm preflight && pnpm --filter @bickford/web-ui build",
+    "check:resolution": "bash scripts/check-workspace-resolution.sh",
+    "build:all": "bash scripts/build-all.sh"
   },
   "devDependencies": {
     "@types/react": "^19.2.8",

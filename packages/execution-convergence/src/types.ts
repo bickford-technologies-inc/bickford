@@ -58,8 +58,16 @@ export interface LockedArtifact {
   };
 }
 
-export interface ConvergenceResult {
-  status: "LOCKED" | "REFUSED";
-  artifact?: LockedArtifact;
-  refusalReason?: RefusalReason;
-}
+export type ConvergenceResult = {
+  /** true if convergence succeeded */
+  converged: boolean;
+
+  /** optional diagnostic payload */
+  reason?: string;
+
+  /** optional score / metadata */
+  score?: number;
+
+  /** optional execution trace */
+  trace?: unknown;
+};
