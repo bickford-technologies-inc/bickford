@@ -16,16 +16,16 @@ export function useAgentStream(input: string) {
 
     const es = new EventSourcePolyfill("/api/converge-stream", {
       method: "POST",
-      body: input
+      body: input,
     });
 
-    es.addEventListener("agent", (e: MessageEvent) => {
+    (es as EventSource).addEventListener("agent", (e: MessageEvent) => {
       const d = JSON.parse(e.data);
-      setEvents(ev => [...ev, { type: "agent", ...d }]);
+      setEvents((ev) => [...ev, { type: "agent", ...d }]);
     });
 
-    es.addEventListener("final", (e: MessageEvent) => {
-      setEvents(ev => [...ev, { type: "final", data: JSON.parse(e.data) }]);
+    (es as EventSource).addEventListener("final", (e: MessageEvent) => {
+      setEvents((ev) => [...ev, { type: "final", data: JSON.parse(e.data) }]);
       es.close();
       setRunning(false);
     });
@@ -43,8 +43,8 @@ class EventSourcePolyfill {
     fetch(url, {
       method: opts.method,
       body: opts.body,
-      signal: controller.signal
-    }).then(async res => {
+      signal: controller.signal,
+    }).then(async (res) => {
       const reader = res.body!.getReader();
       const decoder = new TextDecoder();
       let buf = "";
@@ -68,9 +68,7 @@ function parse(text: string, opts: any) {
     if (!e.includes("event:")) continue;
     const [, ev, data] = e.match(/event:\s(.+)\ndata:\s(.+)/s) || [];
     if (ev && data) {
-      window.dispatchEvent(
-        new MessageEvent(ev, { data })
-      );
+      window.dispatchEvent(new MessageEvent(ev, { data }));
     }
   }
 }
