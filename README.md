@@ -308,3 +308,11 @@ All actions:
 are executed via `@vercel/sdk`.
 
 The dashboard is non-authoritative.
+
+---
+
+## Codespace Canonical Behavior
+
+For all Codespace users: see [`CODESPACE_CANONICAL_BEHAVIOR_CONFIRMATION.md`](./CODESPACE_CANONICAL_BEHAVIOR_CONFIRMATION.md) for the authoritative reference on browser access, forwarded ports, and why the github.dev URL is correct (even if it does not mention "bickford").
+
+---
