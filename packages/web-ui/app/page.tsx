@@ -1,45 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-type LedgerEntry = {
-  id: string;
-  timestamp: string;
-  type: string;
-  payload: any;
-};
+import { useState } from "react";
+import { AuthorityPanel } from "@/components/AuthorityPanel";
 
 export default function Page() {
-  const [ledger, setLedger] = useState<LedgerEntry[]>([]);
+  const [input, setInput] = useState("");
+  const [result, setResult] = useState<any>(null);
 
-  useEffect(() => {
-    fetch("/api/ledger")
-      .then(r => r.json())
-      .then(setLedger);
-  }, []);
+  async function run() {
+    const res = await fetch("/api/converge", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: input
+    });
+    setResult(await res.json());
+  }
 
   return (
     <main style={{ padding: 32, fontFamily: "system-ui" }}>
       <h1>Bickford</h1>
 
-      <section style={{ marginTop: 24 }}>
-        <h2>Execution Ledger</h2>
-        {ledger.length === 0 && <div>No executions yet.</div>}
-        {ledger.map(e => (
-          <pre
-            key={e.id}
-            style={{
-              marginTop: 12,
-              padding: 12,
-              background: "#111",
-              color: "#0f0",
-              overflowX: "auto"
-            }}
-          >
-            {JSON.stringify(e, null, 2)}
-          </pre>
-        ))}
-      </section>
+      <textarea
+        rows={14}
+        style={{ width: "100%", marginTop: 16 }}
+        placeholder="Paste execution input JSON here"
+        value={input}
+        onChange={e => setInput(e.target.value)}
+      />
+
+      <button onClick={run} style={{ marginTop: 12 }}>
+        Execute
+      </button>
+
+      <AuthorityPanel result={result} />
     </main>
   );
 }
