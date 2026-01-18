@@ -1,32 +1,10 @@
 {
   "name": "@bickford/execution-convergence",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.1",
   "type": "module",
-  "description": "Bickford Chat execution primitive: convergence, reconciliation, and validation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "build": "pnpm exec pnpm exec tsc -p tsconfig.json",
-    "typecheck": "pnpm exec pnpm exec tsc --noEmit",
-    "lint": "npm run typecheck",
-    "test": "echo \"No tests yet\"",
-    "clean": "rm -rf dist"
-  },
-  "keywords": [
-    "bickford",
-    "execution-convergence",
-    "chat",
-    "primitive",
-    "convergence",
-    "reconciliation"
-  ],
-  "author": "Bickford",
-  "license": "PROPRIETARY",
-  "devDependencies": {
-    "typescript": "^5.9.3"
+    "build": "tsc"
   }
 }
