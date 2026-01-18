@@ -18,10 +18,10 @@
     "@bickford/ui": "workspace:*",
     "@bickford/canon": "workspace:*",
     "@bickford/db": "workspace:*",
+    "@bickford/core": "workspace:*",
     "next": "14.1.0",
     "@prisma/client": "6.19.2"
   },
-  "@bickford/core": "workspace:*",
   "devDependencies": {
     "@types/node": "^25.0.6",
     "@types/react": "^18.3.0",
