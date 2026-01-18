@@ -17,7 +17,7 @@ export function persist(entry: Omit<LedgerEntry, "id" | "timestamp">) {
   const record: LedgerEntry = {
     id,
     timestamp: new Date().toISOString(),
-    ...entry
+    ...entry,
   };
 
   const file = path.join(ROOT, `${record.timestamp}-${id}.json`);
@@ -30,7 +30,7 @@ export function readAll(): LedgerEntry[] {
   return fs
     .readdirSync(ROOT)
     .sort()
-    .map(f =>
-      JSON.parse(fs.readFileSync(path.join(ROOT, f), "utf8"))
-    );
+    .map((f) => JSON.parse(fs.readFileSync(path.join(ROOT, f), "utf8")));
 }
+
+export * from "./fs-ledger.node";

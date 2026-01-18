@@ -19,3 +19,14 @@ export type DeniedDecisionPayload = {
 export {};
 export * from "./ExecutionAdapter";
 export * from "./ExecutionResult";
+
+export type LedgerEntry = {
+  id: string;
+  threadId: string;
+  payload: unknown;
+  ts: number;
+};
+
+export type EdgeContext = {
+  runtime: "edge" | "node";
+};
