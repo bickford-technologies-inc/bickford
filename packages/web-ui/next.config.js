@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@bickford/execution-convergence", "@bickford/ledger"],
-
+  transpilePackages: ["@bickford/ledger", "@bickford/execution-convergence"],
   eslint: {
     ignoreDuringBuilds: true,
   },
