@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import { listThreads } from "@/lib/ledger/fs-ledger.node";
+import { listThreads } from "@bickford/ledger";
 
 export async function GET() {
   const threads = await listThreads();
