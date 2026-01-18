@@ -1,6 +1,3 @@
-import { writeThread } from "@/lib/ledger/fs-ledger";
-const threadId = crypto.randomUUID();
-
 import { converge } from "@bickford/execution-convergence";
 
 export async function POST(req: Request) {

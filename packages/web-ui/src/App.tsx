@@ -1,3 +1,12 @@
+useEffect(() => {
+  fetch("/api/ledger")
+    .then(r => r.json())
+    .then(idx => {
+      const last = Object.keys(idx).pop();
+      if (last) setActiveThread(last);
+    });
+}, []);
+
 import { useAgentStream } from "../lib/useAgentStream";
 const [streamInput, setStreamInput] = useState("");
 const { events } = useAgentStream(streamInput);
