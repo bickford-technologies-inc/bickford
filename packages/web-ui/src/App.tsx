@@ -1,109 +1,126 @@
-useEffect(() => {
-  fetch("/api/ledger")
-    .then(r => r.json())
-    .then(idx => {
-      const last = Object.keys(idx).pop();
-      if (last) setActiveThread(last);
-    });
-}, []);
-
-import { useAgentStream } from "../lib/useAgentStream";
-const [streamInput, setStreamInput] = useState("");
-const { events } = useAgentStream(streamInput);
-
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  loadThreads,
-  saveThreads,
-  newThread,
-  Thread,
-  Message
-} from "../lib/threadStore";
-import { ThreadSidebar } from "../components/ThreadSidebar";
-{events.map((e, i) => (
-  <pre key={i} style={{ background:"#020", padding:12 }}>
-    {e.type === "agent" ? `[${e.agent}] ${e.token}` : JSON.stringify(e.data, null, 2)}
-  </pre>
-))}
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const active = threads.find(t => t.id === activeId) || null;
+import { useEffect, useRef, useState } from "react";
+
+type Msg = {
+  role: "agent" | "system";
+  agentId?: string;
+  text: string;
+};
+
+export default function App() {
+  const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
+  const [activeThread, setActiveThread] = useState<string | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const t = loadThreads();
-    if (t.length === 0) {
-      const nt = newThread();
-      setThreads([nt]);
-      setActiveId(nt.id);
-      saveThreads([nt]);
-    } else {
-      setThreads(t);
-      setActiveId(t[0].id);
-    }
+    fetch("/api/ledger")
+      .then(r => r.json())
+      .then(idx => {
+        const last = Object.keys(idx).pop();
+        if (last) {
+          setActiveThread(last);
+          fetch(`/api/ledger/${last}`)
+            .then(r => r.json())
+            .then(data => {
+              if (data?.partial) {
+                setMessages(
+                  data.partial.map((p: any) => ({
+                    role: "agent",
+                    agentId: p.agentId,
+                    text: p.content
+                  }))
+                );
+              }
+            });
+        }
+      });
   }, []);
 
-  function persist(next: Thread[]) {
-    setThreads(next);
-    saveThreads(next);
-  }
+  useEffect(() => {
+    ref.current?.scrollTo({ top: ref.current.scrollHeight });
+  }, [messages]);
 
-  async function send() {
-    if (!active) return;
-    setStreamInput(input);
-    setInput("");
+  async function run() {
+    setMessages([]);
+    const res = await fetch("/api/converge-stream", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: input
+    });
+
+    const reader = res.body!.getReader();
+    const decoder = new TextDecoder();
+    let buf = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value);
+      const events = buf.split("\n\n");
+      buf = events.pop() || "";
+
+      for (const e of events) {
+        const [, type] = e.match(/^event: (.+)$/m) || [];
+        const [, data] = e.match(/^data: (.+)$/m) || [];
+        if (!type || !data) continue;
+
+        const payload = JSON.parse(data);
+
+        if (type === "agent:token") {
+          setMessages(m => [
+            ...m,
+            {
+              role: "agent",
+              agentId: payload.agentId,
+              text: payload.token
+            }
+          ]);
+        }
+
+        if (type === "final") {
+          setMessages(m => [
+            ...m,
+            { role: "system", text: JSON.stringify(payload, null, 2) }
+          ]);
+        }
+      }
+    }
   }
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      <ThreadSidebar
-        threads={threads}
-        activeId={activeId}
-        onSelect={setActiveId}
-        onNew={() => {
-          const nt = newThread();
-          persist([nt, ...threads]);
-          setActiveId(nt.id);
+    <main style={{ padding: 16 }}>
+      <h1>Bickford Chat</h1>
+
+      <div
+        ref={ref}
+        style={{
+          height: "60vh",
+          overflowY: "auto",
+          border: "1px solid #333",
+          padding: 12,
+          marginBottom: 12
         }}
+      >
+        {messages.map((m, i) => (
+          <div key={i} style={{ marginBottom: 6 }}>
+            <strong>{m.agentId ?? m.role}:</strong> {m.text}
+          </div>
+        ))}
+      </div>
+
+      <textarea
+        rows={6}
+        style={{ width: "100%" }}
+        placeholder="Paste ConvergenceInput JSON"
+        value={input}
+        onChange={e => setInput(e.target.value)}
       />
 
-      <main style={{ flex: 1, padding: 16, overflow: "auto" }}>
-        <h2>Bickford Chat</h2>
-
-        <div>
-          {active?.messages.map((m, i) => (
-            <pre
-              key={i}
-              style={{
-                background: m.role === "user" ? "#111" : "#020",
-                padding: 12,
-                marginBottom: 8,
-                border: "1px solid #333"
-              }}
-            >
-              {m.content}
-            </pre>
-          ))}
-        </div>
-
-        <textarea
-          rows={6}
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          style={{ width: "100%", marginTop: 12 }}
-        />
-
-        <button
-          onClick={send}
-          style={{ marginTop: 8, padding: 8 }}
-        >
-          Send
-        </button>
-
-{events.map((e, i) => (
-  <pre key={i} style={{ background:"#020", padding:12 }}>
-    {e.type === "agent" ? `[${e.agent}] ${e.token}` : JSON.stringify(e.data, null, 2)}
-  </pre>
-))}
+      <button onClick={run} style={{ marginTop: 8 }}>
+        Converge (Stream)
+      </button>
+    </main>
+  );
 }
