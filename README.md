@@ -1,5 +1,7 @@
 # Bickford
 
+Triggering a deploy: trivial change for Vercel.
+
 ![Canon](https://img.shields.io/badge/Bickford-Canon%20Clean-brightgreen)
 
 **Intent → Reality in <5 seconds**
