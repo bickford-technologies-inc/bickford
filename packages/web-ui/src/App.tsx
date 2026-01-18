@@ -1,27 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { useChatPersistence } from "./hooks/useChatPersistence";
-import { appendLedger } from "./ledger/ledger";
+import { useEffect, useRef, useState } from "react";
 
-export default function App() {
-  const {
-    threads,
-    activeThread,
-    setActiveThreadId,
-    newThread,
-    addMessage
-  } = useChatPersistence();
+interface StreamEvent {
+  type: string;
+  [key: string]: any;
+}
 
+export default function BickfordChat() {
   const [input, setInput] = useState("");
-  const [streaming, setStreaming] = useState(false);
+  const [events, setEvents] = useState<StreamEvent[]>([]);
+  const logRef = useRef<HTMLDivElement>(null);
 
-  async function send() {
-    if (!input.trim()) return;
+  useEffect(() => {
+    logRef.current?.scrollTo({
+      top: logRef.current.scrollHeight,
+      behavior: "smooth"
+    });
+  }, [events]);
 
-    addMessage("user", input);
-    appendLedger({ type: "USER_INPUT", payload: input });
-    setStreaming(true);
+  async function run() {
+    setEvents([]);
 
     const res = await fetch("/api/converge/stream", {
       method: "POST",
@@ -32,70 +31,66 @@ export default function App() {
     const reader = res.body!.getReader();
     const decoder = new TextDecoder();
 
-    let buffer = "";
-
+    let buf = "";
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;
-      buffer += decoder.decode(value, { stream: true });
 
-      const events = buffer.split("\n\n");
-      buffer = events.pop() || "";
+      buf += decoder.decode(value, { stream: true });
+      const chunks = buf.split("\n\n");
+      buf = chunks.pop() || "";
 
-      for (const e of events) {
-        if (e.includes("event: result")) {
-          const data = JSON.parse(e.split("data: ")[1]);
-          addMessage("system", JSON.stringify(data, null, 2));
-          appendLedger({ type: "RESULT", payload: data });
-        }
+      for (const chunk of chunks) {
+        if (!chunk.startsWith("data:")) continue;
+        const json = JSON.parse(chunk.replace("data:", "").trim());
+        setEvents(e => [...e, json]);
       }
     }
-
-    setStreaming(false);
-    setInput("");
   }
 
   return (
-    <div style={{ display: "flex", height: "100vh", fontFamily: "system-ui" }}>
-      <aside style={{ width: 260, borderRight: "1px solid #ddd", padding: 12 }}>
-        <button onClick={newThread}>+ New</button>
-        <ul>
-          {threads.map(t => (
-            <li
-              key={t.id}
-              onClick={() => setActiveThreadId(t.id)}
-              style={{
-                cursor: "pointer",
-                fontWeight: t.id === activeThread?.id ? "bold" : "normal"
-              }}
-            >
-              {t.title}
-            </li>
-          ))}
-        </ul>
-      </aside>
+    <main style={{ padding: 24 }}>
+      <h1>Bickford Chat</h1>
 
-      <main style={{ flex: 1, padding: 16, display: "flex", flexDirection: "column" }}>
-        <div style={{ flex: 1, overflowY: "auto" }}>
-          {activeThread?.messages.map(m => (
-            <div key={m.id} style={{ marginBottom: 12 }}>
-              <strong>{m.role === "user" ? "You" : "Bickford"}:</strong>
-              <pre style={{ whiteSpace: "pre-wrap" }}>{m.content}</pre>
-            </div>
-          ))}
-          {streaming && <em>Streaming…</em>}
-        </div>
+      <textarea
+        rows={10}
+        style={{ width: "100%" }}
+        placeholder="Paste ConvergenceInput JSON"
+        value={input}
+        onChange={e => setInput(e.target.value)}
+      />
 
-        <div style={{ display: "flex", gap: 8 }}>
-          <textarea
-            rows={3}
-            style={{ flex: 1 }}
-            value={input}
-            onChange={e => setInput(e.target.value)}
-          />
-          <button onClick={send}>Send</button>
-        </div>
-      </main>
-    </div>
+      <button onClick={run} style={{ marginTop: 12 }}>
+        Converge (Streaming)
+      </button>
+
+      <div
+        ref={logRef}
+        style={{
+          marginTop: 24,
+          height: 400,
+          overflowY: "auto",
+          background: "#0b0b0b",
+          color: "#d0d0d0",
+          padding: 12,
+          fontFamily: "monospace",
+          fontSize: 13
+        }}
+      >
+        {events.map((e, i) => (
+          <div key={i}>
+            {e.type === "agent" && (
+              <>🧠 [{e.role}] {e.agentId} active</>
+            )}
+            {e.type === "final" && (
+              <>
+                <pre>{JSON.stringify(e.result, null, 2)}</pre>
+              </>
+            )}
+            {e.type === "meta" && <>— {e.status} —</>}
+          </div>
+        ))}
+      </div>
+    </main>
   );
 }
