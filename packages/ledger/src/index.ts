@@ -1,8 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 
-const LEDGER_DIR = path.join(process.cwd(), ".bickford");
-const LEDGER_FILE = path.join(LEDGER_DIR, "ledger.jsonl");
+const ROOT = path.resolve(process.cwd(), ".bickford-ledger");
+if (!fs.existsSync(ROOT)) fs.mkdirSync(ROOT, { recursive: true });
 
 export interface LedgerEntry {
   id: string;
@@ -11,11 +12,25 @@ export interface LedgerEntry {
   payload: unknown;
 }
 
-export function appendLedger(entry: LedgerEntry) {
-  if (!fs.existsSync(LEDGER_DIR)) {
-    fs.mkdirSync(LEDGER_DIR, { recursive: true });
-  }
+export function persist(entry: Omit<LedgerEntry, "id" | "timestamp">) {
+  const id = crypto.randomUUID();
+  const record: LedgerEntry = {
+    id,
+    timestamp: new Date().toISOString(),
+    ...entry
+  };
 
-  const line = JSON.stringify(entry) + "\n";
-  fs.appendFileSync(LEDGER_FILE, line, { encoding: "utf-8" });
+  const file = path.join(ROOT, `${record.timestamp}-${id}.json`);
+  fs.writeFileSync(file, JSON.stringify(record, null, 2));
+  return record;
+}
+
+export function readAll(): LedgerEntry[] {
+  if (!fs.existsSync(ROOT)) return [];
+  return fs
+    .readdirSync(ROOT)
+    .sort()
+    .map(f =>
+      JSON.parse(fs.readFileSync(path.join(ROOT, f), "utf8"))
+    );
 }

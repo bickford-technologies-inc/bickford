@@ -6,7 +6,7 @@
     "start": "pnpm run runtime:guard && next start",
     "dev": "pnpm pnpm exec prisma:generate && pnpm exec pnpm exec turbo run dev --filter=web",
     "check:turbo": "node scripts/check-pnpm exec pnpm exec turbo-extends.mjs",
-    "build": "turbo run build",
+    "build": "pnpm --filter @bickford/web-ui run build",
     "build:strict": "pnpm --filter @bickford/db exec pnpm exec prisma generate && pnpm exec pnpm exec turbo run build",
     "prisma:generate": "pnpm --filter @bickford/db exec pnpm exec prisma generate",
     "prisma:migrate:dev": "pnpm exec pnpm exec prisma migrate dev --schema=pnpm exec prisma/schema.pnpm exec prisma",
