@@ -1,34 +1,30 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 
-const ROOT = path.join(process.cwd(), "packages/web-ui/.bickford-ledger");
-const THREADS = path.join(ROOT, "threads");
-const INDEX = path.join(ROOT, "index.json");
+const LEDGER_ROOT = path.join(process.cwd(), ".ledger");
 
-export function writeThread(threadId: string, data: any) {
-  fs.writeFileSync(
-    path.join(THREADS, `${threadId}.json`),
-    JSON.stringify(data, null, 2)
-  );
-
-  const index = readIndex();
-  index[threadId] = {
-    updatedAt: new Date().toISOString()
-  };
-  fs.writeFileSync(INDEX, JSON.stringify(index, null, 2));
+async function ensureRoot() {
+  await fs.mkdir(LEDGER_ROOT, { recursive: true });
 }
 
-export function readThread(threadId: string) {
-  const p = path.join(THREADS, `${threadId}.json`);
-  if (!fs.existsSync(p)) return null;
-  return JSON.parse(fs.readFileSync(p, "utf8"));
+export async function readThread(threadId: string) {
+  await ensureRoot();
+  const file = path.join(LEDGER_ROOT, `${threadId}.json`);
+  try {
+    const raw = await fs.readFile(file, "utf-8");
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
 }
 
-export function listThreads() {
-  return readIndex();
-}
-
-function readIndex() {
-  if (!fs.existsSync(INDEX)) return {};
-  return JSON.parse(fs.readFileSync(INDEX, "utf8"));
+export async function appendEvent(threadId: string, event: unknown) {
+  await ensureRoot();
+  const file = path.join(LEDGER_ROOT, `${threadId}.json`);
+  const existing = await readThread(threadId);
+  existing.push({
+    ts: Date.now(),
+    event,
+  });
+  await fs.writeFile(file, JSON.stringify(existing, null, 2));
 }
