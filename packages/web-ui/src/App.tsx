@@ -1,93 +1,139 @@
 import React, { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
-type Message = {
-  role: "user" | "assistant";
-  content: string;
-};
+
+
+const uid = () => crypto.randomUUID();
+
+
+
+
+
+
+
+
+
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll on new messages (ChatGPT behavior)
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+  }, [messages]);
 
-  async function sendMessage() {
-    if (!input.trim() || loading) return;
+  async function converge() {
+    if (!input.trim()) return;
 
-    const userMessage: Message = { role: "user", content: input };
-    setMessages(m => [...m, userMessage]);
+    const userMsg: Message = { id: uid(), role: "user", content: input };
+    setMessages(prev => [...prev, userMsg]);
     setInput("");
-    setLoading(true);
 
-    try {
-      const res = await fetch(
-        import.meta.env.VITE_BACKEND_URL || "http://localhost:3000/chat",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: userMessage.content }),
-        }
-      );
+    const res = await fetch("/api/converge", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: input
+    });
 
-      const data = await res.json();
+    const result = await res.json();
 
-      const assistantMessage: Message = {
-        role: "assistant",
-        content: data.reply ?? "(no response)",
-      };
+    const assistantMsg: Message = {
+      id: uid(),
+      role: "assistant",
+      content: "```json\n" + JSON.stringify(result, null, 2) + "\n```"
+    };
 
-      setMessages(m => [...m, assistantMessage]);
-    } catch (e) {
-      setMessages(m => [
-        ...m,
-        { role: "assistant", content: "⚠️ Error contacting backend." },
-      ]);
-    } finally {
-      setLoading(false);
-    }
+    setMessages(prev => [...prev, assistantMsg]);
   }
 
   return (
-    <div className="chat-root">
-      <header className="chat-header">
-        <img src="/bickford-logo.png" alt="bickford" />
+    <div style={{
+      display: "grid",
+      gridTemplateRows: "64px 1fr 96px",
+      height: "100vh",
+      background: "#0b0f14",
+      color: "#e5e7eb",
+      fontFamily: "ui-sans-serif, system-ui"
+    }}>
+      <header style={{
+        padding: "0 20px",
+        display: "flex",
+        alignItems: "center",
+        borderBottom: "1px solid #1f2937"
+      }}>
+        <strong>Bickford Chat</strong>
       </header>
 
-      <main className="chat-scroll">
-        {messages.map((m, i) => (
-          <div key={i} className={`msg ${m.role}`}>
-            <div className="bubble">{m.content}</div>
+      <main style={{
+        padding: 24,
+        overflowY: "auto"
+      }}>
+        {messages.map(m => (
+          <div key={m.id} style={{
+            display: "flex",
+            justifyContent: m.role === "user" ? "flex-end" : "flex-start",
+            marginBottom: 16
+          }}>
+            <div style={{
+              maxWidth: 760,
+              padding: 16,
+              borderRadius: 14,
+              background: m.role === "user"
+                ? "linear-gradient(180deg,#0ea5e9,#0284c7)"
+                : "#121823",
+              whiteSpace: "pre-wrap"
+            }}>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {m.content}
+              </ReactMarkdown>
+            </div>
           </div>
         ))}
-
-        {loading && (
-          <div className="msg assistant">
-            <div className="bubble typing">Bickford is thinking…</div>
-          </div>
-        )}
-
         <div ref={bottomRef} />
       </main>
 
-      <footer className="chat-input">
+      <footer style={{
+        padding: 16,
+        borderTop: "1px solid #1f2937",
+        display: "grid",
+        gridTemplateColumns: "1fr auto",
+        gap: 12
+      }}>
         <textarea
-          placeholder="Message Bickford…"
+          placeholder="Paste ConvergenceInput JSON here…"
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
-              sendMessage();
+              converge();
             }
           }}
+          style={{
+            resize: "none",
+            height: 64,
+            padding: 12,
+            background: "#020617",
+            color: "#e5e7eb",
+            border: "1px solid #1f2937",
+            borderRadius: 10
+          }}
         />
-        <button onClick={sendMessage} disabled={loading}>
-          Send
+        <button
+          onClick={converge}
+          style={{
+            padding: "0 20px",
+            borderRadius: 10,
+            border: "none",
+            fontWeight: 600,
+            background: "linear-gradient(180deg,#0ea5e9,#0284c7)",
+            color: "white",
+            cursor: "pointer"
+          }}
+        >
+          Converge
         </button>
       </footer>
     </div>
