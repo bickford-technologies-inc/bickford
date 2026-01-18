@@ -11,7 +11,7 @@
   "scripts": {
     "detect:promotions": "node scripts/detect-promotions.mjs",
     "promote": "node scripts/promote-package.mjs",
-    "build": "pnpm -r --filter @bickford/types build && pnpm -r --filter @bickford/ledger build && pnpm --filter @bickford/web-ui run build"
+    "build": "pnpm --filter @bickford/ledger build && pnpm --filter @bickford/web-ui run build"
   },
   "devDependencies": {
     "@types/react": "^19.2.8",
