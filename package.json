@@ -81,7 +81,6 @@
     "doctor:ci": "node scripts/doctor-ci.mjs",
     "resolve:push": "node ./scripts/resolve-and-push.mjs",
     "verify:next": "tsx scripts/verify-next-version.mjs",
-    "prebuild": "bash ./ci/guards/vite-entry-guard.sh",
     "ci:verify:turbo": "tsx scripts/ci/verify-pnpm exec pnpm exec turbo-ordering.mjs",
     "predictive:review": "tsx scripts/predictive/review.mjs",
     "predictive:scan": "tsx scripts/predictive/scan-runtime-boundaries.mjs",
@@ -89,7 +88,8 @@
     "ci:prisma-guard": "node ci/check-no-pnpm exec prisma-in-api-routes.mjs",
     "verify:prisma-boundary": "node ci/check-pnpm exec prisma-boundary.mjs",
     "verify:runtime-purity": "node ci/check-runtime-purity.mjs",
-    "preinstall": "if [ -z \"$CI\" ] && [ -z \"$VERCEL\" ]; then bash ./ci/guards/TOOLCHAIN_GUARD.sh && bash ./ci/guards/no-npm.sh; fi"
+    "preinstall": "if [ -z \"$CI\" ] && [ -z \"$VERCEL\" ]; then bash ./ci/guards/TOOLCHAIN_GUARD.sh && bash ./ci/guards/no-npm.sh; fi",
+    "prebuild": "bash ./ci/guards/vite-entry-guard.sh"
   },
   "dependencies": {
     "@vercel/sdk": "^1.0.0"
