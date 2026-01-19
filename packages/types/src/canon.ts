@@ -276,10 +276,29 @@ export type PathConstraint = {
   confidence: ConfidenceEnvelope;
 };
 
-// SINGLE EXPORT AUTHORITY FOR PUBLIC TYPES
+/**
+ * Canonical public surface for @bickford/types
+ * All externally-visible symbols MUST live here.
+ */
 
 export type { Intent } from "./intent";
 export type { Decision } from "./decision";
+
+/**
+ * PROMOTED — execution outputs are part of canon
+ */
+export type { ExecutionResult } from "./ExecutionResult";
+export type { ExecutionAdapter } from "./ExecutionAdapter";
+
+/**
+ * PROMOTED — OPTR is canonical
+ */
+export type { OptrResult } from "./optr";
+
+/**
+ * PROMOTED — hardware attestations are canonical
+ */
+export type { HardwareAttestation } from "./HardwareAttestation";
 
 // Force TypeScript emit for this module
 export const __forceEmitCanon = true;

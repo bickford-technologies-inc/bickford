@@ -1,4 +1,4 @@
 {
-  "buildCommand": "pnpm exec node scripts/ci-agent-run.mjs",
-  "installCommand": "pnpm install"
+  "buildCommand": "pnpm exec node scripts/auto-repair-types-compat.mjs && pnpm exec bash scripts/build-all.sh",
+  "installCommand": "pnpm install --frozen-lockfile"
 }
