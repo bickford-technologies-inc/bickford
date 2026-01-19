@@ -26,5 +26,11 @@
     "@types/node": "^25.0.6",
     "tsx": "^4.7.0",
     "typescript": "^5.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   }
 }

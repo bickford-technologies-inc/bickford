@@ -6,9 +6,15 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "dependencies": {},
   "devDependencies": {
     "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "build": "pnpm exec tsc -p tsconfig.build.json"
   }
 }

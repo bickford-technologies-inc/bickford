@@ -11,8 +11,8 @@
   "scripts": {
     "detect:promotions": "node scripts/detect-promotions.mjs",
     "promote": "node scripts/promote-package.mjs",
-    "preflight": "node scripts/preflight.mjs",
-    "build": "pnpm preflight && pnpm --filter @bickford/web-ui build",
+    "preflight": "node scripts/enforce-pnpm.mjs && node scripts/require-tsc.mjs && node scripts/preflight-check.mjs",
+    "build": "pnpm -r --filter @bickford/* build",
     "check:resolution": "bash scripts/check-workspace-resolution.sh",
     "build:all": "bash scripts/build-all.sh"
   },
@@ -22,7 +22,8 @@
     "@types/node": "25.0.9",
     "next": "14.2.5",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": "20.x"
