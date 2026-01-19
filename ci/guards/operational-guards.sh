@@ -10,6 +10,9 @@ set -euo pipefail
 GUARD_NAME="operational-guards"
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
+# Configuration
+LARGE_FILE_THRESHOLD_KB=10240  # 10MB threshold for large file warnings
+
 log_info() {
   echo "[${GUARD_NAME}] [INFO] ${TIMESTAMP}: $*"
 }
@@ -194,7 +197,7 @@ guard_git_state() {
   fi
   
   # Check for untracked large files
-  LARGE_FILES=$(git ls-files --others --exclude-standard | xargs -I{} du -sk {} 2>/dev/null | awk '$1 > 10240 {print $2}' || true)
+  LARGE_FILES=$(git ls-files --others --exclude-standard | xargs -I{} du -sk {} 2>/dev/null | awk -v threshold="$LARGE_FILE_THRESHOLD_KB" '$1 > threshold {print $2}' || true)
   
   if [ -n "$LARGE_FILES" ]; then
     log_warn "Large untracked files detected:"

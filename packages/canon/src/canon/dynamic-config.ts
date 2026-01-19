@@ -6,7 +6,7 @@
  * Supports environment transitions, feature flags, and context-aware settings.
  */
 
-export type ConfigContext = "development" | "staging" | "production" | "test" | "edge" | "node";
+export type ConfigContext = "development" | "staging" | "production" | "test" | "edge" | "node" | "*";
 
 export interface ConfigTransition {
   from: ConfigContext;
@@ -94,7 +94,7 @@ export class DynamicConfigManager {
       // Check context match
       if (
         entry.contexts.includes(this.currentContext) ||
-        entry.contexts.includes("*" as any)
+        entry.contexts.includes("*")
       ) {
         return {
           value: entry.value as T,
@@ -226,7 +226,7 @@ export class ConfigBuilder<T> {
    * Add configuration for all contexts
    */
   forAll(value: T, priority: number = 0): this {
-    return this.for(["*" as any], value, priority);
+    return this.for(["*"], value, priority);
   }
 
   /**

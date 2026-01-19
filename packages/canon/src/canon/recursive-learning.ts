@@ -164,6 +164,7 @@ export class RecursiveLearningSystem {
       existing.count++;
 
       if (signal.outcome.predicted && signal.outcome.actual) {
+        // Improvement = predicted - actual (positive means we did better than expected)
         const improvement = signal.outcome.predicted - signal.outcome.actual;
         if (improvement > 0) {
           existing.improvements.push(improvement);
