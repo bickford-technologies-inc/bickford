@@ -1,0 +1,28 @@
+name: Auto Migration PR
+
+on:
+  push:
+    paths:
+      - "packages/db/prisma/migrations/**"
+
+jobs:
+  migration-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: node scripts/auto-migration-pr.mjs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

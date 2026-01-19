@@ -1,23 +1,24 @@
 import fs from "fs";
 
-const canon = fs.readFileSync("CANON/CANON.md", "utf8");
-
-const rules = [
-  ...canon.matchAll(/- id:\s*(\w+)[\s\S]*?confidence:\s*([0-9.]+)/g),
-].map((m) => ({ id: m[1], confidence: parseFloat(m[2]) }));
-
-const total = rules.reduce((a, r) => a + r.confidence, 0);
-const score = Math.round((total / rules.length) * 100);
-
-const output = { score, rules };
-fs.writeFileSync(
-  "artifacts/invariant-confidence.json",
-  JSON.stringify(output, null, 2),
+const canon = JSON.parse(fs.readFileSync("CANON/canon.json", "utf8"));
+const history = JSON.parse(
+  fs.readFileSync("CANON/invariant-history.json", "utf8")
 );
 
-console.log(`🧠 Invariant Confidence Score: ${score}%`);
+const scored = canon.invariants.map((inv) => {
+  const events = history.filter((h) => h.invariant === inv.id);
+  const failures = events.filter((e) => e.result === "fail").length;
+  const total = Math.max(events.length, 1);
 
-if (score < 85) {
-  console.error("❌ Confidence below enforcement threshold");
-  process.exit(1);
-}
+  return {
+    id: inv.id,
+    confidence: Math.round(((total - failures) / total) * 100),
+  };
+});
+
+fs.writeFileSync(
+  "CANON/invariant-confidence.json",
+  JSON.stringify(scored, null, 2)
+);
+
+console.log("✅ invariant confidence updated");

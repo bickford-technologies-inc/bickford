@@ -1,0 +1,23 @@
+name: Canon Visualization
+
+on:
+  push:
+    paths:
+      - "CANON/**"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: node scripts/render-canon-dag.mjs
+      - run: node scripts/invariant-confidence.mjs
+
+      - run: git add public/canon-dag.json CANON/invariant-confidence.json
+      - run: git commit -m "chore(canon): update dag + confidence" || true
+      - run: git push

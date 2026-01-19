@@ -1,20 +1,25 @@
-import fs from "node:fs";
-import { execSync } from "node:child_process";
+import fs from "fs";
 
-const drift = JSON.parse(fs.readFileSync("CANON/drift.json", "utf8"));
+const canon = JSON.parse(fs.readFileSync("CANON/canon.json", "utf8"));
 
-let dot = "digraph canon_drift {\nrankdir=LR;\n";
+const nodes = canon.invariants.map((i) => ({
+  id: i.id,
+  label: i.id,
+}));
 
-for (const node of drift.nodes) {
-  dot += `"${node.id}" [label="${node.label}\\nΔ=${node.delta}"];
-`;
-}
-for (const e of drift.edges) {
-  dot += `"${e.from}" -> "${e.to}" [label="${e.reason}"];
-`;
-}
+const edges = canon.invariants.flatMap((i) =>
+  (i.depends_on || []).map((d) => ({
+    from: d,
+    to: i.id,
+  }))
+);
 
-dot += "}\n";
+fs.writeFileSync(
+  "public/canon-dag.json",
+  JSON.stringify({ nodes, edges }, null, 2)
+);
+
+console.log("✅ canon DAG generated");
 
 fs.writeFileSync("/tmp/canon_drift.dot", dot);
 execSync("dot -Tsvg /tmp/canon_drift.dot -o CANON/canon_drift.svg", {
