@@ -1,6 +1,9 @@
 {
+  "version": 2,
   "framework": "nextjs",
-  "rootDirectory": "packages/web-ui",
-  "installCommand": "pnpm install",
-  "buildCommand": "pnpm run build"
+  "rootDirectory": "apps/web",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm build",
+  "devCommand": "pnpm dev",
+  "outputDirectory": ".next"
 }
