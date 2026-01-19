@@ -18,6 +18,15 @@ function isIntegrationPackage(pkgPath) {
   return pkgPath.endsWith("-integration");
 }
 
+function shouldSkipDir(dir) {
+  return (
+    dir.includes("node_modules") ||
+    dir.includes(".next") ||
+    dir.includes("dist") ||
+    dir.includes("build")
+  );
+}
+
 function scanPackage(pkgPath) {
   if (isIntegrationPackage(pkgPath)) {
     // ✅ SDK imports explicitly allowed here
@@ -25,6 +34,8 @@ function scanPackage(pkgPath) {
   }
 
   function walk(dir) {
+    if (shouldSkipDir(dir)) return;
+
     for (const entry of fs.readdirSync(dir)) {
       const full = path.join(dir, entry);
       const stat = fs.statSync(full);
