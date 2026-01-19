@@ -1,9 +1,21 @@
 {
-  "version": 2,
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+
   "framework": "nextjs",
-  "rootDirectory": "apps/web",
+
+  "nodeVersion": "20.x",
+
   "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm build",
-  "devCommand": "pnpm dev",
-  "outputDirectory": ".next"
+
+  "buildCommand": "pnpm run build",
+
+  "outputDirectory": ".next",
+
+  "ignoreCommand": "node scripts/assert-intent-phase.mjs",
+
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "nodejs20.x"
+    }
+  }
 }
