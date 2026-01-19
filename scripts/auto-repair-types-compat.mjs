@@ -22,13 +22,13 @@ const compatSrc = fs.readFileSync(compatPath, "utf8");
 
 const forbiddenDirectExports = [
   /export\s+\*\s+from\s+["']\.\/intent["']/,
-  /export\s+\*\s+from\s+["']\.\/decision["']/
+  /export\s+\*\s+from\s+["']\.\/decision["']/,
 ];
 
 for (const rx of forbiddenDirectExports) {
   if (rx.test(indexSrc)) {
     throw new Error(
-      "❌ index.ts must not export intent/decision directly; use canon.ts only"
+      "❌ index.ts must not export intent/decision directly; use canon.ts only",
     );
   }
 }
