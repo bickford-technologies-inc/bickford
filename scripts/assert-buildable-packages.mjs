@@ -16,7 +16,7 @@ for (const pkg of fs.readdirSync(PKG_DIR)) {
     const srcPath = path.join(pkgPath, "src");
     if (!fs.existsSync(srcPath)) {
       console.error(
-        `❌ BUILD INVARIANT VIOLATION: ${pkg} declares build script but has no src/`
+        `❌ BUILD INVARIANT VIOLATION: ${pkg} declares build script but has no src/`,
       );
       process.exit(1);
     }
