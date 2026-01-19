@@ -4,7 +4,8 @@
  */
 
 import type { DenialReasonCode, ISO8601 } from "@bickford/types";
-import type { WhyNotTrace } from "@bickford/authority";
+import type { WhyNotTrace, AuthorityContext } from "@bickford/authority";
+import type { DeniedDecisionPayload } from "../types/denied";
 
 export function deny(params: {
   actionId: string;
@@ -20,5 +21,19 @@ export function deny(params: {
     reasonCodes: [params.reason],
     message: params.message,
     context: params.context,
+  };
+}
+
+export function createDenial(
+  intent: string,
+  context: AuthorityContext,
+  reason: string,
+): DeniedDecisionPayload {
+  return {
+    decisionId: `deny-${Date.now()}`,
+    ts: Date.now(),
+    reasonCodes: ["DENIED"],
+    message: reason,
+    intent,
   };
 }

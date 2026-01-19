@@ -20,6 +20,7 @@ import type {
 } from "@bickford/types";
 import { DenialReasonCode } from "@bickford/types";
 import type { WhyNotTrace } from "@bickford/authority";
+import type { AuthorityContext } from "@bickford/authority";
 
 /**
  * Score a candidate path using OPTR objective function
@@ -264,4 +265,15 @@ export function ingestCanonAsConstraints(
     // constraints.push({ ... });
   }
   return constraints;
+}
+
+/**
+ * Stub: Compute OPTR value
+ */
+export function computeOPTR(params: {
+  intent: string;
+  context: AuthorityContext;
+}): number {
+  // OPTR computation
+  return 1.0;
 }

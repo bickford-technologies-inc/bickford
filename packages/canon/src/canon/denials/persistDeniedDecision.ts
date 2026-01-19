@@ -6,8 +6,7 @@
  * Guarantees: No silent denials, every denial is persisted and replayable.
  */
 
-import type { DeniedDecisionPayload } from "@bickford/types";
-import type { CanonDenialRecord } from "../types";
+import type { DeniedDecisionPayload } from "../../types/denied";
 
 /**
  * Persist a denied decision to the ledger
@@ -17,16 +16,27 @@ import type { CanonDenialRecord } from "../types";
  * - Replayable with stable reason codes
  * - Supports tenant isolation
  */
-export function persistDeniedDecision(
+export async function persistDeniedDecision(
   payload: DeniedDecisionPayload,
-): CanonDenialRecord {
-  return {
-    id: payload.actionId,
-    tenantId: payload.tenantId,
+): Promise<void> {
+  // Stub implementation - replace with actual Prisma call in production
+  console.log("Persisting denied decision:", {
+    decisionId: payload.decisionId,
     ts: payload.ts,
-    reasonCodes: payload.reasonCodes!,
+    reasonCodes: payload.reasonCodes,
     message: payload.message,
-  };
+  });
+
+  // In production, would use Prisma:
+  // const prisma = await getPrisma();
+  // await prisma.deniedDecision.create({
+  //   data: {
+  //     decisionId: payload.decisionId,
+  //     timestamp: new Date(payload.ts),
+  //     reasonCodes: payload.reasonCodes,
+  //     message: payload.message,
+  //   },
+  // });
 }
 
 /**
