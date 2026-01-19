@@ -85,3 +85,5 @@ export type InterferenceResult = {
   allowed: boolean;
   reason?: string;
 };
+
+export * from "./deniedDecision";
