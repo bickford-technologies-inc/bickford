@@ -17,17 +17,13 @@ function assertVercelBinding() {
   }
 
   // Minimal invariant: project + commit must be present
-  const required = [
-    "VERCEL",
-    "VERCEL_GIT_COMMIT_SHA",
-    "VERCEL_PROJECT_ID",
-  ];
+  const required = ["VERCEL", "VERCEL_GIT_COMMIT_SHA", "VERCEL_PROJECT_ID"];
 
   const missing = required.filter((k) => !process.env[k]);
 
   if (missing.length > 0) {
     throw new Error(
-      `Vercel binding invariant violated. Missing env vars: ${missing.join(", ")}`
+      `Vercel binding invariant violated. Missing env vars: ${missing.join(", ")}`,
     );
   }
 }
