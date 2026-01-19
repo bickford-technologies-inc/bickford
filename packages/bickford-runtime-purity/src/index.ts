@@ -1,2 +1,2 @@
-export { applyFix } from "../../../scripts/apply-fix";
-export { recordMetric } from "../../../scripts/ci/metrics";
+export { applyFix } from "./apply-fix";
+export { recordMetric } from "./metrics";
