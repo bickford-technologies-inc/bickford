@@ -4,13 +4,19 @@ import { useEffect, useState } from "react";
 
 export default function CanonDAG() {
   const [dag, setDag] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/canon-dag.json")
-      .then((r) => r.json())
-      .then(setDag);
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then(setDag)
+      .catch((err) => setError(err.message));
   }, []);
 
+  if (error) return <pre>Error loading canon DAG: {error}</pre>;
   if (!dag) return <pre>Loading canon DAG…</pre>;
 
   return (
