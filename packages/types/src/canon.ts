@@ -293,7 +293,7 @@ export type { ExecutionAdapter } from "./ExecutionAdapter";
 /**
  * PROMOTED — OPTR is canonical
  */
-export type { OptrResult } from "./optr";
+import type { OptrResult } from "./optr";
 
 /**
  * PROMOTED — hardware attestations are canonical
