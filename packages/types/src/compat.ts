@@ -1,7 +1,6 @@
 /**
  * @deprecated Compatibility surface
- * DO NOT add new exports here
+ * MUST re-export from canon ONLY
  */
 
-export type { Intent } from "./intent";
-export type { Decision } from "./decision";
+export type { Intent, Decision } from "./canon";
