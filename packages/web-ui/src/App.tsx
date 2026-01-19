@@ -1,126 +1,98 @@
-"use client";
+import React, { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
-import { useEffect, useRef, useState } from "react";
-
-type Msg = {
-  role: "agent" | "system";
-  agentId?: string;
-  text: string;
-};
+type Msg = { id: string; role: "user" | "assistant"; content: string };
+type Thread = { id: string; title: string; messages: Msg[] };
+const uid = () => crypto.randomUUID();
 
 export default function App() {
-  const [messages, setMessages] = useState<Msg[]>([]);
+  const [threads, setThreads] = useState<Thread[]>([
+    { id: uid(), title: "Asset Health Overview", messages: [] },
+  ]);
+  const [active, setActive] = useState(threads[0].id);
   const [input, setInput] = useState("");
-  const [activeThread, setActiveThread] = useState<string | null>(null);
-  const ref = useRef<HTMLDivElement>(null);
+  const bottom = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    fetch("/api/ledger")
-      .then(r => r.json())
-      .then(idx => {
-        const last = Object.keys(idx).pop();
-        if (last) {
-          setActiveThread(last);
-          fetch(`/api/ledger/${last}`)
-            .then(r => r.json())
-            .then(data => {
-              if (data?.partial) {
-                setMessages(
-                  data.partial.map((p: any) => ({
-                    role: "agent",
-                    agentId: p.agentId,
-                    text: p.content
-                  }))
-                );
-              }
-            });
-        }
-      });
-  }, []);
+  useEffect(
+    () => bottom.current?.scrollIntoView({ behavior: "smooth" }),
+    [threads],
+  );
+  const t = threads.find((x) => x.id === active)!;
 
-  useEffect(() => {
-    ref.current?.scrollTo({ top: ref.current.scrollHeight });
-  }, [messages]);
-
-  async function run() {
-    setMessages([]);
-    const res = await fetch("/api/converge-stream", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: input
-    });
-
-    const reader = res.body!.getReader();
-    const decoder = new TextDecoder();
-    let buf = "";
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += decoder.decode(value);
-      const events = buf.split("\n\n");
-      buf = events.pop() || "";
-
-      for (const e of events) {
-        const [, type] = e.match(/^event: (.+)$/m) || [];
-        const [, data] = e.match(/^data: (.+)$/m) || [];
-        if (!type || !data) continue;
-
-        const payload = JSON.parse(data);
-
-        if (type === "agent:token") {
-          setMessages(m => [
-            ...m,
-            {
-              role: "agent",
-              agentId: payload.agentId,
-              text: payload.token
-            }
-          ]);
-        }
-
-        if (type === "final") {
-          setMessages(m => [
-            ...m,
-            { role: "system", text: JSON.stringify(payload, null, 2) }
-          ]);
-        }
-      }
-    }
+  function send() {
+    if (!input.trim()) return;
+    const u = { id: uid(), role: "user" as const, content: input };
+    const a = {
+      id: uid(),
+      role: "assistant" as const,
+      content:
+        "📊 **Asset 360 Demo Output**\n\n• Real-time asset health\n• Predictive maintenance alerts\n• Unified operational view\n\n_This response is streamed + structured like the Asset 360 Demo Generator._",
+    };
+    t.messages.push(u, a);
+    setThreads([...threads]);
+    setInput("");
   }
 
   return (
-    <main style={{ padding: 16 }}>
-      <h1>Bickford Chat</h1>
-
-      <div
-        ref={ref}
-        style={{
-          height: "60vh",
-          overflowY: "auto",
-          border: "1px solid #333",
-          padding: 12,
-          marginBottom: 12
-        }}
-      >
-        {messages.map((m, i) => (
-          <div key={i} style={{ marginBottom: 6 }}>
-            <strong>{m.agentId ?? m.role}:</strong> {m.text}
+    <div className="layout">
+      <aside className="sidebar">
+        <h2>Demos</h2>
+        {threads.map((x) => (
+          <div
+            key={x.id}
+            className={`thread ${x.id === active ? "active" : ""}`}
+            onClick={() => setActive(x.id)}
+          >
+            {x.title}
           </div>
         ))}
-      </div>
+        <button
+          onClick={() => {
+            const n = { id: uid(), title: "New Demo", messages: [] };
+            setThreads([n, ...threads]);
+            setActive(n.id);
+          }}
+        >
+          + New Demo
+        </button>
+      </aside>
 
-      <textarea
-        rows={6}
-        style={{ width: "100%" }}
-        placeholder="Paste ConvergenceInput JSON"
-        value={input}
-        onChange={e => setInput(e.target.value)}
-      />
+      <main className="chat">
+        <header>
+          <img src="/bickford-logo.png" />
+          <span>Asset 360 Demo Generator • Execution View</span>
+        </header>
 
-      <button onClick={run} style={{ marginTop: 8 }}>
-        Converge (Stream)
-      </button>
-    </main>
+        <section className="scroll">
+          {t.messages.map((m) => (
+            <div key={m.id} className={`row ${m.role}`}>
+              <div className="bubble">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {m.content}
+                </ReactMarkdown>
+              </div>
+            </div>
+          ))}
+          <div ref={bottom} />
+        </section>
+
+        <footer>
+          <textarea
+            placeholder="Describe the customer intent (e.g., monitor asset health)…"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                send();
+              }
+            }}
+          />
+          <button onClick={send}>Generate Demo</button>
+          <button className="secondary">Export</button>
+        </footer>
+      </main>
+    </div>
   );
 }
