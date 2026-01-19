@@ -15,7 +15,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json"
+    "build": "pnpm exec tsc -p tsconfig.build.json"
   },
   "dependencies": {
     "@bickford/types": "workspace:*",

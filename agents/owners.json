@@ -1,0 +1,6 @@
+{
+  "@bickford/types": "agent-types",
+  "@bickford/ledger": "agent-ledger",
+  "@bickford/execution-convergence": "agent-convergence",
+  "@bickford/web-ui": "agent-ui"
+}

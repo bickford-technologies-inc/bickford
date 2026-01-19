@@ -1,0 +1,4 @@
+{
+  "buildCommand": "pnpm exec node scripts/ci-agent-run.mjs",
+  "installCommand": "pnpm install"
+}
