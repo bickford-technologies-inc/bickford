@@ -11,10 +11,15 @@ export type { ExecutionResult } from "./ExecutionResult";
 export type { ExecutionAdapter } from "./ExecutionAdapter";
 
 export type DeniedDecisionPayload = {
-  denied: true;
+  /**
+   * CANONICAL GATE
+   * index.ts MUST NOT introduce surface area.
+   * It forwards canon only.
+   */
+
+  export * from "./canon";
+  export * from "./compat";
   ts: string;
-  actionId: string;
-  tenantId: string;
   reasonCodes: string[];
   message: string;
 };

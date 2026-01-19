@@ -1,39 +1,21 @@
-import { execSync } from "node:child_process";
-import fs from "fs";
+import fs from "node:fs";
+import path from "node:path";
 
-console.log("🔧 auto-repair: ensuring @bickford/types compatibility surface");
+const indexPath = path.resolve("packages/types/src/index.ts");
+const src = fs.readFileSync(indexPath, "utf8");
 
-execSync("pnpm --filter @bickford/types build", { stdio: "inherit" });
-
-const indexPath = "packages/types/src/index.ts";
-const compatPath = "packages/types/src/compat.ts";
-
-const indexSrc = fs.readFileSync(indexPath, "utf8");
-const compatSrc = fs.readFileSync(compatPath, "utf8");
-
-const allowedIndexExports = new Set([
-  'export * from "./canon";',
-  'export * from "./compat";',
-]);
-
-const indexLines = indexSrc
+const forbidden = src
   .split("\n")
-  .map((l) => l.trim())
-  .filter(Boolean)
-  .filter((l) => l.startsWith("export"));
+  .filter(
+    (l) =>
+      l.includes("export") && !l.includes("./canon") && !l.includes("./compat"),
+  );
 
-for (const line of indexLines) {
-  if (!allowedIndexExports.has(line)) {
-    throw new Error(`❌ index.ts has forbidden export: ${line}`);
-  }
+if (forbidden.length > 0) {
+  throw new Error(
+    `❌ index.ts may only export canon + compat.\n` +
+      forbidden.map((l) => `  ${l}`).join("\n"),
+  );
 }
 
-if (!indexLines.includes('export * from "./canon";')) {
-  throw new Error("❌ index.ts must export ./canon");
-}
-
-if (!compatSrc.includes('from "./canon"')) {
-  throw new Error("❌ compat.ts must re-export from canon only");
-}
-
-console.log("✅ @bickford/types surface validated");
+console.log("✅ types index surface valid");

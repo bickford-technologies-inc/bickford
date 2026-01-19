@@ -2,9 +2,12 @@ import fs from "node:fs";
 
 const pkg = JSON.parse(fs.readFileSync("packages/types/package.json", "utf8"));
 
-if (!pkg.exports) {
-  console.error("❌ @bickford/types must declare explicit exports");
-  process.exit(1);
+if (!pkg.exports || !pkg.exports["."]) {
+  throw new Error("❌ @bickford/types must declare exports");
 }
 
-console.log("✅ types export surface enforced");
+if (!pkg.exports["."].types || !pkg.exports["."].default) {
+  throw new Error("❌ @bickford/types exports must include types + default");
+}
+
+console.log("✅ types exports valid");
