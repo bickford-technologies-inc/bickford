@@ -16,7 +16,9 @@
     }
   },
   "files": ["dist", "src"],
-  "dependencies": {},
+  "dependencies": {
+    "@vercel/sdk": "^1.5.0"
+  },
   "devDependencies": {
     "typescript": "^5.9.3"
   },

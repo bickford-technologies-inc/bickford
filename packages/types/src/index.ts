@@ -1,32 +1,36 @@
-// FORCE EMIT
+// FORCE EMIT (side-effect imports only)
 import "./optr";
 import "./canon";
 
-// PUBLIC API
+// ======================
+// PUBLIC CANONICAL API
+// ======================
+
 export * from "./canon";
 export * from "./compat";
 
-// Explicitly allowed stable surfaces only
+// Explicitly allowed stable surfaces
 export type { ExecutionResult } from "./ExecutionResult";
 export type { ExecutionAdapter } from "./ExecutionAdapter";
 
-export type DeniedDecisionPayload = {
-  /**
-   * CANONICAL GATE
-   * index.ts MUST NOT introduce surface area.
-   * It forwards canon only.
-   */
+// ======================
+// DENIED DECISION PAYLOAD
+// ======================
 
-  export * from "./canon";
-  export * from "./compat";
+/**
+ * CANONICAL GATE
+ * index.ts MUST NOT introduce new surface area.
+ * It forwards canon only.
+ */
+export type DeniedDecisionPayload = {
   ts: string;
   reasonCodes: string[];
   message: string;
 };
 
-export {};
-export * from "./ExecutionAdapter";
-export * from "./ExecutionResult";
+// ======================
+// LEDGER TYPES
+// ======================
 
 export type LedgerEntry = {
   id: string;
@@ -35,30 +39,14 @@ export type LedgerEntry = {
   content: string;
   ts: number;
 
-  /**
-   * Canonical intent payload associated with this entry.
-   * Required by ledgerEntry.ts and execution convergence.
-   */
   intent?: {
     id?: string;
     type?: string;
     payload?: unknown;
   };
 
-  /**
-   * Canonical decision payload associated with this entry.
-   * Required by ledgerEntry.ts and execution convergence.
-   */
   decision?: unknown;
-
-  /**
-   * Canonical hash for this entry (if present in runtime).
-   */
   hash?: string;
-
-  /**
-   * Canonical createdAt timestamp (if present in runtime).
-   */
   createdAt?: string;
 };
 
@@ -66,7 +54,7 @@ export type EdgeContext = {
   runtime: "edge" | "node";
 };
 
-// Canonical exports
+// Canonical intent / decision
 export * from "./intent";
 export * from "./decision";
 
