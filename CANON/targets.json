@@ -1,0 +1,8 @@
+{
+  "repos": [
+    "bickford-technologies-inc/bickford-mobile",
+    "bickford-technologies-inc/bickford-cloud",
+    "bickford-technologies-inc/bickford-demo"
+  ],
+  "branch": "main"
+}

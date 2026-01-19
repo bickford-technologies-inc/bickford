@@ -1,0 +1,5 @@
+- Canon propagation MUST NOT block Time-to-Green
+- Write access → direct push
+- No write access → PR fallback
+- No token → PR-only mode
+- Canon version + confidence are authoritative regardless of propagation success
