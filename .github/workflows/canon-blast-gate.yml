@@ -1,0 +1,19 @@
+name: Canon Blast & Promotion Gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  canon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run canon:blast
+      - run: pnpm run canon:gate
+      - run: pnpm run canon:pressure
