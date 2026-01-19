@@ -62,3 +62,16 @@ export * from "./decision";
  * Compat MUST be last to avoid shadowing
  */
 export * from "./compat";
+
+// OPTR SUPPORT TYPES — TEMPORARY CANON SURFACE
+// Added to satisfy build; semantics finalized in Phase 2B
+
+export type AgentContext = {
+  agentId: string;
+  targetId?: string;
+};
+
+export type InterferenceResult = {
+  allowed: boolean;
+  reason?: string;
+};
