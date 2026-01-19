@@ -18,3 +18,13 @@ export interface InterferenceResult {
 
 // Force TypeScript emit for this module
 export const __forceEmitOptr = true;
+
+export type OptrResult = {
+  ok: boolean;
+  value?: unknown;
+  error?: {
+    code: string;
+    message: string;
+  };
+  ts: number;
+};

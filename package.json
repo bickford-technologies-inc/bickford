@@ -11,7 +11,7 @@
   "scripts": {
     "detect:promotions": "node scripts/detect-promotions.mjs",
     "promote": "node scripts/promote-package.mjs",
-    "preflight": "node scripts/require-types-exports.mjs && node scripts/enforce-deprecations.mjs",
+    "preflight": "node scripts/require-optr-exports.mjs && node scripts/require-types-exports.mjs",
     "canon:enforce": "node scripts/enforce-deprecation-windows.mjs",
     "canon:viz": "node scripts/render-canon-drift.mjs",
     "build": "pnpm -r --filter \"@bickford/*\" --if-present run build",
