@@ -1,0 +1,7 @@
+[
+  {
+    "symbol": "Authority.status",
+    "replacement": "Authority.converged",
+    "grace_until": "2026-03-01"
+  }
+]
