@@ -30,3 +30,8 @@ export function normalizeProducts(products: unknown[]): VercelProduct[] {
     status: p.status === "active" ? "active" : "inactive",
   }));
 }
+
+// INTEGRATION PLACEHOLDER
+// Feature implementation deferred (Phase 2B)
+
+export {};
