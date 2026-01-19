@@ -9,8 +9,7 @@
  * INVARIANT: Regressive migrations (backward incompatible) must be denied.
  */
 
-import { DenialReasonCode } from "./types";
-import { DeniedDecisionPayload } from "@bickford/types";
+import { DenialReasonCode } from "@bickford/types";
 
 export interface MigrationAnalysis {
   migrationName: string;
@@ -40,7 +39,7 @@ export function scoreMigration(analysis: MigrationAnalysis): number {
 
   // High-risk operations
   const highRiskOps = analysis.operations.filter(
-    (op) => op.riskLevel === "HIGH"
+    (op) => op.riskLevel === "HIGH",
   );
   score += highRiskOps.length * 0.3;
 
@@ -160,7 +159,7 @@ export function parseMigrationSQL(sql: string): MigrationOperation[] {
  */
 export function analyzeMigration(
   migrationName: string,
-  sql: string
+  sql: string,
 ): MigrationAnalysis {
   const operations = parseMigrationSQL(sql);
 
@@ -168,15 +167,15 @@ export function analyzeMigration(
 
   const dataLossRisk = operations.some(
     (op) =>
-      op.type === "DROP" || (op.type === "ALTER" && op.riskLevel === "HIGH")
+      op.type === "DROP" || (op.type === "ALTER" && op.riskLevel === "HIGH"),
   );
 
   const downTimeRequired = operations.some(
-    (op) => op.type === "DROP" || op.type === "RENAME"
+    (op) => op.type === "DROP" || op.type === "RENAME",
   );
 
   const rollbackPossible = !operations.some(
-    (op) => op.type === "DROP" || op.type === "DATA"
+    (op) => op.type === "DROP" || op.type === "DATA",
   );
 
   const analysis: MigrationAnalysis = {
@@ -203,7 +202,7 @@ export function analyzeMigration(
  */
 export function gateMigrationRegression(
   analysis: MigrationAnalysis,
-  nowIso: string
+  nowIso: string,
 ): DeniedDecisionPayload | null {
   if (!analysis.isRegressive) return null;
 
@@ -216,12 +215,11 @@ export function gateMigrationRegression(
   });
 
   return {
-    denied: true,
-    ts: nowIso,
-    actionId: `migration:${analysis.migrationName}`,
-    tenantId: "tenantId",
+    ts: Date.now(),
     reasonCodes: [DenialReasonCode.INVARIANT_VIOLATION],
     message: `Migration "${analysis.migrationName}" is regressive (backward incompatible)`,
+    actionId: `migration:${analysis.migrationName}`,
+    tenantId: "tenantId",
   };
 }
 
@@ -231,16 +229,15 @@ export function gateMigrationRegression(
 export function gateMigrationRisk(
   analysis: MigrationAnalysis,
   maxRiskScore: number,
-  nowIso: string
+  nowIso: string,
 ): DeniedDecisionPayload | null {
   if (analysis.riskScore <= maxRiskScore) return null;
 
   return {
-    denied: true,
-    ts: nowIso,
-    actionId: `migration:${analysis.migrationName}`,
-    tenantId: "tenantId",
+    ts: Date.now(),
     reasonCodes: [DenialReasonCode.RISK_BOUND_EXCEEDED],
     message: "Migration is risky",
+    actionId: `migration:${analysis.migrationName}`,
+    tenantId: "tenantId",
   };
 }

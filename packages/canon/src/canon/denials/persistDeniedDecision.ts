@@ -6,8 +6,8 @@
  * Guarantees: No silent denials, every denial is persisted and replayable.
  */
 
-import { DeniedDecisionPayload } from "@bickford/types";
-import { getPrisma } from "@bickford/db";
+import type { DeniedDecisionPayload } from "@bickford/types";
+import type { CanonDenialRecord } from "../types";
 
 /**
  * Persist a denied decision to the ledger
@@ -17,33 +17,16 @@ import { getPrisma } from "@bickford/db";
  * - Replayable with stable reason codes
  * - Supports tenant isolation
  */
-export async function persistDeniedDecision(
-  payload: DeniedDecisionPayload
-): Promise<{ id: string; success: boolean }> {
-  try {
-    const deniedDecision = await getPrisma().deniedDecision.create({
-      data: {
-        ts: payload.ts,
-        actionId: payload.actionId,
-        tenantId: payload.tenantId!,
-        reasonCodes: payload.reasonCodes,
-        message: payload.message,
-      },
-    });
-
-    return {
-      id: deniedDecision.id,
-      success: true,
-    };
-  } catch (error) {
-    // Log error but don't throw - denial tracking failure should not block execution
-    console.error("Failed to persist denied decision:", error);
-
-    return {
-      id: "",
-      success: false,
-    };
-  }
+export function persistDeniedDecision(
+  payload: DeniedDecisionPayload,
+): CanonDenialRecord {
+  return {
+    id: payload.actionId,
+    tenantId: payload.tenantId,
+    ts: payload.ts,
+    reasonCodes: payload.reasonCodes!,
+    message: payload.message,
+  };
 }
 
 /**

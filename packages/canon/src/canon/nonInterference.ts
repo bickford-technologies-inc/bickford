@@ -7,7 +7,9 @@
  * An action is inadmissible if it increases any other agent's Time-to-Value.
  */
 
-import { Action, WhyNotTrace, DenialReasonCode } from "./types";
+import type { Action } from "@bickford/types";
+import { DenialReasonCode } from "@bickford/types";
+import type { WhyNotTrace } from "@bickford/authority";
 
 /**
  * Check if an action maintains non-interference property
@@ -32,7 +34,7 @@ export function gateNonInterference(
   action: Action,
   actingAgentId: string,
   deltaExpectedTTV: Record<string, number>,
-  nowIso: string
+  nowIso: string,
 ): WhyNotTrace | null {
   const check = nonInterferenceOK({
     actingAgentId,
@@ -79,13 +81,13 @@ export function estimateTTVImpact(args: {
 
     // Resource contention
     const resourceConflicts = (args.action.resourcesUsed || []).filter((r) =>
-      (agent.dependsOnResources || []).includes(r)
+      (agent.dependsOnResources || []).includes(r),
     );
     delta += resourceConflicts.length * 50; // +50ms per conflict
 
     // Shared state modification
     const stateConflicts = (args.action.sharedStateModified || []).filter((s) =>
-      (agent.dependsOnState || []).includes(s)
+      (agent.dependsOnState || []).includes(s),
     );
     delta += stateConflicts.length * 100; // +100ms per conflict
 
