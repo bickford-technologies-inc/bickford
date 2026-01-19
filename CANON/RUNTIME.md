@@ -1,11 +1,17 @@
 # 🔒 BICKFORD RUNTIME CANON
+
 # SCOPE: CI · BUILD · DEPLOY
+
 # LOAD ORDER: FIRST
+
 # STATUS: LOCKED
+
 # VERSION: 1.0.1
+
 # TIMESTAMP: 2026-01-18T21:05:00-05:00
 
 OBJECTIVE:
+
 - Minimize Time-to-Green (TTG)
 - Collapse known build failure classes
 
