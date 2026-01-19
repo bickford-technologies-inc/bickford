@@ -46,3 +46,9 @@ export type LedgerEntry = {
 export type EdgeContext = {
     runtime: "edge" | "node";
 };
+export * from "./intent";
+export * from "./decision";
+/**
+ * Compat MUST be last to avoid shadowing
+ */
+export * from "./compat";

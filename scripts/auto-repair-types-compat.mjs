@@ -5,20 +5,39 @@ console.log("🔧 auto-repair: ensuring @bickford/types compatibility surface");
 
 execSync("pnpm --filter @bickford/types build", { stdio: "inherit" });
 
-const index = "packages/types/src/index.ts";
-const compat = "packages/types/src/compat.ts";
+const indexPath = "packages/types/src/index.ts";
+const compatPath = "packages/types/src/compat.ts";
 
-const indexSrc = fs.readFileSync(index, "utf8");
-const compatSrc = fs.readFileSync(compat, "utf8");
+const indexSrc = fs.readFileSync(indexPath, "utf8");
+const compatSrc = fs.readFileSync(compatPath, "utf8");
 
-if (
-  indexSrc.includes('from "./intent"') ||
-  indexSrc.includes('from "./decision"')
-) {
-  throw new Error("❌ index.ts must not export intent/decision directly");
+/**
+ * ❌ FORBIDDEN:
+ *   export * from "./intent"
+ *   export * from "./decision"
+ *
+ * ✅ ALLOWED:
+ *   export * from "./canon"
+ */
+
+const forbiddenDirectExports = [
+  /export\s+\*\s+from\s+["']\.\/intent["']/,
+  /export\s+\*\s+from\s+["']\.\/decision["']/
+];
+
+for (const rx of forbiddenDirectExports) {
+  if (rx.test(indexSrc)) {
+    throw new Error(
+      "❌ index.ts must not export intent/decision directly; use canon.ts only"
+    );
+  }
 }
 
-if (!compatSrc.includes('from "./canon"')) {
+if (!/export\s+\*\s+from\s+["']\.\/canon["']/.test(indexSrc)) {
+  throw new Error("❌ index.ts must export canon.ts");
+}
+
+if (!/from\s+["']\.\/canon["']/.test(compatSrc)) {
   throw new Error("❌ compat.ts must re-export from canon only");
 }
 
