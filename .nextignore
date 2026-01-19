@@ -1,0 +1,4 @@
+packages/**
+adapters/**
+ci/**
+scripts/**

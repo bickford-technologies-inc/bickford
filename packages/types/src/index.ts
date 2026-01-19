@@ -6,12 +6,11 @@ import "./canon";
 // PUBLIC CANONICAL API
 // ======================
 
-export * from "./canon";
-export * from "./compat";
+export * from "./canon.js";
+export * from "./compat.js";
 
 // Explicitly allowed stable surfaces
-export type { ExecutionResult } from "./ExecutionResult";
-export type { ExecutionAdapter } from "./ExecutionAdapter";
+export type { ExecutionResult } from "./ExecutionResult.js";
 
 // ======================
 // DENIED DECISION PAYLOAD
@@ -42,36 +41,28 @@ export type DeniedDecisionPayload = {
 // LEDGER TYPES
 // ======================
 
-export type LedgerEntry = {
+export type ExecutionEvent = {
   id: string;
-  threadId: string;
-  role: "user" | "assistant" | "system";
-  content: string;
-  ts: number;
-
-  intent?: {
-    id?: string;
-    type?: string;
-    payload?: unknown;
-  };
-
-  decision?: unknown;
-  hash?: string;
-  createdAt?: string;
+  timestamp: string;
 };
 
-export type EdgeContext = {
-  runtime: "edge" | "node";
+export type LedgerEntry = {
+  id: string;
+  event: ExecutionEvent;
+};
+
+export type ExecutionAdapter = {
+  runtime: "node" | "edge";
 };
 
 // Canonical intent / decision
-export * from "./intent";
-export * from "./decision";
+export * from "./intent.js";
+export * from "./decision.js";
 
 /**
  * Compat MUST be last to avoid shadowing
  */
-export * from "./compat";
+export * from "./compat.js";
 
 // OPTR SUPPORT TYPES — TEMPORARY CANON SURFACE
 // Added to satisfy build; semantics finalized in Phase 2B
@@ -86,5 +77,5 @@ export type InterferenceResult = {
   reason?: string;
 };
 
-export * from "./deniedDecision";
-export * from "./rubric";
+export * from "./deniedDecision.js";
+export * from "./rubric.js";

@@ -1,0 +1,4 @@
+{
+  "action": "provision",
+  "target": "example-resource"
+}
