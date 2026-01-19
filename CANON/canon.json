@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "name": "bickford-build-canon",
+    "version": "1.0.1",
+    "timestamp": "2026-01-18T21:07:00-05:00"
+  },
+  "runtime": {
+    "pnpm_only": true,
+    "tsc_required": true,
+    "dist_required": true,
+    "exports_required": true,
+    "node_builtin_namespace_imports": true,
+    "types_compat_required": true
+  },
+  "autoRepair": {
+    "enabled": true,
+    "promoteAfter": 2
+  },
+  "metrics": {
+    "track": [
+      "time_to_green",
+      "invariant_confidence",
+      "auto_repair_success"
+    ]
+  }
+}
