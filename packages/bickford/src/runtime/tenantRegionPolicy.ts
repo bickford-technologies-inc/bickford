@@ -1,22 +1,23 @@
 /**
- * tenantRegionPolicy
+ * Tenant Region Policy
  *
- * Runtime policy hook for tenant → region resolution.
- * Safe default: allow all regions.
+ * Canonical default:
+ * - Allows all regions
+ * - No side effects
+ * - Deterministic
+ *
+ * This file exists to satisfy runtime imports and CI invariants.
+ * Policy logic can be extended later without breaking builds.
  */
 
 export type TenantRegionPolicy = {
-  tenantId: string;
-  allowedRegions: string[];
+  allow: (tenantId: string, region: string) => boolean;
 };
 
-export function resolveTenantRegionPolicy(
-  tenantId: string,
-): TenantRegionPolicy {
-  return {
-    tenantId,
-    allowedRegions: ["*"],
-  };
-}
+export const tenantRegionPolicy: TenantRegionPolicy = {
+  allow: (_tenantId: string, _region: string) => {
+    return true;
+  },
+};
 
-export default resolveTenantRegionPolicy;
+export default tenantRegionPolicy;
