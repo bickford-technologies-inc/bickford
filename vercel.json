@@ -1,4 +1,5 @@
 {
-  "buildCommand": "pnpm exec node scripts/auto-repair-types-compat.mjs && pnpm exec bash scripts/build-all.sh",
-  "installCommand": "pnpm install --frozen-lockfile"
+  "rootDirectory": ".",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm run build"
 }
