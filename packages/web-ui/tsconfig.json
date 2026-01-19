@@ -9,6 +9,8 @@
     },
     "allowJs": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx",
     "plugins": [
       {
         "name": "next"
