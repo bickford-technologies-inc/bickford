@@ -62,5 +62,7 @@ export type EdgeContext = {
 export * from "./intent";
 export * from "./decision";
 
-// Compatibility surface (temporary, enforced)
+/**
+ * Compat MUST be last to avoid shadowing
+ */
 export * from "./compat";
