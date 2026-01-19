@@ -2,13 +2,17 @@ import { NationStateRubric, RubricEvaluation } from "@bickford/types";
 import { REQUIRED_NATION_STATE_RUBRIC } from "./nationStateRubric";
 
 export function scoreIntent(
-  rubric: NationStateRubric,
+  rubric: Record<string, 0 | 1>,
   evaluatedBy: string,
-): RubricEvaluation {
-  const totalScore = Object.values(rubric).reduce(
-    (sum, v) => (sum as number) + (v as number),
-    0,
-  );
+): {
+  rubric: Record<string, 0 | 1>;
+  totalScore: number;
+  evaluatedBy: string;
+  ts: number;
+} {
+  const totalScore = Object.values(rubric)
+    .map(Number)
+    .reduce((sum, v) => sum + v, 0);
 
   if (totalScore !== 10) {
     throw new Error(`Nation-state rubric violation: score=${totalScore}/10`);

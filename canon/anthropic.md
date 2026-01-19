@@ -1,5 +1,7 @@
 # BICKFORD × ANTHROPIC — EXECUTION AUTHORITY BRIEF
+
 # STATUS: CANONICAL · BOARD-SAFE · NON-LETHAL
+
 # TIMESTAMP: 2026-01-17
 
 ## One-Sentence Definition
@@ -11,9 +13,11 @@ Bickford turns Claude’s Constitutional AI from a principle into an enforceable
 ## The Gap Bickford Closes
 
 Constitutional AI answers:
+
 > What should an AI do?
 
 Bickford answers:
+
 > What is this AI allowed to do, who authorized it, why was something blocked, and can that decision survive audits, rotations, crises, and courts?
 
 This is an execution-authority gap, not a model gap.
@@ -58,6 +62,7 @@ Claude becomes court-defensible, procurement-safe, and coalition-compatible.
 ### Regulated Market Access
 
 Enables deployment in:
+
 - Defense
 - Healthcare
 - Finance
@@ -69,11 +74,13 @@ Enables deployment in:
 ### Competitive Moat
 
 Competitors compete on:
+
 - Model size
 - Latency
 - Benchmarks
 
 Anthropic + Bickford competes on:
+
 - Legal deployability
 - Audit survivability
 - Sovereign control
@@ -91,12 +98,14 @@ Turning AI safety principles into systems governments can actually run.
 ## Nation-State Positioning
 
 Bickford does NOT:
+
 - Make strategic decisions
 - Replace human authority
 - Control weapons or actuators
 - Encode ideology
 
 Bickford DOES:
+
 - Preserve decisions
 - Enforce authority
 - Prevent silent overrides

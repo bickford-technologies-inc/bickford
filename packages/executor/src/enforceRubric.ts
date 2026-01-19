@@ -1,17 +1,17 @@
-import { NationStateRubric, RubricEvaluation } from "@bickford/types";
-import { scoreIntent } from "@bickford/canon/src/rubric/scoreIntent";
-import { NATION_STATE_RUBRIC_INVARIANT } from "@bickford/canon/src/invariants/rubricInvariant";
+import { Intent } from "@bickford/types";
+import { scoreIntent, RUBRIC_INVARIANT } from "@bickford/canon";
 
-export function enforceNationStateRubric(
-  rubric: NationStateRubric,
-  authorityId: string,
-): RubricEvaluation {
-  const evaluation = scoreIntent(rubric, authorityId);
+export function enforceRubric(intent: Intent) {
+  const score = scoreIntent(intent);
 
-  const result = NATION_STATE_RUBRIC_INVARIANT.assert(evaluation);
+  const result = RUBRIC_INVARIANT.assert({
+    intent,
+    score,
+  });
+
   if (!result.ok) {
     throw new Error(result.reason);
   }
 
-  return evaluation;
+  return score;
 }

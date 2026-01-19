@@ -10,5 +10,9 @@
     "build": "pnpm exec tsc -p tsconfig.build.json"
   },
   "main": "dist/index.js",
-  "types": "dist/index.d.ts"
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@bickford/types": "workspace:*",
+    "@bickford/canon": "workspace:*"
+  }
 }
