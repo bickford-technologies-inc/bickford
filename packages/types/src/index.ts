@@ -3,9 +3,12 @@ import "./optr";
 import "./canon";
 
 // PUBLIC API
-export * from "./optr";
 export * from "./canon";
-export * from "./HardwareAttestation";
+export * from "./compat";
+
+// Explicitly allowed stable surfaces only
+export type { ExecutionResult } from "./ExecutionResult";
+export type { ExecutionAdapter } from "./ExecutionAdapter";
 
 export type DeniedDecisionPayload = {
   denied: true;

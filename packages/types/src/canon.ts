@@ -281,10 +281,5 @@ export type PathConstraint = {
 export type { Intent } from "./intent";
 export type { Decision } from "./decision";
 
-export * from "./ExecutionAdapter";
-export * from "./ExecutionResult";
-export * from "./optr";
-export * from "./HardwareAttestation";
-
 // Force TypeScript emit for this module
 export const __forceEmitCanon = true;
