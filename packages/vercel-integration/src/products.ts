@@ -1,6 +1,6 @@
 import { vercel } from "./client";
 import { IntegrationProduct } from "./types";
-import type { VercelProduct } from "@vercel/sdk";
+import { VercelProduct } from "./types";
 
 export async function listIntegrationProducts(params: {
   integrationConfigurationId: string;
@@ -20,5 +20,13 @@ export async function listIntegrationProducts(params: {
     primaryProtocol: p.primaryProtocol,
     supportedProtocols: Object.keys(p.protocols ?? {}),
     metadataSchema: p.metadataSchema,
+  }));
+}
+
+export function normalizeProducts(products: unknown[]): VercelProduct[] {
+  return products.map((p: any) => ({
+    id: String(p.id),
+    name: String(p.name),
+    status: p.status === "active" ? "active" : "inactive",
   }));
 }
