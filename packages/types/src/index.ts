@@ -57,3 +57,10 @@ export type LedgerEntry = {
 export type EdgeContext = {
   runtime: "edge" | "node";
 };
+
+// Canonical exports
+export * from "./intent";
+export * from "./decision";
+
+// Compatibility surface (temporary, enforced)
+export * from "./compat";

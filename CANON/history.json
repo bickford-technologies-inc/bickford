@@ -1,0 +1,13 @@
+[
+  {
+    "timestamp": "2026-01-18T20:20:00-05:00",
+    "invariants": [
+      "pnpm_only",
+      "tsc_required",
+      "dist_required",
+      "exports_required",
+      "types_compat_required",
+      "node_builtin_namespace_imports"
+    ]
+  }
+]

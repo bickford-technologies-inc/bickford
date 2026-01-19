@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { spawnSync } from "node:child_process";
 import { execSync } from "child_process";
+import "./auto-repair-types-compat.mjs";
 
 function run(cmd, args) {
   const r = spawnSync(cmd, args, { stdio: "inherit" });
