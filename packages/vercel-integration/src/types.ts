@@ -18,3 +18,14 @@ export type CreateIntegrationStoreInput = {
   paymentMethodId?: string;
   prepaymentAmountCents?: number;
 };
+
+export type VercelProduct = {
+  id: string;
+  name: string;
+  status: "active" | "inactive";
+};
+
+export type VercelStore = {
+  id: string;
+  name: string;
+};

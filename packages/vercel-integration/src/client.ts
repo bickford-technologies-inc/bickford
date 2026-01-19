@@ -1,9 +1,9 @@
 import { Vercel } from "@vercel/sdk";
 
 if (!process.env.VERCEL_TOKEN) {
-  throw new Error("VERCEL_TOKEN is required for Vercel integration execution");
+  throw new Error("VERCEL_TOKEN is required");
 }
 
-export const vercel = new Vercel({
-  bearerToken: process.env.VERCEL_TOKEN,
-});
+export function createVercelClient() {
+  return new Vercel({ bearerToken: process.env.VERCEL_TOKEN });
+}
