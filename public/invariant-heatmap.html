@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bickford Invariant Heatmap</title>
+  <style>
+    body { font-family: sans-serif; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, 140px); gap: 10px; }
+    .cell {
+      padding: 10px;
+      color: white;
+      text-align: center;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Invariant Blast Radius</h1>
+  <div id="grid" class="grid"></div>
+
+  <script>
+    fetch("/CANON/blast-radius.json")
+      .then(r => r.json())
+      .then(data => {
+        const grid = document.getElementById("grid");
+        Object.entries(data).forEach(([k, v]) => {
+          const d = document.createElement("div");
+          d.className = "cell";
+          d.style.background =
+            v > 50 ? "#e05d44" :
+            v > 20 ? "#dfb317" :
+            "#4c1";
+          d.textContent = `${k}\n${v}`;
+          grid.appendChild(d);
+        });
+      });
+  </script>
+</body>
+</html>

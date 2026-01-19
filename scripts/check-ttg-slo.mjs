@@ -5,7 +5,7 @@ const rows = fs
   .trim()
   .split("\n")
   .slice(-5)
-  .map(r => Number(r.split(",")[1]));
+  .map((r) => Number(r.split(",")[1]));
 
 const avg = rows.reduce((a, b) => a + b, 0) / rows.length;
 

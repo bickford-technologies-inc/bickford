@@ -1,0 +1,4 @@
+{
+  "trust_floor": 0.4,
+  "evict_after": 3
+}
