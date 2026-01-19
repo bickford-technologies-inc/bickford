@@ -1,0 +1,4 @@
+{
+  "required": 2,
+  "votesFile": ".agent-votes.json"
+}

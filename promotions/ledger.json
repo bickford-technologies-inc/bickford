@@ -1,0 +1,6 @@
+{
+  "@bickford/types": "stable",
+  "@bickford/ledger": "stable",
+  "@bickford/execution-convergence": "candidate",
+  "@bickford/web-ui": "candidate"
+}

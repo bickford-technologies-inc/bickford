@@ -1,0 +1,6 @@
+{
+  "candidate": {
+    "requires": ["quorum"],
+    "promotesTo": "stable"
+  }
+}

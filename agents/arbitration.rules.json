@@ -1,0 +1,9 @@
+{
+  "priority": [
+    "@bickford/types",
+    "@bickford/ledger",
+    "@bickford/execution-convergence",
+    "@bickford/web-ui"
+  ],
+  "lockFile": ".agent-lock.json"
+}
