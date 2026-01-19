@@ -11,12 +11,12 @@ const edges = canon.invariants.flatMap((i) =>
   (i.depends_on || []).map((d) => ({
     from: d,
     to: i.id,
-  }))
+  })),
 );
 
 fs.writeFileSync(
   "public/canon-dag.json",
-  JSON.stringify({ nodes, edges }, null, 2)
+  JSON.stringify({ nodes, edges }, null, 2),
 );
 
 console.log("✅ canon DAG generated");
