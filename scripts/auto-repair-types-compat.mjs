@@ -11,33 +11,30 @@ const compatPath = "packages/types/src/compat.ts";
 const indexSrc = fs.readFileSync(indexPath, "utf8");
 const compatSrc = fs.readFileSync(compatPath, "utf8");
 
-/**
- * ❌ FORBIDDEN:
- *   export * from "./intent"
- *   export * from "./decision"
- *
- * ✅ ALLOWED:
- *   export * from "./canon"
- */
+const allowedIndexExports = new Set([
+  'export * from "./canon";',
+  'export * from "./compat";'
+]);
 
-const forbiddenDirectExports = [
-  /export\s+\*\s+from\s+["']\.\/intent["']/,
-  /export\s+\*\s+from\s+["']\.\/decision["']/,
-];
+const indexLines = indexSrc
+  .split("\n")
+  .map(l => l.trim())
+  .filter(Boolean)
+  .filter(l => l.startsWith("export"));
 
-for (const rx of forbiddenDirectExports) {
-  if (rx.test(indexSrc)) {
+for (const line of indexLines) {
+  if (!allowedIndexExports.has(line)) {
     throw new Error(
-      "❌ index.ts must not export intent/decision directly; use canon.ts only",
+      `❌ index.ts has forbidden export: ${line}`
     );
   }
 }
 
-if (!/export\s+\*\s+from\s+["']\.\/canon["']/.test(indexSrc)) {
-  throw new Error("❌ index.ts must export canon.ts");
+if (!indexLines.includes('export * from "./canon";')) {
+  throw new Error("❌ index.ts must export ./canon");
 }
 
-if (!/from\s+["']\.\/canon["']/.test(compatSrc)) {
+if (!compatSrc.includes('from "./canon"')) {
   throw new Error("❌ compat.ts must re-export from canon only");
 }
 
