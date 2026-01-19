@@ -3,7 +3,8 @@
  * TIMESTAMP: 2026-02-08T00:00:00Z
  */
 
-import { WhyNotTrace, DenialReasonCode, ISO8601 } from "../canon/types";
+import type { DenialReasonCode, ISO8601 } from "@bickford/types";
+import type { WhyNotTrace } from "@bickford/authority";
 
 export function deny(params: {
   actionId: string;

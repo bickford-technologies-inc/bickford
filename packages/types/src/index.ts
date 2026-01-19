@@ -87,3 +87,4 @@ export type InterferenceResult = {
 };
 
 export * from "./deniedDecision";
+export * from "./rubric";

@@ -1,0 +1,6 @@
+export enum ControlClassification {
+  EAR99 = "EAR99",
+  EAR_CONTROLLED = "EAR_CONTROLLED",
+  ITAR = "ITAR",
+  ALLIED_RESTRICTED = "ALLIED_RESTRICTED",
+}

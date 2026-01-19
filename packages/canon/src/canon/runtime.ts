@@ -9,7 +9,8 @@
  * 4. Node vs Edge context detection
  */
 
-import { DenialReasonCode, WhyNotTrace } from "./types";
+import { DenialReasonCode } from "@bickford/types";
+import type { WhyNotTrace } from "@bickford/authority";
 
 export interface RuntimeContext {
   isNode: boolean;
@@ -57,7 +58,7 @@ export function getRuntimeContext(requiredEnvs: string[] = []): RuntimeContext {
   const hasDatabase = typeof process.env.DATABASE_URL === "string";
 
   const missingEnvs = requiredEnvs.filter(
-    (env) => typeof process.env[env] === "undefined"
+    (env) => typeof process.env[env] === "undefined",
   );
 
   return {
@@ -77,7 +78,7 @@ export function getRuntimeContext(requiredEnvs: string[] = []): RuntimeContext {
  */
 export function gatePrismaContext(
   action: { id: string; name: string; usesPrisma?: boolean },
-  nowIso: string
+  nowIso: string,
 ): WhyNotTrace | null {
   if (!action.usesPrisma) return null;
 
@@ -119,7 +120,7 @@ export function gatePrismaContext(
  */
 export function gateRequiredEnvs(
   action: { id: string; name: string; requiredEnvs?: string[] },
-  nowIso: string
+  nowIso: string,
 ): WhyNotTrace | null {
   if (!action.requiredEnvs || action.requiredEnvs.length === 0) return null;
 
@@ -150,7 +151,7 @@ export function validateTurboEnvs(requiredGlobalEnvs: string[]): {
   missing: string[];
 } {
   const missing = requiredGlobalEnvs.filter(
-    (env) => typeof process.env[env] === "undefined"
+    (env) => typeof process.env[env] === "undefined",
   );
 
   return {
@@ -166,7 +167,7 @@ export function assertNodeRuntime(): void {
   if (!isNodeRuntime()) {
     throw new Error(
       "INVARIANT VIOLATION: This module requires Node.js runtime. " +
-        "Running in Edge runtime is not permitted."
+        "Running in Edge runtime is not permitted.",
     );
   }
 }
@@ -178,7 +179,7 @@ export function assertEdgeRuntime(): void {
   if (!isEdgeRuntime()) {
     console.warn(
       "Warning: Edge-specific module loaded in non-edge environment. " +
-        "Consider using Node.js-specific modules for better performance."
+        "Consider using Node.js-specific modules for better performance.",
     );
   }
 }
