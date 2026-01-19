@@ -9,6 +9,7 @@
  * INVARIANT: Regressive migrations (backward incompatible) must be denied.
  */
 
+import type { DeniedDecisionPayload } from "../types/denied";
 import { DenialReasonCode } from "@bickford/types";
 
 export interface MigrationAnalysis {
@@ -239,5 +240,19 @@ export function gateMigrationRisk(
     message: "Migration is risky",
     actionId: `migration:${analysis.migrationName}`,
     tenantId: "tenantId",
+  };
+}
+
+/**
+ * Migrate legacy DeniedDecision to new format
+ */
+export function migrateDeniedDecision(legacy: unknown): DeniedDecisionPayload {
+  // Migration logic
+  return {
+    decisionId: (legacy as any).id || `migrated-${Date.now()}`,
+    ts: (legacy as any).timestamp || Date.now(),
+    reasonCodes: (legacy as any).reasons || [],
+    message: (legacy as any).message || "Migrated decision",
+    intent: (legacy as any).intent || "UNKNOWN",
   };
 }

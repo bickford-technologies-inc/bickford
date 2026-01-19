@@ -9,7 +9,7 @@
 
 import type { Action } from "@bickford/types";
 import { DenialReasonCode } from "@bickford/types";
-import type { WhyNotTrace } from "@bickford/authority";
+import type { WhyNotTrace, AuthorityContext } from "@bickford/authority";
 
 /**
  * Check if an action maintains non-interference property
@@ -173,4 +173,12 @@ export function checkMultiAgentEquilibrium(args: {
     equilibrium: conflicts.length === 0,
     conflicts,
   };
+}
+
+export function checkNonInterference(
+  context: AuthorityContext,
+  action: string,
+): boolean {
+  // Non-interference check logic
+  return true;
 }

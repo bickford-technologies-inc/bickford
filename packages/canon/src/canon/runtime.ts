@@ -10,7 +10,7 @@
  */
 
 import { DenialReasonCode } from "@bickford/types";
-import type { WhyNotTrace } from "@bickford/authority";
+import type { WhyNotTrace, AuthorityContext } from "@bickford/authority";
 
 export interface RuntimeContext {
   isNode: boolean;
@@ -182,4 +182,15 @@ export function assertEdgeRuntime(): void {
         "Consider using Node.js-specific modules for better performance.",
     );
   }
+}
+
+/**
+ * Runtime execution stub
+ */
+export function executeWithRuntime(
+  intent: string,
+  context: AuthorityContext,
+): void {
+  // Runtime execution
+  console.log("Executing:", intent);
 }

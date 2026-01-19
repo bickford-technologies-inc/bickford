@@ -15,4 +15,7 @@ export * from "./security/adversarialDetection";
 export * from "./rubric/nationStateRubric";
 export * from "./rubric/scoreIntent";
 export * from "./invariants/rubricInvariant";
+export * from "./types/denied";
 export * from "./rubric/types";
+export * from "@bickford/monitorability-core";
+export type { AuthorityContext, AuthorityDecision } from "@bickford/authority";
