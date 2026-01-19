@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { appendLedger } from "@bickford/ledger";
+import { LedgerEntry } from "@bickford/types";
 import crypto from "node:crypto";
 
 export const runtime = "nodejs";
@@ -12,19 +13,15 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const threadId = body.threadId ?? crypto.randomUUID();
 
-  appendLedger(threadId, {
+  const startEntry: LedgerEntry = {
     id: crypto.randomUUID(),
-    threadId,
-    role: "system",
-    content: JSON.stringify({
+    event: {
+      id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
-      type: "STREAM_START",
-      payload: body,
-    }),
-    ts: Date.now(),
-    intent: undefined,
-    decision: undefined,
-  });
+    },
+  };
+  
+  appendLedger(threadId, startEntry);
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -47,19 +44,15 @@ export async function POST(req: NextRequest) {
       controller.enqueue(encode({ type: "done" }));
       controller.close();
 
-      appendLedger(threadId, {
+      const endEntry: LedgerEntry = {
         id: crypto.randomUUID(),
-        threadId,
-        role: "system",
-        content: JSON.stringify({
+        event: {
+          id: crypto.randomUUID(),
           timestamp: new Date().toISOString(),
-          type: "STREAM_END",
-          payload: { agents: body.agents?.map((a: any) => a.id) },
-        }),
-        ts: Date.now(),
-        intent: undefined,
-        decision: undefined,
-      });
+        },
+      };
+      
+      appendLedger(threadId, endEntry);
     },
   });
 
