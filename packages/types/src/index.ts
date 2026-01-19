@@ -7,7 +7,6 @@ import "./canon";
 // ======================
 
 export * from "./canon.js";
-export * from "./compat.js";
 
 // Explicitly allowed stable surfaces
 export type { ExecutionResult } from "./ExecutionResult.js";

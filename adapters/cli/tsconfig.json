@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../../packages/types" }
+  ]
+}
