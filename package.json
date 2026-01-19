@@ -27,7 +27,8 @@
     "canon:blast": "node scripts/invariants/blast-radius-score.mjs",
     "canon:gate": "node scripts/promote-with-gate.mjs",
     "canon:pressure": "node scripts/render-invariant-pressure.mjs",
-    "canon:remediate": "node scripts/auto-remediation-pr.mjs"
+    "canon:remediate": "node scripts/auto-remediation-pr.mjs",
+    "preinstall": "node scripts/assert-lockfile.mjs"
   },
   "devDependencies": {
     "@types/babel__traverse": "^7.28.0",
