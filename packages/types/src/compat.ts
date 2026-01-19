@@ -3,4 +3,4 @@
  * MUST re-export from canon ONLY
  */
 
-export type { Intent, Decision } from "./canon";
+export type { Intent, Decision } from "./canon.js";

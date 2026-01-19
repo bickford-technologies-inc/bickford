@@ -265,24 +265,24 @@ export type PathConstraint = {
  * All externally-visible symbols MUST live here.
  */
 
-export type { Intent } from "./intent";
-export type { Decision } from "./decision";
+export type { Intent } from "./intent.js";
+export type { Decision } from "./decision.js";
 
 /**
  * PROMOTED — execution outputs are part of canon
  */
-export type { ExecutionResult } from "./ExecutionResult";
-export type { ExecutionAdapter } from "./ExecutionAdapter";
+export type { ExecutionResult } from "./ExecutionResult.js";
+export type { ExecutionAdapter } from "./ExecutionAdapter.js";
 
 /**
  * PROMOTED — OPTR is canonical
  */
-import type { OptrResult } from "./optr";
+import type { OptrResult } from "./optr.js";
 
 /**
  * PROMOTED — hardware attestations are canonical
  */
-export type { HardwareAttestation } from "./HardwareAttestation";
+export type { HardwareAttestation } from "./HardwareAttestation.js";
 
 // Force TypeScript emit for this module
 export const __forceEmitCanon = true;
