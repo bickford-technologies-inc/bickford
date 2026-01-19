@@ -1,14 +1,6 @@
-import { vercel } from "./client";
+// CANON — STATUS CONTRACT PLACEHOLDER
+// Implementation lives in integration layer
 
-export async function getDeploymentStatus(idOrUrl: string) {
-  return vercel.deployments.getDeployment({
-    idOrUrl,
-    withGitRepoInfo: "true",
-  });
-}
-
-export async function getDeploymentLogs(idOrUrl: string) {
-  return vercel.deployments.getDeploymentEvents({
-    idOrUrl,
-  });
+export interface VercelStatusManager {
+  getStatus(projectId: string): Promise<string>;
 }
