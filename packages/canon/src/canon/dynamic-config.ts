@@ -294,14 +294,21 @@ export function config<T>(key: string): ConfigBuilder<T> {
  * Auto-detect runtime context
  */
 export function detectContext(): ConfigContext {
-  if (typeof process === "undefined") return "edge";
+  // Check for edge runtime first
+  if (typeof (globalThis as any).EdgeRuntime !== "undefined") {
+    return "edge";
+  }
 
-  const env = process.env.NODE_ENV;
-  const isEdge =
-    typeof (globalThis as any).EdgeRuntime !== "undefined" ||
-    process.env.NEXT_RUNTIME === "edge";
+  // Check if we have process (Node.js environment)
+  const hasProcess = typeof (globalThis as any).process !== "undefined";
+  if (!hasProcess) return "edge";
 
-  if (isEdge) return "edge";
+  // Get environment variables safely
+  const proc = (globalThis as any).process;
+  const env = proc?.env?.NODE_ENV;
+  const nextRuntime = proc?.env?.NEXT_RUNTIME;
+
+  if (nextRuntime === "edge") return "edge";
   if (env === "test") return "test";
   if (env === "production") return "production";
   if (env === "staging") return "staging";
