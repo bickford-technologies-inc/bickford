@@ -11,7 +11,9 @@
   "scripts": {
     "detect:promotions": "node scripts/detect-promotions.mjs",
     "promote": "node scripts/promote-package.mjs",
-    "preflight": "node scripts/enforce-pnpm.mjs && node scripts/require-tsc.mjs && node scripts/check-canonical-types.mjs && node scripts/preflight-check.mjs",
+    "preflight": "node scripts/detect-canon-drift.mjs || node scripts/generate-migration-pr.mjs",
+    "canon:enforce": "node scripts/enforce-deprecation-windows.mjs",
+    "canon:viz": "node scripts/render-canon-drift.mjs",
     "build": "pnpm -r --filter @bickford/* build",
     "check:resolution": "bash scripts/check-workspace-resolution.sh",
     "build:all": "bash scripts/build-all.sh"

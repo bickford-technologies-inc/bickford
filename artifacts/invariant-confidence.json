@@ -1,0 +1,13 @@
+{
+  "score": 93,
+  "rules": [
+    {
+      "id": "PNPM_ONLY",
+      "confidence": 0.95
+    },
+    {
+      "id": "DIST_REQUIRED",
+      "confidence": 0.9
+    }
+  ]
+}
