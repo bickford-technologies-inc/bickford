@@ -29,7 +29,17 @@
     "canon:gate": "node scripts/promote-with-gate.mjs",
     "canon:pressure": "node scripts/render-invariant-pressure.mjs",
     "canon:remediate": "node scripts/auto-remediation-pr.mjs",
-    "preinstall": "node scripts/assert-lockfile.mjs"
+    "preinstall": "node scripts/assert-lockfile.mjs",
+    "canon:ml:extract": "node scripts/ml/extract-features.mjs",
+    "canon:ml:train": "node scripts/ml/train-online.mjs",
+    "canon:ml:predict": "node scripts/ml/predict-failure.mjs",
+    "canon:patch:generate": "node scripts/generate-auto-patch.mjs",
+    "canon:patch:pr": "node scripts/open-auto-patch-pr.mjs",
+    "canon:maintain": "node scripts/canon-predictive-maintenance.mjs",
+    "canon:pressure:emit": "node scripts/emit-invariant-pressure.mjs",
+    "canon:remediate:queue": "node scripts/build-remediation-queue.mjs",
+    "canon:exec:report": "node scripts/generate-exec-ttv-report.mjs",
+    "canon:compare:tenant": "node scripts/compare-tenant-baseline.mjs"
   },
   "devDependencies": {
     "@types/babel__traverse": "^7.28.0",
