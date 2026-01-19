@@ -14,7 +14,7 @@
     "preflight": "node scripts/require-types-exports.mjs && node scripts/enforce-deprecations.mjs",
     "canon:enforce": "node scripts/enforce-deprecation-windows.mjs",
     "canon:viz": "node scripts/render-canon-drift.mjs",
-    "build": "pnpm -r --filter @bickford/* build",
+    "build": "pnpm -r --filter \"@bickford/*\" --if-present run build",
     "check:resolution": "bash scripts/check-workspace-resolution.sh",
     "build:all": "bash scripts/build-all.sh",
     "canon:bump": "node scripts/bump-canon-version.mjs",
