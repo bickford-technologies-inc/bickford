@@ -14,7 +14,7 @@ const project = process.env.VERCEL_PROJECT_NAME;
 
 if (project && !ALLOWED.has(project)) {
   console.error(
-    `ERROR: Vercel project "${project}" is not authorized to build this repo.`
+    `ERROR: Vercel project "${project}" is not authorized to build this repo.`,
   );
   process.exit(1);
 }

@@ -11,7 +11,7 @@ export type TenantRegionPolicy = {
 };
 
 export function resolveTenantRegionPolicy(
-  tenantId: string
+  tenantId: string,
 ): TenantRegionPolicy {
   return {
     tenantId,
