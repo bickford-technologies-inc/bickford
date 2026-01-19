@@ -13,20 +13,18 @@ const compatSrc = fs.readFileSync(compatPath, "utf8");
 
 const allowedIndexExports = new Set([
   'export * from "./canon";',
-  'export * from "./compat";'
+  'export * from "./compat";',
 ]);
 
 const indexLines = indexSrc
   .split("\n")
-  .map(l => l.trim())
+  .map((l) => l.trim())
   .filter(Boolean)
-  .filter(l => l.startsWith("export"));
+  .filter((l) => l.startsWith("export"));
 
 for (const line of indexLines) {
   if (!allowedIndexExports.has(line)) {
-    throw new Error(
-      `❌ index.ts has forbidden export: ${line}`
-    );
+    throw new Error(`❌ index.ts has forbidden export: ${line}`);
   }
 }
 
