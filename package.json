@@ -19,7 +19,11 @@
     "build:all": "bash scripts/build-all.sh",
     "canon:bump": "node scripts/bump-canon-version.mjs",
     "canon:confidence": "node scripts/invariant-confidence.mjs",
-    "canon:propagate": "node scripts/ci-propagate-canon.mjs"
+    "canon:propagate": "node scripts/ci-propagate-canon.mjs",
+    "canon": "node scripts/canonctl.mjs",
+    "canon:migrate": "node scripts/canonctl.mjs migrate",
+    "canon:deprecations": "node scripts/canonctl.mjs enforce-deprecations",
+    "canon:dag": "node scripts/canonctl.mjs render-dag"
   },
   "devDependencies": {
     "@types/react": "^19.2.8",

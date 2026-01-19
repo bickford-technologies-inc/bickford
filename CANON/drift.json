@@ -1,0 +1,9 @@
+{
+  "nodes": [
+    { "id": "types@1.0.0", "label": "types", "delta": 0 },
+    { "id": "authority@1.0.1", "label": "authority", "delta": 2 }
+  ],
+  "edges": [
+    { "from": "types@1.0.0", "to": "authority@1.0.1", "reason": "symbol move" }
+  ]
+}
