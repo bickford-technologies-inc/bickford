@@ -276,41 +276,15 @@ export type PathConstraint = {
   confidence: ConfidenceEnvelope;
 };
 
-// LEGACY SHARED TYPES — restored for compatibility
+// SINGLE EXPORT AUTHORITY FOR PUBLIC TYPES
 
-export interface Intent {
-  id: string;
-  action: string;
-  goal?: string;
-  createdAt?: string;
-}
+export type { Intent } from "./intent";
+export type { Decision } from "./decision";
 
-export interface Decision {
-  id: string;
-  intent: Intent;
-  outcome: string;
-  reason?: string;
-  timestamp: string;
-}
-
-export interface LedgerEntry {
-  id: string;
-  intent: Intent;
-  decision: Decision;
-  hash: string;
-  createdAt: string;
-  tenantId?: string;
-}
-
-export interface LedgerRow {
-  id: string;
-  intent: Intent;
-  decision: Decision;
-  hash: string;
-  createdAt: Date;
-  tenantId: string | null;
-  [key: string]: unknown; // Prisma compatibility
-}
+export * from "./ExecutionAdapter";
+export * from "./ExecutionResult";
+export * from "./optr";
+export * from "./HardwareAttestation";
 
 // Force TypeScript emit for this module
 export const __forceEmitCanon = true;
