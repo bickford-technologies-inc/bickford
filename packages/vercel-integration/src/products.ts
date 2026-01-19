@@ -1,5 +1,6 @@
 import { vercel } from "./client";
 import { IntegrationProduct } from "./types";
+import type { VercelProduct } from "@vercel/sdk";
 
 export async function listIntegrationProducts(params: {
   integrationConfigurationId: string;
@@ -12,7 +13,7 @@ export async function listIntegrationProducts(params: {
     slug: params.slug,
   });
 
-  return res.products.map((p) => ({
+  return res.products.map((p: VercelProduct) => ({
     id: p.id,
     slug: p.slug,
     name: p.name,
