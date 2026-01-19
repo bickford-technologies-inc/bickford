@@ -26,8 +26,8 @@ for (const file of walk(ROOT)) {
     file,
     src.replace(
       new RegExp(`from ["']${COMPAT_IMPORT}["']`, "g"),
-      `from "${REPLACEMENT}"`
-    )
+      `from "${REPLACEMENT}"`,
+    ),
   );
   touched = true;
   console.log("UPDATED:", file);
@@ -39,9 +39,8 @@ if (!touched) {
 }
 
 execSync("git checkout -b migrate/remove-compat", { stdio: "inherit" });
-execSync(
-  "git commit -am 'chore(canon): remove deprecated compat imports'",
-  { stdio: "inherit" }
-);
+execSync("git commit -am 'chore(canon): remove deprecated compat imports'", {
+  stdio: "inherit",
+});
 
 console.log("🚀 Migration branch ready for PR");
