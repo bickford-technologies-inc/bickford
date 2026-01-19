@@ -16,7 +16,10 @@
     "canon:viz": "node scripts/render-canon-drift.mjs",
     "build": "pnpm -r --filter @bickford/* build",
     "check:resolution": "bash scripts/check-workspace-resolution.sh",
-    "build:all": "bash scripts/build-all.sh"
+    "build:all": "bash scripts/build-all.sh",
+    "canon:bump": "node scripts/bump-canon-version.mjs",
+    "canon:confidence": "node scripts/invariant-confidence.mjs",
+    "canon:propagate": "node scripts/ci-propagate-canon.mjs"
   },
   "devDependencies": {
     "@types/react": "^19.2.8",

@@ -1,28 +1,35 @@
-import { execSync } from "child_process";
-import fs from "fs";
+import fs from "node:fs";
+import { execSync } from "node:child_process";
 
-const TARGET_REPOS = [
-  "bickford-platform",
-  "bickford-mobile",
-  "bickford-defense",
-];
+const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+const targets = JSON.parse(fs.readFileSync("CANON/targets.json", "utf8"));
 
-for (const repo of TARGET_REPOS) {
-  execSync(
-    `git clone https://github.com/bickford-technologies-inc/${repo}.git`,
-    { stdio: "inherit" },
-  );
-  execSync(`cp -R CANON ${repo}/CANON`, { stdio: "inherit" });
+function run(cmd) {
+  execSync(cmd, { stdio: "inherit" });
+}
 
-  execSync(`cd ${repo} && git checkout -b canon-sync`, { stdio: "inherit" });
-  execSync(
-    `cd ${repo} && git add CANON && git commit -m "canon: sync update"`,
-    { stdio: "inherit" },
-  );
-  execSync(`cd ${repo} && git push origin canon-sync`, { stdio: "inherit" });
+for (const repo of targets.repos) {
+  const dir = repo.split("/")[1];
 
-  execSync(
-    `cd ${repo} && gh pr create --title "Canon Sync" --body "Automated canon propagation"`,
-    { stdio: "inherit" },
-  );
+  try {
+    run(`rm -rf /tmp/${dir}`);
+    run(
+      `git clone https://${token ? token + "@" : ""}github.com/${repo}.git /tmp/${dir}`,
+    );
+    run(`rsync -a CANON/ /tmp/${dir}/CANON/`);
+    run(`cd /tmp/${dir} && git checkout -b canon/sync-${Date.now()}`);
+    run(`cd /tmp/${dir} && git add CANON`);
+    run(`cd /tmp/${dir} && git commit -m "canon: sync canon update"`);
+
+    if (token) {
+      run(`cd /tmp/${dir} && git push origin HEAD`);
+      console.log(`✅ pushed canon to ${repo}`);
+    }
+  } catch {
+    console.warn(`⚠️ push failed for ${repo}, opening PR`);
+    run(`gh repo fork ${repo} --clone=false || true`);
+    run(
+      `cd /tmp/${dir} && gh pr create --title "canon: sync update" --body "Automated canon propagation"`,
+    );
+  }
 }
