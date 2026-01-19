@@ -1,8 +1,7 @@
-import { vercel } from "./client";
+// CANON — DOMAINS CONTRACT PLACEHOLDER
+// Implementation lives in integration layer
 
-export async function addDomain(project: string, domain: string) {
-  return vercel.projects.addProjectDomain({
-    idOrName: project,
-    requestBody: { name: domain },
-  });
+export interface VercelDomainManager {
+  addDomain(projectId: string, domain: string): Promise<void>;
+  removeDomain(projectId: string, domain: string): Promise<void>;
 }

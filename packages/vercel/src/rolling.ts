@@ -1,16 +1,7 @@
-import { vercel } from "./client";
+// CANON — ROLLING CONTRACT PLACEHOLDER
+// Implementation lives in integration layer
 
-export async function configureRollingRelease(project: string) {
-  return vercel.rollingRelease.updateRollingReleaseConfig({
-    idOrName: project,
-    requestBody: {
-      target: "production",
-      stages: [
-        { targetPercentage: 5, duration: 300 },
-        { targetPercentage: 25, duration: 600 },
-        { targetPercentage: 50, duration: 900 },
-        { targetPercentage: 100 },
-      ],
-    },
-  });
+export interface VercelRollingManager {
+  enableRolling(projectId: string): Promise<void>;
+  disableRolling(projectId: string): Promise<void>;
 }
