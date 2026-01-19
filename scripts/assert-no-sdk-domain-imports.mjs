@@ -1,27 +1,65 @@
 import fs from "fs";
 import path from "path";
 
-const ROOT = process.cwd();
-const FORBIDDEN = "@vercel/sdk";
+const FORBIDDEN_SDKS = [
+  "@vercel/sdk",
+  "aws-sdk",
+  "@aws-sdk",
+  "stripe",
+  "@anthropic-ai",
+];
 
-function scan(dir) {
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const p = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      if (entry.name === "node_modules" || entry.name === "dist") continue;
-      scan(p);
-    } else if (entry.name.endsWith(".ts")) {
-      const src = fs.readFileSync(p, "utf8");
-      if (
-        src.includes(`from "${FORBIDDEN}"`) ||
-        src.includes(`from '${FORBIDDEN}'`)
-      ) {
-        console.error(`❌ Forbidden SDK import in ${p}`);
-        process.exit(1);
+const PACKAGES_DIR = "packages";
+
+/**
+ * A package is considered INTEGRATION if its folder name ends with `-integration`
+ */
+function isIntegrationPackage(pkgPath) {
+  return pkgPath.endsWith("-integration");
+}
+
+function scanPackage(pkgPath) {
+  if (isIntegrationPackage(pkgPath)) {
+    // ✅ SDK imports explicitly allowed here
+    return;
+  }
+
+  function walk(dir) {
+    for (const entry of fs.readdirSync(dir)) {
+      const full = path.join(dir, entry);
+      const stat = fs.statSync(full);
+
+      if (stat.isDirectory()) {
+        walk(full);
+        continue;
+      }
+
+      if (!full.endsWith(".ts") && !full.endsWith(".tsx")) continue;
+
+      const src = fs.readFileSync(full, "utf8");
+
+      for (const sdk of FORBIDDEN_SDKS) {
+        if (src.includes(sdk)) {
+          console.error(
+            `❌ Forbidden SDK import detected\n` +
+              `   SDK: ${sdk}\n` +
+              `   File: ${full}\n` +
+              `   Package: ${pkgPath}\n` +
+              `   Rule: SDKs are forbidden in canon/core/runtime/types packages`,
+          );
+          process.exit(1);
+        }
       }
     }
   }
+
+  walk(pkgPath);
 }
 
-scan(path.join(ROOT, "packages"));
+for (const pkg of fs.readdirSync(PACKAGES_DIR)) {
+  const pkgPath = path.join(PACKAGES_DIR, pkg);
+  if (!fs.statSync(pkgPath).isDirectory()) continue;
+  scanPackage(pkgPath);
+}
+
 console.log("✅ SDK boundary invariant satisfied");
