@@ -159,10 +159,12 @@ export class SelfCorrectingState<T> {
   }
 
   /**
-   * Compute state checksum
+   * Compute state checksum (deterministic via sorted keys)
    */
   private computeChecksum(state: T): string {
-    const str = JSON.stringify(state);
+    // Sort object keys for deterministic JSON serialization
+    const sortedState = this.sortObjectKeys(state);
+    const str = JSON.stringify(sortedState);
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
@@ -170,6 +172,21 @@ export class SelfCorrectingState<T> {
       hash = hash & hash; // Convert to 32bit integer
     }
     return Math.abs(hash).toString(16);
+  }
+
+  /**
+   * Sort object keys recursively for deterministic serialization
+   */
+  private sortObjectKeys(obj: any): any {
+    if (obj === null || typeof obj !== "object") return obj;
+    if (Array.isArray(obj)) return obj.map((item) => this.sortObjectKeys(item));
+
+    const sorted: any = {};
+    const keys = Object.keys(obj).sort();
+    for (const key of keys) {
+      sorted[key] = this.sortObjectKeys(obj[key]);
+    }
+    return sorted;
   }
 }
 

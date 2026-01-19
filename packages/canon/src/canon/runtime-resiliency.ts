@@ -255,13 +255,19 @@ export function movingAverage(values: number[], windowSize: number): number[] {
 }
 
 /**
+ * Default anomaly detection threshold (3 standard deviations)
+ * Using 3-sigma rule: ~99.7% of normal values fall within 3 standard deviations
+ */
+const DEFAULT_ANOMALY_THRESHOLD = 3;
+
+/**
  * Pure function: Detect anomaly using standard deviation
  */
 export function isAnomaly(
   value: number,
   mean: number,
   stdDev: number,
-  threshold: number = 3
+  threshold: number = DEFAULT_ANOMALY_THRESHOLD
 ): boolean {
   const zScore = Math.abs((value - mean) / stdDev);
   return zScore > threshold;
