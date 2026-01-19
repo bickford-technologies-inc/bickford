@@ -23,9 +23,19 @@ export type { ExecutionAdapter } from "./ExecutionAdapter";
  * It forwards canon only.
  */
 export type DeniedDecisionPayload = {
-  ts: string;
-  reasonCodes: string[];
-  message: string;
+  decisionId: string;
+
+  // REQUIRED CONTEXT
+  actionId: string;
+  tenantId: string;
+
+  // DENIAL METADATA
+  denied: true;
+  reason: string;
+
+  // OPTIONAL TRACEABILITY
+  ruleId?: string;
+  timestamp?: number;
 };
 
 // ======================
