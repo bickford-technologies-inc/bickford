@@ -1,7 +1,6 @@
 /**
- * @deprecated
- * Compatibility re-exports for downstream packages.
- * These symbols will be removed after the deprecation window closes.
+ * @deprecated Compatibility surface
+ * DO NOT add new exports here
  */
 
 export type { Intent } from "./intent";
