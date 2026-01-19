@@ -1,27 +1,14 @@
-import { vercel } from "./client";
-import { OneTarget } from "@vercel/sdk/models/operations/createprojectenv";
+// CANON — PURE CONTRACT ONLY
+// Implementation intentionally deferred to integration layer
 
-export async function upsertEnvVar({
-  project,
-  key,
-  value,
-  targets,
-  encrypted = false,
-}: {
+export interface EnvVarUpsert {
   project: string;
   key: string;
   value: string;
-  targets: OneTarget[];
+  targets: string[];
   encrypted?: boolean;
-}) {
-  return vercel.projects.createProjectEnv({
-    idOrName: project,
-    upsert: "true",
-    requestBody: {
-      key,
-      value,
-      target: targets,
-      type: encrypted ? "encrypted" : "plain",
-    },
-  });
+}
+
+export interface EnvManager {
+  upsertEnvVar(input: EnvVarUpsert): Promise<void>;
 }
