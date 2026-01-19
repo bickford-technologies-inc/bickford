@@ -2,7 +2,7 @@ import fs from "fs";
 
 const canon = JSON.parse(fs.readFileSync("CANON/canon.json", "utf8"));
 const history = JSON.parse(
-  fs.readFileSync("CANON/invariant-history.json", "utf8")
+  fs.readFileSync("CANON/invariant-history.json", "utf8"),
 );
 
 const scored = canon.invariants.map((inv) => {
@@ -18,7 +18,7 @@ const scored = canon.invariants.map((inv) => {
 
 fs.writeFileSync(
   "CANON/invariant-confidence.json",
-  JSON.stringify(scored, null, 2)
+  JSON.stringify(scored, null, 2),
 );
 
 console.log("✅ invariant confidence updated");
