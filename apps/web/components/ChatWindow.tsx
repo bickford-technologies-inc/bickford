@@ -28,6 +28,8 @@ const LEGACY_HISTORY_KEY = "bickford.chat.history";
 const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
 const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const AGENT_NAME = "bickford";
+const ARCHIVE_NOTE =
+  "single agent for the full environment • archives daily at local midnight";
 
 function getTodayKey() {
   return new Date().toISOString().slice(0, 10);
@@ -217,7 +219,7 @@ export default function ChatWindow() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Acknowledged. The single agent for the full environment will archive today’s history.",
+      `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive today’s history at local midnight.`,
     );
   }
 
@@ -271,9 +273,7 @@ export default function ChatWindow() {
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <strong style={{ fontSize: 18 }}>{AGENT_NAME}</strong>
-            <span style={{ fontSize: 12, opacity: 0.7 }}>
-              single agent for the full environment • archives daily
-            </span>
+            <span style={{ fontSize: 12, opacity: 0.7 }}>{ARCHIVE_NOTE}</span>
           </div>
           <div
             style={{
@@ -478,8 +478,7 @@ export default function ChatWindow() {
               )
             ) : state.messages.length === 0 ? (
               <p style={{ fontSize: 13, opacity: 0.7 }}>
-                Start a thread. The single agent for the full environment
-                archives daily.
+                Start a thread. Your messages are saved and archived daily.
               </p>
             ) : (
               state.messages.map((message) => (
