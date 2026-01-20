@@ -26,8 +26,8 @@
   "author": "Bickford",
   "license": "PROPRIETARY",
   "dependencies": {
-    "@bickford/core": "0.0.0",
-    "@bickford/types": "0.0.0",
+    "@bickford/core": "workspace:*",
+    "@bickford/types": "workspace:*",
     "react": "18.3.1"
   },
   "devDependencies": {
