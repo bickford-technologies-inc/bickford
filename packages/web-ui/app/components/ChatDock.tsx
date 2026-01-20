@@ -108,25 +108,33 @@ function normalizeMessages(
     .filter((message) => message.content.trim().length > 0);
 }
 
+function parseStoredState(raw: string | null): ChatState | null {
+  const stored = safeParse<ChatState>(raw);
+  if (!stored) {
+    return null;
+  }
+  return migrateUtcDates({
+    currentDate: stored.currentDate ?? todayKey(),
+    messages: Array.isArray(stored.messages)
+      ? normalizeMessages(stored.messages)
+      : [],
+    archives: Array.isArray(stored.archives)
+      ? stored.archives.map((archive) => ({
+          date: archive.date,
+          messages: normalizeMessages(archive.messages ?? []),
+        }))
+      : [],
+  });
+}
+
 function hydrateState(): ChatState {
   if (typeof window === "undefined") {
     return { currentDate: todayKey(), messages: [], archives: [] };
   }
 
-  const stored = safeParse<ChatState>(localStorage.getItem(STORAGE_KEY));
+  const stored = parseStoredState(localStorage.getItem(STORAGE_KEY));
   if (stored) {
-    return migrateUtcDates({
-      currentDate: stored.currentDate ?? todayKey(),
-      messages: Array.isArray(stored.messages)
-        ? normalizeMessages(stored.messages)
-        : [],
-      archives: Array.isArray(stored.archives)
-        ? stored.archives.map((archive) => ({
-            date: archive.date,
-            messages: normalizeMessages(archive.messages ?? []),
-          }))
-        : [],
-    });
+    return stored;
   }
 
   const legacyDaily = safeParse<ChatState>(
@@ -288,10 +296,14 @@ export default function ChatDock() {
     if (typeof window === "undefined") return;
 
     function handleStorage(event: StorageEvent) {
+      if (event.storageArea !== window.localStorage) {
+        return;
+      }
       if (event.key && event.key !== STORAGE_KEY) {
         return;
       }
-      setState(hydrateState());
+      const nextState = parseStoredState(event.newValue) ?? hydrateState();
+      setState(nextState);
     }
 
     window.addEventListener("storage", handleStorage);
