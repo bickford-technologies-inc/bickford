@@ -274,6 +274,24 @@ export default function ChatWindow() {
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    function handleStorage(event: StorageEvent) {
+      if (event.key && event.key !== STORAGE_KEY) {
+        return;
+      }
+      setState(hydrateState());
+    }
+
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
+
   function appendMessage(role: ChatRole, content: string) {
     const nextMessage: ChatMessage = {
       id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,

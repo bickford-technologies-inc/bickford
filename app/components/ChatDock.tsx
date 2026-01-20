@@ -282,6 +282,22 @@ export default function ChatDock() {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    function handleStorage(event: StorageEvent) {
+      if (event.key && event.key !== STORAGE_KEY) {
+        return;
+      }
+      setState(hydrateState());
+    }
+
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [state.messages]);
 
