@@ -22,7 +22,11 @@ type ChatState = {
   archives: ChatArchive[];
 };
 
-const STORAGE_KEY = "bickford.chat.daily.v1";
+const STORAGE_KEY = "bickford.chat.unified.v1";
+const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
+const LEGACY_HISTORY_KEY = "bickford.chat.history";
+const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
+const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const AGENT_NAME = "Bickford Unified Agent";
 
 function getTodayKey() {
@@ -235,7 +239,7 @@ export default function ChatWindow() {
     >
       <header style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <span style={{ fontSize: 14, letterSpacing: 0.4, opacity: 0.8 }}>
-          Unified Agent • Environment-wide
+          Unified Agent • Single environment agent
         </span>
         <strong style={{ fontSize: 18 }}>{AGENT_NAME}</strong>
         <span style={{ fontSize: 12, opacity: 0.7 }}>
