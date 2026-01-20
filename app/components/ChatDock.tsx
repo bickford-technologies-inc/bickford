@@ -213,7 +213,7 @@ export default function ChatDock() {
     }));
   }, [state.messages]);
 
-  const logEntries = useMemo(() => {
+  const logs = useMemo(() => {
     const entries: DailyArchive[] = [];
     if (state.messages.length > 0) {
       entries.push({ date: state.currentDate, messages: state.messages });
@@ -312,24 +312,24 @@ export default function ChatDock() {
                 </div>
               )
             ) : view === "logs" ? (
-              logEntries.length === 0 ? (
+              logs.length === 0 ? (
                 <div className="chatDockEmpty">
-                  No daily logs captured yet.
+                  No archived days yet. Start chatting to build a daily log.
                 </div>
               ) : (
                 <div className="chatDockList">
-                  {logEntries.map((entry) => (
-                    <div key={entry.date} className="chatDockLogGroup">
-                      <div className="chatDockLogDate">{entry.date}</div>
+                  {logs.map((entry) => (
+                    <div key={entry.date} className="chatDockDay">
+                      <div className="chatDockDayHeader">{entry.date}</div>
                       {entry.messages.map((message) => (
                         <div
                           key={message.id}
-                          className={`chatDockLogMessage ${message.role}`}
+                          className={`chatDockBubble ${message.role}`}
                         >
-                          <span className="chatDockLogRole">
+                          <div className="chatDockRole">
                             {message.role === "user" ? "You" : AGENT_NAME}
-                          </span>
-                          <span>{message.content}</span>
+                          </div>
+                          <div className="chatDockText">{message.content}</div>
                         </div>
                       ))}
                     </div>
