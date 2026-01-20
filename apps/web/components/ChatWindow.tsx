@@ -23,11 +23,11 @@ type ChatState = {
 };
 
 const STORAGE_KEY = "bickford.chat.daily.v1";
-const LEGACY_DAILY_KEY = "bickford.chat.daily";
+const LEGACY_DAILY_KEY = "bickford.chat.unified.v1";
 const LEGACY_HISTORY_KEY = "bickford.chat.history";
-const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
-const AGENT_NAME = "Bickford Unified Agent";
+const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
+const AGENT_NAME = "bickford";
 
 function getTodayKey() {
   return new Date().toISOString().slice(0, 10);
