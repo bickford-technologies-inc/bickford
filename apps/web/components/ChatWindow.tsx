@@ -22,11 +22,7 @@ type ChatState = {
   archives: ChatArchive[];
 };
 
-const STORAGE_KEY = "bickford.chat.unified.v1";
-const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
-const LEGACY_HISTORY_KEY = "bickford.chat.history";
-const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
-const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
+const STORAGE_KEY = "bickford.chat.daily.v1";
 const AGENT_NAME = "Bickford Unified Agent";
 
 function getTodayKey() {
@@ -168,20 +164,17 @@ export default function ChatWindow() {
   }, []);
 
   useEffect(() => {
-    persistState(state);
-  }, [state]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    const timer = window.setInterval(() => {
+    const interval = window.setInterval(() => {
       setState((prev) => {
         const reconciled = reconcileDaily(prev);
-        persistState(reconciled);
+        if (reconciled !== prev) {
+          persistState(reconciled);
+        }
         return reconciled;
       });
-    }, 15 * 60 * 1000);
+    }, 10 * 60 * 1000);
 
-    return () => window.clearInterval(timer);
+    return () => window.clearInterval(interval);
   }, []);
 
   const archivedDays = useMemo(() => state.archives.length, [state.archives]);
@@ -216,7 +209,7 @@ export default function ChatWindow() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Captured. I will include this in today's log and archive it at midnight.",
+      "Captured. I will include this in today's log and archive it daily."
     );
   }
 
@@ -242,7 +235,7 @@ export default function ChatWindow() {
     >
       <header style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <span style={{ fontSize: 14, letterSpacing: 0.4, opacity: 0.8 }}>
-          Single Agent • Environment-wide
+          Unified Agent • Environment-wide
         </span>
         <strong style={{ fontSize: 18 }}>{AGENT_NAME}</strong>
         <span style={{ fontSize: 12, opacity: 0.7 }}>
