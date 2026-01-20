@@ -222,6 +222,27 @@ export default function ChatWindow() {
     };
   }, []);
 
+  useEffect(() => {
+    function handleResume() {
+      setState((prev) => {
+        const reconciled = reconcileDaily(prev);
+        if (reconciled === prev) {
+          return prev;
+        }
+        persistState(reconciled);
+        return reconciled;
+      });
+    }
+
+    window.addEventListener("focus", handleResume);
+    window.addEventListener("visibilitychange", handleResume);
+
+    return () => {
+      window.removeEventListener("focus", handleResume);
+      window.removeEventListener("visibilitychange", handleResume);
+    };
+  }, []);
+
   function appendMessage(role: ChatRole, content: string) {
     const nextMessage: ChatMessage = {
       id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
