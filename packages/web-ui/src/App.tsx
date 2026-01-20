@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import UnifiedChatDock from "./components/UnifiedChatDock";
 
 type Msg = { id: string; role: "user" | "assistant"; content: string };
 type Thread = { id: string; title: string; messages: Msg[] };
@@ -93,6 +94,7 @@ export default function App() {
           <button className="secondary">Export</button>
         </footer>
       </main>
+      <UnifiedChatDock />
     </div>
   );
 }
