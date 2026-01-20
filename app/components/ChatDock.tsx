@@ -219,6 +219,14 @@ export default function ChatDock() {
     return [...today, ...state.archives];
   }, [state.archives, state.currentDate, state.messages]);
 
+  const logs = useMemo(() => {
+    const entries: DailyArchive[] = [];
+    if (state.messages.length > 0) {
+      entries.push({ date: state.currentDate, messages: state.messages });
+    }
+    return entries.concat(state.archives);
+  }, [state]);
+
   function sendMessage() {
     const trimmed = input.trim();
     if (!trimmed) return;
