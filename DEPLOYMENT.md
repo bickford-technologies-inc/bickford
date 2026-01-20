@@ -239,18 +239,18 @@ This validates:
 ### Monorepo Configuration
 
 The repository uses pnpm workspaces with the following configuration:
-- Package manager pinned to `pnpm@9.15.0` in root `package.json`
-- All workspace dependencies use `workspace:*` protocol
-- The root `pnpm.overrides` enforces `@bickford/*: workspace:*` for all internal packages
+- Package manager pinned to `pnpm@10.28.0` in root `package.json`
+- All internal workspace dependencies use explicit versions (no `workspace:*`)
+- The root build command includes workspace integrity guards
 - Build command in `vercel.json` includes workspace integrity guard
 
 ### Troubleshooting
 
 If you encounter `ERR_PNPM_NO_MATCHING_VERSION_INSIDE_WORKSPACE`:
 1. Verify `ENABLE_EXPERIMENTAL_COREPACK=1` is set in Vercel environment variables
-2. Ensure all `@bickford/*` dependencies use `workspace:*` in package.json files
+2. Ensure all `@bickford/*` dependencies use explicit versions in package.json files
 3. Check that the workspace package exists in `packages/` or `apps/` directory
-4. The root package.json should have `"packageManager": "pnpm@9.15.0"`
+4. The root package.json should have `"packageManager": "pnpm@10.28.0"`
 
 ## Apple/iOS Install (Add to Home Screen)
 

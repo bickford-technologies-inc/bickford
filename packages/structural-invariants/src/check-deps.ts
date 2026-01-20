@@ -10,6 +10,7 @@ export async function runCheckDeps() {
   const ROOT = process.cwd();
   const WORKSPACES = ["apps/*", "packages/*"];
   const AUTO_FIX = process.argv.includes("--autofix");
+  const INTERNAL_SCOPE = "@bickford/";
 
   function readJSON(p: string) {
     return JSON.parse(fs.readFileSync(p, "utf8"));
@@ -31,6 +32,19 @@ export async function runCheckDeps() {
     return spec.startsWith("@")
       ? spec.split("/").slice(0, 2).join("/")
       : spec.split("/")[0];
+  }
+
+  const versionMap = new Map<string, string>();
+  for (const wsPattern of WORKSPACES) {
+    const dirs = glob.sync(wsPattern, { onlyDirectories: true });
+    for (const dir of dirs) {
+      const pkgPath = path.join(dir, "package.json");
+      if (!fs.existsSync(pkgPath)) continue;
+      const pkg = readJSON(pkgPath);
+      if (pkg.name && pkg.version) {
+        versionMap.set(pkg.name, pkg.version);
+      }
+    }
   }
 
   let failed = false;
@@ -85,7 +99,11 @@ export async function runCheckDeps() {
         if (!declared.has(dep)) {
           if (AUTO_FIX) {
             pkg.dependencies ||= {};
-            pkg.dependencies[dep] = "workspace:*";
+            const resolvedVersion =
+              dep.startsWith(INTERNAL_SCOPE) && versionMap.get(dep)
+                ? versionMap.get(dep)
+                : "*";
+            pkg.dependencies[dep] = resolvedVersion;
             console.log(`🔧 autofix: ${dir} → ${dep}`);
           } else {
             console.error(

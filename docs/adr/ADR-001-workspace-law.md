@@ -48,16 +48,16 @@ All workspace behavior is governed by **mechanically enforced invariants**, not 
 ### 2. Namespace Law
 
 - All internal packages live under `@bickford/*`
-- No external package may use `workspace:*`
+- No package may use `workspace:*`
 - No internal package may escape the workspace
 
 ---
 
 ### 3. Version Law
 
-- All internal packages use `workspace:*`
-- No semver ranges for internal dependencies
-- Package versions are informational only
+- All internal packages use explicit versions
+- No workspace protocol for internal dependencies
+- Package versions must align with dependency versions
 
 ---
 
