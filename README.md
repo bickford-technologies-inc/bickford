@@ -37,12 +37,35 @@ No approval gates. No manual steps. No "save draft" buttons.
 - **Ledger** - Append-only Postgres log (every execution recorded)
 - **Session Completion** - Event capture with <5ms p99 latency
 - **Claude Integration** - Optional AI-powered intent parsing
+- **Web UI** - Next.js application (`packages/web-ui`) for Vercel deployment
+
+### Packages
+
+This is a monorepo with the following key packages:
+
+- **`packages/web-ui`** - Next.js web application (Vercel-ready)
+- **`packages/ledger`** - Immutable ledger implementation
+- **`packages/execution-convergence`** - Execution runtime
+- **`packages/types`** - Shared TypeScript types
+- **`packages/session-completion-runtime`** - Session event capture
+
+All workspace packages use source-first mode - Next.js transpiles TypeScript directly without pre-compilation.
 
 ## Deployment
 
 **Production:** https://bickford.vercel.app
 
 **Deploy:** `git push origin main` (auto-deploys via Vercel)
+
+### Vercel Deployment
+
+The `packages/web-ui` package is configured for seamless Vercel deployment:
+
+1. **Automatic**: Push to `main` triggers deployment via GitHub integration
+2. **Manual**: Use Vercel CLI - `vercel --prod` from repository root
+3. **Configuration**: See `vercel.json` for build settings and security headers
+
+For detailed web UI setup and deployment instructions, see [`packages/web-ui/README.md`](packages/web-ui/README.md).
 
 ## API
 
