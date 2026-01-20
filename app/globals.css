@@ -6,6 +6,85 @@
 body {
   margin: 0;
   min-height: 100vh;
+  background: #000;
+  color: #fff;
+}
+
+.bickfordApp {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.bickfordTopbar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.bickfordTopRight {
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+.bickfordMain {
+  padding: 32px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.bickfordPanel {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bickfordPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bickfordPanelHeader h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.bickfordTag {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.bickfordPanelBody {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.bickfordPanelList {
+  margin: 0;
+  padding-left: 16px;
+  display: grid;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
 }
 
 .chatDock {
@@ -125,6 +204,10 @@ body {
 }
 
 @media (max-width: 640px) {
+  .bickfordMain {
+    padding: 20px;
+  }
+
   .chatDock {
     right: 12px;
     left: 12px;
