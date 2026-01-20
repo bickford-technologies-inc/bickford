@@ -1,3 +1,3 @@
-export * from "./types";
-export * from "./audit";
-export * from "./invariants";
+export type { AuditRecord } from "./types";
+export { createAudit } from "./audit";
+export { auditorInvariants } from "./invariants";
