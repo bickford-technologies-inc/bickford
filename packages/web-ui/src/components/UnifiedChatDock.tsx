@@ -29,9 +29,15 @@ const LEGACY_HISTORY_KEY = "bickford.chat.history";
 const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
 const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const AGENT_NAME = "bickford";
+const ARCHIVE_NOTE =
+  "single agent for the full environment • archives daily at local midnight";
 
 function todayKey() {
-  return new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function safeParse<T>(raw: string | null): T | null {
@@ -195,15 +201,18 @@ export default function UnifiedChatDock() {
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
-    const timer = window.setInterval(() => {
-      setState((prev) => {
-        const reconciled = reconcileDay(prev);
-        if (reconciled !== prev) {
-          persist(reconciled);
-        }
-        return reconciled;
-      });
-    }, 15 * 60 * 1000);
+    const timer = window.setInterval(
+      () => {
+        setState((prev) => {
+          const reconciled = reconcileDay(prev);
+          if (reconciled !== prev) {
+            persist(reconciled);
+          }
+          return reconciled;
+        });
+      },
+      15 * 60 * 1000,
+    );
 
     return () => window.clearInterval(timer);
   }, []);
@@ -241,7 +250,7 @@ export default function UnifiedChatDock() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Acknowledged. The single environment agent will archive today’s history.",
+      `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive today’s history at local midnight.`,
     );
   }
 
@@ -251,8 +260,7 @@ export default function UnifiedChatDock() {
         <div>
           <div className="chatDockTitle">Unified Agent</div>
           <div className="chatDockSubtitle">
-            {AGENT_NAME} • single agent for the full environment • archives
-            daily • {archivedCount} saved
+            {AGENT_NAME} • {ARCHIVE_NOTE} • {archivedCount} saved
           </div>
         </div>
         <button className="dockToggle" onClick={() => setIsOpen(!isOpen)}>
