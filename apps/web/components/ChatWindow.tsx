@@ -2,13 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-type ChatAuthor = "user" | "agent";
+type ChatRole = "user" | "agent";
 
 type ChatMessage = {
   id: string;
-  author: ChatAuthor;
-  text: string;
-  timestamp: string;
+  role: ChatRole;
+  content: string;
+  timestamp: number;
 };
 
 type ChatArchive = {
@@ -22,11 +22,53 @@ type ChatState = {
   archives: ChatArchive[];
 };
 
-const STORAGE_KEY = "bickford.chat.daily.v1";
-const AGENT_NAME = "Bickford Agent";
+const STORAGE_KEY = "bickford.chat.unified.v1";
+const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
+const LEGACY_HISTORY_KEY = "bickford.chat.history";
+const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
+const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
+const AGENT_NAME = "Bickford Unified Agent";
 
 function getTodayKey() {
   return new Date().toISOString().slice(0, 10);
+}
+
+function safeParse<T>(raw: string | null): T | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeMessages(
+  messages: Array<{
+    id?: string;
+    role?: string;
+    content?: string;
+    text?: string;
+    author?: string;
+    timestamp?: number | string;
+  }>,
+): ChatMessage[] {
+  return messages
+    .filter((message) => message)
+    .map((message) => {
+      const role = message.role ?? message.author ?? "agent";
+      return {
+        id: message.id ?? crypto.randomUUID(),
+        role: role === "user" ? "user" : "agent",
+        content: message.content ?? message.text ?? "",
+        timestamp:
+          typeof message.timestamp === "number"
+            ? message.timestamp
+            : Number.isFinite(Date.parse(String(message.timestamp)))
+              ? Date.parse(String(message.timestamp))
+              : Date.now(),
+      };
+    })
+    .filter((message) => message.content.trim().length > 0);
 }
 
 function hydrateState(): ChatState {
@@ -34,24 +76,58 @@ function hydrateState(): ChatState {
     return { currentDate: getTodayKey(), messages: [], archives: [] };
   }
 
-  const raw = window.localStorage.getItem(STORAGE_KEY);
-  if (!raw) {
-    return { currentDate: getTodayKey(), messages: [], archives: [] };
+  const stored = safeParse<ChatState>(window.localStorage.getItem(STORAGE_KEY));
+  if (stored) {
+    return {
+      currentDate: stored.currentDate ?? getTodayKey(),
+      messages: Array.isArray(stored.messages)
+        ? normalizeMessages(stored.messages)
+        : [],
+      archives: Array.isArray(stored.archives)
+        ? stored.archives.map((archive) => ({
+            date: archive.date,
+            messages: normalizeMessages(archive.messages ?? []),
+          }))
+        : [],
+    };
   }
 
-  try {
-    const parsed = JSON.parse(raw) as ChatState;
-    if (!parsed || typeof parsed !== "object") {
-      return { currentDate: getTodayKey(), messages: [], archives: [] };
-    }
+  const legacyDaily = safeParse<ChatState>(
+    window.localStorage.getItem(LEGACY_DAILY_KEY),
+  );
+  if (legacyDaily) {
     return {
-      currentDate: parsed.currentDate ?? getTodayKey(),
-      messages: Array.isArray(parsed.messages) ? parsed.messages : [],
-      archives: Array.isArray(parsed.archives) ? parsed.archives : [],
+      currentDate: legacyDaily.currentDate ?? getTodayKey(),
+      messages: Array.isArray(legacyDaily.messages)
+        ? normalizeMessages(legacyDaily.messages)
+        : [],
+      archives: Array.isArray(legacyDaily.archives)
+        ? legacyDaily.archives.map((archive) => ({
+            date: archive.date,
+            messages: normalizeMessages(archive.messages ?? []),
+          }))
+        : [],
     };
-  } catch {
-    return { currentDate: getTodayKey(), messages: [], archives: [] };
   }
+
+  const legacyMessages = safeParse<ChatMessage[]>(
+    window.localStorage.getItem(LEGACY_HISTORY_KEY),
+  );
+  const legacyArchives = safeParse<ChatArchive[]>(
+    window.localStorage.getItem(LEGACY_ARCHIVE_KEY),
+  );
+  const legacyDay = window.localStorage.getItem(LEGACY_HISTORY_DAY_KEY);
+
+  return {
+    currentDate: legacyDay ?? getTodayKey(),
+    messages: Array.isArray(legacyMessages) ? normalizeMessages(legacyMessages) : [],
+    archives: Array.isArray(legacyArchives)
+      ? legacyArchives.map((archive) => ({
+          date: archive.date,
+          messages: normalizeMessages(archive.messages ?? []),
+        }))
+      : [],
+  };
 }
 
 function reconcileDaily(state: ChatState): ChatState {
@@ -73,6 +149,10 @@ function persistState(state: ChatState) {
     return;
   }
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  window.localStorage.removeItem(LEGACY_DAILY_KEY);
+  window.localStorage.removeItem(LEGACY_HISTORY_KEY);
+  window.localStorage.removeItem(LEGACY_HISTORY_DAY_KEY);
+  window.localStorage.removeItem(LEGACY_ARCHIVE_KEY);
 }
 
 export default function ChatWindow() {
@@ -87,14 +167,31 @@ export default function ChatWindow() {
     });
   }, []);
 
+  useEffect(() => {
+    persistState(state);
+  }, [state]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const timer = window.setInterval(() => {
+      setState((prev) => {
+        const reconciled = reconcileDaily(prev);
+        persistState(reconciled);
+        return reconciled;
+      });
+    }, 15 * 60 * 1000);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
   const archivedDays = useMemo(() => state.archives.length, [state.archives]);
 
-  function appendMessage(author: ChatAuthor, text: string) {
+  function appendMessage(role: ChatRole, content: string) {
     const nextMessage: ChatMessage = {
       id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-      author,
-      text,
-      timestamp: new Date().toISOString(),
+      role,
+      content,
+      timestamp: Date.now(),
     };
 
     setState((prev) => {
@@ -119,7 +216,7 @@ export default function ChatWindow() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Captured. I will include this in today's log and archive it at midnight."
+      "Captured. I will include this in today's log and archive it at midnight.",
     );
   }
 
@@ -174,7 +271,7 @@ export default function ChatWindow() {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                alignSelf: message.author === "user" ? "flex-end" : "flex-start",
+                alignSelf: message.role === "user" ? "flex-end" : "flex-start",
                 gap: 4,
                 maxWidth: "85%",
               }}
@@ -187,20 +284,20 @@ export default function ChatWindow() {
                   opacity: 0.6,
                 }}
               >
-                {message.author === "user" ? "You" : AGENT_NAME}
+                {message.role === "user" ? "You" : AGENT_NAME}
               </span>
               <div
                 style={{
                   padding: "8px 12px",
                   borderRadius: 12,
                   background:
-                    message.author === "user"
+                    message.role === "user"
                       ? "rgba(59, 130, 246, 0.9)"
                       : "rgba(39, 39, 42, 0.9)",
                 }}
               >
                 <span style={{ fontSize: 14, lineHeight: 1.4 }}>
-                  {message.text}
+                  {message.content}
                 </span>
               </div>
             </div>
