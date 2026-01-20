@@ -120,7 +120,9 @@ function hydrateState(): ChatState {
 
   return {
     currentDate: legacyDay ?? todayKey(),
-    messages: Array.isArray(legacyMessages) ? normalizeMessages(legacyMessages) : [],
+    messages: Array.isArray(legacyMessages)
+      ? normalizeMessages(legacyMessages)
+      : [],
     archives: Array.isArray(legacyArchives)
       ? legacyArchives.map((archive) => ({
           date: archive.date,
@@ -162,6 +164,7 @@ export default function ChatDock() {
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const placeholder = useMemo(() => "Ask a question with /plan", []);
 
   useEffect(() => {
     setState((prev) => {
@@ -191,8 +194,6 @@ export default function ChatDock() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [state.messages]);
-
-  const placeholder = useMemo(() => "Ask a question with /plan", []);
 
   function sendMessage() {
     const trimmed = input.trim();
@@ -225,24 +226,70 @@ export default function ChatDock() {
   }
 
   return (
-    <section className={`chatDock ${isOpen ? "open" : "closed"}`}>
-      <header className="chatDockHeader">
+    <section
+      style={{
+        position: "fixed",
+        right: 20,
+        bottom: 20,
+        width: "min(360px, calc(100vw - 40px))",
+        borderRadius: 16,
+        border: "1px solid rgba(148, 163, 184, 0.35)",
+        background: "rgba(15, 23, 42, 0.95)",
+        color: "#e2e8f0",
+        boxShadow: "0 16px 40px rgba(15, 23, 42, 0.25)",
+        backdropFilter: "blur(14px)",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        zIndex: 50,
+      }}
+    >
+      <header
+        style={{
+          padding: "14px 16px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          background: "rgba(30, 41, 59, 0.8)",
+          borderBottom: "1px solid rgba(148, 163, 184, 0.25)",
+        }}
+      >
         <div>
-          <div className="chatDockTitle">Unified Chat</div>
-          <div className="chatDockSubtitle">
+          <div style={{ fontWeight: 600, fontSize: 14 }}>Unified Chat</div>
+          <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.7)" }}>
             {AGENT_NAME} • single agent • archives daily
           </div>
         </div>
-        <button className="chatDockToggle" onClick={() => setIsOpen(!isOpen)}>
+        <button
+          style={{
+            border: "1px solid rgba(148, 163, 184, 0.35)",
+            background: "rgba(15, 23, 42, 0.8)",
+            color: "inherit",
+            borderRadius: 999,
+            padding: "6px 12px",
+            fontSize: 12,
+            cursor: "pointer",
+          }}
+          onClick={() => setIsOpen(!isOpen)}
+        >
           {isOpen ? "Minimize" : "Chat"}
         </button>
       </header>
 
       {isOpen ? (
         <>
-          <div className="chatDockBody">
+          <div
+            style={{
+              maxHeight: 320,
+              overflowY: "auto",
+              padding: "14px 16px 10px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+            }}
+          >
             {state.messages.length === 0 ? (
-              <div className="chatDockEmpty">
+              <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.65)" }}>
                 Start a conversation. The single environment agent archives
                 history daily.
               </div>
@@ -250,22 +297,73 @@ export default function ChatDock() {
               state.messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`chatDockBubble ${message.role}`}
+                  style={{
+                    borderRadius: 12,
+                    padding: "10px 12px",
+                    background:
+                      message.role === "user"
+                        ? "rgba(56, 189, 248, 0.25)"
+                        : "rgba(30, 41, 59, 0.6)",
+                    border: `1px solid ${
+                      message.role === "user"
+                        ? "rgba(56, 189, 248, 0.4)"
+                        : "rgba(148, 163, 184, 0.2)"
+                    }`,
+                    alignSelf: message.role === "user" ? "flex-end" : "stretch",
+                  }}
                 >
-                  <div className="chatDockRole">
+                  <div
+                    style={{
+                      fontSize: 11,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.08em",
+                      color: "rgba(226, 232, 240, 0.6)",
+                      marginBottom: 6,
+                    }}
+                  >
                     {message.role === "user" ? "You" : AGENT_NAME}
                   </div>
-                  <div className="chatDockText">{message.content}</div>
+                  <div style={{ fontSize: 13, lineHeight: 1.4 }}>
+                    {message.content}
+                  </div>
                 </div>
               ))
             )}
             <div ref={bottomRef} />
           </div>
 
-          <footer className="chatDockFooter">
-            <div className="chatDockComposer">
+          <footer
+            style={{
+              padding: "12px 16px 16px",
+              borderTop: "1px solid rgba(148, 163, 184, 0.25)",
+              background: "rgba(15, 23, 42, 0.75)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 8px",
+                borderRadius: 999,
+                background: "rgba(45, 45, 45, 0.9)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+              }}
+            >
               <button
-                className="chatDockIconButton"
+                style={{
+                  border: "none",
+                  background: "rgba(60, 60, 60, 0.9)",
+                  color: "#fff",
+                  borderRadius: 999,
+                  width: 28,
+                  height: 28,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  fontSize: 14,
+                }}
                 type="button"
                 aria-label="Add context"
               >
@@ -281,16 +379,48 @@ export default function ChatDock() {
                     sendMessage();
                   }
                 }}
+                style={{
+                  flex: 1,
+                  padding: "8px 4px",
+                  border: "none",
+                  background: "transparent",
+                  color: "inherit",
+                  fontSize: 13,
+                }}
               />
               <button
-                className="chatDockIconButton"
+                style={{
+                  border: "none",
+                  background: "rgba(60, 60, 60, 0.9)",
+                  color: "#fff",
+                  borderRadius: 999,
+                  width: 28,
+                  height: 28,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  fontSize: 14,
+                }}
                 type="button"
                 aria-label="Record voice note"
               >
                 🎤
               </button>
               <button
-                className="chatDockIconButton primary"
+                style={{
+                  border: "none",
+                  background: "#4b5563",
+                  color: "#fff",
+                  borderRadius: 999,
+                  width: 28,
+                  height: 28,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  fontSize: 14,
+                }}
                 type="button"
                 onClick={sendMessage}
                 aria-label="Send message"
