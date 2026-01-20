@@ -212,6 +212,13 @@ export default function ChatDock() {
       conflict: counts[item.key] > 1,
     }));
   }, [state.messages]);
+  const logs = useMemo(() => {
+    const today = state.messages.length
+      ? [{ date: state.currentDate, messages: state.messages }]
+      : [];
+    return [...today, ...state.archives];
+  }, [state.archives, state.currentDate, state.messages]);
+  const archiveCount = logs.length;
 
   function sendMessage() {
     const trimmed = input.trim();
@@ -228,7 +235,7 @@ export default function ChatDock() {
       id: crypto.randomUUID(),
       role: "agent",
       content:
-        `Acknowledged. The single environment agent (${AGENT_NAME}) will archive today’s history automatically.`,
+        `Acknowledged. The single environment agent (${AGENT_NAME}) will archive today’s history automatically at day rollover.`,
       timestamp: Date.now(),
     };
 
@@ -250,7 +257,8 @@ export default function ChatDock() {
         <div>
           <div className="chatDockTitle">{AGENT_NAME}</div>
           <div className="chatDockSubtitle">
-            single agent • archives daily
+            single agent • daily archive • today {state.currentDate} • {archiveCount}{" "}
+            {archiveCount === 1 ? "day" : "days"} retained
           </div>
         </div>
         <div className="chatDockActions">
@@ -299,6 +307,36 @@ export default function ChatDock() {
                           ? "Conflict: overlaps with an existing decision"
                           : "Conflict: none"}
                       </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : view === "logs" ? (
+              logs.length === 0 ? (
+                <div className="chatDockEmpty">
+                  No archived days yet. Start chatting to build a daily log.
+                </div>
+              ) : (
+                <div className="chatDockList">
+                  {logs.map((archive) => (
+                    <div key={archive.date} className="chatDockDay">
+                      <div className="chatDockDayHeader">
+                        <span>{archive.date}</span>
+                        <span>{archive.messages.length} msgs</span>
+                      </div>
+                      {archive.messages.map((message) => (
+                        <div
+                          key={message.id}
+                          className={`chatDockBubble ${message.role}`}
+                        >
+                          <div className="chatDockRole">
+                            {message.role === "user" ? "You" : AGENT_NAME}
+                          </div>
+                          <div className="chatDockText">
+                            {message.content}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   ))}
                 </div>

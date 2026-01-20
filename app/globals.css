@@ -89,10 +89,11 @@ body {
 
 .chatDock {
   position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  border-radius: 0;
+  right: 24px;
+  bottom: 24px;
+  width: min(380px, calc(100vw - 32px));
+  height: min(560px, calc(100vh - 32px));
+  border-radius: 20px;
   border: 1px solid rgba(148, 163, 184, 0.35);
   background: rgba(15, 23, 42, 0.95);
   color: #e2e8f0;
@@ -106,6 +107,7 @@ body {
 
 .chatDock.closed {
   height: auto;
+  width: min(320px, calc(100vw - 32px));
 }
 
 .chatDockHeader {
@@ -216,6 +218,22 @@ body {
   color: rgba(226, 232, 240, 0.7);
 }
 
+.chatDockDay {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chatDockDayHeader {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(226, 232, 240, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .chatDockFooter {
   padding: 12px 16px 16px;
   border-top: 1px solid rgba(148, 163, 184, 0.25);
@@ -279,5 +297,16 @@ body {
 @media (max-width: 640px) {
   .bickfordMain {
     padding: 20px;
+  }
+
+  .chatDock {
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .chatDock.closed {
+    width: 100vw;
   }
 }
