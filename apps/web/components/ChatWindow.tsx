@@ -158,6 +158,7 @@ function persistState(state: ChatState) {
 export default function ChatWindow() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
   const [input, setInput] = useState("");
+  const [isOpen, setIsOpen] = useState(true);
   const [view, setView] = useState<"chat" | "logs" | "decisions">("chat");
 
   useEffect(() => {
@@ -274,261 +275,291 @@ export default function ChatWindow() {
               single agent • archives daily
             </span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div
+            style={{
+              marginLeft: "auto",
+              display: "flex",
+              gap: 8,
+              alignItems: "center",
+            }}
+          >
+            {isOpen ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setView("chat")}
+                  style={{
+                    padding: "6px 10px",
+                    borderRadius: 999,
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    background:
+                      view === "chat"
+                        ? "rgba(59, 130, 246, 0.4)"
+                        : "rgba(8, 8, 12, 0.8)",
+                    color: "#f4f4f5",
+                    fontSize: 12,
+                    cursor: "pointer",
+                  }}
+                >
+                  Chat
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setView("logs")}
+                  style={{
+                    padding: "6px 10px",
+                    borderRadius: 999,
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    background:
+                      view === "logs"
+                        ? "rgba(59, 130, 246, 0.4)"
+                        : "rgba(8, 8, 12, 0.8)",
+                    color: "#f4f4f5",
+                    fontSize: 12,
+                    cursor: "pointer",
+                  }}
+                >
+                  Logs
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setView("decisions")}
+                  style={{
+                    padding: "6px 10px",
+                    borderRadius: 999,
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    background:
+                      view === "decisions"
+                        ? "rgba(59, 130, 246, 0.4)"
+                        : "rgba(8, 8, 12, 0.8)",
+                    color: "#f4f4f5",
+                    fontSize: 12,
+                    cursor: "pointer",
+                  }}
+                >
+                  Decisions
+                </button>
+              </>
+            ) : null}
             <button
               type="button"
-              onClick={() => setView("chat")}
+              onClick={() => setIsOpen((open) => !open)}
               style={{
                 padding: "6px 10px",
                 borderRadius: 999,
                 border: "1px solid rgba(255, 255, 255, 0.2)",
-                background:
-                  view === "chat"
-                    ? "rgba(59, 130, 246, 0.4)"
-                    : "rgba(8, 8, 12, 0.8)",
+                background: "rgba(8, 8, 12, 0.8)",
                 color: "#f4f4f5",
                 fontSize: 12,
                 cursor: "pointer",
               }}
             >
-              Chat
-            </button>
-            <button
-              type="button"
-              onClick={() => setView("logs")}
-              style={{
-                padding: "6px 10px",
-                borderRadius: 999,
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                background:
-                  view === "logs"
-                    ? "rgba(59, 130, 246, 0.4)"
-                    : "rgba(8, 8, 12, 0.8)",
-                color: "#f4f4f5",
-                fontSize: 12,
-                cursor: "pointer",
-              }}
-            >
-              Logs
-            </button>
-            <button
-              type="button"
-              onClick={() => setView("decisions")}
-              style={{
-                padding: "6px 10px",
-                borderRadius: 999,
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                background:
-                  view === "decisions"
-                    ? "rgba(59, 130, 246, 0.4)"
-                    : "rgba(8, 8, 12, 0.8)",
-                color: "#f4f4f5",
-                fontSize: 12,
-                cursor: "pointer",
-              }}
-            >
-              Decisions
+              {isOpen ? "Minimize" : "Open"}
             </button>
           </div>
         </div>
       </header>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-          overflowY: "auto",
-          paddingRight: 4,
-          flex: 1,
-        }}
-      >
-        {view === "decisions" ? (
-          decisions.length === 0 ? (
-            <p style={{ fontSize: 13, opacity: 0.7 }}>
-              No decisions captured yet.
-            </p>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {decisions.map((decision) => (
-                <div
-                  key={decision.id}
-                  style={{
-                    padding: "12px 14px",
-                    borderRadius: 12,
-                    background: "rgba(39, 39, 42, 0.9)",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 6,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 11,
-                      textTransform: "uppercase",
-                      letterSpacing: 0.6,
-                      opacity: 0.6,
-                    }}
-                  >
-                    Decision
-                  </span>
-                  <span style={{ fontSize: 14 }}>{decision.content}</span>
-                  <span style={{ fontSize: 12, opacity: 0.7 }}>
-                    {decision.conflict
-                      ? "Conflict: overlaps with an existing decision"
-                      : "Conflict: none"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )
-        ) : view === "logs" ? (
-          logEntries.length === 0 ? (
-            <p style={{ fontSize: 13, opacity: 0.7 }}>
-              No daily logs captured yet.
-            </p>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {logEntries.map((entry) => (
-                <div
-                  key={entry.date}
-                  style={{
-                    padding: "12px 14px",
-                    borderRadius: 12,
-                    background: "rgba(39, 39, 42, 0.7)",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 8,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 11,
-                      textTransform: "uppercase",
-                      letterSpacing: 0.6,
-                      opacity: 0.6,
-                    }}
-                  >
-                    {entry.date}
-                  </span>
-                  {entry.messages.map((message) => (
+      {isOpen ? (
+        <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              overflowY: "auto",
+              paddingRight: 4,
+              flex: 1,
+            }}
+          >
+            {view === "decisions" ? (
+              decisions.length === 0 ? (
+                <p style={{ fontSize: 13, opacity: 0.7 }}>
+                  No decisions captured yet.
+                </p>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {decisions.map((decision) => (
                     <div
-                      key={message.id}
+                      key={decision.id}
                       style={{
+                        padding: "12px 14px",
+                        borderRadius: 12,
+                        background: "rgba(39, 39, 42, 0.9)",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
                         display: "flex",
                         flexDirection: "column",
-                        gap: 4,
-                        fontSize: 12,
+                        gap: 6,
                       }}
                     >
-                      <span style={{ opacity: 0.7 }}>
-                        {message.role === "user" ? "You" : AGENT_NAME}
+                      <span
+                        style={{
+                          fontSize: 11,
+                          textTransform: "uppercase",
+                          letterSpacing: 0.6,
+                          opacity: 0.6,
+                        }}
+                      >
+                        Decision
                       </span>
-                      <span>{message.content}</span>
+                      <span style={{ fontSize: 14 }}>{decision.content}</span>
+                      <span style={{ fontSize: 12, opacity: 0.7 }}>
+                        {decision.conflict
+                          ? "Conflict: overlaps with an existing decision"
+                          : "Conflict: none"}
+                      </span>
                     </div>
                   ))}
                 </div>
-              ))}
-            </div>
-          )
-        ) : state.messages.length === 0 ? (
-          <p style={{ fontSize: 13, opacity: 0.7 }}>
-            Start a thread. Your messages are saved automatically.
-          </p>
-        ) : (
-          state.messages.map((message) => (
-            <div
-              key={message.id}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignSelf: message.role === "user" ? "flex-end" : "flex-start",
-                gap: 4,
-                maxWidth: "85%",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 12,
-                  textTransform: "uppercase",
-                  letterSpacing: 0.4,
-                  opacity: 0.6,
-                }}
-              >
-                {message.role === "user" ? "You" : AGENT_NAME}
-              </span>
-              <div
-                style={{
-                  padding: "8px 12px",
-                  borderRadius: 12,
-                  background:
-                    message.role === "user"
-                      ? "rgba(59, 130, 246, 0.9)"
-                      : "rgba(39, 39, 42, 0.9)",
-                }}
-              >
-                <span style={{ fontSize: 14, lineHeight: 1.4 }}>
-                  {message.content}
-                </span>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+              )
+            ) : view === "logs" ? (
+              logEntries.length === 0 ? (
+                <p style={{ fontSize: 13, opacity: 0.7 }}>
+                  No daily logs captured yet.
+                </p>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {logEntries.map((entry) => (
+                    <div
+                      key={entry.date}
+                      style={{
+                        padding: "12px 14px",
+                        borderRadius: 12,
+                        background: "rgba(39, 39, 42, 0.7)",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 8,
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: 11,
+                          textTransform: "uppercase",
+                          letterSpacing: 0.6,
+                          opacity: 0.6,
+                        }}
+                      >
+                        {entry.date}
+                      </span>
+                      {entry.messages.map((message) => (
+                        <div
+                          key={message.id}
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 4,
+                            fontSize: 12,
+                          }}
+                        >
+                          <span style={{ opacity: 0.7 }}>
+                            {message.role === "user" ? "You" : AGENT_NAME}
+                          </span>
+                          <span>{message.content}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : state.messages.length === 0 ? (
+              <p style={{ fontSize: 13, opacity: 0.7 }}>
+                Start a thread. The single environment agent archives daily.
+              </p>
+            ) : (
+              state.messages.map((message) => (
+                <div
+                  key={message.id}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignSelf: message.role === "user" ? "flex-end" : "flex-start",
+                    gap: 4,
+                    maxWidth: "85%",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 12,
+                      textTransform: "uppercase",
+                      letterSpacing: 0.4,
+                      opacity: 0.6,
+                    }}
+                  >
+                    {message.role === "user" ? "You" : AGENT_NAME}
+                  </span>
+                  <div
+                    style={{
+                      padding: "8px 12px",
+                      borderRadius: 12,
+                      background:
+                        message.role === "user"
+                          ? "rgba(59, 130, 246, 0.9)"
+                          : "rgba(39, 39, 42, 0.9)",
+                    }}
+                  >
+                    <span style={{ fontSize: 14, lineHeight: 1.4 }}>
+                      {message.content}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
 
-      {view === "decisions" ? null : (
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: "flex", gap: 8, alignItems: "center" }}
-        >
-          <select
-            aria-label="Intent"
-            defaultValue="intent-question"
-            style={{
-              padding: "8px 10px",
-              borderRadius: 999,
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              background: "rgba(39, 39, 42, 0.9)",
-              color: "#f4f4f5",
-              fontSize: 12,
-            }}
-          >
-            <option value="intent-question">Intent: Question</option>
-            <option value="intent-decision">Intent: Decision</option>
-            <option value="intent-plan">Intent: Plan</option>
-          </select>
-          <input
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-            placeholder="Share a thought or decision..."
-            style={{
-              flex: 1,
-              padding: "10px 12px",
-              borderRadius: 10,
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              background: "rgba(8, 8, 12, 0.8)",
-              color: "#f4f4f5",
-              fontSize: 14,
-            }}
-          />
-          <button
-            type="submit"
-            style={{
-              padding: "10px 14px",
-              borderRadius: 10,
-              border: "none",
-              background: "#22c55e",
-              color: "#0f172a",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            Send
-          </button>
-        </form>
-      )}
+          {view === "decisions" ? null : (
+            <form
+              onSubmit={handleSubmit}
+              style={{ display: "flex", gap: 8, alignItems: "center" }}
+            >
+              <select
+                aria-label="Intent"
+                defaultValue="intent-question"
+                style={{
+                  padding: "8px 10px",
+                  borderRadius: 999,
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  background: "rgba(39, 39, 42, 0.9)",
+                  color: "#f4f4f5",
+                  fontSize: 12,
+                }}
+              >
+                <option value="intent-question">Intent: Question</option>
+                <option value="intent-decision">Intent: Decision</option>
+                <option value="intent-plan">Intent: Plan</option>
+              </select>
+              <input
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                placeholder="Share a thought or decision..."
+                style={{
+                  flex: 1,
+                  padding: "10px 12px",
+                  borderRadius: 10,
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  background: "rgba(8, 8, 12, 0.8)",
+                  color: "#f4f4f5",
+                  fontSize: 14,
+                }}
+              />
+              <button
+                type="submit"
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  border: "none",
+                  background: "#22c55e",
+                  color: "#0f172a",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Send
+              </button>
+            </form>
+          )}
+        </>
+      ) : null}
     </aside>
   );
 }
