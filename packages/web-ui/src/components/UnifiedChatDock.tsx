@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+type ChatRole = "user" | "agent";
+
 type ChatMessage = {
   id: string;
-  author: "user" | "agent";
-  text: string;
+  role: ChatRole;
+  content: string;
   timestamp: number;
 };
 
@@ -20,11 +22,91 @@ type ChatState = {
   archives: ChatArchive[];
 };
 
-const STORAGE_KEY = "bickford.unified.chat";
-const AGENT_NAME = "Bickford Unified Agent";
+const STORAGE_KEY = "bickford.chat.unified.v1";
+const LEGACY_UNIFIED_KEY = "bickford.unified.chat";
+const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
+const LEGACY_HISTORY_KEY = "bickford.chat.history";
+const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
+const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
+const AGENT_NAME = "bickford";
+const ARCHIVE_NOTE =
+  "single agent for the full environment • archives chat history daily at local midnight";
+
+function formatLocalDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 function todayKey() {
-  return new Date().toISOString().slice(0, 10);
+  return formatLocalDate(new Date());
+}
+
+function utcKey(date: Date = new Date()) {
+  return date.toISOString().slice(0, 10);
+}
+
+function utcDateKeyToLocal(dateKey: string) {
+  const parsed = new Date(`${dateKey}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime())) {
+    return dateKey;
+  }
+  return formatLocalDate(parsed);
+}
+
+function migrateUtcDates(state: ChatState): ChatState {
+  const localToday = todayKey();
+  const utcToday = utcKey();
+  if (state.currentDate !== utcToday || state.currentDate === localToday) {
+    return state;
+  }
+  return {
+    ...state,
+    currentDate: utcDateKeyToLocal(state.currentDate),
+    archives: state.archives.map((archive) => ({
+      ...archive,
+      date: utcDateKeyToLocal(archive.date),
+    })),
+  };
+}
+
+function safeParse<T>(raw: string | null): T | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeMessages(
+  messages: Array<{
+    id?: string;
+    role?: string;
+    content?: string;
+    text?: string;
+    author?: string;
+    timestamp?: number | string;
+  }>,
+): ChatMessage[] {
+  return messages
+    .filter((message) => message)
+    .map((message) => {
+      const role = message.role ?? message.author ?? "agent";
+      return {
+        id: message.id ?? crypto.randomUUID(),
+        role: role === "user" ? "user" : "agent",
+        content: message.content ?? message.text ?? "",
+        timestamp:
+          typeof message.timestamp === "number"
+            ? message.timestamp
+            : Number.isFinite(Date.parse(String(message.timestamp)))
+              ? Date.parse(String(message.timestamp))
+              : Date.now(),
+      };
+    })
+    .filter((message) => message.content.trim().length > 0);
 }
 
 function hydrateState(): ChatState {
@@ -32,21 +114,78 @@ function hydrateState(): ChatState {
     return { currentDate: todayKey(), messages: [], archives: [] };
   }
 
-  const raw = window.localStorage.getItem(STORAGE_KEY);
-  if (!raw) {
-    return { currentDate: todayKey(), messages: [], archives: [] };
+  const stored = safeParse<ChatState>(window.localStorage.getItem(STORAGE_KEY));
+  if (stored) {
+    return migrateUtcDates({
+      currentDate: stored.currentDate ?? todayKey(),
+      messages: Array.isArray(stored.messages)
+        ? normalizeMessages(stored.messages)
+        : [],
+      archives: Array.isArray(stored.archives)
+        ? stored.archives.map((archive) => ({
+            date: archive.date,
+            messages: normalizeMessages(archive.messages ?? []),
+          }))
+        : [],
+    });
   }
 
-  try {
-    const parsed = JSON.parse(raw) as ChatState;
-    return {
-      currentDate: parsed?.currentDate ?? todayKey(),
-      messages: Array.isArray(parsed?.messages) ? parsed.messages : [],
-      archives: Array.isArray(parsed?.archives) ? parsed.archives : [],
-    };
-  } catch {
-    return { currentDate: todayKey(), messages: [], archives: [] };
+  const legacyUnified = safeParse<ChatState>(
+    window.localStorage.getItem(LEGACY_UNIFIED_KEY),
+  );
+  if (legacyUnified) {
+    return migrateUtcDates({
+      currentDate: legacyUnified.currentDate ?? todayKey(),
+      messages: Array.isArray(legacyUnified.messages)
+        ? normalizeMessages(legacyUnified.messages)
+        : [],
+      archives: Array.isArray(legacyUnified.archives)
+        ? legacyUnified.archives.map((archive) => ({
+            date: archive.date,
+            messages: normalizeMessages(archive.messages ?? []),
+          }))
+        : [],
+    });
   }
+
+  const legacyDaily = safeParse<ChatState>(
+    window.localStorage.getItem(LEGACY_DAILY_KEY),
+  );
+  if (legacyDaily) {
+    return migrateUtcDates({
+      currentDate: legacyDaily.currentDate ?? todayKey(),
+      messages: Array.isArray(legacyDaily.messages)
+        ? normalizeMessages(legacyDaily.messages)
+        : [],
+      archives: Array.isArray(legacyDaily.archives)
+        ? legacyDaily.archives.map((archive) => ({
+            date: archive.date,
+            messages: normalizeMessages(archive.messages ?? []),
+          }))
+        : [],
+    });
+  }
+
+  const legacyMessages = safeParse<ChatMessage[]>(
+    window.localStorage.getItem(LEGACY_HISTORY_KEY),
+  );
+  const legacyArchives = safeParse<ChatArchive[]>(
+    window.localStorage.getItem(LEGACY_ARCHIVE_KEY),
+  );
+  const legacyDay = window.localStorage.getItem(LEGACY_HISTORY_DAY_KEY);
+
+  return migrateUtcDates({
+    currentDate: legacyDay ?? todayKey(),
+    messages: Array.isArray(legacyMessages)
+      ? normalizeMessages(legacyMessages)
+      : [],
+    archives: Array.isArray(legacyArchives)
+      ? legacyArchives.map((archive) => ({
+          date: archive.date,
+          messages: normalizeMessages(archive.messages ?? []),
+        }))
+      : [],
+  });
 }
 
 function reconcileDay(state: ChatState): ChatState {
@@ -66,6 +205,24 @@ function reconcileDay(state: ChatState): ChatState {
 function persist(state: ChatState) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  window.localStorage.removeItem(LEGACY_UNIFIED_KEY);
+  window.localStorage.removeItem(LEGACY_DAILY_KEY);
+  window.localStorage.removeItem(LEGACY_HISTORY_KEY);
+  window.localStorage.removeItem(LEGACY_HISTORY_DAY_KEY);
+  window.localStorage.removeItem(LEGACY_ARCHIVE_KEY);
+}
+
+function msUntilNextMidnight(now: Date = new Date()) {
+  const next = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+    0,
+    0,
+    0,
+    0,
+  );
+  return next.getTime() - now.getTime();
 }
 
 export default function UnifiedChatDock() {
@@ -88,7 +245,8 @@ export default function UnifiedChatDock() {
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
-    const timer = window.setInterval(() => {
+    let intervalId: number | undefined;
+    const timeoutId = window.setTimeout(() => {
       setState((prev) => {
         const reconciled = reconcileDay(prev);
         if (reconciled !== prev) {
@@ -96,9 +254,26 @@ export default function UnifiedChatDock() {
         }
         return reconciled;
       });
-    }, 15 * 60 * 1000);
+      intervalId = window.setInterval(
+        () => {
+          setState((prev) => {
+            const reconciled = reconcileDay(prev);
+            if (reconciled !== prev) {
+              persist(reconciled);
+            }
+            return reconciled;
+          });
+        },
+        24 * 60 * 60 * 1000,
+      );
+    }, msUntilNextMidnight());
 
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearTimeout(timeoutId);
+      if (intervalId) {
+        window.clearInterval(intervalId);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -107,11 +282,11 @@ export default function UnifiedChatDock() {
 
   const archivedCount = useMemo(() => state.archives.length, [state.archives]);
 
-  function appendMessage(author: ChatMessage["author"], text: string) {
+  function appendMessage(role: ChatRole, content: string) {
     const nextMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      author,
-      text,
+      role,
+      content,
       timestamp: Date.now(),
     };
 
@@ -134,17 +309,38 @@ export default function UnifiedChatDock() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Acknowledged. I will keep a single timeline and archive it daily."
+      `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive chat history daily at local midnight.`,
     );
   }
+
+  useEffect(() => {
+    function handleResume() {
+      setState((prev) => {
+        const reconciled = reconcileDay(prev);
+        if (reconciled === prev) {
+          return prev;
+        }
+        persist(reconciled);
+        return reconciled;
+      });
+    }
+
+    window.addEventListener("focus", handleResume);
+    window.addEventListener("visibilitychange", handleResume);
+
+    return () => {
+      window.removeEventListener("focus", handleResume);
+      window.removeEventListener("visibilitychange", handleResume);
+    };
+  }, []);
 
   return (
     <aside className={`chatDockFloating ${isOpen ? "" : "closed"}`}>
       <header className="chatDockHeader">
         <div>
-          <div className="chatDockTitle">Unified Agent</div>
+          <div className="chatDockTitle">{AGENT_NAME}</div>
           <div className="chatDockSubtitle">
-            {AGENT_NAME} • archives daily • {archivedCount} saved
+            {ARCHIVE_NOTE} • today {state.currentDate} • {archivedCount} saved
           </div>
         </div>
         <button className="dockToggle" onClick={() => setIsOpen(!isOpen)}>
@@ -163,12 +359,12 @@ export default function UnifiedChatDock() {
               state.messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`chatDockBubble ${message.author}`}
+                  className={`chatDockBubble ${message.role}`}
                 >
                   <div className="chatDockRole">
-                    {message.author === "user" ? "You" : AGENT_NAME}
+                    {message.role === "user" ? "You" : AGENT_NAME}
                   </div>
-                  <div className="chatDockText">{message.text}</div>
+                  <div className="chatDockText">{message.content}</div>
                 </div>
               ))
             )}
