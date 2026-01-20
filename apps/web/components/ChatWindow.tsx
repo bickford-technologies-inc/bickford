@@ -327,7 +327,9 @@ export default function ChatWindow() {
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <strong style={{ fontSize: 18 }}>{AGENT_NAME}</strong>
-            <span style={{ fontSize: 12, opacity: 0.7 }}>{ARCHIVE_NOTE}</span>
+            <span style={{ fontSize: 12, opacity: 0.7 }}>
+              {ARCHIVE_NOTE} • today {state.currentDate}
+            </span>
           </div>
           <div
             style={{
