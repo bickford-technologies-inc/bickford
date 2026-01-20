@@ -21,6 +21,10 @@
   },
   "dependencies": {
     "@bickford/types": "workspace:*",
-    "@bickford/ledger": "workspace:*"
+    "@bickford/ledger": "workspace:*",
+    "next": "*"
+  },
+  "devDependencies": {
+    "@types/node": "*"
   }
 }
