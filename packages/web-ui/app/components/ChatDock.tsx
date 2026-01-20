@@ -210,7 +210,7 @@ export default function ChatDock() {
       id: crypto.randomUUID(),
       role: "agent",
       content:
-        `Acknowledged. The single environment agent (${AGENT_NAME}) will archive today’s history automatically.`,
+        `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive today’s history automatically.`,
       timestamp: Date.now(),
     };
 
@@ -258,7 +258,7 @@ export default function ChatDock() {
         <div>
           <div style={{ fontWeight: 600, fontSize: 14 }}>Unified Chat</div>
           <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.7)" }}>
-            {AGENT_NAME} • single agent • archives daily
+            {AGENT_NAME} • single agent for the full environment • archives daily
           </div>
         </div>
         <button
@@ -291,8 +291,8 @@ export default function ChatDock() {
           >
             {state.messages.length === 0 ? (
               <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.65)" }}>
-                Start a conversation. The single environment agent archives
-                history daily.
+                Start a conversation. The single agent for the full environment
+                archives history daily.
               </div>
             ) : (
               state.messages.map((message) => (
