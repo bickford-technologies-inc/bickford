@@ -258,6 +258,8 @@ export default function ChatDock() {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     function handleResume() {
       setState((prev) => {
         const reconciled = reconcileDaily(prev);
