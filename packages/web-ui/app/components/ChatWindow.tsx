@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type ChatRole = "user" | "agent";
 
@@ -120,7 +120,9 @@ function hydrateState(): ChatState {
 
   return {
     currentDate: legacyDay ?? todayKey(),
-    messages: Array.isArray(legacyMessages) ? normalizeMessages(legacyMessages) : [],
+    messages: Array.isArray(legacyMessages)
+      ? normalizeMessages(legacyMessages)
+      : [],
     archives: Array.isArray(legacyArchives)
       ? legacyArchives.map((archive) => ({
           date: archive.date,
@@ -141,11 +143,7 @@ function reconcileDaily(state: ChatState): ChatState {
     archives.unshift({ date: state.currentDate, messages: state.messages });
   }
 
-  return {
-    currentDate: today,
-    messages: [],
-    archives,
-  };
+  return { currentDate: today, messages: [], archives };
 }
 
 function persistState(state: ChatState) {
@@ -157,11 +155,11 @@ function persistState(state: ChatState) {
   localStorage.removeItem(LEGACY_ARCHIVE_KEY);
 }
 
-export default function ChatDock() {
+export default function ChatWindow() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(true);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const archivedDays = useMemo(() => state.archives.length, [state.archives]);
 
   useEffect(() => {
     setState((prev) => {
@@ -177,7 +175,7 @@ export default function ChatDock() {
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
-    const timer = window.setInterval(() => {
+    const interval = window.setInterval(() => {
       setState((prev) => {
         const reconciled = reconcileDaily(prev);
         persistState(reconciled);
@@ -185,30 +183,14 @@ export default function ChatDock() {
       });
     }, 15 * 60 * 1000);
 
-    return () => window.clearInterval(timer);
+    return () => window.clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [state.messages]);
-
-  const placeholder = useMemo(() => "Ask a question with /plan", []);
-
-  function sendMessage() {
-    const trimmed = input.trim();
-    if (!trimmed) return;
-
-    const userMessage: ChatMessage = {
+  function appendMessage(role: ChatRole, content: string) {
+    const nextMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      role: "user",
-      content: trimmed,
-      timestamp: Date.now(),
-    };
-
-    const agentMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: "agent",
-      content: `Acknowledged. ${AGENT_NAME} is coordinating the environment and will archive today’s history automatically.`,
+      role,
+      content,
       timestamp: Date.now(),
     };
 
@@ -216,91 +198,179 @@ export default function ChatDock() {
       const reconciled = reconcileDaily(prev);
       const nextState = {
         ...reconciled,
-        messages: [...reconciled.messages, userMessage, agentMessage],
+        messages: [...reconciled.messages, nextMessage],
       };
       persistState(nextState);
       return nextState;
     });
+  }
+
+  function sendMessage() {
+    const trimmed = input.trim();
+    if (!trimmed) return;
+
     setInput("");
+    appendMessage("user", trimmed);
+    appendMessage(
+      "agent",
+      "Captured. The single environment agent will archive this daily."
+    );
   }
 
   return (
-    <section className={`chatDock ${isOpen ? "open" : "closed"}`}>
-      <header className="chatDockHeader">
-        <div>
-          <div className="chatDockTitle">Unified Chat</div>
-          <div className="chatDockSubtitle">
-            {AGENT_NAME} • single agent • environment-wide • archives daily
-          </div>
+    <aside
+      style={{
+        position: "fixed",
+        right: 24,
+        bottom: 24,
+        width: 320,
+        maxHeight: 420,
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+        padding: 16,
+        borderRadius: 16,
+        background: "rgba(15, 23, 42, 0.95)",
+        color: "#e2e8f0",
+        border: "1px solid rgba(148, 163, 184, 0.35)",
+        boxShadow: "0 16px 40px rgba(15, 23, 42, 0.25)",
+        backdropFilter: "blur(12px)",
+        zIndex: 1000,
+      }}
+    >
+      <header
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 12,
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <span style={{ fontSize: 12, opacity: 0.7 }}>
+            {AGENT_NAME} • single agent • environment-wide
+          </span>
+          <strong style={{ fontSize: 16 }}>Unified Chat</strong>
+          <span style={{ fontSize: 12, opacity: 0.6 }}>
+            Archives daily • {archivedDays} saved
+          </span>
         </div>
-        <button className="chatDockToggle" onClick={() => setIsOpen(!isOpen)}>
+        <button
+          type="button"
+          onClick={() => setIsOpen((prev) => !prev)}
+          style={{
+            borderRadius: 999,
+            border: "1px solid rgba(148, 163, 184, 0.35)",
+            background: "rgba(15, 23, 42, 0.8)",
+            color: "inherit",
+            fontSize: 12,
+            padding: "6px 12px",
+            cursor: "pointer",
+          }}
+        >
           {isOpen ? "Minimize" : "Chat"}
         </button>
       </header>
 
       {isOpen ? (
         <>
-          <div className="chatDockBody">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+              overflowY: "auto",
+              flex: 1,
+              paddingRight: 4,
+            }}
+          >
             {state.messages.length === 0 ? (
-              <div className="chatDockEmpty">
+              <p style={{ fontSize: 13, opacity: 0.7 }}>
                 Start a conversation. The single environment agent archives
                 history daily.
-              </div>
+              </p>
             ) : (
               state.messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`chatDockBubble ${message.role}`}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                    alignSelf:
+                      message.role === "user" ? "flex-end" : "flex-start",
+                    maxWidth: "85%",
+                  }}
                 >
-                  <div className="chatDockRole">
+                  <span
+                    style={{
+                      fontSize: 11,
+                      textTransform: "uppercase",
+                      letterSpacing: 0.4,
+                      opacity: 0.6,
+                    }}
+                  >
                     {message.role === "user" ? "You" : AGENT_NAME}
+                  </span>
+                  <div
+                    style={{
+                      padding: "8px 12px",
+                      borderRadius: 12,
+                      background:
+                        message.role === "user"
+                          ? "rgba(59, 130, 246, 0.3)"
+                          : "rgba(30, 41, 59, 0.7)",
+                      border: "1px solid rgba(148, 163, 184, 0.2)",
+                    }}
+                  >
+                    <span style={{ fontSize: 13, lineHeight: 1.4 }}>
+                      {message.content}
+                    </span>
                   </div>
-                  <div className="chatDockText">{message.content}</div>
                 </div>
               ))
             )}
-            <div ref={bottomRef} />
           </div>
 
-          <footer className="chatDockFooter">
-            <div className="chatDockComposer">
-              <button
-                className="chatDockIconButton"
-                type="button"
-                aria-label="Add context"
-              >
-                +
-              </button>
-              <input
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                placeholder={placeholder}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    sendMessage();
-                  }
-                }}
-              />
-              <button
-                className="chatDockIconButton"
-                type="button"
-                aria-label="Record voice note"
-              >
-                🎤
-              </button>
-              <button
-                className="chatDockIconButton primary"
-                type="button"
-                onClick={sendMessage}
-                aria-label="Send message"
-              >
-                ➤
-              </button>
-            </div>
-          </footer>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <input
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              placeholder="Share a thought or decision..."
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  sendMessage();
+                }
+              }}
+              style={{
+                flex: 1,
+                padding: "10px 12px",
+                borderRadius: 10,
+                border: "1px solid rgba(148, 163, 184, 0.2)",
+                background: "rgba(15, 23, 42, 0.6)",
+                color: "inherit",
+                fontSize: 14,
+              }}
+            />
+            <button
+              type="button"
+              onClick={sendMessage}
+              style={{
+                padding: "10px 14px",
+                borderRadius: 10,
+                border: "none",
+                background: "#38bdf8",
+                color: "#0f172a",
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Send
+            </button>
+          </div>
         </>
       ) : null}
-    </section>
+    </aside>
   );
 }
