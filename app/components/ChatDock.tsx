@@ -318,10 +318,12 @@ export default function ChatDock() {
                 </div>
               ) : (
                 <div className="chatDockList">
-                  {logs.map((entry) => (
-                    <div key={entry.date} className="chatDockDay">
-                      <div className="chatDockDayHeader">{entry.date}</div>
-                      {entry.messages.map((message) => (
+                  {logs.map((archive) => (
+                    <div key={archive.date} className="chatDockDay">
+                      <div className="chatDockDayHeader">
+                        {archive.date}
+                      </div>
+                      {archive.messages.map((message) => (
                         <div
                           key={message.id}
                           className={`chatDockBubble ${message.role}`}
@@ -329,7 +331,9 @@ export default function ChatDock() {
                           <div className="chatDockRole">
                             {message.role === "user" ? "You" : AGENT_NAME}
                           </div>
-                          <div className="chatDockText">{message.content}</div>
+                          <div className="chatDockText">
+                            {message.content}
+                          </div>
                         </div>
                       ))}
                     </div>
