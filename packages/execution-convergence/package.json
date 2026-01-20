@@ -20,8 +20,8 @@
     "build": "pnpm exec tsc -p tsconfig.build.json"
   },
   "dependencies": {
-    "@bickford/types": "0.0.0",
-    "@bickford/ledger": "0.0.0",
+    "@bickford/types": "workspace:*",
+    "@bickford/ledger": "workspace:*",
     "next": "*"
   },
   "devDependencies": {

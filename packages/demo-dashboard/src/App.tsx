@@ -1,5 +1,6 @@
 import * as React from 'react'
 import './App.css'
+import UnifiedChatDock from './UnifiedChatDock'
 
 type LedgerEvent = {
   id: string
@@ -136,6 +137,7 @@ export default function App() {
           </div>
         </section>
       </main>
+      <UnifiedChatDock />
     </div>
   )
 }

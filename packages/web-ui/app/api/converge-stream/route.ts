@@ -19,5 +19,7 @@ export async function POST(req: Request) {
   };
 
   writeThread("converge", [entry]);
-  return NextResponse.json(result);
+  return new Response(JSON.stringify(result), {
+    headers: { "Content-Type": "application/json" },
+  });
 }
