@@ -217,7 +217,7 @@ export default function ChatWindow() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Acknowledged. The single environment agent will archive today’s history.",
+      "Acknowledged. The single agent for the full environment will archive today’s history.",
     );
   }
 
@@ -240,13 +240,12 @@ export default function ChatWindow() {
     }));
   }, [state.messages]);
 
-  const logEntries = useMemo(() => {
-    const entries: ChatArchive[] = [];
-    if (state.messages.length > 0) {
-      entries.push({ date: state.currentDate, messages: state.messages });
-    }
-    return entries.concat(state.archives);
-  }, [state]);
+  const logs = useMemo(() => {
+    const today = state.messages.length
+      ? [{ date: state.currentDate, messages: state.messages }]
+      : [];
+    return [...today, ...state.archives];
+  }, [state.archives, state.currentDate, state.messages]);
 
   return (
     <aside
@@ -272,7 +271,7 @@ export default function ChatWindow() {
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <strong style={{ fontSize: 18 }}>{AGENT_NAME}</strong>
             <span style={{ fontSize: 12, opacity: 0.7 }}>
-              single agent • archives daily
+              single agent for the full environment • archives daily
             </span>
           </div>
           <div
@@ -413,49 +412,63 @@ export default function ChatWindow() {
                 </div>
               )
             ) : view === "logs" ? (
-              logEntries.length === 0 ? (
+              logs.length === 0 ? (
                 <p style={{ fontSize: 13, opacity: 0.7 }}>
-                  No daily logs captured yet.
+                  No archived days yet. Start chatting to build a daily log.
                 </p>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  {logEntries.map((entry) => (
+                  {logs.map((archive) => (
                     <div
-                      key={entry.date}
+                      key={archive.date}
                       style={{
-                        padding: "12px 14px",
-                        borderRadius: 12,
-                        background: "rgba(39, 39, 42, 0.7)",
-                        border: "1px solid rgba(255, 255, 255, 0.08)",
                         display: "flex",
                         flexDirection: "column",
                         gap: 8,
+                        padding: "10px 12px",
+                        borderRadius: 12,
+                        background: "rgba(39, 39, 42, 0.9)",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
                       }}
                     >
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: 12,
                           textTransform: "uppercase",
                           letterSpacing: 0.6,
                           opacity: 0.6,
                         }}
                       >
-                        {entry.date}
+                        {archive.date}
                       </span>
-                      {entry.messages.map((message) => (
+                      {archive.messages.map((message) => (
                         <div
                           key={message.id}
                           style={{
                             display: "flex",
                             flexDirection: "column",
                             gap: 4,
-                            fontSize: 12,
+                            padding: "8px 10px",
+                            borderRadius: 10,
+                            background:
+                              message.role === "user"
+                                ? "rgba(59, 130, 246, 0.5)"
+                                : "rgba(24, 24, 27, 0.9)",
                           }}
                         >
-                          <span style={{ opacity: 0.7 }}>
+                          <span
+                            style={{
+                              fontSize: 11,
+                              textTransform: "uppercase",
+                              letterSpacing: 0.4,
+                              opacity: 0.65,
+                            }}
+                          >
                             {message.role === "user" ? "You" : AGENT_NAME}
                           </span>
-                          <span>{message.content}</span>
+                          <span style={{ fontSize: 13, lineHeight: 1.4 }}>
+                            {message.content}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -464,7 +477,8 @@ export default function ChatWindow() {
               )
             ) : state.messages.length === 0 ? (
               <p style={{ fontSize: 13, opacity: 0.7 }}>
-                Start a thread. The single environment agent archives daily.
+                Start a thread. The single agent for the full environment
+                archives daily.
               </p>
             ) : (
               state.messages.map((message) => (
