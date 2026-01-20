@@ -102,7 +102,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  z-index: 50;
+  z-index: 1000;
 }
 
 .chatDock.closed {
