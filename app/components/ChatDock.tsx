@@ -194,6 +194,24 @@ export default function ChatDock() {
   }, [state.messages]);
 
   const placeholder = useMemo(() => "Ask a question with /plan", []);
+  const decisions = useMemo(() => {
+    const normalized = state.messages
+      .filter((message) => message.role === "user")
+      .map((message) => ({
+        id: message.id,
+        content: message.content,
+        key: message.content.trim().toLowerCase(),
+      }));
+    const counts = normalized.reduce<Record<string, number>>((acc, item) => {
+      acc[item.key] = (acc[item.key] ?? 0) + 1;
+      return acc;
+    }, {});
+    return normalized.map((item) => ({
+      id: item.id,
+      content: item.content,
+      conflict: counts[item.key] > 1,
+    }));
+  }, [state.messages]);
 
   function sendMessage() {
     const trimmed = input.trim();
@@ -259,13 +277,27 @@ export default function ChatDock() {
       {isOpen ? (
         <>
           <div className="chatDockBody">
-            {view === "logs" ? (
+            {view === "decisions" ? (
+              decisions.length === 0 ? (
+                <div className="chatDockEmpty">No decisions captured yet.</div>
+              ) : (
+                <div className="chatDockList">
+                  {decisions.map((decision) => (
+                    <div key={decision.id} className="chatDockDecision">
+                      <div className="chatDockDecisionTitle">Decision</div>
+                      <div className="chatDockText">{decision.content}</div>
+                      <div className="chatDockDecisionMeta">
+                        {decision.conflict
+                          ? "Conflict: overlaps with an existing decision"
+                          : "Conflict: none"}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : view === "logs" ? (
               <div className="chatDockEmpty">
                 Daily logs are archived automatically and will appear here.
-              </div>
-            ) : view === "decisions" ? (
-              <div className="chatDockEmpty">
-                Decisions view is ready to surface confirmed decisions.
               </div>
             ) : state.messages.length === 0 ? (
               <div className="chatDockEmpty">
@@ -288,9 +320,18 @@ export default function ChatDock() {
             <div ref={bottomRef} />
           </div>
 
-          {view === "chat" ? (
+          {view === "decisions" ? null : (
             <footer className="chatDockFooter">
               <div className="chatDockComposer">
+                <select
+                  className="chatDockSelect"
+                  aria-label="Intent"
+                  defaultValue="intent-question"
+                >
+                  <option value="intent-question">Intent: Question</option>
+                  <option value="intent-decision">Intent: Decision</option>
+                  <option value="intent-plan">Intent: Plan</option>
+                </select>
                 <button
                   className="chatDockIconButton"
                   type="button"
@@ -326,7 +367,7 @@ export default function ChatDock() {
                 </button>
               </div>
             </footer>
-          ) : null}
+          )}
         </>
       ) : null}
     </section>

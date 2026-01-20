@@ -146,14 +146,20 @@ body {
 }
 
 .chatDockToggle.active {
-  background: rgba(56, 189, 248, 0.25);
   border-color: rgba(56, 189, 248, 0.6);
+  background: rgba(56, 189, 248, 0.2);
 }
 
 .chatDockBody {
   max-height: 320px;
   overflow-y: auto;
   padding: 14px 16px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chatDockList {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -190,6 +196,28 @@ body {
   line-height: 1.4;
 }
 
+.chatDockDecision {
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chatDockDecisionTitle {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(226, 232, 240, 0.6);
+}
+
+.chatDockDecisionMeta {
+  font-size: 12px;
+  color: rgba(226, 232, 240, 0.6);
+}
+
 .chatDockFooter {
   padding: 12px 16px 16px;
   border-top: 1px solid rgba(148, 163, 184, 0.25);
@@ -204,6 +232,16 @@ body {
   border-radius: 999px;
   background: rgba(45, 45, 45, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+
+.chatDockSelect {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(39, 39, 42, 0.9);
+  color: inherit;
+  font-size: 11px;
+  padding: 6px 8px;
 }
 
 .chatDockFooter input {
