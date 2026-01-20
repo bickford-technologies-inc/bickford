@@ -31,8 +31,11 @@ const AGENT_NAME = "bickford";
 const ARCHIVE_NOTE =
   "single agent for the full environment • archives daily at local midnight";
 
-function todayKey() {
-  return new Date().toISOString().slice(0, 10);
+function todayKey(now: Date = new Date()) {
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function safeParse<T>(raw: string | null): T | null {
