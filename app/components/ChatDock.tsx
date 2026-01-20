@@ -8,27 +8,25 @@ export default function ChatDock() {
   const [value, setValue] = useState("");
 
   useEffect(() => {
-    function onKey(event: KeyboardEvent) {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-        event.preventDefault();
-        setOpen((current) => !current);
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setOpen((prev) => !prev);
       }
     }
-
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   async function submit() {
-    const trimmed = value.trim();
-    if (!trimmed) return;
+    if (!value.trim()) return;
 
     await fetch("/api/intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         type: "COMMAND",
-        content: trimmed,
+        content: value.trim(),
         source: "dock",
         timestamp: Date.now(),
       }),
@@ -44,19 +42,18 @@ export default function ChatDock() {
         className={styles.fab}
         aria-label="Open Bickford"
         onClick={() => setOpen(true)}
-        type="button"
       >
         bickford
       </button>
 
       {open && (
         <div className={styles.overlay} onClick={() => setOpen(false)}>
-          <div className={styles.dock} onClick={(event) => event.stopPropagation()}>
+          <div className={styles.dock} onClick={(e) => e.stopPropagation()}>
             <input
               autoFocus
               value={value}
-              onChange={(event) => setValue(event.target.value)}
-              onKeyDown={(event) => event.key === "Enter" && submit()}
+              onChange={(e) => setValue(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && submit()}
               placeholder="What should we do next?"
             />
           </div>
