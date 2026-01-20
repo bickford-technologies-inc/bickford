@@ -1,3 +1,5 @@
+import ChatWindow from "../components/ChatWindow";
+
 export default function RootLayout({
   children,
 }: {
@@ -5,7 +7,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <ChatWindow />
+      </body>
     </html>
   );
 }
