@@ -59,5 +59,8 @@
   },
   "engines": {
     "node": "20.x"
+  },
+  "dependencies": {
+    "@bickford/execution-convergence": "workspace:*"
   }
 }
