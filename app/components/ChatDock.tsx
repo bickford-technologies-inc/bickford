@@ -21,9 +21,7 @@ index 9c9b29f253cee4d4fcddd5c48a242047a4235432..71a3fafb3450be7f209ede19fc161703
      </html>
    );
  }
- 
-EOF
-)"use client";
+"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
