@@ -189,6 +189,29 @@ export default function ChatDock() {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    let timeoutId: number;
+
+    const scheduleDailyArchive = () => {
+      const now = new Date();
+      const nextMidnight = new Date(now);
+      nextMidnight.setHours(24, 0, 0, 0);
+      const delay = nextMidnight.getTime() - now.getTime();
+      timeoutId = window.setTimeout(() => {
+        setState((prev) => {
+          const reconciled = reconcileDaily(prev);
+          persistState(reconciled);
+          return reconciled;
+        });
+        scheduleDailyArchive();
+      }, delay);
+    };
+
+    scheduleDailyArchive();
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [state.messages]);
 
@@ -207,7 +230,7 @@ export default function ChatDock() {
 
     const agentMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      role: "assistant",
+      role: "agent",
       content: `Acknowledged. ${AGENT_NAME} is coordinating this and will archive today’s history automatically.`,
       timestamp: Date.now(),
     };
@@ -243,8 +266,8 @@ export default function ChatDock() {
           <div className="chatDockBody">
             {state.messages.length === 0 ? (
               <div className="chatDockEmpty">
-                Start a conversation. The single environment agent archives
-                history daily.
+                Start a conversation. Your single environment agent archives
+                history daily at midnight.
               </div>
             ) : (
               state.messages.map((message) => (
