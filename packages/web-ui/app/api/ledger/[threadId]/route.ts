@@ -17,5 +17,7 @@ export async function POST(
     },
   };
   writeThread(params.threadId, [entry]);
-  return NextResponse.json({ ok: true });
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: { "Content-Type": "application/json" },
+  });
 }
