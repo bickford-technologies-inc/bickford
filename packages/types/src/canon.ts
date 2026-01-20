@@ -260,29 +260,22 @@ export type PathConstraint = {
   confidence: ConfidenceEnvelope;
 };
 
-/**
- * Canonical public surface for @bickford/types
- * All externally-visible symbols MUST live here.
- */
+/* CANONICAL TYPE SURFACE — DO NOT IMPORT RUNTIME CODE */
 
-export type { Intent } from "./intent.js";
-export type { Decision } from "./decision.js";
+export type ExecutionEvent = {
+  id: string;
+  timestamp: string;
+};
 
-/**
- * PROMOTED — execution outputs are part of canon
- */
-export type { ExecutionResult } from "./ExecutionResult.js";
-export type { ExecutionAdapter } from "./ExecutionAdapter.js";
+export type LedgerEntry = {
+  id: string;
+  event: ExecutionEvent;
+};
 
-/**
- * PROMOTED — OPTR is canonical
- */
-import type { OptrResult } from "./optr.js";
+export type ExecutionAdapter = {
+  runtime: "node" | "edge";
+};
 
-/**
- * PROMOTED — hardware attestations are canonical
- */
-export type { HardwareAttestation } from "./HardwareAttestation.js";
-
-// Force TypeScript emit for this module
-export const __forceEmitCanon = true;
+export type AgentContext = {
+  agentId: string;
+};

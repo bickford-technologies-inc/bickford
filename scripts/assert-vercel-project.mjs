@@ -1,12 +1,22 @@
-import process from "process";
+/**
+ * ASSERT: Vercel project binding
+ * Purpose:
+ *   Ensure this repo is only built by the canonical Vercel project.
+ * Safe:
+ *   No side effects
+ *   No imports
+ *   Deterministic
+ */
 
-const allowed = ["bickford"];
+const allowedProjects = ["bickford"];
 
 const project = process.env.VERCEL_PROJECT_NAME;
 
-if (project && !allowed.includes(project)) {
+if (project && !allowedProjects.includes(project)) {
   console.error(
-    `ERROR: Vercel project "${project}" is not authorized to build this repo.`,
+    `ERROR: Vercel project "${project}" is not authorized to build this repository.`,
   );
   process.exit(1);
 }
+
+process.exit(0);

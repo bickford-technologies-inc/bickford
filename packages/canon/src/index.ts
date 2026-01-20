@@ -19,3 +19,10 @@ export * from "./types/denied";
 export * from "./rubric/types";
 export * from "@bickford/monitorability-core";
 export type { AuthorityContext, AuthorityDecision } from "@bickford/authority";
+
+// Enhanced systems for user intent realization and automation
+export * from "./canon/knowledge-persistence";
+export * from "./canon/dynamic-config";
+export * from "./canon/recursive-learning";
+export * from "./canon/runtime-resiliency";
+export * from "./canon/self-correcting";
