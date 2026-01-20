@@ -7,7 +7,7 @@ function sse(data: unknown) {
   return `data: ${JSON.stringify(data)}\n\n`;
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   const body = await req.json();
 
   const encoder = new TextEncoder();
@@ -16,9 +16,7 @@ export async function POST(req: NextRequest) {
     async start(controller) {
       // 1️⃣ announce start
       controller.enqueue(
-        encoder.encode(
-          sse({ type: "meta", status: "STREAM_START" })
-        )
+        encoder.encode(sse({ type: "meta", status: "STREAM_START" })),
       );
 
       // 2️⃣ stream agent outputs as they arrive
@@ -29,9 +27,9 @@ export async function POST(req: NextRequest) {
               type: "agent",
               agentId: agent.id,
               role: agent.role,
-              status: "ACTIVE"
-            })
-          )
+              status: "ACTIVE",
+            }),
+          ),
         );
       }
 
@@ -40,34 +38,32 @@ export async function POST(req: NextRequest) {
         ...body,
         metadata: {
           timestamp: new Date().toISOString(),
-          initiatedBy: "human"
-        }
+          initiatedBy: "human",
+        },
       });
 
       controller.enqueue(
         encoder.encode(
           sse({
             type: "final",
-            result
-          })
-        )
+            result,
+          }),
+        ),
       );
 
       controller.enqueue(
-        encoder.encode(
-          sse({ type: "meta", status: "STREAM_END" })
-        )
+        encoder.encode(sse({ type: "meta", status: "STREAM_END" })),
       );
 
       controller.close();
-    }
+    },
   });
 
   return new Response(stream, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
-      Connection: "keep-alive"
-    }
+      Connection: "keep-alive",
+    },
   });
 }
