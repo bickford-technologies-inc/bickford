@@ -335,6 +335,29 @@ export default function ChatDock() {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    let timeoutId: number;
+
+    const scheduleDailyArchive = () => {
+      const now = new Date();
+      const nextMidnight = new Date(now);
+      nextMidnight.setHours(24, 0, 0, 0);
+      const delay = nextMidnight.getTime() - now.getTime();
+      timeoutId = window.setTimeout(() => {
+        setState((prev) => {
+          const reconciled = reconcileDaily(prev);
+          persistState(reconciled);
+          return reconciled;
+        });
+        scheduleDailyArchive();
+      }, delay);
+    };
+
+    scheduleDailyArchive();
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [state.messages]);
 
