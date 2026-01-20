@@ -165,6 +165,19 @@ function persistState(state: ChatState) {
   localStorage.removeItem(LEGACY_ARCHIVE_KEY);
 }
 
+function msUntilNextMidnight(now: Date = new Date()) {
+  const next = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+    0,
+    0,
+    0,
+    0,
+  );
+  return next.getTime() - now.getTime();
+}
+
 export default function ChatDock() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
   const [input, setInput] = useState("");
@@ -186,18 +199,31 @@ export default function ChatDock() {
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
-    const timer = window.setInterval(
-      () => {
-        setState((prev) => {
-          const reconciled = reconcileDaily(prev);
-          persistState(reconciled);
-          return reconciled;
-        });
-      },
-      15 * 60 * 1000,
-    );
+    let intervalId: number | undefined;
+    const timeoutId = window.setTimeout(() => {
+      setState((prev) => {
+        const reconciled = reconcileDaily(prev);
+        persistState(reconciled);
+        return reconciled;
+      });
+      intervalId = window.setInterval(
+        () => {
+          setState((prev) => {
+            const reconciled = reconcileDaily(prev);
+            persistState(reconciled);
+            return reconciled;
+          });
+        },
+        24 * 60 * 60 * 1000,
+      );
+    }, msUntilNextMidnight());
 
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearTimeout(timeoutId);
+      if (intervalId) {
+        window.clearInterval(intervalId);
+      }
+    };
   }, []);
 
   useEffect(() => {

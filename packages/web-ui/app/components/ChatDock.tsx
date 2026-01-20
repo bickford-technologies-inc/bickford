@@ -264,9 +264,9 @@ export default function ChatDock() {
         }}
       >
         <div>
-          <div style={{ fontWeight: 600, fontSize: 14 }}>Unified Chat</div>
+          <div style={{ fontWeight: 600, fontSize: 14 }}>{AGENT_NAME}</div>
           <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.7)" }}>
-            {AGENT_NAME} • {ARCHIVE_NOTE}
+            {ARCHIVE_NOTE}
           </div>
         </div>
         <button

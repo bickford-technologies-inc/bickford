@@ -163,6 +163,19 @@ function persistState(state: ChatState) {
   window.localStorage.removeItem(LEGACY_ARCHIVE_KEY);
 }
 
+function msUntilNextMidnight(now: Date = new Date()) {
+  const next = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+    0,
+    0,
+    0,
+    0,
+  );
+  return next.getTime() - now.getTime();
+}
+
 export default function ChatWindow() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
   const [input, setInput] = useState("");
@@ -182,20 +195,31 @@ export default function ChatWindow() {
   }, [state]);
 
   useEffect(() => {
-    const interval = window.setInterval(
-      () => {
-        setState((prev) => {
-          const reconciled = reconcileDaily(prev);
-          if (reconciled !== prev) {
+    let intervalId: number | undefined;
+    const timeoutId = window.setTimeout(() => {
+      setState((prev) => {
+        const reconciled = reconcileDaily(prev);
+        persistState(reconciled);
+        return reconciled;
+      });
+      intervalId = window.setInterval(
+        () => {
+          setState((prev) => {
+            const reconciled = reconcileDaily(prev);
             persistState(reconciled);
-          }
-          return reconciled;
-        });
-      },
-      10 * 60 * 1000,
-    );
+            return reconciled;
+          });
+        },
+        24 * 60 * 60 * 1000,
+      );
+    }, msUntilNextMidnight());
 
-    return () => window.clearInterval(interval);
+    return () => {
+      window.clearTimeout(timeoutId);
+      if (intervalId) {
+        window.clearInterval(intervalId);
+      }
+    };
   }, []);
 
   function appendMessage(role: ChatRole, content: string) {
