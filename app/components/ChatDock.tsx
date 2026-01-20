@@ -218,7 +218,6 @@ export default function ChatDock() {
       : [];
     return [...today, ...state.archives];
   }, [state.archives, state.currentDate, state.messages]);
-  const archiveCount = logs.length;
 
   function sendMessage() {
     const trimmed = input.trim();
@@ -257,8 +256,7 @@ export default function ChatDock() {
         <div>
           <div className="chatDockTitle">{AGENT_NAME}</div>
           <div className="chatDockSubtitle">
-            single agent • daily archive • today {state.currentDate} • {archiveCount}{" "}
-            {archiveCount === 1 ? "day" : "days"} retained
+            single agent • archives daily • today {state.currentDate}
           </div>
         </div>
         <div className="chatDockActions">
@@ -321,8 +319,7 @@ export default function ChatDock() {
                   {logs.map((archive) => (
                     <div key={archive.date} className="chatDockDay">
                       <div className="chatDockDayHeader">
-                        <span>{archive.date}</span>
-                        <span>{archive.messages.length} msgs</span>
+                        {archive.date}
                       </div>
                       {archive.messages.map((message) => (
                         <div
