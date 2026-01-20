@@ -390,7 +390,7 @@ export default function ChatDock() {
             className={`chatDockToggle ${view === "logs" ? "active" : ""}`}
             onClick={() => setView("logs")}
           >
-            Logs
+            Decision Tracer View
           </button>
           <button
             className={`chatDockToggle ${view === "decisions" ? "active" : ""}`}
