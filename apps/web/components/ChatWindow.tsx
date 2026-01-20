@@ -22,9 +22,8 @@ type ChatState = {
   archives: ChatArchive[];
 };
 
-// Unified storage for the single agent; legacy daily key is migrated into this.
-const STORAGE_KEY = "bickford.chat.unified.v1";
-const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
+const STORAGE_KEY = "bickford.chat.daily.v1";
+const LEGACY_DAILY_KEY = "bickford.chat.unified.v1";
 const LEGACY_HISTORY_KEY = "bickford.chat.history";
 const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
 const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
