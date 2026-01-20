@@ -22,8 +22,8 @@ type ChatState = {
   archives: ChatArchive[];
 };
 
-const STORAGE_KEY = "bickford.chat.daily.v1";
-const LEGACY_DAILY_KEY = "bickford.chat.unified.v1";
+const STORAGE_KEY = "bickford.chat.unified.v1";
+const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
 const LEGACY_HISTORY_KEY = "bickford.chat.history";
 const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
 const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
@@ -169,6 +169,10 @@ export default function ChatWindow() {
   }, []);
 
   useEffect(() => {
+    persistState(state);
+  }, [state]);
+
+  useEffect(() => {
     const interval = window.setInterval(() => {
       setState((prev) => {
         const reconciled = reconcileDaily(prev);
@@ -212,7 +216,7 @@ export default function ChatWindow() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Captured. I will include this in today’s log."
+      "Captured. I will include this in today’s archive."
     );
   }
 
@@ -234,6 +238,14 @@ export default function ChatWindow() {
       conflict: counts[item.key] > 1,
     }));
   }, [state.messages]);
+
+  const logEntries = useMemo(() => {
+    const entries: ChatArchive[] = [];
+    if (state.messages.length > 0) {
+      entries.push({ date: state.currentDate, messages: state.messages });
+    }
+    return entries.concat(state.archives);
+  }, [state]);
 
   return (
     <aside
@@ -257,6 +269,9 @@ export default function ChatWindow() {
       <header style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <strong style={{ fontSize: 18 }}>{AGENT_NAME}</strong>
+          <span style={{ fontSize: 12, opacity: 0.7 }}>
+            Single agent · Daily archive
+          </span>
           <button
             type="button"
             onClick={() => setView("chat")}
@@ -360,6 +375,56 @@ export default function ChatWindow() {
                       ? "Conflict: overlaps with an existing decision"
                       : "Conflict: none"}
                   </span>
+                </div>
+              ))}
+            </div>
+          )
+        ) : view === "logs" ? (
+          logEntries.length === 0 ? (
+            <p style={{ fontSize: 13, opacity: 0.7 }}>
+              No daily logs captured yet.
+            </p>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {logEntries.map((entry) => (
+                <div
+                  key={entry.date}
+                  style={{
+                    padding: "12px 14px",
+                    borderRadius: 12,
+                    background: "rgba(39, 39, 42, 0.7)",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 11,
+                      textTransform: "uppercase",
+                      letterSpacing: 0.6,
+                      opacity: 0.6,
+                    }}
+                  >
+                    {entry.date}
+                  </span>
+                  {entry.messages.map((message) => (
+                    <div
+                      key={message.id}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 4,
+                        fontSize: 12,
+                      }}
+                    >
+                      <span style={{ opacity: 0.7 }}>
+                        {message.role === "user" ? "You" : AGENT_NAME}
+                      </span>
+                      <span>{message.content}</span>
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>

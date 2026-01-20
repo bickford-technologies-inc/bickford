@@ -213,6 +213,14 @@ export default function ChatDock() {
     }));
   }, [state.messages]);
 
+  const logEntries = useMemo(() => {
+    const entries: DailyArchive[] = [];
+    if (state.messages.length > 0) {
+      entries.push({ date: state.currentDate, messages: state.messages });
+    }
+    return entries.concat(state.archives);
+  }, [state]);
+
   function sendMessage() {
     const trimmed = input.trim();
     if (!trimmed) return;
@@ -227,7 +235,7 @@ export default function ChatDock() {
     const agentMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: "agent",
-      content: `Acknowledged. ${AGENT_NAME} is coordinating this and will archive today’s history automatically.`,
+      content: `Acknowledged. ${AGENT_NAME} is your single agent and will archive today’s history automatically.`,
       timestamp: Date.now(),
     };
 
@@ -248,6 +256,9 @@ export default function ChatDock() {
       <header className="chatDockHeader">
         <div>
           <div className="chatDockTitle">{AGENT_NAME}</div>
+          <div className="chatDockSubtitle">
+            Single agent · Daily archive
+          </div>
         </div>
         <div className="chatDockActions">
           <button
@@ -295,6 +306,31 @@ export default function ChatDock() {
                           ? "Conflict: overlaps with an existing decision"
                           : "Conflict: none"}
                       </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : view === "logs" ? (
+              logEntries.length === 0 ? (
+                <div className="chatDockEmpty">
+                  No daily logs captured yet.
+                </div>
+              ) : (
+                <div className="chatDockList">
+                  {logEntries.map((entry) => (
+                    <div key={entry.date} className="chatDockLogGroup">
+                      <div className="chatDockLogDate">{entry.date}</div>
+                      {entry.messages.map((message) => (
+                        <div
+                          key={message.id}
+                          className={`chatDockLogMessage ${message.role}`}
+                        >
+                          <span className="chatDockLogRole">
+                            {message.role === "user" ? "You" : AGENT_NAME}
+                          </span>
+                          <span>{message.content}</span>
+                        </div>
+                      ))}
                     </div>
                   ))}
                 </div>

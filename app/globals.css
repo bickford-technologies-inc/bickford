@@ -216,6 +216,42 @@ body {
   color: rgba(226, 232, 240, 0.7);
 }
 
+.chatDockLogGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(30, 41, 59, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.chatDockLogDate {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(226, 232, 240, 0.6);
+}
+
+.chatDockLogMessage {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: rgba(226, 232, 240, 0.85);
+}
+
+.chatDockLogMessage.user {
+  color: rgba(226, 232, 240, 0.95);
+}
+
+.chatDockLogRole {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(226, 232, 240, 0.55);
+}
+
 .chatDockFooter {
   padding: 12px 16px 16px;
   border-top: 1px solid rgba(148, 163, 184, 0.25);
