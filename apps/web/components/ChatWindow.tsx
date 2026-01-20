@@ -23,6 +23,7 @@ type ChatState = {
 };
 
 const STORAGE_KEY = "bickford.chat.unified.v1";
+// Legacy daily key retained for migration cleanup.
 const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
 const LEGACY_HISTORY_KEY = "bickford.chat.history";
 const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
