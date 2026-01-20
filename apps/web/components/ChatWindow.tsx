@@ -22,9 +22,8 @@ type ChatState = {
   archives: ChatArchive[];
 };
 
-const STORAGE_KEY = "bickford.chat.unified.v1";
-// Legacy daily key retained for migration cleanup.
-const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
+const STORAGE_KEY = "bickford.chat.daily.v1";
+const LEGACY_DAILY_KEY = "bickford.chat.unified.v1";
 const LEGACY_HISTORY_KEY = "bickford.chat.history";
 const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
 const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
@@ -159,6 +158,7 @@ function persistState(state: ChatState) {
 export default function ChatWindow() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
   const [input, setInput] = useState("");
+  const [view, setView] = useState<"chat" | "logs" | "decisions">("chat");
 
   useEffect(() => {
     setState((prev) => {
@@ -181,8 +181,6 @@ export default function ChatWindow() {
 
     return () => window.clearInterval(interval);
   }, []);
-
-  const archivedDays = useMemo(() => state.archives.length, [state.archives]);
 
   function appendMessage(role: ChatRole, content: string) {
     const nextMessage: ChatMessage = {
@@ -214,38 +212,106 @@ export default function ChatWindow() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Captured. I will include this in today's log and archive it daily."
+      "Captured. I will include this in today’s log."
     );
   }
+
+  const decisions = useMemo(() => {
+    const normalized = state.messages
+      .filter((message) => message.role === "user")
+      .map((message) => ({
+        id: message.id,
+        content: message.content,
+        key: message.content.trim().toLowerCase(),
+      }));
+    const counts = normalized.reduce<Record<string, number>>((acc, item) => {
+      acc[item.key] = (acc[item.key] ?? 0) + 1;
+      return acc;
+    }, {});
+    return normalized.map((item) => ({
+      id: item.id,
+      content: item.content,
+      conflict: counts[item.key] > 1,
+    }));
+  }, [state.messages]);
 
   return (
     <aside
       style={{
         position: "fixed",
-        bottom: 24,
-        right: 24,
-        width: 320,
-        maxHeight: 420,
+        inset: 0,
+        width: "100vw",
+        height: "100vh",
         display: "flex",
         flexDirection: "column",
         gap: 12,
-        padding: 16,
-        borderRadius: 16,
+        padding: 24,
+        borderRadius: 0,
         background: "rgba(20, 20, 24, 0.92)",
         color: "#f4f4f5",
-        boxShadow: "0 12px 30px rgba(0, 0, 0, 0.25)",
+        boxShadow: "none",
         backdropFilter: "blur(12px)",
         zIndex: 1000,
       }}
     >
       <header style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-        <span style={{ fontSize: 14, letterSpacing: 0.4, opacity: 0.8 }}>
-          Unified Agent • Environment-wide
-        </span>
-        <strong style={{ fontSize: 18 }}>{AGENT_NAME}</strong>
-        <span style={{ fontSize: 12, opacity: 0.7 }}>
-          Daily archives: {archivedDays}
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <strong style={{ fontSize: 18 }}>{AGENT_NAME}</strong>
+          <button
+            type="button"
+            onClick={() => setView("chat")}
+            style={{
+              padding: "6px 10px",
+              borderRadius: 999,
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              background:
+                view === "chat"
+                  ? "rgba(59, 130, 246, 0.4)"
+                  : "rgba(8, 8, 12, 0.8)",
+              color: "#f4f4f5",
+              fontSize: 12,
+              cursor: "pointer",
+            }}
+          >
+            Chat
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("logs")}
+            style={{
+              padding: "6px 10px",
+              borderRadius: 999,
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              background:
+                view === "logs"
+                  ? "rgba(59, 130, 246, 0.4)"
+                  : "rgba(8, 8, 12, 0.8)",
+              color: "#f4f4f5",
+              fontSize: 12,
+              cursor: "pointer",
+            }}
+          >
+            Logs
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("decisions")}
+            style={{
+              padding: "6px 10px",
+              borderRadius: 999,
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              background:
+                view === "decisions"
+                  ? "rgba(59, 130, 246, 0.4)"
+                  : "rgba(8, 8, 12, 0.8)",
+              color: "#f4f4f5",
+              fontSize: 12,
+              cursor: "pointer",
+            }}
+          >
+            Decisions
+          </button>
+        </div>
       </header>
 
       <div
@@ -258,9 +324,49 @@ export default function ChatWindow() {
           flex: 1,
         }}
       >
-        {state.messages.length === 0 ? (
+        {view === "decisions" ? (
+          decisions.length === 0 ? (
+            <p style={{ fontSize: 13, opacity: 0.7 }}>
+              No decisions captured yet.
+            </p>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {decisions.map((decision) => (
+                <div
+                  key={decision.id}
+                  style={{
+                    padding: "12px 14px",
+                    borderRadius: 12,
+                    background: "rgba(39, 39, 42, 0.9)",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 6,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 11,
+                      textTransform: "uppercase",
+                      letterSpacing: 0.6,
+                      opacity: 0.6,
+                    }}
+                  >
+                    Decision
+                  </span>
+                  <span style={{ fontSize: 14 }}>{decision.content}</span>
+                  <span style={{ fontSize: 12, opacity: 0.7 }}>
+                    {decision.conflict
+                      ? "Conflict: overlaps with an existing decision"
+                      : "Conflict: none"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )
+        ) : state.messages.length === 0 ? (
           <p style={{ fontSize: 13, opacity: 0.7 }}>
-            Start a thread. Your messages are saved and archived daily.
+            Start a thread. Your messages are saved automatically.
           </p>
         ) : (
           state.messages.map((message) => (
@@ -303,39 +409,57 @@ export default function ChatWindow() {
         )}
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", gap: 8, alignItems: "center" }}
-      >
-        <input
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
-          placeholder="Share a thought or decision..."
-          style={{
-            flex: 1,
-            padding: "10px 12px",
-            borderRadius: 10,
-            border: "1px solid rgba(255, 255, 255, 0.15)",
-            background: "rgba(8, 8, 12, 0.8)",
-            color: "#f4f4f5",
-            fontSize: 14,
-          }}
-        />
-        <button
-          type="submit"
-          style={{
-            padding: "10px 14px",
-            borderRadius: 10,
-            border: "none",
-            background: "#22c55e",
-            color: "#0f172a",
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
+      {view === "decisions" ? null : (
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: "flex", gap: 8, alignItems: "center" }}
         >
-          Send
-        </button>
-      </form>
+          <select
+            aria-label="Intent"
+            defaultValue="intent-question"
+            style={{
+              padding: "8px 10px",
+              borderRadius: 999,
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              background: "rgba(39, 39, 42, 0.9)",
+              color: "#f4f4f5",
+              fontSize: 12,
+            }}
+          >
+            <option value="intent-question">Intent: Question</option>
+            <option value="intent-decision">Intent: Decision</option>
+            <option value="intent-plan">Intent: Plan</option>
+          </select>
+          <input
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            placeholder="Share a thought or decision..."
+            style={{
+              flex: 1,
+              padding: "10px 12px",
+              borderRadius: 10,
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              background: "rgba(8, 8, 12, 0.8)",
+              color: "#f4f4f5",
+              fontSize: 14,
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              padding: "10px 14px",
+              borderRadius: 10,
+              border: "none",
+              background: "#22c55e",
+              color: "#0f172a",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Send
+          </button>
+        </form>
+      )}
     </aside>
   );
 }

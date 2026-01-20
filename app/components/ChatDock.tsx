@@ -161,6 +161,7 @@ export default function ChatDock() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(true);
+  const [view, setView] = useState<"chat" | "logs" | "decisions">("chat");
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -193,6 +194,24 @@ export default function ChatDock() {
   }, [state.messages]);
 
   const placeholder = useMemo(() => "Ask a question with /plan", []);
+  const decisions = useMemo(() => {
+    const normalized = state.messages
+      .filter((message) => message.role === "user")
+      .map((message) => ({
+        id: message.id,
+        content: message.content,
+        key: message.content.trim().toLowerCase(),
+      }));
+    const counts = normalized.reduce<Record<string, number>>((acc, item) => {
+      acc[item.key] = (acc[item.key] ?? 0) + 1;
+      return acc;
+    }, {});
+    return normalized.map((item) => ({
+      id: item.id,
+      content: item.content,
+      conflict: counts[item.key] > 1,
+    }));
+  }, [state.messages]);
 
   function sendMessage() {
     const trimmed = input.trim();
@@ -228,23 +247,61 @@ export default function ChatDock() {
     <section className={`chatDock ${isOpen ? "open" : "closed"}`}>
       <header className="chatDockHeader">
         <div>
-          <div className="chatDockTitle">Unified Chat</div>
-          <div className="chatDockSubtitle">
-            {AGENT_NAME} • single agent • archives daily
-          </div>
+          <div className="chatDockTitle">{AGENT_NAME}</div>
         </div>
-        <button className="chatDockToggle" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? "Minimize" : "Chat"}
-        </button>
+        <div className="chatDockActions">
+          <button
+            className={`chatDockToggle ${view === "chat" ? "active" : ""}`}
+            onClick={() => setView("chat")}
+          >
+            Chat
+          </button>
+          <button
+            className={`chatDockToggle ${view === "logs" ? "active" : ""}`}
+            onClick={() => setView("logs")}
+          >
+            Logs
+          </button>
+          <button
+            className={`chatDockToggle ${view === "decisions" ? "active" : ""}`}
+            onClick={() => setView("decisions")}
+          >
+            Decisions
+          </button>
+          <button className="chatDockToggle" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? "Minimize" : "Open"}
+          </button>
+        </div>
       </header>
 
       {isOpen ? (
         <>
           <div className="chatDockBody">
-            {state.messages.length === 0 ? (
+            {view === "decisions" ? (
+              decisions.length === 0 ? (
+                <div className="chatDockEmpty">
+                  No decisions captured yet.
+                </div>
+              ) : (
+                <div className="chatDockList">
+                  {decisions.map((decision) => (
+                    <div key={decision.id} className="chatDockDecision">
+                      <div className="chatDockDecisionTitle">
+                        Decision
+                      </div>
+                      <div className="chatDockText">{decision.content}</div>
+                      <div className="chatDockDecisionMeta">
+                        {decision.conflict
+                          ? "Conflict: overlaps with an existing decision"
+                          : "Conflict: none"}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : state.messages.length === 0 ? (
               <div className="chatDockEmpty">
-                Start a conversation. The single environment agent archives
-                history daily.
+                Start a conversation. Your messages are saved automatically.
               </div>
             ) : (
               state.messages.map((message) => (
@@ -262,43 +319,54 @@ export default function ChatDock() {
             <div ref={bottomRef} />
           </div>
 
-          <footer className="chatDockFooter">
-            <div className="chatDockComposer">
-              <button
-                className="chatDockIconButton"
-                type="button"
-                aria-label="Add context"
-              >
-                +
-              </button>
-              <input
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                placeholder={placeholder}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    sendMessage();
-                  }
-                }}
-              />
-              <button
-                className="chatDockIconButton"
-                type="button"
-                aria-label="Record voice note"
-              >
-                🎤
-              </button>
-              <button
-                className="chatDockIconButton primary"
-                type="button"
-                onClick={sendMessage}
-                aria-label="Send message"
-              >
-                ➤
-              </button>
-            </div>
-          </footer>
+          {view === "decisions" ? null : (
+            <footer className="chatDockFooter">
+              <div className="chatDockComposer">
+                <button
+                  className="chatDockIconButton"
+                  type="button"
+                  aria-label="Add context"
+                >
+                  +
+                </button>
+                <select
+                  className="chatDockSelect"
+                  aria-label="Intent"
+                  defaultValue="intent-question"
+                >
+                  <option value="intent-question">Intent: Question</option>
+                  <option value="intent-decision">Intent: Decision</option>
+                  <option value="intent-plan">Intent: Plan</option>
+                </select>
+                <input
+                  value={input}
+                  onChange={(event) => setInput(event.target.value)}
+                  placeholder={placeholder}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      sendMessage();
+                    }
+                  }}
+                />
+                <button
+                  className="chatDockIconButton"
+                  type="button"
+                  aria-label="Record voice note"
+                >
+                  🎤
+                </button>
+                <button
+                  className="chatDockIconButton primary"
+                  type="button"
+                  onClick={sendMessage}
+                  aria-label="Send message"
+                >
+                  ➤
+                </button>
+              </div>
+            </footer>
+          )}
         </>
       ) : null}
     </section>
