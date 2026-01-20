@@ -33,6 +33,10 @@
       {
         "name": "next"
       }
+    ],
+    "types": [
+      "next",
+      "node"
     ]
   },
   "include": [
