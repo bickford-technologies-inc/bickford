@@ -31,7 +31,7 @@ jobs:
 
       - name: Remove merge markers (mechanical only)
         run: |
-          if rg "<<<<<<<|=======|>>>>>>>" .; then
+          if rg "<{7}|={7}|>{7}" .; then
             echo "❌ Merge markers detected"
             exit 1
           fi
