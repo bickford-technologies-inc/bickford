@@ -29,13 +29,45 @@ const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
 const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const AGENT_NAME = "bickford";
 const ARCHIVE_NOTE =
-  "single agent for the full environment • archives daily at local midnight";
+  "single agent for the full environment • archives chat history daily at local midnight";
 
-function getTodayKey(now: Date = new Date()) {
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
+function formatLocalDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function getTodayKey() {
+  return formatLocalDate(new Date());
+}
+
+function utcKey(date: Date = new Date()) {
+  return date.toISOString().slice(0, 10);
+}
+
+function utcDateKeyToLocal(dateKey: string) {
+  const parsed = new Date(`${dateKey}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime())) {
+    return dateKey;
+  }
+  return formatLocalDate(parsed);
+}
+
+function migrateUtcDates(state: ChatState): ChatState {
+  const localToday = getTodayKey();
+  const utcToday = utcKey();
+  if (state.currentDate !== utcToday || state.currentDate === localToday) {
+    return state;
+  }
+  return {
+    ...state,
+    currentDate: utcDateKeyToLocal(state.currentDate),
+    archives: state.archives.map((archive) => ({
+      ...archive,
+      date: utcDateKeyToLocal(archive.date),
+    })),
+  };
 }
 
 function safeParse<T>(raw: string | null): T | null {
@@ -76,32 +108,40 @@ function normalizeMessages(
     .filter((message) => message.content.trim().length > 0);
 }
 
+function parseStoredState(raw: string | null): ChatState | null {
+  const stored = safeParse<ChatState>(raw);
+  if (!stored) {
+    return null;
+  }
+  return migrateUtcDates({
+    currentDate: stored.currentDate ?? getTodayKey(),
+    messages: Array.isArray(stored.messages)
+      ? normalizeMessages(stored.messages)
+      : [],
+    archives: Array.isArray(stored.archives)
+      ? stored.archives.map((archive) => ({
+          date: archive.date,
+          messages: normalizeMessages(archive.messages ?? []),
+        }))
+      : [],
+  });
+}
+
 function hydrateState(): ChatState {
   if (typeof window === "undefined") {
     return { currentDate: getTodayKey(), messages: [], archives: [] };
   }
 
-  const stored = safeParse<ChatState>(window.localStorage.getItem(STORAGE_KEY));
+  const stored = parseStoredState(window.localStorage.getItem(STORAGE_KEY));
   if (stored) {
-    return {
-      currentDate: stored.currentDate ?? getTodayKey(),
-      messages: Array.isArray(stored.messages)
-        ? normalizeMessages(stored.messages)
-        : [],
-      archives: Array.isArray(stored.archives)
-        ? stored.archives.map((archive) => ({
-            date: archive.date,
-            messages: normalizeMessages(archive.messages ?? []),
-          }))
-        : [],
-    };
+    return stored;
   }
 
   const legacyDaily = safeParse<ChatState>(
     window.localStorage.getItem(LEGACY_DAILY_KEY),
   );
   if (legacyDaily) {
-    return {
+    return migrateUtcDates({
       currentDate: legacyDaily.currentDate ?? getTodayKey(),
       messages: Array.isArray(legacyDaily.messages)
         ? normalizeMessages(legacyDaily.messages)
@@ -112,7 +152,7 @@ function hydrateState(): ChatState {
             messages: normalizeMessages(archive.messages ?? []),
           }))
         : [],
-    };
+    });
   }
 
   const legacyMessages = safeParse<ChatMessage[]>(
@@ -123,16 +163,18 @@ function hydrateState(): ChatState {
   );
   const legacyDay = window.localStorage.getItem(LEGACY_HISTORY_DAY_KEY);
 
-  return {
+  return migrateUtcDates({
     currentDate: legacyDay ?? getTodayKey(),
-    messages: Array.isArray(legacyMessages) ? normalizeMessages(legacyMessages) : [],
+    messages: Array.isArray(legacyMessages)
+      ? normalizeMessages(legacyMessages)
+      : [],
     archives: Array.isArray(legacyArchives)
       ? legacyArchives.map((archive) => ({
           date: archive.date,
           messages: normalizeMessages(archive.messages ?? []),
         }))
       : [],
-  };
+  });
 }
 
 function reconcileDaily(state: ChatState): ChatState {
@@ -160,6 +202,19 @@ function persistState(state: ChatState) {
   window.localStorage.removeItem(LEGACY_ARCHIVE_KEY);
 }
 
+function msUntilNextMidnight(now: Date = new Date()) {
+  const next = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+    0,
+    0,
+    0,
+    0,
+  );
+  return next.getTime() - now.getTime();
+}
+
 export default function ChatWindow() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
   const [input, setInput] = useState("");
@@ -179,17 +234,74 @@ export default function ChatWindow() {
   }, [state]);
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
+    let intervalId: number | undefined;
+    const timeoutId = window.setTimeout(() => {
       setState((prev) => {
         const reconciled = reconcileDaily(prev);
-        if (reconciled !== prev) {
-          persistState(reconciled);
-        }
+        persistState(reconciled);
         return reconciled;
       });
-    }, 10 * 60 * 1000);
+      intervalId = window.setInterval(
+        () => {
+          setState((prev) => {
+            const reconciled = reconcileDaily(prev);
+            persistState(reconciled);
+            return reconciled;
+          });
+        },
+        24 * 60 * 60 * 1000,
+      );
+    }, msUntilNextMidnight());
 
-    return () => window.clearInterval(interval);
+    return () => {
+      window.clearTimeout(timeoutId);
+      if (intervalId) {
+        window.clearInterval(intervalId);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    function handleResume() {
+      setState((prev) => {
+        const reconciled = reconcileDaily(prev);
+        if (reconciled === prev) {
+          return prev;
+        }
+        persistState(reconciled);
+        return reconciled;
+      });
+    }
+
+    window.addEventListener("focus", handleResume);
+    window.addEventListener("visibilitychange", handleResume);
+
+    return () => {
+      window.removeEventListener("focus", handleResume);
+      window.removeEventListener("visibilitychange", handleResume);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    function handleStorage(event: StorageEvent) {
+      if (event.storageArea !== window.localStorage) {
+        return;
+      }
+      if (event.key && event.key !== STORAGE_KEY) {
+        return;
+      }
+      const nextState = parseStoredState(event.newValue) ?? hydrateState();
+      setState(nextState);
+    }
+
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
 
   function appendMessage(role: ChatRole, content: string) {
@@ -222,7 +334,7 @@ export default function ChatWindow() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive today’s history at local midnight.`,
+      `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive chat history daily at local midnight.`,
     );
   }
 
@@ -276,7 +388,9 @@ export default function ChatWindow() {
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <strong style={{ fontSize: 18 }}>{AGENT_NAME}</strong>
-            <span style={{ fontSize: 12, opacity: 0.7 }}>{ARCHIVE_NOTE}</span>
+            <span style={{ fontSize: 12, opacity: 0.7 }}>
+              {ARCHIVE_NOTE} • today {state.currentDate}
+            </span>
           </div>
           <div
             style={{
@@ -322,7 +436,7 @@ export default function ChatWindow() {
                     cursor: "pointer",
                   }}
                 >
-                  Logs
+                  Decision Tracer View
                 </button>
                 <button
                   type="button"
@@ -381,7 +495,9 @@ export default function ChatWindow() {
                   No decisions captured yet.
                 </p>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 12 }}
+                >
                   {decisions.map((decision) => (
                     <div
                       key={decision.id}
@@ -421,7 +537,9 @@ export default function ChatWindow() {
                   No archived days yet. Start chatting to build a daily log.
                 </p>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 12 }}
+                >
                   {logs.map((archive) => (
                     <div
                       key={archive.date}
@@ -490,7 +608,8 @@ export default function ChatWindow() {
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    alignSelf: message.role === "user" ? "flex-end" : "flex-start",
+                    alignSelf:
+                      message.role === "user" ? "flex-end" : "flex-start",
                     gap: 4,
                     maxWidth: "85%",
                   }}
