@@ -213,13 +213,6 @@ export default function ChatDock() {
     }));
   }, [state.messages]);
   const logs = useMemo(() => {
-    const today = state.messages.length
-      ? [{ date: state.currentDate, messages: state.messages }]
-      : [];
-    return [...today, ...state.archives];
-  }, [state.archives, state.currentDate, state.messages]);
-
-  const logs = useMemo(() => {
     const entries: DailyArchive[] = [];
     if (state.messages.length > 0) {
       entries.push({ date: state.currentDate, messages: state.messages });
