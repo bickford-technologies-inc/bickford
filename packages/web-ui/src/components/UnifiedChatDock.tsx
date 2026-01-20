@@ -30,7 +30,7 @@ const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
 const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const AGENT_NAME = "bickford";
 const ARCHIVE_NOTE =
-  "single agent for the full environment • archives daily at local midnight";
+  "single agent for the full environment • archives chat history daily at local midnight";
 
 function formatLocalDate(date: Date) {
   const year = date.getFullYear();
@@ -309,7 +309,7 @@ export default function UnifiedChatDock() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive today’s history at local midnight.`,
+      `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive chat history daily at local midnight.`,
     );
   }
 
