@@ -1,4 +1,12 @@
-import ChatWindow from "../components/ChatWindow";
+/**
+ * CHAT DOCK RULE:
+ * - Utility only
+ * - Collapsed by default
+ * - Must never be landing UI
+ * - Must never replace Intents / Tracer views
+ */
+import ChatDock from "../components/ChatDock";
+import "./globals.css";
 
 export default function RootLayout({
   children,
@@ -9,7 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
-        <ChatWindow />
+        <ChatDock />
       </body>
     </html>
   );

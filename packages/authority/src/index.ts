@@ -51,4 +51,6 @@ export type WhyNotTrace = {
   narrative?: string;
 };
 
-export * from "./index";
+export { canonicalHash } from "./hash";
+export { signHash } from "./sign";
+export { verifySignature } from "./verify";
