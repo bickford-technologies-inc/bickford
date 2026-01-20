@@ -68,7 +68,7 @@ function persist(state: ChatState) {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-export default function ChatWindow() {
+export default function ChatDock() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(true);
