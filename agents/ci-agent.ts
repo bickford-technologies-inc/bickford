@@ -24,6 +24,8 @@ export function classifyCIFailure(log: string): CIFailure {
   return { type: "unknown", fixable: false };
 }
 
+export type CIResult = { success: boolean };
+
 export async function runCI(): Promise<CIResult> {
   // Placeholder: In production, this would invoke CI and parse logs
   return { success: true };
