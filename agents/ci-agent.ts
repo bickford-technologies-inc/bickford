@@ -7,12 +7,15 @@ export type CIFailure =
   | { type: "missing-types"; fixable: true }
   | { type: "schema-merge"; fixable: true }
   | { type: "invariant"; fixable: false }
-  | { type: "unknown"; fixable: false };
+  | { type: "unknown"; fixable: false }
+  | { type: "merge-corruption"; fixable: false }
+  | { type: "schema-invalid"; fixable: true };
 
 export function classifyCIFailure(log: string): CIFailure {
   if (log.includes("TS7016")) {
     return { type: "missing-types", fixable: true };
   }
+  if (log.includes("merge corruption")) {
     return { type: "merge-corruption", fixable: false };
   }
   if (log.includes("Prisma schema validation")) {
