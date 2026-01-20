@@ -251,8 +251,8 @@ export default function UnifiedChatDock() {
         <div>
           <div className="chatDockTitle">Unified Agent</div>
           <div className="chatDockSubtitle">
-            {AGENT_NAME} • single agent • full environment • archives daily •{" "}
-            {archivedCount} saved
+            {AGENT_NAME} • single agent for the full environment • archives
+            daily • {archivedCount} saved
           </div>
         </div>
         <button className="dockToggle" onClick={() => setIsOpen(!isOpen)}>

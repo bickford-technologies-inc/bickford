@@ -258,7 +258,7 @@ export default function ChatDock() {
         <div>
           <div style={{ fontWeight: 600, fontSize: 14 }}>Unified Chat</div>
           <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.7)" }}>
-            {AGENT_NAME} • single agent • full environment • archives daily
+            {AGENT_NAME} • single agent for the full environment • archives daily
           </div>
         </div>
         <button
