@@ -212,6 +212,12 @@ export default function ChatDock() {
       conflict: counts[item.key] > 1,
     }));
   }, [state.messages]);
+  const logs = useMemo(() => {
+    const today = state.messages.length
+      ? [{ date: state.currentDate, messages: state.messages }]
+      : [];
+    return [...today, ...state.archives];
+  }, [state.archives, state.currentDate, state.messages]);
 
   function sendMessage() {
     const trimmed = input.trim();
@@ -299,6 +305,35 @@ export default function ChatDock() {
                           ? "Conflict: overlaps with an existing decision"
                           : "Conflict: none"}
                       </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : view === "logs" ? (
+              logs.length === 0 ? (
+                <div className="chatDockEmpty">
+                  No archived days yet. Start chatting to build a daily log.
+                </div>
+              ) : (
+                <div className="chatDockList">
+                  {logs.map((archive) => (
+                    <div key={archive.date} className="chatDockDay">
+                      <div className="chatDockDayHeader">
+                        {archive.date}
+                      </div>
+                      {archive.messages.map((message) => (
+                        <div
+                          key={message.id}
+                          className={`chatDockBubble ${message.role}`}
+                        >
+                          <div className="chatDockRole">
+                            {message.role === "user" ? "You" : AGENT_NAME}
+                          </div>
+                          <div className="chatDockText">
+                            {message.content}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   ))}
                 </div>
