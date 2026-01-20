@@ -1,29 +1,4 @@
- (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
-diff --git a/app/layout.tsx b/app/layout.tsx
-index 9c9b29f253cee4d4fcddd5c48a242047a4235432..71a3fafb3450be7f209ede19fc161703570149bf 100644
---- a/app/layout.tsx
-+++ b/app/layout.tsx
-@@ -1,17 +1,15 @@
--import ChatDock from "./components/ChatDock";
- import "./globals.css";
- 
- export default function RootLayout({
-   children,
- }: {
-   children: React.ReactNode;
- }) {
-   return (
-     <html lang="en">
-       <body>
-         {children}
--        <ChatDock />
-       </body>
-     </html>
-   );
- }
- 
-EOF
-)"use client";
+"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -54,7 +29,7 @@ const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
 const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const AGENT_NAME = "bickford";
 const ARCHIVE_NOTE =
-  "single agent for the full environment • archives chat history daily at local midnight";
+  "single agent for the full environment • archives daily at local midnight";
 
 function formatLocalDate(date: Date) {
   const year = date.getFullYear();
@@ -117,11 +92,10 @@ function normalizeMessages(
   return messages
     .filter((message) => message)
     .map((message) => {
-      const resolvedRole: ChatRole =
-        message.role === "user" || message.author === "user" ? "user" : "agent";
+      const role = message.role ?? message.author ?? "agent";
       return {
         id: message.id ?? crypto.randomUUID(),
-        role: resolvedRole,
+        role: role === "user" ? "user" : "agent",
         content: message.content ?? message.text ?? "",
         timestamp:
           typeof message.timestamp === "number"
@@ -247,8 +221,8 @@ export default function ChatDock() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(true);
-  const [view, setView] = useState<"chat" | "logs" | "decisions">("chat");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const placeholder = useMemo(() => "Ask a question with /plan", []);
 
   useEffect(() => {
     setState((prev) => {
@@ -290,6 +264,10 @@ export default function ChatDock() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [state.messages]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -334,60 +312,6 @@ export default function ChatDock() {
     };
   }, []);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    let timeoutId: number;
-
-    const scheduleDailyArchive = () => {
-      const now = new Date();
-      const nextMidnight = new Date(now);
-      nextMidnight.setHours(24, 0, 0, 0);
-      const delay = nextMidnight.getTime() - now.getTime();
-      timeoutId = window.setTimeout(() => {
-        setState((prev) => {
-          const reconciled = reconcileDaily(prev);
-          persistState(reconciled);
-          return reconciled;
-        });
-        scheduleDailyArchive();
-      }, delay);
-    };
-
-    scheduleDailyArchive();
-    return () => window.clearTimeout(timeoutId);
-  }, []);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [state.messages]);
-
-  const placeholder = useMemo(() => "Ask a question with /plan", []);
-  const decisions = useMemo(() => {
-    const normalized = state.messages
-      .filter((message) => message.role === "user")
-      .map((message) => ({
-        id: message.id,
-        content: message.content,
-        key: message.content.trim().toLowerCase(),
-      }));
-    const counts = normalized.reduce<Record<string, number>>((acc, item) => {
-      acc[item.key] = (acc[item.key] ?? 0) + 1;
-      return acc;
-    }, {});
-    return normalized.map((item) => ({
-      id: item.id,
-      content: item.content,
-      conflict: counts[item.key] > 1,
-    }));
-  }, [state.messages]);
-  const logs = useMemo(() => {
-    const entries: DailyArchive[] = [];
-    if (state.messages.length > 0) {
-      entries.push({ date: state.currentDate, messages: state.messages });
-    }
-    return entries.concat(state.archives);
-  }, [state]);
-
   function sendMessage() {
     const trimmed = input.trim();
     if (!trimmed) return;
@@ -402,7 +326,7 @@ export default function ChatDock() {
     const agentMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: "agent",
-      content: `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive chat history daily at local midnight.`,
+      content: `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive today’s history at local midnight.`,
       timestamp: Date.now(),
     };
 
@@ -419,87 +343,70 @@ export default function ChatDock() {
   }
 
   return (
-    <section className={`chatDock ${isOpen ? "open" : "closed"}`}>
-      <header className="chatDockHeader">
+    <section
+      style={{
+        position: "fixed",
+        right: 20,
+        bottom: 20,
+        width: "min(360px, calc(100vw - 40px))",
+        borderRadius: 16,
+        border: "1px solid rgba(148, 163, 184, 0.35)",
+        background: "rgba(15, 23, 42, 0.95)",
+        color: "#e2e8f0",
+        boxShadow: "0 16px 40px rgba(15, 23, 42, 0.25)",
+        backdropFilter: "blur(14px)",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        zIndex: 50,
+      }}
+    >
+      <header
+        style={{
+          padding: "14px 16px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          background: "rgba(30, 41, 59, 0.8)",
+          borderBottom: "1px solid rgba(148, 163, 184, 0.25)",
+        }}
+      >
         <div>
-          <div className="chatDockTitle">{AGENT_NAME}</div>
-          <div className="chatDockSubtitle">
-            {ARCHIVE_NOTE} • today {state.currentDate}
+          <div style={{ fontWeight: 600, fontSize: 14 }}>{AGENT_NAME}</div>
+          <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.7)" }}>
+            {ARCHIVE_NOTE}
           </div>
         </div>
-        <div className="chatDockActions">
-          <button
-            className={`chatDockToggle ${view === "chat" ? "active" : ""}`}
-            onClick={() => setView("chat")}
-          >
-            Chat
-          </button>
-          <button
-            className={`chatDockToggle ${view === "logs" ? "active" : ""}`}
-            onClick={() => setView("logs")}
-          >
-            Decision Tracer View
-          </button>
-          <button
-            className={`chatDockToggle ${view === "decisions" ? "active" : ""}`}
-            onClick={() => setView("decisions")}
-          >
-            Decisions
-          </button>
-          <button className="chatDockToggle" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? "Minimize" : "Open"}
-          </button>
-        </div>
+        <button
+          style={{
+            border: "1px solid rgba(148, 163, 184, 0.35)",
+            background: "rgba(15, 23, 42, 0.8)",
+            color: "inherit",
+            borderRadius: 999,
+            padding: "6px 12px",
+            fontSize: 12,
+            cursor: "pointer",
+          }}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? "Minimize" : "Chat"}
+        </button>
       </header>
 
       {isOpen ? (
         <>
-          <div className="chatDockBody">
-            {view === "decisions" ? (
-              decisions.length === 0 ? (
-                <div className="chatDockEmpty">No decisions captured yet.</div>
-              ) : (
-                <div className="chatDockList">
-                  {decisions.map((decision) => (
-                    <div key={decision.id} className="chatDockDecision">
-                      <div className="chatDockDecisionTitle">Decision</div>
-                      <div className="chatDockText">{decision.content}</div>
-                      <div className="chatDockDecisionMeta">
-                        {decision.conflict
-                          ? "Conflict: overlaps with an existing decision"
-                          : "Conflict: none"}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )
-            ) : view === "logs" ? (
-              logs.length === 0 ? (
-                <div className="chatDockEmpty">
-                  No archived days yet. Start chatting to build a daily log.
-                </div>
-              ) : (
-                <div className="chatDockList">
-                  {logs.map((archive) => (
-                    <div key={archive.date} className="chatDockDay">
-                      <div className="chatDockDayHeader">{archive.date}</div>
-                      {archive.messages.map((message) => (
-                        <div
-                          key={message.id}
-                          className={`chatDockBubble ${message.role}`}
-                        >
-                          <div className="chatDockRole">
-                            {message.role === "user" ? "You" : AGENT_NAME}
-                          </div>
-                          <div className="chatDockText">{message.content}</div>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              )
-            ) : state.messages.length === 0 ? (
-              <div className="chatDockEmpty">
+          <div
+            style={{
+              maxHeight: 320,
+              overflowY: "auto",
+              padding: "14px 16px 10px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+            }}
+          >
+            {state.messages.length === 0 ? (
+              <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.65)" }}>
                 Start a conversation. Your messages are saved and archived
                 daily.
               </div>
@@ -507,66 +414,138 @@ export default function ChatDock() {
               state.messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`chatDockBubble ${message.role}`}
+                  style={{
+                    borderRadius: 12,
+                    padding: "10px 12px",
+                    background:
+                      message.role === "user"
+                        ? "rgba(56, 189, 248, 0.25)"
+                        : "rgba(30, 41, 59, 0.6)",
+                    border: `1px solid ${
+                      message.role === "user"
+                        ? "rgba(56, 189, 248, 0.4)"
+                        : "rgba(148, 163, 184, 0.2)"
+                    }`,
+                    alignSelf: message.role === "user" ? "flex-end" : "stretch",
+                  }}
                 >
-                  <div className="chatDockRole">
+                  <div
+                    style={{
+                      fontSize: 11,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.08em",
+                      color: "rgba(226, 232, 240, 0.6)",
+                      marginBottom: 6,
+                    }}
+                  >
                     {message.role === "user" ? "You" : AGENT_NAME}
                   </div>
-                  <div className="chatDockText">{message.content}</div>
+                  <div style={{ fontSize: 13, lineHeight: 1.4 }}>
+                    {message.content}
+                  </div>
                 </div>
               ))
             )}
             <div ref={bottomRef} />
           </div>
 
-          {view === "decisions" ? null : (
-            <footer className="chatDockFooter">
-              <div className="chatDockComposer">
-                <button
-                  className="chatDockIconButton"
-                  type="button"
-                  aria-label="Add context"
-                >
-                  +
-                </button>
-                <select
-                  className="chatDockSelect"
-                  aria-label="Intent"
-                  defaultValue="intent-question"
-                >
-                  <option value="intent-question">Intent: Question</option>
-                  <option value="intent-decision">Intent: Decision</option>
-                  <option value="intent-plan">Intent: Plan</option>
-                </select>
-                <input
-                  value={input}
-                  onChange={(event) => setInput(event.target.value)}
-                  placeholder={placeholder}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.preventDefault();
-                      sendMessage();
-                    }
-                  }}
-                />
-                <button
-                  className="chatDockIconButton"
-                  type="button"
-                  aria-label="Record voice note"
-                >
-                  🎤
-                </button>
-                <button
-                  className="chatDockIconButton primary"
-                  type="button"
-                  onClick={sendMessage}
-                  aria-label="Send message"
-                >
-                  ➤
-                </button>
-              </div>
-            </footer>
-          )}
+          <footer
+            style={{
+              padding: "12px 16px 16px",
+              borderTop: "1px solid rgba(148, 163, 184, 0.25)",
+              background: "rgba(15, 23, 42, 0.75)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 8px",
+                borderRadius: 999,
+                background: "rgba(45, 45, 45, 0.9)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+              }}
+            >
+              <button
+                style={{
+                  border: "none",
+                  background: "rgba(60, 60, 60, 0.9)",
+                  color: "#fff",
+                  borderRadius: 999,
+                  width: 28,
+                  height: 28,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  fontSize: 14,
+                }}
+                type="button"
+                aria-label="Add context"
+              >
+                +
+              </button>
+              <input
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                placeholder={placeholder}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    sendMessage();
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  padding: "8px 4px",
+                  border: "none",
+                  background: "transparent",
+                  color: "inherit",
+                  fontSize: 13,
+                }}
+              />
+              <button
+                style={{
+                  border: "none",
+                  background: "rgba(60, 60, 60, 0.9)",
+                  color: "#fff",
+                  borderRadius: 999,
+                  width: 28,
+                  height: 28,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  fontSize: 14,
+                }}
+                type="button"
+                aria-label="Record voice note"
+              >
+                🎤
+              </button>
+              <button
+                style={{
+                  border: "none",
+                  background: "#4b5563",
+                  color: "#fff",
+                  borderRadius: 999,
+                  width: 28,
+                  height: 28,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  fontSize: 14,
+                }}
+                type="button"
+                onClick={sendMessage}
+                aria-label="Send message"
+              >
+                ➤
+              </button>
+            </div>
+          </footer>
         </>
       ) : null}
     </section>

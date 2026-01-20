@@ -1,31 +1,6 @@
- (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
-diff --git a/app/layout.tsx b/app/layout.tsx
-index 9c9b29f253cee4d4fcddd5c48a242047a4235432..71a3fafb3450be7f209ede19fc161703570149bf 100644
---- a/app/layout.tsx
-+++ b/app/layout.tsx
-@@ -1,17 +1,15 @@
--import ChatDock from "./components/ChatDock";
- import "./globals.css";
- 
- export default function RootLayout({
-   children,
- }: {
-   children: React.ReactNode;
- }) {
-   return (
-     <html lang="en">
-       <body>
-         {children}
--        <ChatDock />
-       </body>
-     </html>
-   );
- }
- 
-EOF
-)"use client";
+"use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 type ChatRole = "user" | "agent";
 
@@ -245,10 +220,8 @@ function msUntilNextMidnight(now: Date = new Date()) {
 
 export default function ChatDock() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
-  const [input, setInput] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
-  const [view, setView] = useState<"chat" | "logs" | "decisions">("chat");
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
 
   useEffect(() => {
     setState((prev) => {
@@ -334,241 +307,206 @@ export default function ChatDock() {
     };
   }, []);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    let timeoutId: number;
-
-    const scheduleDailyArchive = () => {
-      const now = new Date();
-      const nextMidnight = new Date(now);
-      nextMidnight.setHours(24, 0, 0, 0);
-      const delay = nextMidnight.getTime() - now.getTime();
-      timeoutId = window.setTimeout(() => {
-        setState((prev) => {
-          const reconciled = reconcileDaily(prev);
-          persistState(reconciled);
-          return reconciled;
-        });
-        scheduleDailyArchive();
-      }, delay);
-    };
-
-    scheduleDailyArchive();
-    return () => window.clearTimeout(timeoutId);
-  }, []);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [state.messages]);
-
-  const placeholder = useMemo(() => "Ask a question with /plan", []);
-  const decisions = useMemo(() => {
-    const normalized = state.messages
-      .filter((message) => message.role === "user")
-      .map((message) => ({
-        id: message.id,
-        content: message.content,
-        key: message.content.trim().toLowerCase(),
-      }));
-    const counts = normalized.reduce<Record<string, number>>((acc, item) => {
-      acc[item.key] = (acc[item.key] ?? 0) + 1;
-      return acc;
-    }, {});
-    return normalized.map((item) => ({
-      id: item.id,
-      content: item.content,
-      conflict: counts[item.key] > 1,
-    }));
-  }, [state.messages]);
-  const logs = useMemo(() => {
-    const entries: DailyArchive[] = [];
-    if (state.messages.length > 0) {
-      entries.push({ date: state.currentDate, messages: state.messages });
-    }
-    return entries.concat(state.archives);
-  }, [state]);
-
-  function sendMessage() {
-    const trimmed = input.trim();
-    if (!trimmed) return;
-
-    const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content: trimmed,
-      timestamp: Date.now(),
-    };
-
-    const agentMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: "agent",
-      content: `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive chat history daily at local midnight.`,
-      timestamp: Date.now(),
-    };
-
+  function appendMessage(message: ChatMessage) {
     setState((prev) => {
       const reconciled = reconcileDaily(prev);
       const nextState = {
         ...reconciled,
-        messages: [...reconciled.messages, userMessage, agentMessage],
+        messages: [...reconciled.messages, message],
       };
       persistState(nextState);
       return nextState;
     });
-    setInput("");
   }
 
-  return (
-    <section className={`chatDock ${isOpen ? "open" : "closed"}`}>
-      <header className="chatDockHeader">
-        <div>
-          <div className="chatDockTitle">{AGENT_NAME}</div>
-          <div className="chatDockSubtitle">
-            {ARCHIVE_NOTE} • today {state.currentDate}
-          </div>
-        </div>
-        <div className="chatDockActions">
-          <button
-            className={`chatDockToggle ${view === "chat" ? "active" : ""}`}
-            onClick={() => setView("chat")}
-          >
-            Chat
-          </button>
-          <button
-            className={`chatDockToggle ${view === "logs" ? "active" : ""}`}
-            onClick={() => setView("logs")}
-          >
-            Decision Tracer View
-          </button>
-          <button
-            className={`chatDockToggle ${view === "decisions" ? "active" : ""}`}
-            onClick={() => setView("decisions")}
-          >
-            Decisions
-          </button>
-          <button className="chatDockToggle" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? "Minimize" : "Open"}
-          </button>
-        </div>
-      </header>
+  async function submitIntent() {
+    const trimmed = text.trim();
+    if (!trimmed) return;
 
-      {isOpen ? (
-        <>
-          <div className="chatDockBody">
-            {view === "decisions" ? (
-              decisions.length === 0 ? (
-                <div className="chatDockEmpty">No decisions captured yet.</div>
-              ) : (
-                <div className="chatDockList">
-                  {decisions.map((decision) => (
-                    <div key={decision.id} className="chatDockDecision">
-                      <div className="chatDockDecisionTitle">Decision</div>
-                      <div className="chatDockText">{decision.content}</div>
-                      <div className="chatDockDecisionMeta">
-                        {decision.conflict
-                          ? "Conflict: overlaps with an existing decision"
-                          : "Conflict: none"}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )
-            ) : view === "logs" ? (
-              logs.length === 0 ? (
-                <div className="chatDockEmpty">
-                  No archived days yet. Start chatting to build a daily log.
-                </div>
-              ) : (
-                <div className="chatDockList">
-                  {logs.map((archive) => (
-                    <div key={archive.date} className="chatDockDay">
-                      <div className="chatDockDayHeader">{archive.date}</div>
-                      {archive.messages.map((message) => (
-                        <div
-                          key={message.id}
-                          className={`chatDockBubble ${message.role}`}
-                        >
-                          <div className="chatDockRole">
-                            {message.role === "user" ? "You" : AGENT_NAME}
-                          </div>
-                          <div className="chatDockText">{message.content}</div>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              )
-            ) : state.messages.length === 0 ? (
-              <div className="chatDockEmpty">
-                Start a conversation. Your messages are saved and archived
-                daily.
+    appendMessage({
+      id: crypto.randomUUID(),
+      role: "user",
+      content: trimmed,
+      timestamp: Date.now(),
+    });
+    setText("");
+    setOpen(false);
+
+    await fetch("/api/intents", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: trimmed }),
+    });
+  }
+
+  const recent = state.messages.slice(-3);
+
+  return (
+    <>
+      <button
+        data-testid="chat-dock-button"
+        aria-label="Open chat"
+        onClick={() => setOpen(true)}
+        style={{
+          position: "fixed",
+          bottom: 24,
+          right: 24,
+          width: 44,
+          height: 44,
+          borderRadius: "50%",
+          background: "#0f0f0f",
+          border: "1px solid rgba(255,255,255,0.14)",
+          color: "#fff",
+          cursor: "pointer",
+          zIndex: 1000,
+          display: open ? "none" : "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <img
+          src="/brand/bickford-mark.svg"
+          alt="bickford"
+          style={{ width: 26, height: "auto" }}
+        />
+      </button>
+
+      {open ? (
+        <section
+          data-testid="chat-panel"
+          style={{
+            position: "fixed",
+            bottom: 24,
+            right: 24,
+            width: 360,
+            height: 480,
+            background: "#0f0f0f",
+            border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: 12,
+            display: "flex",
+            flexDirection: "column",
+            zIndex: 1001,
+            animation: "dockIn var(--dur-base) var(--ease-codex)",
+          }}
+        >
+          <header
+            style={{
+              padding: "12px 16px",
+              borderBottom: "1px solid rgba(255,255,255,0.08)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              fontSize: 13,
+              color: "#fff",
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <span style={{ fontWeight: 600 }}>{AGENT_NAME}</span>
+              <span style={{ fontSize: 11, opacity: 0.6 }}>
+                {ARCHIVE_NOTE} • today {state.currentDate}
+              </span>
+            </div>
+            <button
+              data-testid="chat-close"
+              onClick={() => setOpen(false)}
+              style={{
+                border: "none",
+                background: "transparent",
+                color: "#fff",
+                cursor: "pointer",
+                fontSize: 16,
+              }}
+            >
+              ✕
+            </button>
+          </header>
+
+          <div
+            style={{
+              flex: 1,
+              padding: 12,
+              fontSize: 13,
+              color: "rgba(255,255,255,0.8)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+            }}
+          >
+            <div style={{ opacity: 0.7 }}>
+              Chat is a support surface. Intents remain primary.
+            </div>
+            {recent.length === 0 ? (
+              <div style={{ opacity: 0.6 }}>
+                No entries yet. Create an intent to start today&apos;s archive.
               </div>
             ) : (
-              state.messages.map((message) => (
+              recent.map((message) => (
                 <div
                   key={message.id}
-                  className={`chatDockBubble ${message.role}`}
+                  style={{
+                    padding: "8px 10px",
+                    borderRadius: 8,
+                    background:
+                      message.role === "user"
+                        ? "rgba(59, 130, 246, 0.25)"
+                        : "rgba(255,255,255,0.06)",
+                  }}
                 >
-                  <div className="chatDockRole">
+                  <div style={{ fontSize: 11, opacity: 0.6 }}>
                     {message.role === "user" ? "You" : AGENT_NAME}
                   </div>
-                  <div className="chatDockText">{message.content}</div>
+                  <div>{message.content}</div>
                 </div>
               ))
             )}
-            <div ref={bottomRef} />
           </div>
 
-          {view === "decisions" ? null : (
-            <footer className="chatDockFooter">
-              <div className="chatDockComposer">
-                <button
-                  className="chatDockIconButton"
-                  type="button"
-                  aria-label="Add context"
-                >
-                  +
-                </button>
-                <select
-                  className="chatDockSelect"
-                  aria-label="Intent"
-                  defaultValue="intent-question"
-                >
-                  <option value="intent-question">Intent: Question</option>
-                  <option value="intent-decision">Intent: Decision</option>
-                  <option value="intent-plan">Intent: Plan</option>
-                </select>
-                <input
-                  value={input}
-                  onChange={(event) => setInput(event.target.value)}
-                  placeholder={placeholder}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.preventDefault();
-                      sendMessage();
-                    }
-                  }}
-                />
-                <button
-                  className="chatDockIconButton"
-                  type="button"
-                  aria-label="Record voice note"
-                >
-                  🎤
-                </button>
-                <button
-                  className="chatDockIconButton primary"
-                  type="button"
-                  onClick={sendMessage}
-                  aria-label="Send message"
-                >
-                  ➤
-                </button>
-              </div>
-            </footer>
-          )}
-        </>
+          <div
+            style={{
+              padding: 12,
+              borderTop: "1px solid rgba(255,255,255,0.08)",
+              display: "flex",
+              gap: 8,
+            }}
+          >
+            <input
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  submitIntent();
+                }
+              }}
+              placeholder="Create intent…"
+              style={{
+                flex: 1,
+                background: "#161616",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: 8,
+                padding: "8px 10px",
+                fontSize: 13,
+                color: "#fff",
+              }}
+            />
+            <button
+              type="button"
+              onClick={submitIntent}
+              style={{
+                padding: "8px 12px",
+                borderRadius: 8,
+                border: "1px solid rgba(255,255,255,0.18)",
+                background: "#1f1f1f",
+                color: "#fff",
+                cursor: "pointer",
+                fontSize: 13,
+              }}
+            >
+              Send
+            </button>
+          </div>
+        </section>
       ) : null}
-    </section>
+    </>
   );
 }
