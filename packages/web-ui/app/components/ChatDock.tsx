@@ -29,7 +29,11 @@ const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
 const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const AGENT_NAME = "bickford";
 const ARCHIVE_NOTE =
-  "single agent for the full environment • archives daily at local midnight";
+  "single agent for the full environment • archives chat history daily at local midnight";
+
+function archiveCountLabel(count: number) {
+  return `${count} archive${count === 1 ? "" : "s"}`;
+}
 
 function formatLocalDate(date: Date) {
   const year = date.getFullYear();
@@ -222,7 +226,7 @@ export default function ChatDock() {
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const placeholder = useMemo(() => "Ask a question with /plan", []);
+  const archivedCount = useMemo(() => state.archives.length, [state.archives]);
 
   useEffect(() => {
     setState((prev) => {
@@ -326,7 +330,7 @@ export default function ChatDock() {
     const agentMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: "agent",
-      content: `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive today’s history at local midnight.`,
+      content: `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive chat history daily at local midnight.`,
       timestamp: Date.now(),
     };
 
@@ -374,7 +378,8 @@ export default function ChatDock() {
         <div>
           <div style={{ fontWeight: 600, fontSize: 14 }}>{AGENT_NAME}</div>
           <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.7)" }}>
-            {ARCHIVE_NOTE}
+            {ARCHIVE_NOTE} • today {state.currentDate} •{" "}
+            {archiveCountLabel(archivedCount)}
           </div>
         </div>
         <button
@@ -407,8 +412,8 @@ export default function ChatDock() {
           >
             {state.messages.length === 0 ? (
               <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.65)" }}>
-                Start a conversation. Your messages are saved and archived
-                daily.
+                Start a conversation. The single agent archives chat history
+                daily for this environment.
               </div>
             ) : (
               state.messages.map((message) => (
@@ -489,7 +494,7 @@ export default function ChatDock() {
               <input
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
-                placeholder={placeholder}
+                placeholder="Share intent, decisions, or next steps..."
                 onKeyDown={(event) => {
                   if (event.key === "Enter") {
                     event.preventDefault();
