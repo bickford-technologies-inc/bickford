@@ -343,9 +343,11 @@ For all Codespace users: see [`CODESPACE_CANONICAL_BEHAVIOR_CONFIRMATION.md`](./
 ## 🚀 Windows Local Dev Quickstart
 
 1. **Run the dev bootstrap script:**
+
    ```powershell
    ./dev-bootstrap.ps1
    ```
+
    - Ensures Docker Desktop and WSL2 are running and tuned
    - Starts containers with auto-restart
    - Opens VS Code and your browser
