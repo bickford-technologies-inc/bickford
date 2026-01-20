@@ -89,10 +89,11 @@ body {
 
 .chatDock {
   position: fixed;
-  right: 20px;
-  bottom: 20px;
-  width: min(360px, calc(100vw - 40px));
-  border-radius: 16px;
+  right: 24px;
+  bottom: 24px;
+  width: min(380px, calc(100vw - 32px));
+  height: min(560px, calc(100vh - 32px));
+  border-radius: 20px;
   border: 1px solid rgba(148, 163, 184, 0.35);
   background: rgba(15, 23, 42, 0.95);
   color: #e2e8f0;
@@ -101,11 +102,12 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  z-index: 50;
+  z-index: 1000;
 }
 
 .chatDock.closed {
   height: auto;
+  width: min(320px, calc(100vw - 32px));
 }
 
 .chatDockHeader {
@@ -115,6 +117,12 @@ body {
   align-items: center;
   background: rgba(30, 41, 59, 0.8);
   border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.chatDockActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .chatDockTitle {
@@ -137,10 +145,21 @@ body {
   cursor: pointer;
 }
 
+.chatDockToggle.active {
+  border-color: rgba(56, 189, 248, 0.6);
+  background: rgba(56, 189, 248, 0.2);
+}
+
 .chatDockBody {
-  max-height: 320px;
   overflow-y: auto;
   padding: 14px 16px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.chatDockList {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -177,6 +196,47 @@ body {
   line-height: 1.4;
 }
 
+.chatDockList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chatDockDecision {
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chatDockDecisionTitle {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(226, 232, 240, 0.6);
+}
+
+.chatDockDecisionMeta {
+  font-size: 12px;
+  color: rgba(226, 232, 240, 0.7);
+}
+
+.chatDockDay {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chatDockDayHeader {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(226, 232, 240, 0.5);
+}
+
 .chatDockFooter {
   padding: 12px 16px 16px;
   border-top: 1px solid rgba(148, 163, 184, 0.25);
@@ -191,6 +251,16 @@ body {
   border-radius: 999px;
   background: rgba(45, 45, 45, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+
+.chatDockSelect {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(39, 39, 42, 0.9);
+  color: inherit;
+  font-size: 11px;
+  padding: 6px 8px;
 }
 
 .chatDockFooter input {
@@ -203,6 +273,19 @@ body {
 }
 
 .chatDockFooter input:focus {
+  outline: none;
+}
+
+.chatDockSelect {
+  border: none;
+  background: rgba(60, 60, 60, 0.9);
+  color: #fff;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.chatDockSelect:focus {
   outline: none;
 }
 
@@ -230,8 +313,13 @@ body {
   }
 
   .chatDock {
-    right: 12px;
-    left: 12px;
-    width: auto;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .chatDock.closed {
+    width: 100vw;
   }
 }
