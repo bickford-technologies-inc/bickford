@@ -65,6 +65,10 @@ Where:
 
 **Rationale:** Explainability + auditability
 
+## Execution Truth Invariant
+
+> An intent is not real unless it can be: **diffed, hashed, signed, replayed, and exported.**
+
 ## Authority Hierarchy
 
 ```
