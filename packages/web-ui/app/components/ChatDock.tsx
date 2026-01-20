@@ -92,7 +92,9 @@ function hydrateState(): ChatState {
     };
   }
 
-  const legacyDaily = safeParse<ChatState>(localStorage.getItem(LEGACY_DAILY_KEY));
+  const legacyDaily = safeParse<ChatState>(
+    localStorage.getItem(LEGACY_DAILY_KEY),
+  );
   if (legacyDaily) {
     return {
       currentDate: legacyDaily.currentDate ?? todayKey(),
