@@ -1,0 +1,163 @@
+:root {
+  --ease-codex: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 120ms;
+  --dur-base: 180ms;
+  --bg-root: #0e0e10;
+  --bg-panel: #151518;
+  --bg-hover: #1d1d21;
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.65);
+  --text-muted: rgba(255, 255, 255, 0.45);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+}
+
+@keyframes dockIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-root);
+  color: var(--text-primary);
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.codexShell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.codexTopBar {
+  height: 56px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.codexTopBarLeft {
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.codexTopBarRight {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.codexLanding {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 96px 32px 48px;
+  gap: 32px;
+}
+
+.codexInputWrap {
+  width: min(720px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.codexPrimaryInput {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  padding: 12px 16px;
+  font-size: 15px;
+}
+
+.codexPrimaryInput::placeholder {
+  color: var(--text-muted);
+}
+
+.codexTabs {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.codexTab {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding: 6px 0 10px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.codexTab.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--text-primary);
+}
+
+.codexListLayout {
+  width: min(1120px, 100%);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+}
+
+.codexList {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.codexListRow {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.codexListTitle {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.codexListMeta {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.codexStatusCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-top: 1px;
+}
+
+.codexDelta {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
