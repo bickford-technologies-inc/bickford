@@ -332,3 +332,17 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+.chatDockMessages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chatDockHistory {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 8px;
+}

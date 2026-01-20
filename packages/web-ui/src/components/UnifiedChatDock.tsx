@@ -258,9 +258,9 @@ export default function UnifiedChatDock() {
     <aside className={`chatDockFloating ${isOpen ? "" : "closed"}`}>
       <header className="chatDockHeader">
         <div>
-          <div className="chatDockTitle">Unified Agent</div>
+          <div className="chatDockTitle">{AGENT_NAME}</div>
           <div className="chatDockSubtitle">
-            {AGENT_NAME} • {ARCHIVE_NOTE} • {archivedCount} saved
+            {ARCHIVE_NOTE} • {archivedCount} saved
           </div>
         </div>
         <button className="dockToggle" onClick={() => setIsOpen(!isOpen)}>
