@@ -35,13 +35,13 @@ import {
   bufferTokensWithProof,
   sealChatItem,
   finalizeChatItem,
-} from "../packages/bickford/src/canon";
+} from "../packages/canon/src/canon";
 
 import {
   formatWhyNotPanel,
   createDeniedDecisionProof,
   verifyDeniedDecisionProof,
-} from "../packages/bickford/api/whynot-panel";
+} from "../packages/canon/api/whynot-panel";
 
 console.log("\n" + "═".repeat(80));
 console.log("  BICKFORD DEMO: TIER-1 AND TIER-2 CLOSURES (CHAT LAYERS 1-6)");
@@ -155,7 +155,7 @@ if (optrRun.denyTraces && optrRun.denyTraces.length > 0) {
   console.log("    ✗ Decision: DENIED (silent)");
   console.log(`    ✗ Reason: ${optrRun.denyTraces[0].message}`);
   console.log(
-    `    ✗ Missing canon: ${optrRun.denyTraces[0].missingCanonIds?.join(", ")}`
+    `    ✗ Missing canon: ${optrRun.denyTraces[0].missingCanonIds?.join(", ")}`,
   );
 } else {
   console.log("    ✓ Decision: ALLOWED");
@@ -173,46 +173,46 @@ if (optrRun.denyTraces && optrRun.denyTraces.length > 0) {
   const panelData = formatWhyNotPanel(denyTrace);
 
   console.log(
-    `\n  ╔═══════════════════════════════════════════════════════════╗`
+    `\n  ╔═══════════════════════════════════════════════════════════╗`,
   );
   console.log(`  ║ ${panelData.title.padEnd(57)} ║`);
   console.log(
-    `  ╠═══════════════════════════════════════════════════════════╣`
+    `  ╠═══════════════════════════════════════════════════════════╣`,
   );
   console.log(
-    `  ║                                                           ║`
+    `  ║                                                           ║`,
   );
   console.log(
-    `  ║ Summary:                                                  ║`
+    `  ║ Summary:                                                  ║`,
   );
   console.log(`  ║   ${panelData.summary.substring(0, 55).padEnd(55)} ║`);
   console.log(
-    `  ║                                                           ║`
+    `  ║                                                           ║`,
   );
   console.log(
-    `  ║ Denial Reasons:                                           ║`
+    `  ║ Denial Reasons:                                           ║`,
   );
   for (const reason of panelData.denialReasons) {
     console.log(`  ║   [${reason.severity}] ${reason.code.padEnd(44)} ║`);
   }
   console.log(
-    `  ║                                                           ║`
+    `  ║                                                           ║`,
   );
   console.log(
-    `  ║ Missing Prerequisites:                                    ║`
+    `  ║ Missing Prerequisites:                                    ║`,
   );
   for (const prereq of panelData.missingPrerequisites) {
     console.log(`  ║   - ${prereq.id.padEnd(53)} ║`);
   }
   console.log(
-    `  ║                                                           ║`
+    `  ║                                                           ║`,
   );
   console.log(
-    `  ║ Proof Hash:                                               ║`
+    `  ║ Proof Hash:                                               ║`,
   );
   console.log(`  ║   ${panelData.proofHash.substring(0, 55).padEnd(55)} ║`);
   console.log(
-    `  ╚═══════════════════════════════════════════════════════════╝`
+    `  ╚═══════════════════════════════════════════════════════════╝`,
   );
 
   // Create and verify proof
@@ -244,13 +244,13 @@ console.log(`    ✓ Execution ID: ${execContext.executionId}`);
 console.log(`    ✓ Tenant ID: ${execContext.tenantId}`);
 console.log(`    ✓ Canon refs: ${execContext.canonRefsSnapshot.length} items`);
 console.log(
-  `    ✓ Constraints: ${execContext.constraintsSnapshot.length} items`
+  `    ✓ Constraints: ${execContext.constraintsSnapshot.length} items`,
 );
 console.log(
-  `    ✓ Environment hash: ${execContext.environmentHash.substring(0, 16)}...`
+  `    ✓ Environment hash: ${execContext.environmentHash.substring(0, 16)}...`,
 );
 console.log(
-  `    ✓ Context hash: ${execContext.contextHash.substring(0, 16)}...`
+  `    ✓ Context hash: ${execContext.contextHash.substring(0, 16)}...`,
 );
 console.log("    → Deterministic snapshot of execution scope for audit");
 
@@ -306,16 +306,16 @@ const promotionDecision = promotionGate({
 });
 
 console.log(
-  `    Decision: ${promotionDecision.approved ? "APPROVED" : "DENIED"}`
+  `    Decision: ${promotionDecision.approved ? "APPROVED" : "DENIED"}`,
 );
 console.log(
-  `    From: ${promotionDecision.from} → To: ${promotionDecision.to}`
+  `    From: ${promotionDecision.from} → To: ${promotionDecision.to}`,
 );
 console.log(`    Reason: ${promotionDecision.reason}`);
 console.log(
   `    Tests passed: ${
     Object.values(promotionDecision.tests).filter(Boolean).length - 1
-  }/4`
+  }/4`,
 );
 
 // SCREEN 7: OPTR Canon Knowledge Ingestion
@@ -346,14 +346,14 @@ const canonStoreWithConstraints = new Map<string, any>([
 
 const pathConstraints = ingestCanonAsConstraints(
   canonStoreWithConstraints,
-  actions
+  actions,
 );
 
 console.log(`    ✓ Path constraints generated: ${pathConstraints.length}`);
 for (const constraint of pathConstraints) {
   console.log(`      - ${constraint.constraintType}: ${constraint.canonRefId}`);
   console.log(
-    `        Confidence: ${constraint.confidence.confidence}, Trust: ${constraint.confidence.trust}`
+    `        Confidence: ${constraint.confidence.confidence}, Trust: ${constraint.confidence.trust}`,
   );
 }
 
@@ -373,7 +373,7 @@ const highRiskCandidate: CandidatePath = {
 const constraintDenials = applyPathConstraints(
   highRiskCandidate,
   pathConstraints,
-  nowIso
+  nowIso,
 );
 
 console.log(`    ✓ Constraint denials: ${constraintDenials.length}`);

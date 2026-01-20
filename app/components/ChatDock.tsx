@@ -1,4 +1,29 @@
-"use client";
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/app/layout.tsx b/app/layout.tsx
+index 9c9b29f253cee4d4fcddd5c48a242047a4235432..71a3fafb3450be7f209ede19fc161703570149bf 100644
+--- a/app/layout.tsx
++++ b/app/layout.tsx
+@@ -1,17 +1,15 @@
+-import ChatDock from "./components/ChatDock";
+ import "./globals.css";
+ 
+ export default function RootLayout({
+   children,
+ }: {
+   children: React.ReactNode;
+ }) {
+   return (
+     <html lang="en">
+       <body>
+         {children}
+-        <ChatDock />
+       </body>
+     </html>
+   );
+ }
+ 
+EOF
+)"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -27,10 +52,47 @@ const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
 const LEGACY_HISTORY_KEY = "bickford.chat.history";
 const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
 const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
-const AGENT_NAME = "Bickford Unified Agent";
+const AGENT_NAME = "bickford";
+const ARCHIVE_NOTE =
+  "single agent for the full environment • archives chat history daily at local midnight";
+
+function formatLocalDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 function todayKey() {
-  return new Date().toISOString().slice(0, 10);
+  return formatLocalDate(new Date());
+}
+
+function utcKey(date: Date = new Date()) {
+  return date.toISOString().slice(0, 10);
+}
+
+function utcDateKeyToLocal(dateKey: string) {
+  const parsed = new Date(`${dateKey}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime())) {
+    return dateKey;
+  }
+  return formatLocalDate(parsed);
+}
+
+function migrateUtcDates(state: ChatState): ChatState {
+  const localToday = todayKey();
+  const utcToday = utcKey();
+  if (state.currentDate !== utcToday || state.currentDate === localToday) {
+    return state;
+  }
+  return {
+    ...state,
+    currentDate: utcDateKeyToLocal(state.currentDate),
+    archives: state.archives.map((archive) => ({
+      ...archive,
+      date: utcDateKeyToLocal(archive.date),
+    })),
+  };
 }
 
 function safeParse<T>(raw: string | null): T | null {
@@ -55,10 +117,11 @@ function normalizeMessages(
   return messages
     .filter((message) => message)
     .map((message) => {
-      const role = message.role ?? message.author ?? "agent";
+      const resolvedRole: ChatRole =
+        message.role === "user" || message.author === "user" ? "user" : "agent";
       return {
         id: message.id ?? crypto.randomUUID(),
-        role: role === "user" ? "user" : "agent",
+        role: resolvedRole,
         content: message.content ?? message.text ?? "",
         timestamp:
           typeof message.timestamp === "number"
@@ -71,32 +134,40 @@ function normalizeMessages(
     .filter((message) => message.content.trim().length > 0);
 }
 
+function parseStoredState(raw: string | null): ChatState | null {
+  const stored = safeParse<ChatState>(raw);
+  if (!stored) {
+    return null;
+  }
+  return migrateUtcDates({
+    currentDate: stored.currentDate ?? todayKey(),
+    messages: Array.isArray(stored.messages)
+      ? normalizeMessages(stored.messages)
+      : [],
+    archives: Array.isArray(stored.archives)
+      ? stored.archives.map((archive) => ({
+          date: archive.date,
+          messages: normalizeMessages(archive.messages ?? []),
+        }))
+      : [],
+  });
+}
+
 function hydrateState(): ChatState {
   if (typeof window === "undefined") {
     return { currentDate: todayKey(), messages: [], archives: [] };
   }
 
-  const stored = safeParse<ChatState>(localStorage.getItem(STORAGE_KEY));
+  const stored = parseStoredState(localStorage.getItem(STORAGE_KEY));
   if (stored) {
-    return {
-      currentDate: stored.currentDate ?? todayKey(),
-      messages: Array.isArray(stored.messages)
-        ? normalizeMessages(stored.messages)
-        : [],
-      archives: Array.isArray(stored.archives)
-        ? stored.archives.map((archive) => ({
-            date: archive.date,
-            messages: normalizeMessages(archive.messages ?? []),
-          }))
-        : [],
-    };
+    return stored;
   }
 
   const legacyDaily = safeParse<ChatState>(
     localStorage.getItem(LEGACY_DAILY_KEY),
   );
   if (legacyDaily) {
-    return {
+    return migrateUtcDates({
       currentDate: legacyDaily.currentDate ?? todayKey(),
       messages: Array.isArray(legacyDaily.messages)
         ? normalizeMessages(legacyDaily.messages)
@@ -107,7 +178,7 @@ function hydrateState(): ChatState {
             messages: normalizeMessages(archive.messages ?? []),
           }))
         : [],
-    };
+    });
   }
 
   const legacyMessages = safeParse<ChatMessage[]>(
@@ -118,16 +189,18 @@ function hydrateState(): ChatState {
   );
   const legacyDay = localStorage.getItem(LEGACY_HISTORY_DAY_KEY);
 
-  return {
+  return migrateUtcDates({
     currentDate: legacyDay ?? todayKey(),
-    messages: Array.isArray(legacyMessages) ? normalizeMessages(legacyMessages) : [],
+    messages: Array.isArray(legacyMessages)
+      ? normalizeMessages(legacyMessages)
+      : [],
     archives: Array.isArray(legacyArchives)
       ? legacyArchives.map((archive) => ({
           date: archive.date,
           messages: normalizeMessages(archive.messages ?? []),
         }))
       : [],
-  };
+  });
 }
 
 function reconcileDaily(state: ChatState): ChatState {
@@ -157,10 +230,24 @@ function persistState(state: ChatState) {
   localStorage.removeItem(LEGACY_ARCHIVE_KEY);
 }
 
+function msUntilNextMidnight(now: Date = new Date()) {
+  const next = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+    0,
+    0,
+    0,
+    0,
+  );
+  return next.getTime() - now.getTime();
+}
+
 export default function ChatDock() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(true);
+  const [view, setView] = useState<"chat" | "logs" | "decisions">("chat");
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -177,15 +264,97 @@ export default function ChatDock() {
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
-    const timer = window.setInterval(() => {
+    let intervalId: number | undefined;
+    const timeoutId = window.setTimeout(() => {
       setState((prev) => {
         const reconciled = reconcileDaily(prev);
         persistState(reconciled);
         return reconciled;
       });
-    }, 15 * 60 * 1000);
+      intervalId = window.setInterval(
+        () => {
+          setState((prev) => {
+            const reconciled = reconcileDaily(prev);
+            persistState(reconciled);
+            return reconciled;
+          });
+        },
+        24 * 60 * 60 * 1000,
+      );
+    }, msUntilNextMidnight());
 
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearTimeout(timeoutId);
+      if (intervalId) {
+        window.clearInterval(intervalId);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    function handleResume() {
+      setState((prev) => {
+        const reconciled = reconcileDaily(prev);
+        if (reconciled === prev) {
+          return prev;
+        }
+        persistState(reconciled);
+        return reconciled;
+      });
+    }
+
+    window.addEventListener("focus", handleResume);
+    window.addEventListener("visibilitychange", handleResume);
+
+    return () => {
+      window.removeEventListener("focus", handleResume);
+      window.removeEventListener("visibilitychange", handleResume);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    function handleStorage(event: StorageEvent) {
+      if (event.storageArea !== window.localStorage) {
+        return;
+      }
+      if (event.key && event.key !== STORAGE_KEY) {
+        return;
+      }
+      const nextState = parseStoredState(event.newValue) ?? hydrateState();
+      setState(nextState);
+    }
+
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    let timeoutId: number;
+
+    const scheduleDailyArchive = () => {
+      const now = new Date();
+      const nextMidnight = new Date(now);
+      nextMidnight.setHours(24, 0, 0, 0);
+      const delay = nextMidnight.getTime() - now.getTime();
+      timeoutId = window.setTimeout(() => {
+        setState((prev) => {
+          const reconciled = reconcileDaily(prev);
+          persistState(reconciled);
+          return reconciled;
+        });
+        scheduleDailyArchive();
+      }, delay);
+    };
+
+    scheduleDailyArchive();
+    return () => window.clearTimeout(timeoutId);
   }, []);
 
   useEffect(() => {
@@ -193,6 +362,31 @@ export default function ChatDock() {
   }, [state.messages]);
 
   const placeholder = useMemo(() => "Ask a question with /plan", []);
+  const decisions = useMemo(() => {
+    const normalized = state.messages
+      .filter((message) => message.role === "user")
+      .map((message) => ({
+        id: message.id,
+        content: message.content,
+        key: message.content.trim().toLowerCase(),
+      }));
+    const counts = normalized.reduce<Record<string, number>>((acc, item) => {
+      acc[item.key] = (acc[item.key] ?? 0) + 1;
+      return acc;
+    }, {});
+    return normalized.map((item) => ({
+      id: item.id,
+      content: item.content,
+      conflict: counts[item.key] > 1,
+    }));
+  }, [state.messages]);
+  const logs = useMemo(() => {
+    const entries: DailyArchive[] = [];
+    if (state.messages.length > 0) {
+      entries.push({ date: state.currentDate, messages: state.messages });
+    }
+    return entries.concat(state.archives);
+  }, [state]);
 
   function sendMessage() {
     const trimmed = input.trim();
@@ -207,8 +401,8 @@ export default function ChatDock() {
 
     const agentMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      role: "assistant",
-      content: `Acknowledged. ${AGENT_NAME} is coordinating this and will archive today’s history automatically.`,
+      role: "agent",
+      content: `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive chat history daily at local midnight.`,
       timestamp: Date.now(),
     };
 
@@ -228,23 +422,86 @@ export default function ChatDock() {
     <section className={`chatDock ${isOpen ? "open" : "closed"}`}>
       <header className="chatDockHeader">
         <div>
-          <div className="chatDockTitle">Unified Chat</div>
+          <div className="chatDockTitle">{AGENT_NAME}</div>
           <div className="chatDockSubtitle">
-            {AGENT_NAME} • single agent • archives daily
+            {ARCHIVE_NOTE} • today {state.currentDate}
           </div>
         </div>
-        <button className="chatDockToggle" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? "Minimize" : "Chat"}
-        </button>
+        <div className="chatDockActions">
+          <button
+            className={`chatDockToggle ${view === "chat" ? "active" : ""}`}
+            onClick={() => setView("chat")}
+          >
+            Chat
+          </button>
+          <button
+            className={`chatDockToggle ${view === "logs" ? "active" : ""}`}
+            onClick={() => setView("logs")}
+          >
+            Decision Tracer View
+          </button>
+          <button
+            className={`chatDockToggle ${view === "decisions" ? "active" : ""}`}
+            onClick={() => setView("decisions")}
+          >
+            Decisions
+          </button>
+          <button className="chatDockToggle" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? "Minimize" : "Open"}
+          </button>
+        </div>
       </header>
 
       {isOpen ? (
         <>
           <div className="chatDockBody">
-            {state.messages.length === 0 ? (
+            {view === "decisions" ? (
+              decisions.length === 0 ? (
+                <div className="chatDockEmpty">No decisions captured yet.</div>
+              ) : (
+                <div className="chatDockList">
+                  {decisions.map((decision) => (
+                    <div key={decision.id} className="chatDockDecision">
+                      <div className="chatDockDecisionTitle">Decision</div>
+                      <div className="chatDockText">{decision.content}</div>
+                      <div className="chatDockDecisionMeta">
+                        {decision.conflict
+                          ? "Conflict: overlaps with an existing decision"
+                          : "Conflict: none"}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : view === "logs" ? (
+              logs.length === 0 ? (
+                <div className="chatDockEmpty">
+                  No archived days yet. Start chatting to build a daily log.
+                </div>
+              ) : (
+                <div className="chatDockList">
+                  {logs.map((archive) => (
+                    <div key={archive.date} className="chatDockDay">
+                      <div className="chatDockDayHeader">{archive.date}</div>
+                      {archive.messages.map((message) => (
+                        <div
+                          key={message.id}
+                          className={`chatDockBubble ${message.role}`}
+                        >
+                          <div className="chatDockRole">
+                            {message.role === "user" ? "You" : AGENT_NAME}
+                          </div>
+                          <div className="chatDockText">{message.content}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : state.messages.length === 0 ? (
               <div className="chatDockEmpty">
-                Start a conversation. The single environment agent archives
-                history daily.
+                Start a conversation. Your messages are saved and archived
+                daily.
               </div>
             ) : (
               state.messages.map((message) => (
@@ -262,43 +519,54 @@ export default function ChatDock() {
             <div ref={bottomRef} />
           </div>
 
-          <footer className="chatDockFooter">
-            <div className="chatDockComposer">
-              <button
-                className="chatDockIconButton"
-                type="button"
-                aria-label="Add context"
-              >
-                +
-              </button>
-              <input
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                placeholder={placeholder}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    sendMessage();
-                  }
-                }}
-              />
-              <button
-                className="chatDockIconButton"
-                type="button"
-                aria-label="Record voice note"
-              >
-                🎤
-              </button>
-              <button
-                className="chatDockIconButton primary"
-                type="button"
-                onClick={sendMessage}
-                aria-label="Send message"
-              >
-                ➤
-              </button>
-            </div>
-          </footer>
+          {view === "decisions" ? null : (
+            <footer className="chatDockFooter">
+              <div className="chatDockComposer">
+                <button
+                  className="chatDockIconButton"
+                  type="button"
+                  aria-label="Add context"
+                >
+                  +
+                </button>
+                <select
+                  className="chatDockSelect"
+                  aria-label="Intent"
+                  defaultValue="intent-question"
+                >
+                  <option value="intent-question">Intent: Question</option>
+                  <option value="intent-decision">Intent: Decision</option>
+                  <option value="intent-plan">Intent: Plan</option>
+                </select>
+                <input
+                  value={input}
+                  onChange={(event) => setInput(event.target.value)}
+                  placeholder={placeholder}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      sendMessage();
+                    }
+                  }}
+                />
+                <button
+                  className="chatDockIconButton"
+                  type="button"
+                  aria-label="Record voice note"
+                >
+                  🎤
+                </button>
+                <button
+                  className="chatDockIconButton primary"
+                  type="button"
+                  onClick={sendMessage}
+                  aria-label="Send message"
+                >
+                  ➤
+                </button>
+              </div>
+            </footer>
+          )}
         </>
       ) : null}
     </section>
