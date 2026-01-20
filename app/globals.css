@@ -179,28 +179,49 @@ body {
 
 .chatDockFooter {
   padding: 12px 16px 16px;
-  display: flex;
-  gap: 8px;
   border-top: 1px solid rgba(148, 163, 184, 0.25);
   background: rgba(15, 23, 42, 0.75);
 }
 
-.chatDockFooter input {
-  flex: 1;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  background: rgba(15, 23, 42, 0.6);
-  color: inherit;
+.chatDockComposer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: rgba(45, 45, 45, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.chatDockFooter button {
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(56, 189, 248, 0.6);
-  background: rgba(56, 189, 248, 0.15);
+.chatDockFooter input {
+  flex: 1;
+  padding: 8px 4px;
+  border: none;
+  background: transparent;
   color: inherit;
+  font-size: 13px;
+}
+
+.chatDockFooter input:focus {
+  outline: none;
+}
+
+.chatDockIconButton {
+  border: none;
+  background: rgba(60, 60, 60, 0.9);
+  color: #fff;
+  border-radius: 999px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  font-size: 14px;
+}
+
+.chatDockIconButton.primary {
+  background: #4b5563;
 }
 
 @media (max-width: 640px) {

@@ -84,10 +84,7 @@ export default function ChatDock() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const placeholder = useMemo(
-    () => "Message the single Bickford agent for the full environment...",
-    [],
-  );
+  const placeholder = useMemo(() => "Ask a question with /plan", []);
 
   function sendMessage() {
     const trimmed = input.trim();
@@ -150,18 +147,41 @@ export default function ChatDock() {
           </div>
 
           <footer className="chatDockFooter">
-            <input
-              value={input}
-              onChange={(event) => setInput(event.target.value)}
-              placeholder={placeholder}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  sendMessage();
-                }
-              }}
-            />
-            <button onClick={sendMessage}>Send</button>
+            <div className="chatDockComposer">
+              <button
+                className="chatDockIconButton"
+                type="button"
+                aria-label="Add context"
+              >
+                +
+              </button>
+              <input
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                placeholder={placeholder}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    sendMessage();
+                  }
+                }}
+              />
+              <button
+                className="chatDockIconButton"
+                type="button"
+                aria-label="Record voice note"
+              >
+                🎤
+              </button>
+              <button
+                className="chatDockIconButton primary"
+                type="button"
+                onClick={sendMessage}
+                aria-label="Send message"
+              >
+                ➤
+              </button>
+            </div>
           </footer>
         </>
       ) : null}
