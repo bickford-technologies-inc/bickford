@@ -339,3 +339,25 @@ The dashboard is non-authoritative.
 For all Codespace users: see [`CODESPACE_CANONICAL_BEHAVIOR_CONFIRMATION.md`](./CODESPACE_CANONICAL_BEHAVIOR_CONFIRMATION.md) for the authoritative reference on browser access, forwarded ports, and why the github.dev URL is correct (even if it does not mention "bickford").
 
 ---
+
+## 🚀 Windows Local Dev Quickstart
+
+1. **Run the dev bootstrap script:**
+   ```powershell
+   ./dev-bootstrap.ps1
+   ```
+   - Ensures Docker Desktop and WSL2 are running and tuned
+   - Starts containers with auto-restart
+   - Opens VS Code and your browser
+
+2. **Docker/WSL2 requirements:**
+   - Docker Desktop set to auto-start
+   - WSL2 enabled, with `.wslconfig` for resource tuning
+   - Containers use `restart: unless-stopped` (see `docker-compose.yml`)
+
+3. **Troubleshooting:**
+   - If Docker won’t start: `wsl --shutdown` then relaunch Docker Desktop
+   - To tune resources: edit `.wslconfig` in your user profile
+
+4. **Reboot test:**
+   - Reboot, log in, run `docker ps` — containers should be running
