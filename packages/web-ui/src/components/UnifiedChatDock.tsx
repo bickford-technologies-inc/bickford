@@ -20,7 +20,8 @@ type ChatState = {
   archives: ChatArchive[];
 };
 
-const STORAGE_KEY = "bickford.unified.chat";
+const STORAGE_KEY = "bickford.chat.unified.v1";
+const LEGACY_STORAGE_KEY = "bickford.unified.chat";
 const AGENT_NAME = "Bickford Unified Agent";
 
 function todayKey() {
@@ -33,12 +34,14 @@ function hydrateState(): ChatState {
   }
 
   const raw = window.localStorage.getItem(STORAGE_KEY);
-  if (!raw) {
+  const legacy = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+  const source = raw ?? legacy;
+  if (!source) {
     return { currentDate: todayKey(), messages: [], archives: [] };
   }
 
   try {
-    const parsed = JSON.parse(raw) as ChatState;
+    const parsed = JSON.parse(source) as ChatState;
     return {
       currentDate: parsed?.currentDate ?? todayKey(),
       messages: Array.isArray(parsed?.messages) ? parsed.messages : [],
@@ -66,6 +69,7 @@ function reconcileDay(state: ChatState): ChatState {
 function persist(state: ChatState) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  window.localStorage.removeItem(LEGACY_STORAGE_KEY);
 }
 
 export default function UnifiedChatDock() {
@@ -144,7 +148,7 @@ export default function UnifiedChatDock() {
         <div>
           <div className="chatDockTitle">Unified Agent</div>
           <div className="chatDockSubtitle">
-            {AGENT_NAME} • archives daily • {archivedCount} saved
+            {AGENT_NAME} • single agent • archives daily • {archivedCount} saved
           </div>
         </div>
         <button className="dockToggle" onClick={() => setIsOpen(!isOpen)}>
