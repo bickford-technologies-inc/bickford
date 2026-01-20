@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+type ChatRole = "user" | "agent";
+
 type ChatMessage = {
   id: string;
-  author: "user" | "agent";
-  text: string;
+  role: ChatRole;
+  content: string;
   timestamp: number;
 };
 
@@ -20,11 +22,54 @@ type ChatState = {
   archives: ChatArchive[];
 };
 
-const STORAGE_KEY = "bickford.unified.chat";
+const STORAGE_KEY = "bickford.chat.unified.v1";
+const LEGACY_UNIFIED_KEY = "bickford.unified.chat";
+const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
+const LEGACY_HISTORY_KEY = "bickford.chat.history";
+const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
+const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const AGENT_NAME = "Bickford Unified Agent";
 
 function todayKey() {
   return new Date().toISOString().slice(0, 10);
+}
+
+function safeParse<T>(raw: string | null): T | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeMessages(
+  messages: Array<{
+    id?: string;
+    role?: string;
+    content?: string;
+    text?: string;
+    author?: string;
+    timestamp?: number | string;
+  }>,
+): ChatMessage[] {
+  return messages
+    .filter((message) => message)
+    .map((message) => {
+      const role = message.role ?? message.author ?? "agent";
+      return {
+        id: message.id ?? crypto.randomUUID(),
+        role: role === "user" ? "user" : "agent",
+        content: message.content ?? message.text ?? "",
+        timestamp:
+          typeof message.timestamp === "number"
+            ? message.timestamp
+            : Number.isFinite(Date.parse(String(message.timestamp)))
+              ? Date.parse(String(message.timestamp))
+              : Date.now(),
+      };
+    })
+    .filter((message) => message.content.trim().length > 0);
 }
 
 function hydrateState(): ChatState {
@@ -32,21 +77,78 @@ function hydrateState(): ChatState {
     return { currentDate: todayKey(), messages: [], archives: [] };
   }
 
-  const raw = window.localStorage.getItem(STORAGE_KEY);
-  if (!raw) {
-    return { currentDate: todayKey(), messages: [], archives: [] };
+  const stored = safeParse<ChatState>(window.localStorage.getItem(STORAGE_KEY));
+  if (stored) {
+    return {
+      currentDate: stored.currentDate ?? todayKey(),
+      messages: Array.isArray(stored.messages)
+        ? normalizeMessages(stored.messages)
+        : [],
+      archives: Array.isArray(stored.archives)
+        ? stored.archives.map((archive) => ({
+            date: archive.date,
+            messages: normalizeMessages(archive.messages ?? []),
+          }))
+        : [],
+    };
   }
 
-  try {
-    const parsed = JSON.parse(raw) as ChatState;
+  const legacyUnified = safeParse<ChatState>(
+    window.localStorage.getItem(LEGACY_UNIFIED_KEY),
+  );
+  if (legacyUnified) {
     return {
-      currentDate: parsed?.currentDate ?? todayKey(),
-      messages: Array.isArray(parsed?.messages) ? parsed.messages : [],
-      archives: Array.isArray(parsed?.archives) ? parsed.archives : [],
+      currentDate: legacyUnified.currentDate ?? todayKey(),
+      messages: Array.isArray(legacyUnified.messages)
+        ? normalizeMessages(legacyUnified.messages)
+        : [],
+      archives: Array.isArray(legacyUnified.archives)
+        ? legacyUnified.archives.map((archive) => ({
+            date: archive.date,
+            messages: normalizeMessages(archive.messages ?? []),
+          }))
+        : [],
     };
-  } catch {
-    return { currentDate: todayKey(), messages: [], archives: [] };
   }
+
+  const legacyDaily = safeParse<ChatState>(
+    window.localStorage.getItem(LEGACY_DAILY_KEY),
+  );
+  if (legacyDaily) {
+    return {
+      currentDate: legacyDaily.currentDate ?? todayKey(),
+      messages: Array.isArray(legacyDaily.messages)
+        ? normalizeMessages(legacyDaily.messages)
+        : [],
+      archives: Array.isArray(legacyDaily.archives)
+        ? legacyDaily.archives.map((archive) => ({
+            date: archive.date,
+            messages: normalizeMessages(archive.messages ?? []),
+          }))
+        : [],
+    };
+  }
+
+  const legacyMessages = safeParse<ChatMessage[]>(
+    window.localStorage.getItem(LEGACY_HISTORY_KEY),
+  );
+  const legacyArchives = safeParse<ChatArchive[]>(
+    window.localStorage.getItem(LEGACY_ARCHIVE_KEY),
+  );
+  const legacyDay = window.localStorage.getItem(LEGACY_HISTORY_DAY_KEY);
+
+  return {
+    currentDate: legacyDay ?? todayKey(),
+    messages: Array.isArray(legacyMessages)
+      ? normalizeMessages(legacyMessages)
+      : [],
+    archives: Array.isArray(legacyArchives)
+      ? legacyArchives.map((archive) => ({
+          date: archive.date,
+          messages: normalizeMessages(archive.messages ?? []),
+        }))
+      : [],
+  };
 }
 
 function reconcileDay(state: ChatState): ChatState {
@@ -66,6 +168,11 @@ function reconcileDay(state: ChatState): ChatState {
 function persist(state: ChatState) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  window.localStorage.removeItem(LEGACY_UNIFIED_KEY);
+  window.localStorage.removeItem(LEGACY_DAILY_KEY);
+  window.localStorage.removeItem(LEGACY_HISTORY_KEY);
+  window.localStorage.removeItem(LEGACY_HISTORY_DAY_KEY);
+  window.localStorage.removeItem(LEGACY_ARCHIVE_KEY);
 }
 
 export default function UnifiedChatDock() {
@@ -107,11 +214,11 @@ export default function UnifiedChatDock() {
 
   const archivedCount = useMemo(() => state.archives.length, [state.archives]);
 
-  function appendMessage(author: ChatMessage["author"], text: string) {
+  function appendMessage(role: ChatRole, content: string) {
     const nextMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      author,
-      text,
+      role,
+      content,
       timestamp: Date.now(),
     };
 
@@ -134,7 +241,7 @@ export default function UnifiedChatDock() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Acknowledged. I will keep a single timeline and archive it daily."
+      "Acknowledged. I will keep a single timeline and archive it daily.",
     );
   }
 
@@ -163,12 +270,12 @@ export default function UnifiedChatDock() {
               state.messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`chatDockBubble ${message.author}`}
+                  className={`chatDockBubble ${message.role}`}
                 >
                   <div className="chatDockRole">
-                    {message.author === "user" ? "You" : AGENT_NAME}
+                    {message.role === "user" ? "You" : AGENT_NAME}
                   </div>
-                  <div className="chatDockText">{message.text}</div>
+                  <div className="chatDockText">{message.content}</div>
                 </div>
               ))
             )}
