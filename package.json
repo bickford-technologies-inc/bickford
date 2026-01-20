@@ -46,6 +46,9 @@
     "capture:ui": "node scripts/capture-ui.mjs",
     "assert:vercel-binding": "tsx scripts/assert-vercel-binding.ts"
   },
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  },
   "devDependencies": {
     "@types/babel__traverse": "^7.28.0",
     "@types/node": "25.0.9",
