@@ -258,6 +258,27 @@ export default function ChatDock() {
   }, []);
 
   useEffect(() => {
+    function handleResume() {
+      setState((prev) => {
+        const reconciled = reconcileDaily(prev);
+        if (reconciled === prev) {
+          return prev;
+        }
+        persistState(reconciled);
+        return reconciled;
+      });
+    }
+
+    window.addEventListener("focus", handleResume);
+    window.addEventListener("visibilitychange", handleResume);
+
+    return () => {
+      window.removeEventListener("focus", handleResume);
+      window.removeEventListener("visibilitychange", handleResume);
+    };
+  }, []);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [state.messages]);
 

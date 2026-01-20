@@ -313,6 +313,27 @@ export default function UnifiedChatDock() {
     );
   }
 
+  useEffect(() => {
+    function handleResume() {
+      setState((prev) => {
+        const reconciled = reconcileDay(prev);
+        if (reconciled === prev) {
+          return prev;
+        }
+        persist(reconciled);
+        return reconciled;
+      });
+    }
+
+    window.addEventListener("focus", handleResume);
+    window.addEventListener("visibilitychange", handleResume);
+
+    return () => {
+      window.removeEventListener("focus", handleResume);
+      window.removeEventListener("visibilitychange", handleResume);
+    };
+  }, []);
+
   return (
     <aside className={`chatDockFloating ${isOpen ? "" : "closed"}`}>
       <header className="chatDockHeader">
