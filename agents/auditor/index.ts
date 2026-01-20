@@ -1,3 +1,3 @@
 export type { AuditRecord } from "./types";
-export { createAudit } from "./audit";
+export { audit } from "./audit";
 export { auditorInvariants } from "./invariants";
