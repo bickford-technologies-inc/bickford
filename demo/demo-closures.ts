@@ -35,13 +35,13 @@ import {
   bufferTokensWithProof,
   sealChatItem,
   finalizeChatItem,
-} from "../packages/bickford/src/canon";
+} from "../packages/canon/src/canon";
 
 import {
   formatWhyNotPanel,
   createDeniedDecisionProof,
   verifyDeniedDecisionProof,
-} from "../packages/bickford/api/whynot-panel";
+} from "../packages/canon/api/whynot-panel";
 
 console.log("\n" + "═".repeat(80));
 console.log("  BICKFORD DEMO: TIER-1 AND TIER-2 CLOSURES (CHAT LAYERS 1-6)");
