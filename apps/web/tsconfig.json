@@ -47,7 +47,6 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
     "../../prisma-test.ts",
     "../../tests"
   ],
