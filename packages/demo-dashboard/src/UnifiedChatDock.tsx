@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 type ChatRole = 'user' | 'agent'
 
@@ -146,6 +146,19 @@ function persistState(state: ChatState) {
   window.localStorage.removeItem(LEGACY_ARCHIVE_KEY)
 }
 
+function msUntilNextMidnight(now: Date = new Date()) {
+  const next = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+    0,
+    0,
+    0,
+    0,
+  )
+  return next.getTime() - now.getTime()
+}
+
 export default function UnifiedChatDock() {
   const [state, setState] = useState<ChatState>(() => hydrateState())
   const [input, setInput] = useState('')
@@ -166,7 +179,8 @@ export default function UnifiedChatDock() {
   }, [state])
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
+    let intervalId: number | undefined
+    const timeoutId = window.setTimeout(() => {
       setState((prev) => {
         const reconciled = reconcileDaily(prev)
         if (reconciled !== prev) {
@@ -174,9 +188,23 @@ export default function UnifiedChatDock() {
         }
         return reconciled
       })
-    }, 15 * 60 * 1000)
+      intervalId = window.setInterval(() => {
+        setState((prev) => {
+          const reconciled = reconcileDaily(prev)
+          if (reconciled !== prev) {
+            persistState(reconciled)
+          }
+          return reconciled
+        })
+      }, 24 * 60 * 60 * 1000)
+    }, msUntilNextMidnight())
 
-    return () => window.clearInterval(timer)
+    return () => {
+      window.clearTimeout(timeoutId)
+      if (intervalId) {
+        window.clearInterval(intervalId)
+      }
+    }
   }, [])
 
   useEffect(() => {
