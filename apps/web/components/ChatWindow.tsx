@@ -216,7 +216,7 @@ export default function ChatWindow() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Captured. I will include this in today’s archive."
+      "Acknowledged. The single environment agent will archive today’s history."
     );
   }
 
@@ -268,10 +268,13 @@ export default function ChatWindow() {
     >
       <header style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <strong style={{ fontSize: 18 }}>{AGENT_NAME}</strong>
-          <span style={{ fontSize: 12, opacity: 0.7 }}>
-            Single agent · Daily archive
-          </span>
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <strong style={{ fontSize: 18 }}>{AGENT_NAME}</strong>
+            <span style={{ fontSize: 12, opacity: 0.7 }}>
+              single agent • archives daily
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button
             type="button"
             onClick={() => setView("chat")}
@@ -326,6 +329,7 @@ export default function ChatWindow() {
           >
             Decisions
           </button>
+          </div>
         </div>
       </header>
 
