@@ -27,7 +27,7 @@ const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
 const LEGACY_HISTORY_KEY = "bickford.chat.history";
 const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
 const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
-const AGENT_NAME = "Bickford Unified Agent";
+const AGENT_NAME = "bickford";
 
 function todayKey() {
   return new Date().toISOString().slice(0, 10);
