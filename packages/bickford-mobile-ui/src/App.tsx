@@ -1,31 +1,31 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import UnifiedChatDock from './components/UnifiedChatDock';
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import Paper from "@mui/material/Paper";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import BottomNavigation from "@mui/material/BottomNavigation";
+import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import UnifiedChatDock from "./components/UnifiedChatDock";
 
 export default function App() {
   const [nav, setNav] = React.useState(0);
   // Placeholder session data
   const sessions = [
-    { id: 'sess_001', status: 'approved', user: 'alice', ttv: 3.2 },
-    { id: 'sess_002', status: 'denied', user: 'bob', ttv: 7.1 },
-    { id: 'sess_003', status: 'pending', user: 'carol', ttv: 0.0 },
+    { id: "sess_001", status: "approved", user: "alice", ttv: 3.2 },
+    { id: "sess_002", status: "denied", user: "bob", ttv: 7.1 },
+    { id: "sess_003", status: "pending", user: "carol", ttv: 0.0 },
   ];
   return (
     <>
-      <Box sx={{ pb: 7, bgcolor: '#f7f7f7', minHeight: '100vh' }}>
+      <Box sx={{ pb: 7, bgcolor: "#f7f7f7", minHeight: "100vh" }}>
         <AppBar position="static" color="primary">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -58,13 +58,19 @@ export default function App() {
             </List>
           </Paper>
         </Container>
-        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+        <Paper
+          sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
+          elevation={3}
+        >
           <BottomNavigation
             showLabels
             value={nav}
             onChange={(_, newValue) => setNav(newValue)}
           >
-            <BottomNavigationAction label="Dashboard" icon={<DashboardIcon />} />
+            <BottomNavigationAction
+              label="Dashboard"
+              icon={<DashboardIcon />}
+            />
             <BottomNavigationAction label="Sessions" icon={<ListAltIcon />} />
             <BottomNavigationAction label="Metrics" icon={<BarChartIcon />} />
           </BottomNavigation>
