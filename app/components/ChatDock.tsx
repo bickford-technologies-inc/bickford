@@ -235,7 +235,7 @@ export default function ChatDock() {
     const agentMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: "agent",
-      content: `Acknowledged. ${AGENT_NAME} is your single agent and will archive today’s history automatically.`,
+      content: `Acknowledged. The single environment agent (${AGENT_NAME}) will archive today’s history automatically.`,
       timestamp: Date.now(),
     };
 
@@ -257,7 +257,7 @@ export default function ChatDock() {
         <div>
           <div className="chatDockTitle">{AGENT_NAME}</div>
           <div className="chatDockSubtitle">
-            Single agent · Daily archive
+            single agent • archives daily
           </div>
         </div>
         <div className="chatDockActions">
