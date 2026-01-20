@@ -85,7 +85,7 @@ export default function ChatDock() {
   }, [messages]);
 
   const placeholder = useMemo(
-    () => "Ask the unified agent to coordinate the environment...",
+    () => "Message the single Bickford agent for the full environment...",
     [],
   );
 
@@ -103,7 +103,7 @@ export default function ChatDock() {
     const agentMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: "assistant",
-      content: `Acknowledged. ${AGENT_NAME} is tracking this and will archive today’s history automatically.`,
+      content: `Acknowledged. ${AGENT_NAME} is coordinating this and will archive today’s history automatically.`,
       timestamp: Date.now(),
     };
 
@@ -116,7 +116,9 @@ export default function ChatDock() {
       <header className="chatDockHeader">
         <div>
           <div className="chatDockTitle">Unified Chat</div>
-          <div className="chatDockSubtitle">{AGENT_NAME} • archives daily</div>
+          <div className="chatDockSubtitle">
+            {AGENT_NAME} • single agent • archives daily
+          </div>
         </div>
         <button className="chatDockToggle" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? "Minimize" : "Chat"}
@@ -128,7 +130,8 @@ export default function ChatDock() {
           <div className="chatDockBody">
             {messages.length === 0 ? (
               <div className="chatDockEmpty">
-                Start a conversation. Daily history will be archived automatically.
+                Start a conversation. The single environment agent archives
+                history daily.
               </div>
             ) : (
               messages.map((message) => (
