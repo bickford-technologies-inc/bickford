@@ -216,7 +216,7 @@ export default function ChatWindow() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Acknowledged. The single environment agent will archive today’s history."
+      "Acknowledged. The single environment agent will archive today’s history.",
     );
   }
 
@@ -275,60 +275,60 @@ export default function ChatWindow() {
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button
-            type="button"
-            onClick={() => setView("chat")}
-            style={{
-              padding: "6px 10px",
-              borderRadius: 999,
-              border: "1px solid rgba(255, 255, 255, 0.2)",
-              background:
-                view === "chat"
-                  ? "rgba(59, 130, 246, 0.4)"
-                  : "rgba(8, 8, 12, 0.8)",
-              color: "#f4f4f5",
-              fontSize: 12,
-              cursor: "pointer",
-            }}
-          >
-            Chat
-          </button>
-          <button
-            type="button"
-            onClick={() => setView("logs")}
-            style={{
-              padding: "6px 10px",
-              borderRadius: 999,
-              border: "1px solid rgba(255, 255, 255, 0.2)",
-              background:
-                view === "logs"
-                  ? "rgba(59, 130, 246, 0.4)"
-                  : "rgba(8, 8, 12, 0.8)",
-              color: "#f4f4f5",
-              fontSize: 12,
-              cursor: "pointer",
-            }}
-          >
-            Logs
-          </button>
-          <button
-            type="button"
-            onClick={() => setView("decisions")}
-            style={{
-              padding: "6px 10px",
-              borderRadius: 999,
-              border: "1px solid rgba(255, 255, 255, 0.2)",
-              background:
-                view === "decisions"
-                  ? "rgba(59, 130, 246, 0.4)"
-                  : "rgba(8, 8, 12, 0.8)",
-              color: "#f4f4f5",
-              fontSize: 12,
-              cursor: "pointer",
-            }}
-          >
-            Decisions
-          </button>
+            <button
+              type="button"
+              onClick={() => setView("chat")}
+              style={{
+                padding: "6px 10px",
+                borderRadius: 999,
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                background:
+                  view === "chat"
+                    ? "rgba(59, 130, 246, 0.4)"
+                    : "rgba(8, 8, 12, 0.8)",
+                color: "#f4f4f5",
+                fontSize: 12,
+                cursor: "pointer",
+              }}
+            >
+              Chat
+            </button>
+            <button
+              type="button"
+              onClick={() => setView("logs")}
+              style={{
+                padding: "6px 10px",
+                borderRadius: 999,
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                background:
+                  view === "logs"
+                    ? "rgba(59, 130, 246, 0.4)"
+                    : "rgba(8, 8, 12, 0.8)",
+                color: "#f4f4f5",
+                fontSize: 12,
+                cursor: "pointer",
+              }}
+            >
+              Logs
+            </button>
+            <button
+              type="button"
+              onClick={() => setView("decisions")}
+              style={{
+                padding: "6px 10px",
+                borderRadius: 999,
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                background:
+                  view === "decisions"
+                    ? "rgba(59, 130, 246, 0.4)"
+                    : "rgba(8, 8, 12, 0.8)",
+                color: "#f4f4f5",
+                fontSize: 12,
+                cursor: "pointer",
+              }}
+            >
+              Decisions
+            </button>
           </div>
         </div>
       </header>
