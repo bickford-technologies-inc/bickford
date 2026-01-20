@@ -16,6 +16,7 @@
     "@bickford/authority": "workspace:*",
     "@bickford/core": "workspace:*",
     "@bickford/db": "workspace:*",
+    "@bickford/execution-convergence": "workspace:*",
     "@bickford/ledger": "workspace:*",
     "@bickford/optr": "workspace:*",
     "@bickford/types": "workspace:*",
