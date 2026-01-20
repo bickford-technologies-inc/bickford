@@ -195,32 +195,29 @@ export default function ChatWindow() {
   }, [state]);
 
   useEffect(() => {
-    let intervalId: number | undefined;
+    let intervalId: number | undefined
     const timeoutId = window.setTimeout(() => {
       setState((prev) => {
-        const reconciled = reconcileDaily(prev);
-        persistState(reconciled);
-        return reconciled;
-      });
-      intervalId = window.setInterval(
-        () => {
-          setState((prev) => {
-            const reconciled = reconcileDaily(prev);
-            persistState(reconciled);
-            return reconciled;
-          });
-        },
-        24 * 60 * 60 * 1000,
-      );
-    }, msUntilNextMidnight());
+        const reconciled = reconcileDaily(prev)
+        persistState(reconciled)
+        return reconciled
+      })
+      intervalId = window.setInterval(() => {
+        setState((prev) => {
+          const reconciled = reconcileDaily(prev)
+          persistState(reconciled)
+          return reconciled
+        })
+      }, 24 * 60 * 60 * 1000)
+    }, msUntilNextMidnight())
 
     return () => {
-      window.clearTimeout(timeoutId);
+      window.clearTimeout(timeoutId)
       if (intervalId) {
-        window.clearInterval(intervalId);
+        window.clearInterval(intervalId)
       }
-    };
-  }, []);
+    }
+  }, [])
 
   useEffect(() => {
     function handleResume() {
