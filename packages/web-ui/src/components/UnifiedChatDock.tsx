@@ -32,6 +32,10 @@ const AGENT_NAME = "bickford";
 const ARCHIVE_NOTE =
   "single agent for the full environment • archives chat history daily at local midnight";
 
+function archiveCountLabel(count: number) {
+  return `${count} archive${count === 1 ? "" : "s"}`;
+}
+
 function formatLocalDate(date: Date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -340,7 +344,8 @@ export default function UnifiedChatDock() {
         <div>
           <div className="chatDockTitle">{AGENT_NAME}</div>
           <div className="chatDockSubtitle">
-            {ARCHIVE_NOTE} • today {state.currentDate} • {archivedCount} saved
+            {ARCHIVE_NOTE} • today {state.currentDate} •{" "}
+            {archiveCountLabel(archivedCount)}
           </div>
         </div>
         <button className="dockToggle" onClick={() => setIsOpen(!isOpen)}>
@@ -353,7 +358,8 @@ export default function UnifiedChatDock() {
           <div className="chatDockBody">
             {state.messages.length === 0 ? (
               <div className="chatDockEmpty">
-                Start a conversation to capture decisions for today.
+                Start a conversation. The single agent archives chat history
+                daily for this environment.
               </div>
             ) : (
               state.messages.map((message) => (
