@@ -235,6 +235,12 @@ export default function ChatWindow() {
       conflict: counts[item.key] > 1,
     }));
   }, [state.messages]);
+  const logs = useMemo(() => {
+    const today = state.messages.length
+      ? [{ date: state.currentDate, messages: state.messages }]
+      : [];
+    return [...today, ...state.archives];
+  }, [state.archives, state.currentDate, state.messages]);
 
   return (
     <aside
@@ -398,6 +404,78 @@ export default function ChatWindow() {
                           ? "Conflict: overlaps with an existing decision"
                           : "Conflict: none"}
                       </span>
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : view === "logs" ? (
+              logs.length === 0 ? (
+                <p style={{ fontSize: 13, opacity: 0.7 }}>
+                  No archived days yet. Start chatting to build a daily log.
+                </p>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  {logs.map((archive) => (
+                    <div
+                      key={archive.date}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 10,
+                        padding: "12px 14px",
+                        borderRadius: 12,
+                        background: "rgba(15, 23, 42, 0.6)",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: 11,
+                          textTransform: "uppercase",
+                          letterSpacing: 0.6,
+                          opacity: 0.6,
+                        }}
+                      >
+                        {archive.date}
+                      </span>
+                      {archive.messages.map((message) => (
+                        <div
+                          key={message.id}
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 4,
+                            alignSelf:
+                              message.role === "user" ? "flex-end" : "flex-start",
+                            maxWidth: "85%",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: 11,
+                              textTransform: "uppercase",
+                              letterSpacing: 0.4,
+                              opacity: 0.6,
+                            }}
+                          >
+                            {message.role === "user" ? "You" : AGENT_NAME}
+                          </span>
+                          <div
+                            style={{
+                              padding: "8px 12px",
+                              borderRadius: 12,
+                              background:
+                                message.role === "user"
+                                  ? "rgba(59, 130, 246, 0.35)"
+                                  : "rgba(39, 39, 42, 0.8)",
+                            }}
+                          >
+                            <span style={{ fontSize: 14, lineHeight: 1.4 }}>
+                              {message.content}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   ))}
                 </div>
