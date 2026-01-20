@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { Request } from "next/server";
 import { appendLedger } from "@bickford/ledger";
 import { LedgerEntry } from "@bickford/types";
 import crypto from "node:crypto";
@@ -9,7 +9,7 @@ function encode(data: unknown) {
   return `data: ${JSON.stringify(data)}\n\n`;
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   const body = await req.json();
   const threadId = body.threadId ?? crypto.randomUUID();
 
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       timestamp: new Date().toISOString(),
     },
   };
-  
+
   appendLedger(threadId, startEntry);
 
   const stream = new ReadableStream({
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
           timestamp: new Date().toISOString(),
         },
       };
-      
+
       appendLedger(threadId, endEntry);
     },
   });
