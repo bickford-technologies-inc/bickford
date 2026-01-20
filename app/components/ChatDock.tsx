@@ -8,10 +8,10 @@ export default function ChatDock() {
   const [value, setValue] = useState("");
 
   useEffect(() => {
-    function onKey(event: KeyboardEvent) {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-        event.preventDefault();
-        setOpen((current) => !current);
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setOpen((prev) => !prev);
       }
     }
     window.addEventListener("keydown", onKey);
@@ -48,12 +48,12 @@ export default function ChatDock() {
 
       {open && (
         <div className={styles.overlay} onClick={() => setOpen(false)}>
-          <div className={styles.dock} onClick={(event) => event.stopPropagation()}>
+          <div className={styles.dock} onClick={(e) => e.stopPropagation()}>
             <input
               autoFocus
               value={value}
-              onChange={(event) => setValue(event.target.value)}
-              onKeyDown={(event) => event.key === "Enter" && submit()}
+              onChange={(e) => setValue(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && submit()}
               placeholder="What should we do next?"
             />
           </div>
