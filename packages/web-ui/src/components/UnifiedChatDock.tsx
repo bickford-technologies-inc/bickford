@@ -21,7 +21,7 @@ type ChatState = {
 };
 
 const STORAGE_KEY = "bickford.unified.chat";
-const AGENT_NAME = "Bickford Unified Agent";
+const AGENT_NAME = "Unified Environment Agent";
 
 function todayKey() {
   return new Date().toISOString().slice(0, 10);
@@ -142,9 +142,10 @@ export default function UnifiedChatDock() {
     <aside className={`chatDockFloating ${isOpen ? "" : "closed"}`}>
       <header className="chatDockHeader">
         <div>
-          <div className="chatDockTitle">Unified Agent</div>
+          <div className="chatDockTitle">Environment Chat</div>
           <div className="chatDockSubtitle">
-            {AGENT_NAME} • archives daily • {archivedCount} saved
+            {AGENT_NAME} • single timeline • archives daily • {archivedCount}{" "}
+            saved
           </div>
         </div>
         <button className="dockToggle" onClick={() => setIsOpen(!isOpen)}>
