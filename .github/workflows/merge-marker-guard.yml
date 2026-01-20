@@ -13,7 +13,7 @@ jobs:
 
       - name: Fail if merge markers exist
         run: |
-          if rg "<<<<<<<|=======|>>>>>>>" .; then
+          if rg "<{7}|={7}|>{7}" .; then
             echo "❌ Merge markers detected — illegal state"
             exit 1
           fi

@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { converge } from "@bickford/execution-convergence";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +10,9 @@ export async function POST(req: Request) {
     async start(controller) {
       function send(type: string, payload: unknown) {
         controller.enqueue(
-          encoder.encode(`event: ${type}\ndata: ${JSON.stringify(payload)}\n\n`)
+          encoder.encode(
+            `event: ${type}\ndata: ${JSON.stringify(payload)}\n\n`,
+          ),
         );
       }
 
@@ -22,21 +23,21 @@ export async function POST(req: Request) {
         ...body,
         metadata: {
           timestamp: new Date().toISOString(),
-          initiatedBy: "human"
-        }
+          initiatedBy: "human",
+        },
       });
 
       send("result", result);
       send("done", {});
       controller.close();
-    }
+    },
   });
 
   return new Response(stream, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
-      Connection: "keep-alive"
-    }
+      Connection: "keep-alive",
+    },
   });
 }
