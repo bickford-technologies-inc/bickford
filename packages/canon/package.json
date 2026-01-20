@@ -28,10 +28,10 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@bickford/authority": "workspace:*",
-    "@bickford/monitorability-core": "workspace:*",
-    "@bickford/types": "workspace:*",
-    "@bickford/db": "workspace:*"
+    "@bickford/authority": "0.0.0",
+    "@bickford/monitorability-core": "0.1.0",
+    "@bickford/types": "0.0.0",
+    "@bickford/db": "0.0.0"
   },
   "type": "module"
 }

@@ -10,9 +10,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@bickford/execution-convergence": "workspace:*",
-    "@bickford/ledger": "workspace:*",
-    "@bickford/types": "workspace:*",
+    "@bickford/execution-convergence": "0.0.1",
+    "@bickford/ledger": "0.0.0",
+    "@bickford/types": "0.0.0",
     "next": "14.2.5",
     "react": "18.3.1",
     "react-dom": "18.3.1",

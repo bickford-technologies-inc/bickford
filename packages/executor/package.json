@@ -12,7 +12,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@bickford/types": "workspace:*",
-    "@bickford/canon": "workspace:*"
+    "@bickford/types": "0.0.0",
+    "@bickford/canon": "1.0.0"
   }
 }

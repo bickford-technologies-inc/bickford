@@ -10,7 +10,7 @@
     "@babel/parser": "^7.28.0",
     "@babel/traverse": "^7.28.0",
     "fast-glob": "^3.3.2",
-    "@bickford/canon": "workspace:*"
+    "@bickford/canon": "1.0.0"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
