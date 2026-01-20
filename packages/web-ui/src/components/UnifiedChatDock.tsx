@@ -241,7 +241,7 @@ export default function UnifiedChatDock() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Acknowledged. I will keep a single timeline and archive it daily.",
+      "Acknowledged. The single environment agent will archive today’s history.",
     );
   }
 
@@ -251,7 +251,7 @@ export default function UnifiedChatDock() {
         <div>
           <div className="chatDockTitle">Unified Agent</div>
           <div className="chatDockSubtitle">
-            {AGENT_NAME} • archives daily • {archivedCount} saved
+            {AGENT_NAME} • single agent • archives daily • {archivedCount} saved
           </div>
         </div>
         <button className="dockToggle" onClick={() => setIsOpen(!isOpen)}>
