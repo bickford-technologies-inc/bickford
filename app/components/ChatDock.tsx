@@ -2,9 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+type ChatRole = "user" | "agent";
+
 type ChatMessage = {
   id: string;
-  role: "user" | "assistant";
+  role: ChatRole;
   content: string;
   timestamp: number;
 };
@@ -14,67 +16,173 @@ type DailyArchive = {
   messages: ChatMessage[];
 };
 
-const STORAGE_KEY = "bickford.chat.history";
-const STORAGE_DAY_KEY = "bickford.chat.history.day";
-const ARCHIVE_KEY = "bickford.chat.archive";
+type ChatState = {
+  currentDate: string;
+  messages: ChatMessage[];
+  archives: DailyArchive[];
+};
+
+const STORAGE_KEY = "bickford.chat.unified.v1";
+const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
+const LEGACY_HISTORY_KEY = "bickford.chat.history";
+const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
+const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const AGENT_NAME = "Bickford Unified Agent";
 
 function todayKey() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function safeParse<T>(raw: string | null): T | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeMessages(
+  messages: Array<{
+    id?: string;
+    role?: string;
+    content?: string;
+    text?: string;
+    author?: string;
+    timestamp?: number | string;
+  }>,
+): ChatMessage[] {
+  return messages
+    .filter((message) => message)
+    .map((message) => {
+      const role = message.role ?? message.author ?? "agent";
+      return {
+        id: message.id ?? crypto.randomUUID(),
+        role: role === "user" ? "user" : "agent",
+        content: message.content ?? message.text ?? "",
+        timestamp:
+          typeof message.timestamp === "number"
+            ? message.timestamp
+            : Number.isFinite(Date.parse(String(message.timestamp)))
+              ? Date.parse(String(message.timestamp))
+              : Date.now(),
+      };
+    })
+    .filter((message) => message.content.trim().length > 0);
+}
+
+function hydrateState(): ChatState {
+  if (typeof window === "undefined") {
+    return { currentDate: todayKey(), messages: [], archives: [] };
+  }
+
+  const stored = safeParse<ChatState>(localStorage.getItem(STORAGE_KEY));
+  if (stored) {
+    return {
+      currentDate: stored.currentDate ?? todayKey(),
+      messages: Array.isArray(stored.messages)
+        ? normalizeMessages(stored.messages)
+        : [],
+      archives: Array.isArray(stored.archives)
+        ? stored.archives.map((archive) => ({
+            date: archive.date,
+            messages: normalizeMessages(archive.messages ?? []),
+          }))
+        : [],
+    };
+  }
+
+  const legacyDaily = safeParse<ChatState>(
+    localStorage.getItem(LEGACY_DAILY_KEY),
+  );
+  if (legacyDaily) {
+    return {
+      currentDate: legacyDaily.currentDate ?? todayKey(),
+      messages: Array.isArray(legacyDaily.messages)
+        ? normalizeMessages(legacyDaily.messages)
+        : [],
+      archives: Array.isArray(legacyDaily.archives)
+        ? legacyDaily.archives.map((archive) => ({
+            date: archive.date,
+            messages: normalizeMessages(archive.messages ?? []),
+          }))
+        : [],
+    };
+  }
+
+  const legacyMessages = safeParse<ChatMessage[]>(
+    localStorage.getItem(LEGACY_HISTORY_KEY),
+  );
+  const legacyArchives = safeParse<DailyArchive[]>(
+    localStorage.getItem(LEGACY_ARCHIVE_KEY),
+  );
+  const legacyDay = localStorage.getItem(LEGACY_HISTORY_DAY_KEY);
+
+  return {
+    currentDate: legacyDay ?? todayKey(),
+    messages: Array.isArray(legacyMessages) ? normalizeMessages(legacyMessages) : [],
+    archives: Array.isArray(legacyArchives)
+      ? legacyArchives.map((archive) => ({
+          date: archive.date,
+          messages: normalizeMessages(archive.messages ?? []),
+        }))
+      : [],
+  };
+}
+
+function reconcileDaily(state: ChatState): ChatState {
+  const today = todayKey();
+  if (state.currentDate === today) {
+    return state;
+  }
+
+  const archives = [...state.archives];
+  if (state.messages.length > 0) {
+    archives.unshift({ date: state.currentDate, messages: state.messages });
+  }
+
+  return {
+    currentDate: today,
+    messages: [],
+    archives,
+  };
+}
+
+function persistState(state: ChatState) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  localStorage.removeItem(LEGACY_DAILY_KEY);
+  localStorage.removeItem(LEGACY_HISTORY_KEY);
+  localStorage.removeItem(LEGACY_HISTORY_DAY_KEY);
+  localStorage.removeItem(LEGACY_ARCHIVE_KEY);
+}
+
 export default function ChatDock() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [state, setState] = useState<ChatState>(() => hydrateState());
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const storedMessages = localStorage.getItem(STORAGE_KEY);
-    const storedDay = localStorage.getItem(STORAGE_DAY_KEY);
-    const parsed: ChatMessage[] = storedMessages ? JSON.parse(storedMessages) : [];
-    const today = todayKey();
-
-    if (storedDay && storedDay !== today && parsed.length > 0) {
-      const archiveRaw = localStorage.getItem(ARCHIVE_KEY);
-      const archive = archiveRaw ? (JSON.parse(archiveRaw) as DailyArchive[]) : [];
-      archive.unshift({ date: storedDay, messages: parsed });
-      localStorage.setItem(ARCHIVE_KEY, JSON.stringify(archive));
-      localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
-      setMessages([]);
-    } else {
-      setMessages(parsed);
-    }
-
-    localStorage.setItem(STORAGE_DAY_KEY, today);
+    setState((prev) => {
+      const reconciled = reconcileDaily(prev);
+      persistState(reconciled);
+      return reconciled;
+    });
   }, []);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-  }, [messages]);
+    persistState(state);
+  }, [state]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
     const timer = window.setInterval(() => {
-      const currentDay = localStorage.getItem(STORAGE_DAY_KEY);
-      const today = todayKey();
-      if (currentDay && currentDay !== today) {
-        const archiveRaw = localStorage.getItem(ARCHIVE_KEY);
-        const archive = archiveRaw ? (JSON.parse(archiveRaw) as DailyArchive[]) : [];
-        const storedMessages = localStorage.getItem(STORAGE_KEY);
-        const parsed: ChatMessage[] = storedMessages ? JSON.parse(storedMessages) : [];
-
-        if (parsed.length > 0) {
-          archive.unshift({ date: currentDay, messages: parsed });
-          localStorage.setItem(ARCHIVE_KEY, JSON.stringify(archive));
-        }
-
-        localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
-        localStorage.setItem(STORAGE_DAY_KEY, today);
-        setMessages([]);
-      }
+      setState((prev) => {
+        const reconciled = reconcileDaily(prev);
+        persistState(reconciled);
+        return reconciled;
+      });
     }, 15 * 60 * 1000);
 
     return () => window.clearInterval(timer);
@@ -82,7 +190,7 @@ export default function ChatDock() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [state.messages]);
 
   const placeholder = useMemo(() => "Ask a question with /plan", []);
 
@@ -104,7 +212,15 @@ export default function ChatDock() {
       timestamp: Date.now(),
     };
 
-    setMessages((prev) => [...prev, userMessage, agentMessage]);
+    setState((prev) => {
+      const reconciled = reconcileDaily(prev);
+      const nextState = {
+        ...reconciled,
+        messages: [...reconciled.messages, userMessage, agentMessage],
+      };
+      persistState(nextState);
+      return nextState;
+    });
     setInput("");
   }
 
@@ -125,13 +241,13 @@ export default function ChatDock() {
       {isOpen ? (
         <>
           <div className="chatDockBody">
-            {messages.length === 0 ? (
+            {state.messages.length === 0 ? (
               <div className="chatDockEmpty">
                 Start a conversation. The single environment agent archives
                 history daily.
               </div>
             ) : (
-              messages.map((message) => (
+              state.messages.map((message) => (
                 <div
                   key={message.id}
                   className={`chatDockBubble ${message.role}`}

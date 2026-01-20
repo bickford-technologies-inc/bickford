@@ -14,7 +14,7 @@
     "preflight": "node scripts/assert-declared-deps.mjs && node scripts/require-optr-exports.mjs",
     "canon:enforce": "node scripts/enforce-deprecation-windows.mjs",
     "canon:viz": "node scripts/render-canon-drift.mjs",
-    "preinstall": "node scripts/assert-pnpm.mjs",
+    "preinstall": "node scripts/assert-lockfile.mjs",
     "prebuild": "node scripts/assert-node.mjs && node scripts/assert-vercel-project.mjs && bash ci/guards/EXECUTION_AUTHORITY_GUARD.sh && bash ci/guards/ENVIRONMENT_PRECONDITION.sh",
     "build:types": "pnpm --filter @bickford/types build",
     "build": "pnpm run build:types && pnpm run prebuild && pnpm run realize-intent && node scripts/assert-intent-phase.mjs && next build",
@@ -32,7 +32,6 @@
     "canon:gate": "node scripts/promote-with-gate.mjs",
     "canon:pressure": "node scripts/render-invariant-pressure.mjs",
     "canon:remediate": "node scripts/auto-remediation-pr.mjs",
-    "preinstall": "node scripts/assert-lockfile.mjs",
     "canon:ml:extract": "node scripts/ml/extract-features.mjs",
     "canon:ml:train": "node scripts/ml/train-online.mjs",
     "canon:ml:predict": "node scripts/ml/predict-failure.mjs",
@@ -61,6 +60,6 @@
     "node": "20.x"
   },
   "dependencies": {
-    "@bickford/execution-convergence": "workspace:*"
+    "@bickford/execution-convergence": "0.0.1"
   }
 }
