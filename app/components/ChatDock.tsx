@@ -234,7 +234,7 @@ export default function ChatDock() {
       id: crypto.randomUUID(),
       role: "agent",
       content:
-        `Acknowledged. The single environment agent (${AGENT_NAME}) will archive today’s history automatically.`,
+        `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive today’s history automatically.`,
       timestamp: Date.now(),
     };
 
@@ -256,7 +256,7 @@ export default function ChatDock() {
         <div>
           <div className="chatDockTitle">{AGENT_NAME}</div>
           <div className="chatDockSubtitle">
-            single agent • archives daily
+            single agent for the full environment • archives daily
           </div>
         </div>
         <div className="chatDockActions">
