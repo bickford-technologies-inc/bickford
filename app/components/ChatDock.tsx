@@ -205,12 +205,12 @@ export default function ChatDock() {
       timestamp: Date.now(),
     };
 
-    const agentMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: "assistant",
-      content: `Acknowledged. ${AGENT_NAME} is coordinating this and will archive today’s history automatically.`,
-      timestamp: Date.now(),
-    };
+  const agentMessage: ChatMessage = {
+    id: crypto.randomUUID(),
+    role: "agent",
+    content: `Acknowledged. ${AGENT_NAME} is coordinating this and will archive today’s history automatically.`,
+    timestamp: Date.now(),
+  };
 
     setState((prev) => {
       const reconciled = reconcileDaily(prev);
