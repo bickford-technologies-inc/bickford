@@ -266,8 +266,7 @@ export default function ChatDock() {
           <div className="chatDockBody">
             {state.messages.length === 0 ? (
               <div className="chatDockEmpty">
-                Start a conversation. Your single environment agent archives
-                history daily at midnight.
+                Start a conversation. Your messages are saved automatically.
               </div>
             ) : (
               state.messages.map((message) => (
