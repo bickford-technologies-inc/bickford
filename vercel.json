@@ -9,11 +9,5 @@
 
   "outputDirectory": ".next",
 
-  "ignoreCommand": "node scripts/assert-intent-phase.mjs",
-
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "nodejs20.x"
-    }
-  }
+  "ignoreCommand": "node scripts/assert-intent-phase.mjs"
 }
