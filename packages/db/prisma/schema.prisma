@@ -98,6 +98,9 @@ model Intent {
   constraints     String[]
   admissibility   AdmissibilityStatus
   denialReason    String?
+  diffMerkleRoot     String? @map("diff_merkle_root")
+  diffAlgorithm      String? @map("diff_algorithm")
+  authoritySignature String? @map("authority_signature")
   execution       Execution?
 }
 
