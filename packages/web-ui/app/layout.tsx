@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import React from "react";
-import ChatWindow from "../components/ChatWindow";
+import ChatDock from "./components/ChatDock";
 
 export const metadata: Metadata = {
   title: "Bickford",
@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
-        <ChatWindow />
+        <ChatDock />
       </body>
     </html>
   );
