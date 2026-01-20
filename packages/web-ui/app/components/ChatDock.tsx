@@ -28,6 +28,8 @@ const LEGACY_HISTORY_KEY = "bickford.chat.history";
 const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
 const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const AGENT_NAME = "bickford";
+const ARCHIVE_NOTE =
+  "single agent for the full environment • archives daily at local midnight";
 
 function todayKey() {
   return new Date().toISOString().slice(0, 10);
@@ -209,8 +211,7 @@ export default function ChatDock() {
     const agentMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: "agent",
-      content:
-        `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive today’s history automatically.`,
+      content: `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive today’s history at local midnight.`,
       timestamp: Date.now(),
     };
 
@@ -258,7 +259,7 @@ export default function ChatDock() {
         <div>
           <div style={{ fontWeight: 600, fontSize: 14 }}>Unified Chat</div>
           <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.7)" }}>
-            {AGENT_NAME} • single agent for the full environment • archives daily
+            {AGENT_NAME} • {ARCHIVE_NOTE}
           </div>
         </div>
         <button
@@ -291,8 +292,7 @@ export default function ChatDock() {
           >
             {state.messages.length === 0 ? (
               <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.65)" }}>
-                Start a conversation. The single agent for the full environment
-                archives history daily.
+                Start a conversation. Your messages are saved and archived daily.
               </div>
             ) : (
               state.messages.map((message) => (
