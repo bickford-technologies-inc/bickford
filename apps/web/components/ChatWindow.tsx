@@ -474,8 +474,8 @@ export default function ChatWindow() {
               )
             ) : state.messages.length === 0 ? (
               <p style={{ fontSize: 13, opacity: 0.7 }}>
-                Start a thread. The single agent for the full environment archives
-                daily.
+                Start a thread. The single agent for the full environment
+                archives daily.
               </p>
             ) : (
               state.messages.map((message) => (
