@@ -284,6 +284,22 @@ export default function ChatDock() {
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    function handleStorage(event: StorageEvent) {
+      if (event.key && event.key !== STORAGE_KEY) {
+        return;
+      }
+      setState(hydrateState());
+    }
+
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
+
   function sendMessage() {
     const trimmed = input.trim();
     if (!trimmed) return;
