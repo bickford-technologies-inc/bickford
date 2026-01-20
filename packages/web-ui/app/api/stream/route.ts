@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       timestamp: new Date().toISOString(),
     },
   };
-  
+
   appendLedger(threadId, startEntry);
 
   const stream = new ReadableStream({
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
           timestamp: new Date().toISOString(),
         },
       };
-      
+
       appendLedger(threadId, endEntry);
     },
   });
