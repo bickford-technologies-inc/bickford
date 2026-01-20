@@ -1,4 +1,29 @@
-"use client";
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/app/layout.tsx b/app/layout.tsx
+index 9c9b29f253cee4d4fcddd5c48a242047a4235432..71a3fafb3450be7f209ede19fc161703570149bf 100644
+--- a/app/layout.tsx
++++ b/app/layout.tsx
+@@ -1,17 +1,15 @@
+-import ChatDock from "./components/ChatDock";
+ import "./globals.css";
+ 
+ export default function RootLayout({
+   children,
+ }: {
+   children: React.ReactNode;
+ }) {
+   return (
+     <html lang="en">
+       <body>
+         {children}
+-        <ChatDock />
+       </body>
+     </html>
+   );
+ }
+ 
+EOF
+)"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -307,6 +332,29 @@ export default function ChatDock() {
     return () => {
       window.removeEventListener("storage", handleStorage);
     };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    let timeoutId: number;
+
+    const scheduleDailyArchive = () => {
+      const now = new Date();
+      const nextMidnight = new Date(now);
+      nextMidnight.setHours(24, 0, 0, 0);
+      const delay = nextMidnight.getTime() - now.getTime();
+      timeoutId = window.setTimeout(() => {
+        setState((prev) => {
+          const reconciled = reconcileDaily(prev);
+          persistState(reconciled);
+          return reconciled;
+        });
+        scheduleDailyArchive();
+      }, delay);
+    };
+
+    scheduleDailyArchive();
+    return () => window.clearTimeout(timeoutId);
   }, []);
 
   useEffect(() => {

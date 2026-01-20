@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 type ChatRole = "user" | "agent";
 
@@ -30,10 +30,6 @@ const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const AGENT_NAME = "bickford";
 const ARCHIVE_NOTE =
   "single agent for the full environment • archives chat history daily at local midnight";
-
-function archiveCountLabel(count: number) {
-  return `${count} archive${count === 1 ? "" : "s"}`;
-}
 
 function formatLocalDate(date: Date) {
   const year = date.getFullYear();
@@ -96,10 +92,11 @@ function normalizeMessages(
   return messages
     .filter((message) => message)
     .map((message) => {
-      const role = message.role ?? message.author ?? "agent";
+      const resolvedRole: ChatRole =
+        message.role === "user" || message.author === "user" ? "user" : "agent";
       return {
         id: message.id ?? crypto.randomUUID(),
-        role: role === "user" ? "user" : "agent",
+        role: resolvedRole,
         content: message.content ?? message.text ?? "",
         timestamp:
           typeof message.timestamp === "number"
@@ -223,10 +220,8 @@ function msUntilNextMidnight(now: Date = new Date()) {
 
 export default function ChatDock() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
-  const [input, setInput] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const archivedCount = useMemo(() => state.archives.length, [state.archives]);
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
 
   useEffect(() => {
     setState((prev) => {
@@ -268,10 +263,6 @@ export default function ChatDock() {
       }
     };
   }, []);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [state.messages]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -316,243 +307,206 @@ export default function ChatDock() {
     };
   }, []);
 
-  function sendMessage() {
-    const trimmed = input.trim();
-    if (!trimmed) return;
-
-    const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content: trimmed,
-      timestamp: Date.now(),
-    };
-
-    const agentMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: "agent",
-      content: `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive chat history daily at local midnight.`,
-      timestamp: Date.now(),
-    };
-
+  function appendMessage(message: ChatMessage) {
     setState((prev) => {
       const reconciled = reconcileDaily(prev);
       const nextState = {
         ...reconciled,
-        messages: [...reconciled.messages, userMessage, agentMessage],
+        messages: [...reconciled.messages, message],
       };
       persistState(nextState);
       return nextState;
     });
-    setInput("");
   }
 
+  async function submitIntent() {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+
+    appendMessage({
+      id: crypto.randomUUID(),
+      role: "user",
+      content: trimmed,
+      timestamp: Date.now(),
+    });
+    setText("");
+    setOpen(false);
+
+    await fetch("/api/intents", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: trimmed }),
+    });
+  }
+
+  const recent = state.messages.slice(-3);
+
   return (
-    <section
-      style={{
-        position: "fixed",
-        right: 20,
-        bottom: 20,
-        width: "min(360px, calc(100vw - 40px))",
-        borderRadius: 16,
-        border: "1px solid rgba(148, 163, 184, 0.35)",
-        background: "rgba(15, 23, 42, 0.95)",
-        color: "#e2e8f0",
-        boxShadow: "0 16px 40px rgba(15, 23, 42, 0.25)",
-        backdropFilter: "blur(14px)",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        zIndex: 50,
-      }}
-    >
-      <header
+    <>
+      <button
+        data-testid="chat-dock-button"
+        aria-label="Open chat"
+        onClick={() => setOpen(true)}
         style={{
-          padding: "14px 16px",
-          display: "flex",
-          justifyContent: "space-between",
+          position: "fixed",
+          bottom: 24,
+          right: 24,
+          width: 44,
+          height: 44,
+          borderRadius: "50%",
+          background: "#0f0f0f",
+          border: "1px solid rgba(255,255,255,0.14)",
+          color: "#fff",
+          cursor: "pointer",
+          zIndex: 1000,
+          display: open ? "none" : "flex",
           alignItems: "center",
-          background: "rgba(30, 41, 59, 0.8)",
-          borderBottom: "1px solid rgba(148, 163, 184, 0.25)",
+          justifyContent: "center",
         }}
       >
-        <div>
-          <div style={{ fontWeight: 600, fontSize: 14 }}>{AGENT_NAME}</div>
-          <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.7)" }}>
-            {ARCHIVE_NOTE} • today {state.currentDate} •{" "}
-            {archiveCountLabel(archivedCount)}
-          </div>
-        </div>
-        <button
-          style={{
-            border: "1px solid rgba(148, 163, 184, 0.35)",
-            background: "rgba(15, 23, 42, 0.8)",
-            color: "inherit",
-            borderRadius: 999,
-            padding: "6px 12px",
-            fontSize: 12,
-            cursor: "pointer",
-          }}
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? "Minimize" : "Chat"}
-        </button>
-      </header>
+        <img
+          src="/brand/bickford-mark.svg"
+          alt="bickford"
+          style={{ width: 26, height: "auto" }}
+        />
+      </button>
 
-      {isOpen ? (
-        <>
-          <div
+      {open ? (
+        <section
+          data-testid="chat-panel"
+          style={{
+            position: "fixed",
+            bottom: 24,
+            right: 24,
+            width: 360,
+            height: 480,
+            background: "#0f0f0f",
+            border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: 12,
+            display: "flex",
+            flexDirection: "column",
+            zIndex: 1001,
+            animation: "dockIn var(--dur-base) var(--ease-codex)",
+          }}
+        >
+          <header
             style={{
-              maxHeight: 320,
-              overflowY: "auto",
-              padding: "14px 16px 10px",
+              padding: "12px 16px",
+              borderBottom: "1px solid rgba(255,255,255,0.08)",
               display: "flex",
-              flexDirection: "column",
-              gap: 12,
+              justifyContent: "space-between",
+              alignItems: "center",
+              fontSize: 13,
+              color: "#fff",
             }}
           >
-            {state.messages.length === 0 ? (
-              <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.65)" }}>
-                Start a conversation. The single agent archives chat history
-                daily for this environment.
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <span style={{ fontWeight: 600 }}>{AGENT_NAME}</span>
+              <span style={{ fontSize: 11, opacity: 0.6 }}>
+                {ARCHIVE_NOTE} • today {state.currentDate}
+              </span>
+            </div>
+            <button
+              data-testid="chat-close"
+              onClick={() => setOpen(false)}
+              style={{
+                border: "none",
+                background: "transparent",
+                color: "#fff",
+                cursor: "pointer",
+                fontSize: 16,
+              }}
+            >
+              ✕
+            </button>
+          </header>
+
+          <div
+            style={{
+              flex: 1,
+              padding: 12,
+              fontSize: 13,
+              color: "rgba(255,255,255,0.8)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+            }}
+          >
+            <div style={{ opacity: 0.7 }}>
+              Chat is a support surface. Intents remain primary.
+            </div>
+            {recent.length === 0 ? (
+              <div style={{ opacity: 0.6 }}>
+                No entries yet. Create an intent to start today&apos;s archive.
               </div>
             ) : (
-              state.messages.map((message) => (
+              recent.map((message) => (
                 <div
                   key={message.id}
                   style={{
-                    borderRadius: 12,
-                    padding: "10px 12px",
+                    padding: "8px 10px",
+                    borderRadius: 8,
                     background:
                       message.role === "user"
-                        ? "rgba(56, 189, 248, 0.25)"
-                        : "rgba(30, 41, 59, 0.6)",
-                    border: `1px solid ${
-                      message.role === "user"
-                        ? "rgba(56, 189, 248, 0.4)"
-                        : "rgba(148, 163, 184, 0.2)"
-                    }`,
-                    alignSelf: message.role === "user" ? "flex-end" : "stretch",
+                        ? "rgba(59, 130, 246, 0.25)"
+                        : "rgba(255,255,255,0.06)",
                   }}
                 >
-                  <div
-                    style={{
-                      fontSize: 11,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.08em",
-                      color: "rgba(226, 232, 240, 0.6)",
-                      marginBottom: 6,
-                    }}
-                  >
+                  <div style={{ fontSize: 11, opacity: 0.6 }}>
                     {message.role === "user" ? "You" : AGENT_NAME}
                   </div>
-                  <div style={{ fontSize: 13, lineHeight: 1.4 }}>
-                    {message.content}
-                  </div>
+                  <div>{message.content}</div>
                 </div>
               ))
             )}
-            <div ref={bottomRef} />
           </div>
 
-          <footer
+          <div
             style={{
-              padding: "12px 16px 16px",
-              borderTop: "1px solid rgba(148, 163, 184, 0.25)",
-              background: "rgba(15, 23, 42, 0.75)",
+              padding: 12,
+              borderTop: "1px solid rgba(255,255,255,0.08)",
+              display: "flex",
+              gap: 8,
             }}
           >
-            <div
+            <input
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  submitIntent();
+                }
+              }}
+              placeholder="Create intent…"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "6px 8px",
-                borderRadius: 999,
-                background: "rgba(45, 45, 45, 0.9)",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                flex: 1,
+                background: "#161616",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: 8,
+                padding: "8px 10px",
+                fontSize: 13,
+                color: "#fff",
+              }}
+            />
+            <button
+              type="button"
+              onClick={submitIntent}
+              style={{
+                padding: "8px 12px",
+                borderRadius: 8,
+                border: "1px solid rgba(255,255,255,0.18)",
+                background: "#1f1f1f",
+                color: "#fff",
+                cursor: "pointer",
+                fontSize: 13,
               }}
             >
-              <button
-                style={{
-                  border: "none",
-                  background: "rgba(60, 60, 60, 0.9)",
-                  color: "#fff",
-                  borderRadius: 999,
-                  width: 28,
-                  height: 28,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  fontSize: 14,
-                }}
-                type="button"
-                aria-label="Add context"
-              >
-                +
-              </button>
-              <input
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                placeholder="Share intent, decisions, or next steps..."
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    sendMessage();
-                  }
-                }}
-                style={{
-                  flex: 1,
-                  padding: "8px 4px",
-                  border: "none",
-                  background: "transparent",
-                  color: "inherit",
-                  fontSize: 13,
-                }}
-              />
-              <button
-                style={{
-                  border: "none",
-                  background: "rgba(60, 60, 60, 0.9)",
-                  color: "#fff",
-                  borderRadius: 999,
-                  width: 28,
-                  height: 28,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  fontSize: 14,
-                }}
-                type="button"
-                aria-label="Record voice note"
-              >
-                🎤
-              </button>
-              <button
-                style={{
-                  border: "none",
-                  background: "#4b5563",
-                  color: "#fff",
-                  borderRadius: 999,
-                  width: 28,
-                  height: 28,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  fontSize: 14,
-                }}
-                type="button"
-                onClick={sendMessage}
-                aria-label="Send message"
-              >
-                ➤
-              </button>
-            </div>
-          </footer>
-        </>
+              Send
+            </button>
+          </div>
+        </section>
       ) : null}
-    </section>
+    </>
   );
 }

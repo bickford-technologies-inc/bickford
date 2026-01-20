@@ -159,6 +159,12 @@ body {
   flex: 1;
 }
 
+.chatDockList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .chatDockEmpty {
   font-size: 12px;
   color: rgba(226, 232, 240, 0.65);
@@ -245,6 +251,16 @@ body {
   border-radius: 999px;
   background: rgba(45, 45, 45, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+
+.chatDockSelect {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(39, 39, 42, 0.9);
+  color: inherit;
+  font-size: 11px;
+  padding: 6px 8px;
 }
 
 .chatDockFooter input {
