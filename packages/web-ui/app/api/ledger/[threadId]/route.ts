@@ -11,12 +11,10 @@ export async function POST(
 ) {
   const entry: LedgerEntry = {
     id: crypto.randomUUID(),
-    threadId: params.threadId,
-    role: "system",
-    content: "{}",
-    ts: Date.now(),
-    intent: undefined,
-    decision: undefined,
+    event: {
+      id: crypto.randomUUID(),
+      timestamp: new Date().toISOString(),
+    },
   };
   writeThread(params.threadId, [entry]);
   return NextResponse.json({ ok: true });

@@ -1,9 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
-
   /**
    * CRITICAL:
    * Next.js MUST be told to transpile workspace packages.
@@ -17,6 +13,16 @@ const nextConfig = {
   ],
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  output: 'standalone',
+  webpack: (config) => {
+    // Handle .js extensions in TypeScript imports
+    config.resolve.extensionAlias = {
+      '.js': ['.js', '.ts', '.tsx'],
+      '.mjs': ['.mjs', '.mts'],
+      '.cjs': ['.cjs', '.cts'],
+    };
+    return config;
   },
 };
 
