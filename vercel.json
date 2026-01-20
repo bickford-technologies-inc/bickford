@@ -7,7 +7,5 @@
 
   "buildCommand": "pnpm run build",
 
-  "outputDirectory": ".next",
-
   "ignoreCommand": "node scripts/assert-intent-phase.mjs"
 }

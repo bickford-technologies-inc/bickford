@@ -192,10 +192,7 @@ export default function ChatDock() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [state.messages]);
 
-  const placeholder = useMemo(
-    () => "Ask the unified agent to coordinate the environment...",
-    [],
-  );
+  const placeholder = useMemo(() => "Ask a question with /plan", []);
 
   function sendMessage() {
     const trimmed = input.trim();
@@ -210,7 +207,7 @@ export default function ChatDock() {
 
     const agentMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      role: "agent",
+      role: "assistant",
       content: `Acknowledged. ${AGENT_NAME} is coordinating this and will archive today’s history automatically.`,
       timestamp: Date.now(),
     };
@@ -232,7 +229,9 @@ export default function ChatDock() {
       <header className="chatDockHeader">
         <div>
           <div className="chatDockTitle">Unified Chat</div>
-          <div className="chatDockSubtitle">{AGENT_NAME} • archives daily</div>
+          <div className="chatDockSubtitle">
+            {AGENT_NAME} • single agent • archives daily
+          </div>
         </div>
         <button className="chatDockToggle" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? "Minimize" : "Chat"}
@@ -244,7 +243,8 @@ export default function ChatDock() {
           <div className="chatDockBody">
             {state.messages.length === 0 ? (
               <div className="chatDockEmpty">
-                Start a conversation. Daily history will be archived automatically.
+                Start a conversation. The single environment agent archives
+                history daily.
               </div>
             ) : (
               state.messages.map((message) => (
@@ -263,18 +263,41 @@ export default function ChatDock() {
           </div>
 
           <footer className="chatDockFooter">
-            <input
-              value={input}
-              onChange={(event) => setInput(event.target.value)}
-              placeholder={placeholder}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  sendMessage();
-                }
-              }}
-            />
-            <button onClick={sendMessage}>Send</button>
+            <div className="chatDockComposer">
+              <button
+                className="chatDockIconButton"
+                type="button"
+                aria-label="Add context"
+              >
+                +
+              </button>
+              <input
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                placeholder={placeholder}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    sendMessage();
+                  }
+                }}
+              />
+              <button
+                className="chatDockIconButton"
+                type="button"
+                aria-label="Record voice note"
+              >
+                🎤
+              </button>
+              <button
+                className="chatDockIconButton primary"
+                type="button"
+                onClick={sendMessage}
+                aria-label="Send message"
+              >
+                ➤
+              </button>
+            </div>
           </footer>
         </>
       ) : null}
