@@ -31,7 +31,8 @@ const AGENT_NAME = "bickford";
 const ARCHIVE_NOTE =
   "single agent for the full environment • archives daily at local midnight";
 
-function todayKey(now: Date = new Date()) {
+function todayKey() {
+  const now = new Date();
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const day = String(now.getDate()).padStart(2, "0");
@@ -125,7 +126,9 @@ function hydrateState(): ChatState {
 
   return {
     currentDate: legacyDay ?? todayKey(),
-    messages: Array.isArray(legacyMessages) ? normalizeMessages(legacyMessages) : [],
+    messages: Array.isArray(legacyMessages)
+      ? normalizeMessages(legacyMessages)
+      : [],
     archives: Array.isArray(legacyArchives)
       ? legacyArchives.map((archive) => ({
           date: archive.date,
@@ -183,13 +186,16 @@ export default function ChatDock() {
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
-    const timer = window.setInterval(() => {
-      setState((prev) => {
-        const reconciled = reconcileDaily(prev);
-        persistState(reconciled);
-        return reconciled;
-      });
-    }, 15 * 60 * 1000);
+    const timer = window.setInterval(
+      () => {
+        setState((prev) => {
+          const reconciled = reconcileDaily(prev);
+          persistState(reconciled);
+          return reconciled;
+        });
+      },
+      15 * 60 * 1000,
+    );
 
     return () => window.clearInterval(timer);
   }, []);
@@ -294,16 +300,12 @@ export default function ChatDock() {
           <div className="chatDockBody">
             {view === "decisions" ? (
               decisions.length === 0 ? (
-                <div className="chatDockEmpty">
-                  No decisions captured yet.
-                </div>
+                <div className="chatDockEmpty">No decisions captured yet.</div>
               ) : (
                 <div className="chatDockList">
                   {decisions.map((decision) => (
                     <div key={decision.id} className="chatDockDecision">
-                      <div className="chatDockDecisionTitle">
-                        Decision
-                      </div>
+                      <div className="chatDockDecisionTitle">Decision</div>
                       <div className="chatDockText">{decision.content}</div>
                       <div className="chatDockDecisionMeta">
                         {decision.conflict
@@ -323,9 +325,7 @@ export default function ChatDock() {
                 <div className="chatDockList">
                   {logs.map((archive) => (
                     <div key={archive.date} className="chatDockDay">
-                      <div className="chatDockDayHeader">
-                        {archive.date}
-                      </div>
+                      <div className="chatDockDayHeader">{archive.date}</div>
                       {archive.messages.map((message) => (
                         <div
                           key={message.id}
@@ -334,9 +334,7 @@ export default function ChatDock() {
                           <div className="chatDockRole">
                             {message.role === "user" ? "You" : AGENT_NAME}
                           </div>
-                          <div className="chatDockText">
-                            {message.content}
-                          </div>
+                          <div className="chatDockText">{message.content}</div>
                         </div>
                       ))}
                     </div>
@@ -345,7 +343,8 @@ export default function ChatDock() {
               )
             ) : state.messages.length === 0 ? (
               <div className="chatDockEmpty">
-                Start a conversation. Your messages are saved and archived daily.
+                Start a conversation. Your messages are saved and archived
+                daily.
               </div>
             ) : (
               state.messages.map((message) => (

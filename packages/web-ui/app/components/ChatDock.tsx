@@ -32,7 +32,11 @@ const ARCHIVE_NOTE =
   "single agent for the full environment • archives daily at local midnight";
 
 function todayKey() {
-  return new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function safeParse<T>(raw: string | null): T | null {
@@ -182,13 +186,16 @@ export default function ChatDock() {
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
-    const timer = window.setInterval(() => {
-      setState((prev) => {
-        const reconciled = reconcileDaily(prev);
-        persistState(reconciled);
-        return reconciled;
-      });
-    }, 15 * 60 * 1000);
+    const timer = window.setInterval(
+      () => {
+        setState((prev) => {
+          const reconciled = reconcileDaily(prev);
+          persistState(reconciled);
+          return reconciled;
+        });
+      },
+      15 * 60 * 1000,
+    );
 
     return () => window.clearInterval(timer);
   }, []);
@@ -292,7 +299,8 @@ export default function ChatDock() {
           >
             {state.messages.length === 0 ? (
               <div style={{ fontSize: 12, color: "rgba(226, 232, 240, 0.65)" }}>
-                Start a conversation. Your messages are saved and archived daily.
+                Start a conversation. Your messages are saved and archived
+                daily.
               </div>
             ) : (
               state.messages.map((message) => (

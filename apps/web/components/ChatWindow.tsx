@@ -31,7 +31,8 @@ const AGENT_NAME = "bickford";
 const ARCHIVE_NOTE =
   "single agent for the full environment • archives daily at local midnight";
 
-function getTodayKey(now: Date = new Date()) {
+function getTodayKey() {
+  const now = new Date();
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const day = String(now.getDate()).padStart(2, "0");
@@ -125,7 +126,9 @@ function hydrateState(): ChatState {
 
   return {
     currentDate: legacyDay ?? getTodayKey(),
-    messages: Array.isArray(legacyMessages) ? normalizeMessages(legacyMessages) : [],
+    messages: Array.isArray(legacyMessages)
+      ? normalizeMessages(legacyMessages)
+      : [],
     archives: Array.isArray(legacyArchives)
       ? legacyArchives.map((archive) => ({
           date: archive.date,
@@ -179,15 +182,18 @@ export default function ChatWindow() {
   }, [state]);
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setState((prev) => {
-        const reconciled = reconcileDaily(prev);
-        if (reconciled !== prev) {
-          persistState(reconciled);
-        }
-        return reconciled;
-      });
-    }, 10 * 60 * 1000);
+    const interval = window.setInterval(
+      () => {
+        setState((prev) => {
+          const reconciled = reconcileDaily(prev);
+          if (reconciled !== prev) {
+            persistState(reconciled);
+          }
+          return reconciled;
+        });
+      },
+      10 * 60 * 1000,
+    );
 
     return () => window.clearInterval(interval);
   }, []);
@@ -381,7 +387,9 @@ export default function ChatWindow() {
                   No decisions captured yet.
                 </p>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 12 }}
+                >
                   {decisions.map((decision) => (
                     <div
                       key={decision.id}
@@ -421,7 +429,9 @@ export default function ChatWindow() {
                   No archived days yet. Start chatting to build a daily log.
                 </p>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 12 }}
+                >
                   {logs.map((archive) => (
                     <div
                       key={archive.date}
@@ -490,7 +500,8 @@ export default function ChatWindow() {
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    alignSelf: message.role === "user" ? "flex-end" : "flex-start",
+                    alignSelf:
+                      message.role === "user" ? "flex-end" : "flex-start",
                     gap: 4,
                     maxWidth: "85%",
                   }}
