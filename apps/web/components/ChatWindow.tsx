@@ -414,23 +414,23 @@ export default function ChatWindow() {
                   No archived days yet. Start chatting to build a daily log.
                 </p>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   {logs.map((archive) => (
                     <div
                       key={archive.date}
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: 10,
-                        padding: "12px 14px",
+                        gap: 8,
+                        padding: "10px 12px",
                         borderRadius: 12,
-                        background: "rgba(15, 23, 42, 0.6)",
+                        background: "rgba(39, 39, 42, 0.9)",
                         border: "1px solid rgba(255, 255, 255, 0.08)",
                       }}
                     >
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: 12,
                           textTransform: "uppercase",
                           letterSpacing: 0.6,
                           opacity: 0.6,
@@ -445,9 +445,12 @@ export default function ChatWindow() {
                             display: "flex",
                             flexDirection: "column",
                             gap: 4,
-                            alignSelf:
-                              message.role === "user" ? "flex-end" : "flex-start",
-                            maxWidth: "85%",
+                            padding: "8px 10px",
+                            borderRadius: 10,
+                            background:
+                              message.role === "user"
+                                ? "rgba(59, 130, 246, 0.5)"
+                                : "rgba(24, 24, 27, 0.9)",
                           }}
                         >
                           <span
@@ -455,25 +458,14 @@ export default function ChatWindow() {
                               fontSize: 11,
                               textTransform: "uppercase",
                               letterSpacing: 0.4,
-                              opacity: 0.6,
+                              opacity: 0.65,
                             }}
                           >
                             {message.role === "user" ? "You" : AGENT_NAME}
                           </span>
-                          <div
-                            style={{
-                              padding: "8px 12px",
-                              borderRadius: 12,
-                              background:
-                                message.role === "user"
-                                  ? "rgba(59, 130, 246, 0.35)"
-                                  : "rgba(39, 39, 42, 0.8)",
-                            }}
-                          >
-                            <span style={{ fontSize: 14, lineHeight: 1.4 }}>
-                              {message.content}
-                            </span>
-                          </div>
+                          <span style={{ fontSize: 13, lineHeight: 1.4 }}>
+                            {message.content}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -482,7 +474,8 @@ export default function ChatWindow() {
               )
             ) : state.messages.length === 0 ? (
               <p style={{ fontSize: 13, opacity: 0.7 }}>
-                Start a thread. The single environment agent archives daily.
+                Start a thread. The single agent for the full environment archives
+                daily.
               </p>
             ) : (
               state.messages.map((message) => (
