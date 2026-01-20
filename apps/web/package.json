@@ -13,15 +13,14 @@
     "postbuild": "node ../../scripts/emit-canon-certificate.mjs"
   },
   "dependencies": {
-    "@bickford/authority": "0.0.0",
-    "@bickford/canon": "1.0.0",
-    "@bickford/core": "0.0.0",
-    "@bickford/db": "0.0.0",
-    "@bickford/ledger": "0.0.0",
-    "@bickford/optr": "0.0.0",
-    "@bickford/types": "0.0.0",
-    "@bickford/ui": "0.0.0",
-    "@bickford/web": "0.1.0",
+    "@bickford/authority": "workspace:*",
+    "@bickford/core": "workspace:*",
+    "@bickford/db": "workspace:*",
+    "@bickford/execution-convergence": "workspace:*",
+    "@bickford/ledger": "workspace:*",
+    "@bickford/optr": "workspace:*",
+    "@bickford/types": "workspace:*",
+    "@bickford/ui": "workspace:*",
     "next": "14.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
