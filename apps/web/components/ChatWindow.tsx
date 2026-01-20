@@ -436,7 +436,7 @@ export default function ChatWindow() {
                     cursor: "pointer",
                   }}
                 >
-                  Logs
+                  Decision Tracer View
                 </button>
                 <button
                   type="button"
