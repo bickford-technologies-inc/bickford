@@ -256,7 +256,7 @@ export default function ChatDock() {
         <div>
           <div className="chatDockTitle">{AGENT_NAME}</div>
           <div className="chatDockSubtitle">
-            single agent • archives daily
+            single agent • full environment • archives daily
           </div>
         </div>
         <div className="chatDockActions">
