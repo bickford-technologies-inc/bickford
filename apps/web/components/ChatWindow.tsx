@@ -23,7 +23,7 @@ type ChatState = {
 };
 
 const STORAGE_KEY = "bickford.chat.daily.v1";
-const AGENT_NAME = "Bickford Agent";
+const AGENT_NAME = "Bickford Unified Agent";
 
 function getTodayKey() {
   return new Date().toISOString().slice(0, 10);
@@ -87,6 +87,20 @@ export default function ChatWindow() {
     });
   }, []);
 
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setState((prev) => {
+        const reconciled = reconcileDaily(prev);
+        if (reconciled !== prev) {
+          persistState(reconciled);
+        }
+        return reconciled;
+      });
+    }, 10 * 60 * 1000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
   const archivedDays = useMemo(() => state.archives.length, [state.archives]);
 
   function appendMessage(author: ChatAuthor, text: string) {
@@ -119,7 +133,7 @@ export default function ChatWindow() {
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      "Captured. I will include this in today's log and archive it at midnight."
+      "Captured. I will include this in today's log and archive it daily."
     );
   }
 
@@ -145,7 +159,7 @@ export default function ChatWindow() {
     >
       <header style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <span style={{ fontSize: 14, letterSpacing: 0.4, opacity: 0.8 }}>
-          Single Agent • Environment-wide
+          Unified Agent • Environment-wide
         </span>
         <strong style={{ fontSize: 18 }}>{AGENT_NAME}</strong>
         <span style={{ fontSize: 12, opacity: 0.7 }}>
