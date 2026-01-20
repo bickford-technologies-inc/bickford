@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import React from "react";
+import UnifiedChatDock from "../src/components/UnifiedChatDock";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Bickford",
@@ -13,7 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <UnifiedChatDock />
+      </body>
     </html>
   );
 }
