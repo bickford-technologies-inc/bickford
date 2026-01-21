@@ -175,7 +175,7 @@ export default function ChatWindow() {
   }
 
   return (
-    <section className={styles.window} aria-label="Chat window">
+    <section className={styles.container} aria-label="Chat window">
       <header className={styles.header}>
         <div>
           <span className={styles.title}>Chat</span>
@@ -183,7 +183,7 @@ export default function ChatWindow() {
         </div>
         <span className={styles.status}>Daily archive enabled</span>
       </header>
-      <div className={styles.messages}>
+      <main className={styles.body}>
         {state.messages.length === 0 ? (
           <p className={styles.empty}>
             Start a conversation. Everything is archived daily.
@@ -202,8 +202,8 @@ export default function ChatWindow() {
             </div>
           ))
         )}
-      </div>
-      <form className={styles.inputRow} onSubmit={submit}>
+      </main>
+      <form className={styles.form} onSubmit={submit}>
         <input
           value={value}
           onChange={(event) => setValue(event.target.value)}
