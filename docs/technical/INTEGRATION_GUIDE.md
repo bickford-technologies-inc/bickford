@@ -362,11 +362,11 @@ import {
   enrichEmbedding,
   retrieveSimilarEmbeddings,
   EmbeddingProvider,
-  EmbeddingVectorIndex
+  createInMemoryVectorIndex
 } from "@bickford/runtime/embeddingEnrichment";
 
 const provider: EmbeddingProvider = async (text) => embed(text);
-const index: EmbeddingVectorIndex = vectorStore;
+const index = createInMemoryVectorIndex();
 
 await enrichEmbedding(
   {
