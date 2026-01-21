@@ -32,8 +32,6 @@ import {
 
 import { promotionGate } from "../packages/canon/src/canon/promotion";
 
-import { promotionGate } from "../packages/canon/src/canon/promotion";
-
 import {
   formatWhyNotPanel,
   createDeniedDecisionProof,
