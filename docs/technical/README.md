@@ -22,6 +22,11 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
+- **[REALTIME_API.md](REALTIME_API.md)** - Realtime API guide
+  - Voice agent setup
+  - Connection methods
+  - API usage references
+  - Beta to GA migration notes
 
 ### Technical Highlights
 

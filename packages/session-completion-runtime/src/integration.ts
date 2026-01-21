@@ -56,6 +56,60 @@ export async function captureChatSessionCompletion(params: {
 }
 
 /**
+ * Capture a realtime session completion (voice or multimodal)
+ * Simplified helper for low-latency Realtime API sessions
+ */
+export async function captureRealtimeSessionCompletion(params: {
+  sessionId: string;
+  userId: string;
+  organizationId: string;
+  startTime: string;
+  endTime: string;
+  inputTokens: number;
+  outputTokens: number;
+  model: string;
+  outcome: "success" | "error" | "timeout" | "user_terminated";
+  errorMessage?: string;
+  inputModality?: "audio" | "text" | "multimodal";
+  transport?: "webrtc" | "websocket" | "sip";
+}): Promise<void> {
+  const event: SessionCompletionEvent = {
+    event_type: "session.completed",
+    event_id: `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    timestamp: new Date().toISOString(),
+    session: {
+      session_id: params.sessionId,
+      session_type: "realtime",
+      start_time: params.startTime,
+      end_time: params.endTime,
+      duration_ms: new Date(params.endTime).getTime() - new Date(params.startTime).getTime(),
+    },
+    user: {
+      user_id: params.userId,
+      organization_id: params.organizationId,
+    },
+    usage: {
+      input_tokens: params.inputTokens,
+      output_tokens: params.outputTokens,
+      total_tokens: params.inputTokens + params.outputTokens,
+      model: params.model,
+      estimated_cost_usd: estimateCost(params.inputTokens, params.outputTokens, params.model),
+    },
+    outcome: {
+      status: params.outcome,
+      error_message: params.errorMessage,
+    },
+    metadata: {
+      input_modality: params.inputModality,
+      transport: params.transport,
+    },
+  };
+
+  const runtime = getRuntime();
+  await runtime.capture(event);
+}
+
+/**
  * Estimate cost based on token usage and model
  */
 export function estimateCost(inputTokens: number, outputTokens: number, model: string): number {
