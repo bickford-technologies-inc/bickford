@@ -22,6 +22,11 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
+- **[SPEECH_TO_TEXT.md](SPEECH_TO_TEXT.md)** - Audio transcription reference
+  - Transcriptions and translations
+  - Speaker diarization
+  - Streaming transcription
+  - Prompting and reliability
 
 ### Technical Highlights
 
