@@ -8,6 +8,28 @@ This guide walks through the event flows required to use model capabilities like
 
 If you do not need to have a conversation with the model, meaning you do not expect any response, you can use the Realtime API in [transcription mode](https://platform.openai.com/docs/guides/realtime-transcription).
 
+## How this fits Bickford (architecture map)
+
+This guide explains the Realtime API mechanics. For Bickford, the key question is **what each action enables** and how it supports decision continuity, automation, and persistence.
+
+### Intent → decision pipeline
+
+| Realtime capability | What it enables in Bickford | Where it lands |
+| --- | --- | --- |
+| `conversation.item.create` with `input_text` or audio transcript | Capture spoken intent as text | Send intent to `POST /api/execute` to get a decision + ledger entry. |
+| `response.output_text.delta` | Live feedback while the model is still speaking/typing | Streaming UI updates (recommended for `packages/web-ui` when realtime UI is built). |
+| `response.done` | Final, stable output | Persist the final transcript and decision summary. |
+| Session end | Durable audit trail | Capture a session completion event (use `@bickford/session-completion-runtime`). |
+
+### Recommended Bickford integration path (no code yet)
+
+1. **Connect Realtime** (WebRTC or WebSocket). This unlocks low-latency speech input.
+2. **Turn speech into intent**: listen for `response.done` or transcript events, then map the final transcript into a single `intent` string.
+3. **Call Bickford**: send `intent` to `POST /api/execute` and keep the returned `ledgerEntry.id` for traceability.
+4. **Persist the session**: on session end, record the transcript, decision outcome, and `ledgerEntry.id` using the Session Completion Runtime so the outcome is recoverable and auditable.
+
+> Coaching note: Steps 2–4 are the “why” behind the mechanics. They make realtime speech actionable by binding it to Bickford’s decision engine and ledger.
+
 ## Realtime speech-to-speech sessions
 
 A Realtime Session is a stateful interaction between the model and a connected client. The key components of the session are:
