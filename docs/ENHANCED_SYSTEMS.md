@@ -126,7 +126,39 @@ console.log(coaching.recommendations);
 
 ---
 
-### 4. Pure Runtime Resiliency Utilities
+### 4. Compounding Dynamic Peak Performance System
+
+**Location:** `packages/canon/src/canon/recursive-learning.ts`
+
+#### Features:
+- **Performance compounding** through continuous learning signals
+- **Peak performance targeting** via adaptive weight adjustments
+- **Self-coaching feedback** loops that preserve gains over time
+- **Confidence-weighted improvements** to avoid regressions
+
+#### Key Components:
+- `RecursiveLearningSystem`: Updates performance weights per execution
+- `SelfCoachingOptimizer`: Converts learning deltas into actionable guidance
+
+#### Usage Example:
+```typescript
+import { RecursiveLearningSystem } from "@bickford/canon";
+
+const learner = new RecursiveLearningSystem();
+
+// Apply execution signal and compound improvements
+const update = learner.record("optimize_path", {
+  predictedTTV: 4.2,
+  actualTTV: 3.6,
+  features: { complexity: 0.5, confidence: 0.92 },
+});
+
+console.log(update.performance);
+```
+
+---
+
+### 5. Pure Runtime Resiliency Utilities
 
 **Location:** `packages/canon/src/canon/runtime-resiliency.ts`
 
@@ -168,7 +200,7 @@ const health = aggregateHealth([
 
 ---
 
-### 5. Self-Correcting States and Audit System
+### 6. Self-Correcting States and Audit System
 
 **Location:** `packages/canon/src/canon/self-correcting.ts`
 
@@ -214,7 +246,7 @@ const bottlenecks = audit.getBottlenecks({ impact: "CRITICAL" });
 
 ---
 
-### 6. Automated CI/CD Operational Guards
+### 7. Automated CI/CD Operational Guards
 
 **Location:** `ci/guards/operational-guards.sh`
 
@@ -245,7 +277,7 @@ bash ci/guards/operational-guards.sh
 
 ---
 
-### 7. GitHub Actions Operational Automation
+### 8. GitHub Actions Operational Automation
 
 **Location:** `.github/workflows/operational-automation.yml`
 
@@ -381,5 +413,5 @@ For questions or issues with the enhanced systems:
 ---
 
 **Implementation Status:** ✅ Complete  
-**Last Updated:** 2026-01-19T23:13:00Z  
+**Last Updated:** 2026-01-20T18:45:00Z  
 **Maintainer:** Bickford Technologies Inc.
