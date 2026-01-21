@@ -110,17 +110,15 @@ export default function ChatDock() {
 
     setState((prev) => {
       const reconciled = reconcileDaily(prev);
+      const nextMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: "user",
+        content: trimmed,
+        timestamp: Date.now(),
+      };
       const nextState = {
         ...reconciled,
-        messages: [
-          ...reconciled.messages,
-          {
-            id: crypto.randomUUID(),
-            role: "user",
-            content: trimmed,
-            timestamp: Date.now(),
-          },
-        ],
+        messages: [...reconciled.messages, nextMessage],
       };
       persistChatState(nextState);
       return nextState;
