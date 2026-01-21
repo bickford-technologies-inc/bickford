@@ -1,0 +1,17 @@
+{
+  "type": "design-lock",
+  "surface": "bickford-web-chat",
+  "route": "/chat",
+  "design_hash": "9c71ecfca6e42816bbc487c3b5d06c09f3b2ec8b1f4581f107fc3f3a9a692393",
+  "files": [
+    "app/chat/page.tsx",
+    "app/chat/chat.module.css"
+  ],
+  "assertions": [
+    "no-floating-ui",
+    "full-page-chat-only",
+    "no-mobile-ui-imports"
+  ],
+  "timestamp": "2026-01-21T05:28:40Z",
+  "authority": "BICKFORD::DESIGN_LOCK"
+}

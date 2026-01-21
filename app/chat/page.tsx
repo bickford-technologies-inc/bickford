@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import styles from "./ChatWindow.module.css";
+import styles from "./chat.module.css";
+
+type ChatRole = "user" | "agent";
 
 type ChatMessage = {
   id: string;
-  role: "user" | "agent";
+  role: ChatRole;
   content: string;
   timestamp: number;
 };
@@ -21,8 +23,8 @@ type ChatState = {
   archives: ChatArchive[];
 };
 
-const STORAGE_KEY = "bickford.chat.unified.v1";
 const AGENT_NAME = "bickford";
+const STORAGE_KEY = "bickford.chat.web.v1";
 
 function formatLocalDate(date: Date) {
   const year = date.getFullYear();
@@ -72,9 +74,7 @@ function hydrateState(): ChatState {
 }
 
 function persistState(state: ChatState) {
-  if (typeof window === "undefined") {
-    return;
-  }
+  if (typeof window === "undefined") return;
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
@@ -91,9 +91,9 @@ function msUntilNextMidnight(now: Date = new Date()) {
   return next.getTime() - now.getTime();
 }
 
-export default function ChatWindow() {
+export default function ChatPage() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
-  const [value, setValue] = useState("");
+  const [input, setInput] = useState("");
 
   useEffect(() => {
     setState((prev) => {
@@ -159,58 +159,48 @@ export default function ChatWindow() {
     });
   }
 
-  function submit(event?: React.FormEvent) {
-    if (event) {
-      event.preventDefault();
-    }
-    const trimmed = value.trim();
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = input.trim();
     if (!trimmed) return;
 
-    setValue("");
+    setInput("");
     appendMessage("user", trimmed);
-    appendMessage(
-      "agent",
-      `Captured. ${AGENT_NAME} will archive this chat daily at local midnight.`,
-    );
+    appendMessage("agent", "Acknowledged. Intent recorded.");
   }
 
   return (
-    <section className={styles.container} aria-label="Chat window">
-      <header className={styles.header}>
-        <div>
-          <span className={styles.title}>Chat</span>
-          <span className={styles.agent}>Agent: {AGENT_NAME}</span>
-        </div>
-        <span className={styles.status}>Daily archive enabled</span>
-      </header>
-      <main className={styles.body}>
+    <section className={styles.page}>
+      <div className={styles.centerColumn}>
         {state.messages.length === 0 ? (
-          <p className={styles.empty}>
-            Start a conversation. Everything is archived daily.
-          </p>
+          <p className={styles.empty}>What should we do next?</p>
         ) : (
-          state.messages.map((message) => (
-            <div
-              key={message.id}
-              className={styles.message}
-              data-role={message.role}
-            >
-              <span className={styles.role}>
-                {message.role === "user" ? "You" : AGENT_NAME}
-              </span>
-              <p>{message.content}</p>
-            </div>
-          ))
+          <div className={styles.thread}>
+            {state.messages.map((message) => (
+              <div
+                key={message.id}
+                className={`${styles.message} ${
+                  message.role === "user" ? styles.user : styles.agent
+                }`}
+              >
+                <div className={styles.role}>
+                  {message.role === "user" ? "You" : AGENT_NAME}
+                </div>
+                <div className={styles.text}>{message.content}</div>
+              </div>
+            ))}
+          </div>
         )}
-      </main>
-      <form className={styles.form} onSubmit={submit}>
-        <input
-          value={value}
-          onChange={(event) => setValue(event.target.value)}
-          placeholder="Share intent..."
-        />
-        <button type="submit">Send</button>
-      </form>
+
+        <form onSubmit={submit} className={styles.inputRow}>
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask bickford"
+            className={styles.input}
+          />
+        </form>
+      </div>
     </section>
   );
 }
