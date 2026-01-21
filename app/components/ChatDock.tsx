@@ -17,7 +17,7 @@ import {
 
 export default function ChatDock() {
   const [state, setState] = useState<ChatState>(() => hydrateChatState());
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [text, setText] = useState("");
 
   useEffect(() => {

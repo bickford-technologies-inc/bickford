@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./chat.module.css";
 import {
   AGENT_NAME,
+  ARCHIVE_NOTE,
   ChatMessage,
   ChatState,
   CHAT_STORAGE_KEY,
@@ -109,7 +110,10 @@ export default function ChatPage() {
 
     setInput("");
     appendMessage("user", trimmed);
-    appendMessage("agent", "Acknowledged. Intent recorded.");
+    appendMessage(
+      "agent",
+      `Acknowledged. ${AGENT_NAME} is the single agent for the full environment — ${ARCHIVE_NOTE}.`,
+    );
   }
 
   return (
