@@ -309,6 +309,90 @@ agent = initialize_agent(
 
 ---
 
+## Integration Point 4: Embedding Enrichment (Bickford)
+
+### Objective
+Create embeddings for completed sessions so Bickford can retrieve similar intent evidence without loading full histories.
+
+### Recommended placement
+
+1. Capture `session.completed` with SCR.
+2. Extract a minimal text summary (final user request + system outcome).
+3. Generate embeddings and store in a vector index keyed by `session_id`.
+4. Use the vector index to retrieve candidate evidence, then route it through the Canon promotion gate.
+
+### Example (Python)
+
+```python
+# scr_pipeline/embedding_enrichment.py
+from openai import OpenAI
+from typing import Dict
+
+client = OpenAI()
+
+def embed_session(session_event: Dict, model: str = "text-embedding-3-small") -> Dict:
+    summary = session_event["summary"]
+    response = client.embeddings.create(input=summary, model=model)
+    embedding = response.data[0].embedding
+    return {
+        "session_id": session_event["session_id"],
+        "tenant_id": session_event["tenant_id"],
+        "embedding": embedding,
+        "source_fields": ["summary"]
+    }
+
+# Persist to vector index (pseudo)
+def upsert_embedding(vector_store, record: Dict) -> None:
+    vector_store.upsert(
+        key=record["session_id"],
+        vector=record["embedding"],
+        metadata={
+            "tenant_id": record["tenant_id"],
+            "source_fields": record["source_fields"]
+        }
+    )
+```
+
+### Bickford runtime helper (TypeScript)
+
+Use the built-in helper in `packages/bickford/src/runtime/embeddingEnrichment.ts` to standardize how embeddings are created and queried.
+
+```typescript
+import {
+  enrichEmbedding,
+  retrieveSimilarEmbeddings,
+  EmbeddingProvider,
+  createInMemoryVectorIndex
+} from "@bickford/runtime/embeddingEnrichment";
+
+const provider: EmbeddingProvider = async (text) => embed(text);
+const index = createInMemoryVectorIndex();
+
+await enrichEmbedding(
+  {
+    tenantId: "org_123",
+    key: "sess_456",
+    summary: "User wants to automate invoice reconciliation."
+  },
+  provider,
+  index
+);
+
+const matches = await retrieveSimilarEmbeddings(
+  { tenantId: "org_123", text: "invoice automation", limit: 5 },
+  provider,
+  index
+);
+```
+
+### Safety requirements
+
+- **Tenant isolation**: always filter by `tenant_id` in vector queries.
+- **Canonical storage**: keep raw text in the ledger; embeddings are derived metadata.
+- **Promotion gate**: only promoted evidence can influence decisions.
+
+---
+
 ## Configuration Reference
 
 ### Environment Variables
