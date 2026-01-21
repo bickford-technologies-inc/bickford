@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     ...payload,
   };
 
-  await appendDailyArchive("intent", entry);
+  await appendDailyArchive("chat", entry);
 
   return Response.json({ status: "ok" });
 }
