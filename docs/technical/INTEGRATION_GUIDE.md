@@ -309,158 +309,43 @@ agent = initialize_agent(
 
 ---
 
-## Integration Point 4: Embedding Enrichment (Bickford)
+## Integration Point 4: Sora Video Generation
 
 ### Objective
-Create embeddings for completed sessions so Bickford can retrieve similar intent evidence without loading full histories.
+Capture long-running video render jobs as first-class events, and align them with Bickford's ledger for traceability.
 
-### Recommended placement
+### Recommended flow
 
-1. Capture `session.completed` with SCR.
-2. Extract a minimal text summary (final user request + system outcome).
-3. Generate embeddings and store in a vector index keyed by `session_id`.
-4. Use the vector index to retrieve candidate evidence, then route it through the Canon promotion gate.
+1. **Create a render job** via `POST /videos`, storing the returned `video_id`.
+2. **Write a ledger event** capturing the intent (prompt, model, size, seconds).
+3. **Subscribe to webhooks** (`video.completed`, `video.failed`) for completion.
+4. **Persist assets** (MP4, thumbnail, spritesheet) in your storage layer.
+5. **Log completion events** with `status`, `progress`, and `storage_uri`.
 
-### Example (Python)
+### Event payload suggestion
 
-```python
-# scr_pipeline/embedding_enrichment.py
-from openai import OpenAI
-from typing import Dict
-
-client = OpenAI()
-
-def embed_session(session_event: Dict, model: str = "text-embedding-3-small") -> Dict:
-    summary = session_event["summary"]
-    response = client.embeddings.create(input=summary, model=model)
-    embedding = response.data[0].embedding
-    return {
-        "session_id": session_event["session_id"],
-        "tenant_id": session_event["tenant_id"],
-        "embedding": embedding,
-        "source_fields": ["summary"]
-    }
-
-# Persist to vector index (pseudo)
-def upsert_embedding(vector_store, record: Dict) -> None:
-    vector_store.upsert(
-        key=record["session_id"],
-        vector=record["embedding"],
-        metadata={
-            "tenant_id": record["tenant_id"],
-            "source_fields": record["source_fields"]
-        }
-    )
+```json
+{
+  "event_type": "video.render",
+  "video_id": "video_abc123",
+  "model": "sora-2-pro",
+  "status": "queued",
+  "seconds": "8",
+  "size": "1280x720",
+  "prompt": "Wide tracking shot of a teal coupe driving through a desert highway.",
+  "storage_uri": "s3://media-bucket/videos/video_abc123.mp4"
+}
 ```
 
-### Bickford runtime helper (TypeScript)
+For full API usage and examples, see **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)**.
 
-Use the built-in helper in `packages/bickford/src/runtime/embeddingEnrichment.ts` to standardize how embeddings are created and queried.
+If you want a canonical helper, use `createSoraVideoJob` and `recordSoraVideoEvent` from `@bickford/execution-convergence`.
 
-```typescript
-import {
-  enrichEmbedding,
-  enrichEmbeddingsBatch,
-  retrieveSimilarEmbeddings,
-  EmbeddingProvider,
-  EmbeddingProviderBatch,
-  createInMemoryVectorIndex,
-  buildKnowledgeSnapshot,
-  buildPerformanceSnapshot,
-  buildKnowledgeGrowthSnapshot,
-  buildKnowledgePersistenceSnapshot,
-  buildPeakPerformanceSnapshot,
-  buildDynamicConfiguration,
-  buildDynamicConfigurationSnapshot,
-  applyDynamicConfiguration
-} from "@bickford/runtime/embeddingEnrichment";
+To compound knowledge, store prompt + outcome metadata (e.g., success criteria, reviewer notes, tags) in the ledger so you can promote high-performing templates.
 
-const provider: EmbeddingProvider = async (text) => embed(text);
-const batchProvider: EmbeddingProviderBatch = async (texts) => embedBatch(texts);
-const index = createInMemoryVectorIndex();
+To compound dynamic performance, add scored metrics per render (clarity, continuity, brand fit, review time) and promote defaults when they beat the baseline consistently. You can compute a composite score with `attachPerformanceMetrics` in `@bickford/execution-convergence`.
 
-await enrichEmbedding(
-  {
-    tenantId: "org_123",
-    key: "sess_456",
-    summary: "User wants to automate invoice reconciliation."
-  },
-  provider,
-  index
-);
-
-const config = buildDynamicConfiguration("org_123", {
-  model: "text-embedding-3-small",
-  dimensions: 1536,
-  similarityThreshold: 0.78,
-  limit: 5
-});
-
-const query = applyDynamicConfiguration(
-  { tenantId: "org_123", text: "invoice automation" },
-  config
-);
-
-const matches = await retrieveSimilarEmbeddings(query, provider, index);
-
-const snapshot = buildKnowledgeSnapshot(
-  "org_123",
-  "invoice automation",
-  matches,
-  { source: "embedding_enrichment" }
-);
-
-const performance = buildPerformanceSnapshot(
-  "org_123",
-  "invoice automation",
-  matches,
-  { cadence: "daily" }
-);
-
-const growth = buildKnowledgeGrowthSnapshot(
-  "org_123",
-  "invoice automation",
-  matches,
-  ["sess_000", "sess_123"],
-  { evidenceWindow: "90d" }
-);
-
-const persistence = buildKnowledgePersistenceSnapshot(
-  "org_123",
-  "invoice automation",
-  matches.map((match) => match.key),
-  "ledger:vectors",
-  { promotionGate: "canon" }
-);
-
-const peak = buildPeakPerformanceSnapshot(
-  "org_123",
-  "invoice automation",
-  matches,
-  performance.topScore,
-  { metric: "rolling-7d" }
-);
-
-const configSnapshot = buildDynamicConfigurationSnapshot(config);
-
-await enrichEmbeddingsBatch(
-  {
-    tenantId: "org_123",
-    items: [
-      { key: "sess_789", summary: "User asks for SOC2 evidence report." },
-      { key: "sess_101", summary: "User requests incident response workflow." }
-    ]
-  },
-  batchProvider,
-  index
-);
-```
-
-### Safety requirements
-
-- **Tenant isolation**: always filter by `tenant_id` in vector queries.
-- **Canonical storage**: keep raw text in the ledger; embeddings are derived metadata.
-- **Promotion gate**: only promoted evidence can influence decisions.
+To compound dynamic configuration, version presets, log deltas, and only promote new defaults when they outperform stable baselines.
 
 ---
 
