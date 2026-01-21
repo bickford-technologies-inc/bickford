@@ -119,6 +119,9 @@ Embeddings translate unstructured text into vectors, which makes them a practica
 - **Keep raw text canonical**: store original text in the ledger or primary datastore; store embeddings as indexed features with metadata.
 - **Multitenancy safety**: include tenant/org identifiers in vector metadata to avoid cross-tenant leakage.
 - **Dimensions trade-off**: use `dimensions` to balance recall quality vs. cost, especially when storing large historical corpora.
+- **Compounding knowledge growth & persistence**: track which retrieved keys are net-new vs. repeats, then persist the curated subset into the ledger or vector index to accelerate future recall.
+- **Compounding dynamic peak performance**: capture top similarity scores over time and monitor when peak retrieval quality increases or regresses.
+- **Compounding dynamic configuration**: snapshot embedding configuration changes (model, dimensions, similarity thresholds, limits) so recall improvements can be tied to explicit configuration shifts.
 
 ## Example: Bickford-style similarity search
 
