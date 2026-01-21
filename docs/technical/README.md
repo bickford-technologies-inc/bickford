@@ -22,12 +22,23 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
-- **[BUSINESS_PROCESS_WORKFLOWS.md](BUSINESS_PROCESS_WORKFLOWS.md)** - Workflow definition and value-per-hour framing
-- **[SPEECH_TO_TEXT.md](SPEECH_TO_TEXT.md)** - Audio transcription reference
-  - Transcriptions and translations
-  - Speaker diarization
-  - Streaming transcription
-  - Prompting and reliability
+- **[REALTIME_API.md](REALTIME_API.md)** - Realtime API guide
+  - Voice agent setup
+  - Connection methods
+  - API usage references
+  - Beta to GA migration notes
+
+- **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
+  - Model selection
+  - Bickford integration pattern
+  - Generation workflow
+  - Monitoring and downloads
+  - Remixing and library management
+
+- **[DEEP_RESEARCH.md](DEEP_RESEARCH.md)** - Deep research models and workflows
+  - Model overview and use cases
+  - Request setup and output structure
+  - Prompting workflows and safety guidance
 
 ### Technical Highlights
 
