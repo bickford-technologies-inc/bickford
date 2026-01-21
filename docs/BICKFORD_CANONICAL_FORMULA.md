@@ -339,3 +339,8 @@ If you want next, I can:
 - Collapse this into a **single Codex instruction block**.
 - Generate a **FedRAMP / SOC-2 appendix** from the math.
 - Emit a **one-page “Execution Law” PDF**.
+
+Delivered artifacts:
+- `docs/CODEX_INSTRUCTION_BLOCK.md`
+- `docs/FEDRAMP_SOC2_APPENDIX.md`
+- `docs/execution-law.pdf`
