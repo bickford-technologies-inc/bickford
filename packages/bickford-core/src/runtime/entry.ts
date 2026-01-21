@@ -3,8 +3,10 @@ const { runInvariants } = require('../invariants/run');
 const { emitMaxTelemetry } = require('../max/emitTelemetry');
 const { persistMaxTelemetry } = require('../ledger/maxTelemetry');
 const { explainSlowdown } = require('../explain/generate');
+const { kickoffDeepResearch } = require('./deepResearch');
 
 async function executeIntent(intent, state) {
+  kickoffDeepResearch(intent, state).catch(() => {});
   const allActions = enumerateCapabilities(state);
   const invariantFailures = runInvariants(state);
 

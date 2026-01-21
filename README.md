@@ -111,6 +111,7 @@ Optional:
 - [Quickstart Guide](docs/QUICKSTART.md)
 - [API Reference](docs/API.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [Deep Research](docs/technical/DEEP_RESEARCH.md)
 - [Acquisition Docs](docs/ACQUISITION.md)
 
 ## Quick Conflict Resolution Script
