@@ -14,7 +14,7 @@
  * - ConfidenceEnvelope for trust/weight
  */
 
-import type { Action, CandidatePath } from "@bickford/types";
+import type { Action, CandidatePath } from "../packages/types/src/canon";
 
 import {
   optrResolve,
