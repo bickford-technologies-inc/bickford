@@ -260,11 +260,119 @@ export function ingestCanonAsConstraints(
   const constraints: PathConstraint[] = [];
 
   for (const [canonId, item] of canonStore.entries()) {
-    // TODO: Implement constraint ingestion logic here
-    // Example placeholder:
-    // constraints.push({ ... });
+    if (item.level !== "CANON") continue;
+
+    if (item.kind === "INVARIANT") {
+      const statement = item.statement.toLowerCase();
+
+      if (statement.includes("risk") && statement.includes("bound")) {
+        constraints.push({
+          id: `constraint_${canonId}`,
+          canonRefId: canonId,
+          constraintType: "RISK_BOUND",
+          appliesTo: targetActions.map((action) => action.id),
+          params: { maxRisk: 0.3 },
+          confidence: item.confidence || { confidence: 1.0, trust: 1.0 },
+        });
+      }
+
+      if (statement.includes("cost") && statement.includes("bound")) {
+        constraints.push({
+          id: `constraint_${canonId}`,
+          canonRefId: canonId,
+          constraintType: "COST_BOUND",
+          appliesTo: targetActions.map((action) => action.id),
+          params: { maxCost: 100 },
+          confidence: item.confidence || { confidence: 1.0, trust: 1.0 },
+        });
+      }
+    }
+
+    if (item.kind === "CONSTRAINT") {
+      constraints.push({
+        id: `constraint_${canonId}`,
+        canonRefId: canonId,
+        constraintType: "PREREQUISITE",
+        appliesTo: targetActions.map((action) => action.id),
+        params: { rule: item.statement },
+        confidence: item.confidence || { confidence: 1.0, trust: 1.0 },
+      });
+    }
   }
   return constraints;
+}
+
+/**
+ * Apply path constraints to OPTR candidate evaluation
+ *
+ * Constraints derived from canon knowledge further restrict admissibility
+ * beyond the standard OPTR gates.
+ */
+export function applyPathConstraints(
+  candidate: CandidatePath,
+  constraints: PathConstraint[],
+  nowIso: string,
+): WhyNotTrace[] {
+  const denials: WhyNotTrace[] = [];
+
+  if (!candidate.features) return denials;
+
+  for (const constraint of constraints) {
+    const actionId = candidate.features.nextAction.id;
+
+    if (!constraint.appliesTo.includes(actionId)) continue;
+
+    switch (constraint.constraintType) {
+      case "RISK_BOUND":
+        if (
+          constraint.params.maxRisk !== undefined &&
+          candidate.features.risk > constraint.params.maxRisk
+        ) {
+          denials.push({
+            ts: nowIso,
+            actionId,
+            denied: true,
+            reasonCodes: [DenialReasonCode.RISK_BOUND_EXCEEDED],
+            requiredCanonRefs: [constraint.canonRefId],
+            message: `Canon constraint violation: risk ${candidate.features.risk.toFixed(
+              2,
+            )} exceeds bound ${constraint.params.maxRisk.toFixed(2)} (from ${
+              constraint.canonRefId
+            })`,
+            context: {
+              constraintId: constraint.id,
+              confidence: constraint.confidence,
+            },
+          });
+        }
+        break;
+      case "COST_BOUND":
+        if (
+          constraint.params.maxCost !== undefined &&
+          candidate.features.cost > constraint.params.maxCost
+        ) {
+          denials.push({
+            ts: nowIso,
+            actionId,
+            denied: true,
+            reasonCodes: [DenialReasonCode.COST_BOUND_EXCEEDED],
+            requiredCanonRefs: [constraint.canonRefId],
+            message: `Canon constraint violation: cost ${candidate.features.cost.toFixed(
+              2,
+            )} exceeds bound ${constraint.params.maxCost.toFixed(2)} (from ${
+              constraint.canonRefId
+            })`,
+            context: {
+              constraintId: constraint.id,
+              confidence: constraint.confidence,
+            },
+          });
+        }
+        break;
+    }
+  }
+
+  return denials;
 }
 
 /**
