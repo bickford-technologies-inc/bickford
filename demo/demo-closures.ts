@@ -21,6 +21,9 @@ import {
   DEFAULT_WEIGHTS,
   ingestCanonAsConstraints,
   applyPathConstraints,
+} from "../packages/canon/src/canon/optr";
+
+import {
   promotionGate,
   createExecutionContext,
   bufferTokensWithProof,
