@@ -154,6 +154,78 @@ kubectl set env deployment/api-gateway SCR_ENABLED=false
 
 ---
 
+## Integration Point 1B: Embedding Index (Optional)
+
+### Objective
+Attach a semantic retrieval layer to session completion summaries so teams can search similar incidents, workflows, or decisions without altering Canon logic.
+
+### Minimal Capture Payload
+Capture a short, human-readable summary alongside the canonical ledger event ID.
+
+```json
+{
+  "ledger_event_id": "evt_1735089670123",
+  "tenant_id": "org_company123",
+  "summary": "Session completed: model=gpt-4, status=success, 2140 tokens, 345s duration.",
+  "tags": ["session.completed", "chat", "success"]
+}
+```
+
+### Implementation Sketch
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+def index_session_summary(payload):
+    embedding = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=payload["summary"]
+    ).data[0].embedding
+
+    vector_store.upsert(
+        id=payload["ledger_event_id"],
+        vector=embedding,
+        metadata={
+            "tenant_id": payload["tenant_id"],
+            "tags": payload.get("tags", []),
+        }
+    )
+```
+
+### Bickford Runtime Helper
+```typescript
+import { createInMemoryEmbeddingIndex } from "@bickford/runtime/embeddingIndex";
+
+const index = createInMemoryEmbeddingIndex(async (text) => {
+  const response = await client.embeddings.create({
+    model: "text-embedding-3-small",
+    input: text,
+  });
+  return response.data[0].embedding;
+});
+
+await index.indexSummary({
+  id: payload.ledger_event_id,
+  tenantId: payload.tenant_id,
+  createdAt: new Date().toISOString(),
+  summary: payload.summary,
+  metadata: { tags: payload.tags },
+});
+
+const similar = await index.querySimilar(payload.tenant_id, "timeouts on gpt-4", {
+  limit: 3,
+  minScore: 0.2,
+  requiredTags: ["session.completed"],
+});
+```
+
+### Notes
+- Keep embeddings as an advisory layer; Canon and policy rules remain authoritative.
+- Store vectors with the ledger event ID so retrieval results map back to source-of-truth events.
+
+---
+
 ## Integration Point 2: ChatGPT Web Application
 
 ### Objective

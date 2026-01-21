@@ -22,6 +22,7 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
+- **[VECTOR_EMBEDDINGS.md](VECTOR_EMBEDDINGS.md)** - Embedding models and usage guide
 
 ### Technical Highlights
 

@@ -142,6 +142,16 @@ const ledgerEvent: LedgerEvent = {
 };
 ```
 
+### Optional Embedding Retrieval Layer
+
+Embeddings provide an advisory retrieval layer that complements (but does not override) Canon decisions. The flow is:
+
+1. **Capture** a human-readable summary of the session completion event (or other operational text).
+2. **Embed** the summary and store the vector with event metadata (ledger ID, tenant, timestamps).
+3. **Retrieve** similar events or decisions to accelerate investigation, triage, or support.
+
+Embeddings should be treated as context enrichment only. Canon outputs and policy rules remain the deterministic source of truth for decisions and enforcement.
+
 ---
 
 ## Technical Specifications
