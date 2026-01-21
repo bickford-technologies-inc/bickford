@@ -22,6 +22,11 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
+- **[REALTIME_CONVERSATIONS.md](REALTIME_CONVERSATIONS.md)** - Realtime API conversation guide
+  - Session lifecycle and event flows
+  - Text, audio, and image inputs
+  - Voice activity detection and push-to-talk
+  - Function calling and error handling
 
 ### Technical Highlights
 
