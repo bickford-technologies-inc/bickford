@@ -363,24 +363,16 @@ export default function ChatWindow() {
   }, [state.archives, state.currentDate, state.messages]);
 
   return (
-    <aside
+    <section
       style={{
-        position: "fixed",
-        right: 24,
-        bottom: 24,
-        width: "min(420px, calc(100vw - 48px))",
-        maxHeight: "80vh",
         display: "flex",
         flexDirection: "column",
         gap: 12,
         padding: "16px 16px 12px",
-        borderRadius: 16,
-        background: "rgba(20, 20, 24, 0.92)",
+        height: "100%",
+        width: "100%",
+        background: "transparent",
         color: "#f4f4f5",
-        boxShadow: "0 20px 40px rgba(15, 23, 42, 0.35)",
-        backdropFilter: "blur(12px)",
-        border: "1px solid rgba(255, 255, 255, 0.08)",
-        zIndex: 1000,
       }}
     >
       <header style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -668,6 +660,6 @@ export default function ChatWindow() {
           </button>
         </form>
       )}
-    </aside>
+    </section>
   );
 }
