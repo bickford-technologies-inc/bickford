@@ -14,18 +14,9 @@
  * - ConfidenceEnvelope for trust/weight
  */
 
-import {
-  // Types
-  Action,
-  CandidatePath,
-  WhyNotTrace,
-  DenialReasonCode,
-  ConfidenceEnvelope,
-  PathConstraint,
-  ExecutionContext,
-  TokenStreamProof,
+import type { Action, CandidatePath } from "@bickford/types";
 
-  // Functions
+import {
   optrResolve,
   DEFAULT_WEIGHTS,
   ingestCanonAsConstraints,
