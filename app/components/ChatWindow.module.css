@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 16px 16px 12px;
+  padding: 16px;
   border-radius: 16px;
   background: rgba(20, 20, 24, 0.94);
   color: #f4f4f5;
@@ -18,90 +18,37 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.closed {
-  width: min(320px, calc(100vw - 48px));
-}
-
 .header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
 
-.titleBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
 .title {
+  display: block;
   font-size: 16px;
   font-weight: 600;
 }
 
-.subtitle {
+.agent {
+  display: block;
   font-size: 12px;
   opacity: 0.7;
 }
 
-.actions {
-  margin-left: auto;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.actionButton {
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(8, 8, 12, 0.8);
-  color: #f4f4f5;
+.status {
   font-size: 12px;
-  cursor: pointer;
+  opacity: 0.7;
 }
 
-.actionButton.active {
-  background: rgba(59, 130, 246, 0.4);
-}
-
-.body {
+.messages {
   display: flex;
   flex-direction: column;
   gap: 10px;
   overflow-y: auto;
   padding-right: 4px;
   flex: 1;
-}
-
-.chatList {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.historyList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.historyDay {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(39, 39, 42, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.historyDate {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  opacity: 0.6;
 }
 
 .message {
@@ -111,26 +58,19 @@
   padding: 8px 10px;
   border-radius: 10px;
   background: rgba(24, 24, 27, 0.9);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
-.userMessage {
+.message[data-role="user"] {
   background: rgba(59, 130, 246, 0.5);
 }
 
-.agentMessage {
-  background: rgba(24, 24, 27, 0.9);
-}
-
-.messageRole {
+.role {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.4px;
   opacity: 0.65;
-}
-
-.messageText {
-  font-size: 13px;
-  line-height: 1.4;
 }
 
 .empty {
@@ -138,13 +78,13 @@
   opacity: 0.7;
 }
 
-.form {
+.inputRow {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-.input {
+.inputRow input {
   flex: 1;
   padding: 10px 12px;
   border-radius: 10px;
@@ -154,7 +94,7 @@
   font-size: 14px;
 }
 
-.submit {
+.inputRow button {
   padding: 10px 14px;
   border-radius: 10px;
   border: none;

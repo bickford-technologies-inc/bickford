@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./ChatWindow.module.css";
-
-type ChatRole = "user" | "agent";
 
 type ChatMessage = {
   id: string;
-  role: ChatRole;
+  role: "user" | "agent";
   content: string;
   timestamp: number;
 };
@@ -24,13 +22,7 @@ type ChatState = {
 };
 
 const STORAGE_KEY = "bickford.chat.unified.v1";
-const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
-const LEGACY_HISTORY_KEY = "bickford.chat.history";
-const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
-const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 const AGENT_NAME = "bickford";
-const ARCHIVE_NOTE =
-  "single agent for the full environment • archives chat history daily at local midnight";
 
 function formatLocalDate(date: Date) {
   const year = date.getFullYear();
@@ -41,141 +33,6 @@ function formatLocalDate(date: Date) {
 
 function getTodayKey() {
   return formatLocalDate(new Date());
-}
-
-function utcKey(date: Date = new Date()) {
-  return date.toISOString().slice(0, 10);
-}
-
-function utcDateKeyToLocal(dateKey: string) {
-  const parsed = new Date(`${dateKey}T00:00:00.000Z`);
-  if (Number.isNaN(parsed.getTime())) {
-    return dateKey;
-  }
-  return formatLocalDate(parsed);
-}
-
-function migrateUtcDates(state: ChatState): ChatState {
-  const localToday = getTodayKey();
-  const utcToday = utcKey();
-  if (state.currentDate !== utcToday || state.currentDate === localToday) {
-    return state;
-  }
-  return {
-    ...state,
-    currentDate: utcDateKeyToLocal(state.currentDate),
-    archives: state.archives.map((archive) => ({
-      ...archive,
-      date: utcDateKeyToLocal(archive.date),
-    })),
-  };
-}
-
-function safeParse<T>(raw: string | null): T | null {
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    return null;
-  }
-}
-
-function normalizeMessages(
-  messages: Array<{
-    id?: string;
-    role?: string;
-    content?: string;
-    text?: string;
-    author?: string;
-    timestamp?: number | string;
-  }>,
-): ChatMessage[] {
-  return messages
-    .filter((message) => message)
-    .map((message) => {
-      const role = message.role ?? message.author ?? "agent";
-      return {
-        id: message.id ?? crypto.randomUUID(),
-        role: role === "user" ? "user" : "agent",
-        content: message.content ?? message.text ?? "",
-        timestamp:
-          typeof message.timestamp === "number"
-            ? message.timestamp
-            : Number.isFinite(Date.parse(String(message.timestamp)))
-              ? Date.parse(String(message.timestamp))
-              : Date.now(),
-      };
-    })
-    .filter((message) => message.content.trim().length > 0);
-}
-
-function parseStoredState(raw: string | null): ChatState | null {
-  const stored = safeParse<ChatState>(raw);
-  if (!stored) {
-    return null;
-  }
-  return migrateUtcDates({
-    currentDate: stored.currentDate ?? getTodayKey(),
-    messages: Array.isArray(stored.messages)
-      ? normalizeMessages(stored.messages)
-      : [],
-    archives: Array.isArray(stored.archives)
-      ? stored.archives.map((archive) => ({
-          date: archive.date,
-          messages: normalizeMessages(archive.messages ?? []),
-        }))
-      : [],
-  });
-}
-
-function hydrateState(): ChatState {
-  if (typeof window === "undefined") {
-    return { currentDate: getTodayKey(), messages: [], archives: [] };
-  }
-
-  const stored = parseStoredState(window.localStorage.getItem(STORAGE_KEY));
-  if (stored) {
-    return stored;
-  }
-
-  const legacyDaily = safeParse<ChatState>(
-    window.localStorage.getItem(LEGACY_DAILY_KEY),
-  );
-  if (legacyDaily) {
-    return migrateUtcDates({
-      currentDate: legacyDaily.currentDate ?? getTodayKey(),
-      messages: Array.isArray(legacyDaily.messages)
-        ? normalizeMessages(legacyDaily.messages)
-        : [],
-      archives: Array.isArray(legacyDaily.archives)
-        ? legacyDaily.archives.map((archive) => ({
-            date: archive.date,
-            messages: normalizeMessages(archive.messages ?? []),
-          }))
-        : [],
-    });
-  }
-
-  const legacyMessages = safeParse<ChatMessage[]>(
-    window.localStorage.getItem(LEGACY_HISTORY_KEY),
-  );
-  const legacyArchives = safeParse<ChatArchive[]>(
-    window.localStorage.getItem(LEGACY_ARCHIVE_KEY),
-  );
-  const legacyDay = window.localStorage.getItem(LEGACY_HISTORY_DAY_KEY);
-
-  return migrateUtcDates({
-    currentDate: legacyDay ?? getTodayKey(),
-    messages: Array.isArray(legacyMessages)
-      ? normalizeMessages(legacyMessages)
-      : [],
-    archives: Array.isArray(legacyArchives)
-      ? legacyArchives.map((archive) => ({
-          date: archive.date,
-          messages: normalizeMessages(archive.messages ?? []),
-        }))
-      : [],
-  });
 }
 
 function reconcileDaily(state: ChatState): ChatState {
@@ -192,15 +49,33 @@ function reconcileDaily(state: ChatState): ChatState {
   return { currentDate: today, messages: [], archives };
 }
 
+function hydrateState(): ChatState {
+  if (typeof window === "undefined") {
+    return { currentDate: getTodayKey(), messages: [], archives: [] };
+  }
+
+  const stored = window.localStorage.getItem(STORAGE_KEY);
+  if (!stored) {
+    return { currentDate: getTodayKey(), messages: [], archives: [] };
+  }
+
+  try {
+    const parsed = JSON.parse(stored) as ChatState;
+    return reconcileDaily({
+      currentDate: parsed.currentDate ?? getTodayKey(),
+      messages: Array.isArray(parsed.messages) ? parsed.messages : [],
+      archives: Array.isArray(parsed.archives) ? parsed.archives : [],
+    });
+  } catch {
+    return { currentDate: getTodayKey(), messages: [], archives: [] };
+  }
+}
+
 function persistState(state: ChatState) {
   if (typeof window === "undefined") {
     return;
   }
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  window.localStorage.removeItem(LEGACY_DAILY_KEY);
-  window.localStorage.removeItem(LEGACY_HISTORY_KEY);
-  window.localStorage.removeItem(LEGACY_HISTORY_DAY_KEY);
-  window.localStorage.removeItem(LEGACY_ARCHIVE_KEY);
 }
 
 function msUntilNextMidnight(now: Date = new Date()) {
@@ -218,9 +93,7 @@ function msUntilNextMidnight(now: Date = new Date()) {
 
 export default function ChatWindow() {
   const [state, setState] = useState<ChatState>(() => hydrateState());
-  const [input, setInput] = useState("");
-  const [view, setView] = useState<"chat" | "history">("chat");
-  const [isOpen, setIsOpen] = useState(true);
+  const [value, setValue] = useState("");
 
   useEffect(() => {
     setState((prev) => {
@@ -235,31 +108,15 @@ export default function ChatWindow() {
   }, [state]);
 
   useEffect(() => {
-    let intervalId: number | undefined;
     const timeoutId = window.setTimeout(() => {
       setState((prev) => {
         const reconciled = reconcileDaily(prev);
         persistState(reconciled);
         return reconciled;
       });
-      intervalId = window.setInterval(
-        () => {
-          setState((prev) => {
-            const reconciled = reconcileDaily(prev);
-            persistState(reconciled);
-            return reconciled;
-          });
-        },
-        24 * 60 * 60 * 1000,
-      );
     }, msUntilNextMidnight());
 
-    return () => {
-      window.clearTimeout(timeoutId);
-      if (intervalId) {
-        window.clearInterval(intervalId);
-      }
-    };
+    return () => window.clearTimeout(timeoutId);
   }, []);
 
   useEffect(() => {
@@ -283,31 +140,9 @@ export default function ChatWindow() {
     };
   }, []);
 
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    function handleStorage(event: StorageEvent) {
-      if (event.storageArea !== window.localStorage) {
-        return;
-      }
-      if (event.key && event.key !== STORAGE_KEY) {
-        return;
-      }
-      const nextState = parseStoredState(event.newValue) ?? hydrateState();
-      setState(nextState);
-    }
-
-    window.addEventListener("storage", handleStorage);
-    return () => {
-      window.removeEventListener("storage", handleStorage);
-    };
-  }, []);
-
-  function appendMessage(role: ChatRole, content: string) {
+  function appendMessage(role: ChatMessage["role"], content: string) {
     const nextMessage: ChatMessage = {
-      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      id: crypto.randomUUID(),
       role,
       content,
       timestamp: Date.now(),
@@ -324,142 +159,58 @@ export default function ChatWindow() {
     });
   }
 
-  function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    const trimmed = input.trim();
-    if (!trimmed) {
-      return;
+  function submit(event?: React.FormEvent) {
+    if (event) {
+      event.preventDefault();
     }
+    const trimmed = value.trim();
+    if (!trimmed) return;
 
-    setInput("");
+    setValue("");
     appendMessage("user", trimmed);
     appendMessage(
       "agent",
-      `Acknowledged. The single agent for the full environment (${AGENT_NAME}) will archive chat history daily at local midnight.`,
+      `Captured. ${AGENT_NAME} will archive this chat daily at local midnight.`,
     );
   }
 
-  const history = useMemo(() => {
-    const today = state.messages.length
-      ? [{ date: state.currentDate, messages: state.messages }]
-      : [];
-    return [...today, ...state.archives];
-  }, [state.archives, state.currentDate, state.messages]);
-
   return (
-    <aside className={`${styles.window} ${isOpen ? "" : styles.closed}`}>
+    <section className={styles.window} aria-label="Chat window">
       <header className={styles.header}>
-        <div className={styles.titleBlock}>
-          <div className={styles.title}>{AGENT_NAME}</div>
-          <div className={styles.subtitle}>
-            {ARCHIVE_NOTE} • today {state.currentDate}
-          </div>
+        <div>
+          <span className={styles.title}>Chat</span>
+          <span className={styles.agent}>Agent: {AGENT_NAME}</span>
         </div>
-        <div className={styles.actions}>
-          {isOpen ? (
-            <>
-              <button
-                type="button"
-                onClick={() => setView("chat")}
-                className={`${styles.actionButton} ${
-                  view === "chat" ? styles.active : ""
-                }`}
-              >
-                Chat
-              </button>
-              <button
-                type="button"
-                onClick={() => setView("history")}
-                className={`${styles.actionButton} ${
-                  view === "history" ? styles.active : ""
-                }`}
-              >
-                History
-              </button>
-            </>
-          ) : null}
-          <button
-            type="button"
-            onClick={() => setIsOpen((open) => !open)}
-            className={styles.actionButton}
-          >
-            {isOpen ? "Minimize" : "Open"}
-          </button>
-        </div>
+        <span className={styles.status}>Daily archive enabled</span>
       </header>
-
-      {isOpen ? (
-        <>
-          <div className={styles.body}>
-            {view === "history" ? (
-              history.length === 0 ? (
-                <p className={styles.empty}>No archived days yet.</p>
-              ) : (
-                <div className={styles.historyList}>
-                  {history.map((archive) => (
-                    <div key={archive.date} className={styles.historyDay}>
-                      <div className={styles.historyDate}>{archive.date}</div>
-                      {archive.messages.map((message) => (
-                        <div
-                          key={message.id}
-                          className={`${styles.message} ${
-                            message.role === "user"
-                              ? styles.userMessage
-                              : styles.agentMessage
-                          }`}
-                        >
-                          <div className={styles.messageRole}>
-                            {message.role === "user" ? "You" : AGENT_NAME}
-                          </div>
-                          <div className={styles.messageText}>
-                            {message.content}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              )
-            ) : state.messages.length === 0 ? (
-              <p className={styles.empty}>
-                Start a thread. Messages are saved and archived daily.
-              </p>
-            ) : (
-              <div className={styles.chatList}>
-                {state.messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`${styles.message} ${
-                      message.role === "user"
-                        ? styles.userMessage
-                        : styles.agentMessage
-                    }`}
-                  >
-                    <div className={styles.messageRole}>
-                      {message.role === "user" ? "You" : AGENT_NAME}
-                    </div>
-                    <div className={styles.messageText}>{message.content}</div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {view === "history" ? null : (
-            <form onSubmit={handleSubmit} className={styles.form}>
-              <input
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                placeholder="Share a thought or decision..."
-                className={styles.input}
-              />
-              <button type="submit" className={styles.submit}>
-                Send
-              </button>
-            </form>
-          )}
-        </>
-      ) : null}
-    </aside>
+      <div className={styles.messages}>
+        {state.messages.length === 0 ? (
+          <p className={styles.empty}>
+            Start a conversation. Everything is archived daily.
+          </p>
+        ) : (
+          state.messages.map((message) => (
+            <div
+              key={message.id}
+              className={styles.message}
+              data-role={message.role}
+            >
+              <span className={styles.role}>
+                {message.role === "user" ? "You" : AGENT_NAME}
+              </span>
+              <p>{message.content}</p>
+            </div>
+          ))
+        )}
+      </div>
+      <form className={styles.inputRow} onSubmit={submit}>
+        <input
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
+          placeholder="Share intent..."
+        />
+        <button type="submit">Send</button>
+      </form>
+    </section>
   );
 }
