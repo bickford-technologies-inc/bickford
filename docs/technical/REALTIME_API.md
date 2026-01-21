@@ -28,6 +28,39 @@ Use the Realtime API as a low-latency, voice-first interface that feeds Bickford
 - **Automation:** voice interactions can trigger the same execution path as text.
 - **Direction:** the Realtime layer becomes a coaching interface while Bickford enforces canon and safety.
 
+### Realtime session metadata for capture
+
+When you record a Realtime session through Session Completion Runtime, include lightweight metadata to preserve how the session was delivered:
+
+- `input_modality`: `audio`, `text`, or `multimodal`
+- `transport`: `webrtc`, `websocket`, or `sip`
+
+This metadata keeps execution analytics aligned with the entrypoint and is used in Bickford’s persistence layer for attribution and optimization.
+
+### Compounding knowledge loop
+
+Use Realtime sessions to continuously increase Bickford’s knowledge base over time. Treat each session as a structured learning event that feeds back into OPTR decisions and canon validation.
+
+1. **Capture intent + outcome** in Session Completion Runtime.
+2. **Tag key signals** in `metadata` (entrypoint, modality, transport, confidence).
+3. **Append to the ledger** so the session becomes durable knowledge.
+4. **Aggregate trends** (what worked, where latency spikes, which prompts succeed).
+5. **Update guardrails** (canon + OPTR policies) based on those trends.
+
+This creates a compounding effect: each Realtime interaction improves future execution quality and reduces time-to-value.
+
+### Compounding dynamic performance
+
+Realtime sessions can also drive continuous performance optimization. By capturing latency, routing decisions, and outcome quality, Bickford can tune execution paths in a feedback loop.
+
+1. **Measure** realtime latency, outcome quality, and drop-off points per entrypoint.
+2. **Compare** WebRTC vs WebSocket vs SIP performance under similar workloads.
+3. **Prioritize** OPTR policies that reduce p99 latency while preserving canon guarantees.
+4. **Adapt** buffering, retry, and routing configuration based on observed performance.
+5. **Confirm** improvements by re-evaluating session metrics in the ledger.
+
+The goal is a self-reinforcing system where each realtime session improves the next.
+
 ## Voice agents
 
 One of the most common use cases for the Realtime API is building voice agents for speech-to-speech model interactions in the browser. Our recommended starting point for these types of applications is the [Agents SDK for TypeScript](https://openai.github.io/openai-agents-js/guides/voice-agents/), which uses a [WebRTC connection](https://platform.openai.com/docs/guides/realtime-webrtc) to the Realtime model in the browser, and [WebSocket](https://platform.openai.com/docs/guides/realtime-websocket) when used on the server.

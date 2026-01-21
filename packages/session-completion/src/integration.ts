@@ -4,7 +4,7 @@
  * Helper functions for integrating session completion capture into existing systems.
  */
 
-import { SessionCompletionEvent, SessionMetadata, UsageMetrics, UserContext } from "./types";
+import { RealtimeMetadata, SessionCompletionEvent, SessionMetadata, UsageMetrics, UserContext } from "./types";
 import { getRuntime } from "./runtime";
 
 /**
@@ -73,6 +73,7 @@ export async function captureRealtimeSessionCompletion(params: {
   inputModality?: "audio" | "text" | "multimodal";
   transport?: "webrtc" | "websocket" | "sip";
 }): Promise<void> {
+  const metadata = buildRealtimeMetadata(params.inputModality, params.transport);
   const event: SessionCompletionEvent = {
     event_type: "session.completed",
     event_id: `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -107,6 +108,20 @@ export async function captureRealtimeSessionCompletion(params: {
 
   const runtime = getRuntime();
   await runtime.capture(event);
+}
+
+function buildRealtimeMetadata(
+  inputModality?: "audio" | "text" | "multimodal",
+  transport?: "webrtc" | "websocket" | "sip"
+): RealtimeMetadata | undefined {
+  if (!inputModality && !transport) {
+    return undefined;
+  }
+
+  return {
+    input_modality: inputModality,
+    transport,
+  };
 }
 
 /**
