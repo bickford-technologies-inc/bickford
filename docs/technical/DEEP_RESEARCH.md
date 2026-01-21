@@ -83,6 +83,8 @@ What each setting enables:
 - `promptTemplate`: Standardizes the brief format for easier reuse.
 - `timeoutMs`: Limits how long the initial request can block before timing out.
 
+When configured, Bickford also records the deep research settings in MAX telemetry so you can trace how each intent was evaluated over time.
+
 ## Kick off a deep research task
 
 ```python
