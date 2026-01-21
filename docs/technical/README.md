@@ -23,6 +23,11 @@ This folder contains technical specifications, architecture, and integration gui
   - Configuration reference
   - Troubleshooting
 
+- **[DEEP_RESEARCH.md](DEEP_RESEARCH.md)** - Deep research models and workflows
+  - Model overview and use cases
+  - Request setup and output structure
+  - Prompting workflows and safety guidance
+
 ### Technical Highlights
 
 | Specification | Value |
