@@ -52,6 +52,7 @@ export type ExecuteIntentResult = {
 };
 
 type ConfigurationEntry = {
+  entryId: string;
   agent: string;
   recordedAt: string;
   scope: string;
