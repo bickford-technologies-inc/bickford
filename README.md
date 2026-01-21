@@ -6,7 +6,7 @@ Triggering a deploy: trivial change for Vercel.
 
 **Intent → Reality in <5 seconds**
 
-Zero-approval execution runtime with OPTR gating, canon enforcement, and immutable ledger.
+Bickford is a decision continuity runtime that turns intent into verified outcomes. It captures reality, authorizes execution through OPTR and canon enforcement, enforces non-interference, and records proof in an append-only ledger so decisions persist and value compounds.
 
 ## Quick Start
 
