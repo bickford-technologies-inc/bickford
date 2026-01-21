@@ -22,6 +22,10 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
+- **[TEXT_TO_SPEECH.md](TEXT_TO_SPEECH.md)** - Audio output and TTS guidance
+  - Usage patterns and code samples
+  - Voice, model, and format selection
+  - Custom voice consent workflow
 
 ### Technical Highlights
 
