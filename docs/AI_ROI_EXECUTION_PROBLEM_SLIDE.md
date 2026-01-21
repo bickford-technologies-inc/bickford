@@ -22,7 +22,16 @@
 > **Decisions decay.**
 
 Context, authority, and rationale are lost as work moves across teams, time, and systems.  
-AI produces insights — but execution resets every cycle.
+AI produces insights — but execution resets every cycle, so compounding never starts.
+
+--- 
+
+## What Enables Compounding
+- **Compound:** Preserve decisions, actions, and outcomes so each cycle builds on the last.
+- **Continuous compounding:** Every run reads the latest state and writes back the next baseline.
+- **Business process workflows with real use cases:** Anchor compounding to repeatable, owned processes (sales, support, finance, product, operations).
+- **Value tracked as $USD per hour:** Measure by region, business unit, sales region, KPI, and employee role.
+- **Enterprise groupings (expand as needed):** geography, vertical, product line, customer segment, channel, pipeline stage, account tier, ARR band, cost center, team, role, seniority, shift, compliance regime, risk tier, SLA, data domain, and workflow owner.
 
 ---
 
