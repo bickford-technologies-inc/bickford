@@ -9,6 +9,10 @@ This folder contains financial justification and strategic positioning for the $
   - AWS competitive threat quantification
   - ROI modeling
   - Multi-buyer competition strategy
+- **[VALUE_PER_HOUR.md](VALUE_PER_HOUR.md)** - Value per hour calculation
+  - Baseline $/hour from locked 3-year ROI
+  - Business process workflow definition and real-use-case examples
+  - Continuous compounding model and allocation by enterprise grouping
 
 ### Key Figures
 
@@ -19,3 +23,5 @@ This folder contains financial justification and strategic positioning for the $
 | Discount | 40-63% |
 | Strategic Defense Value | $180-450M |
 | 3-Year ROI | 8x |
+| Baseline Value per Hour | $3,350/hr |
+| Compounded Value per Hour (3-Year) | $4,295/hr |
