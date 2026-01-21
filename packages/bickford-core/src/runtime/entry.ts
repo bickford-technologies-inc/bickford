@@ -5,6 +5,25 @@ const { persistMaxTelemetry } = require('../ledger/maxTelemetry');
 const { explainSlowdown } = require('../explain/generate');
 const { kickoffDeepResearch } = require('./deepResearch');
 
+function summarizeDeepResearch(state) {
+  const cfg = state?.deepResearch;
+  if (!cfg) {
+    return undefined;
+  }
+
+  const tools = Array.isArray(cfg.tools)
+    ? cfg.tools.map(tool => tool?.type).filter(Boolean)
+    : undefined;
+
+  return {
+    enabled: Boolean(cfg.enabled),
+    model: cfg.model,
+    background: cfg.background,
+    maxToolCalls: cfg.maxToolCalls,
+    tools,
+  };
+}
+
 async function executeIntent(intent, state) {
   kickoffDeepResearch(intent, state).catch(() => {});
   const allActions = enumerateCapabilities(state);
@@ -17,7 +36,8 @@ async function executeIntent(intent, state) {
   const telemetry = emitMaxTelemetry(
     allActions.length,
     admissible.length,
-    invariantFailures.map(f => f.invariant)
+    invariantFailures.map(f => f.invariant),
+    summarizeDeepResearch(state)
   );
 
   await persistMaxTelemetry(telemetry);
