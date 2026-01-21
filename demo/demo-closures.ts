@@ -24,12 +24,13 @@ import {
 } from "../packages/canon/src/canon/optr";
 
 import {
-  promotionGate,
   createExecutionContext,
   bufferTokensWithProof,
   sealChatItem,
   finalizeChatItem,
 } from "../packages/canon/src/canon";
+
+import { promotionGate } from "../packages/canon/src/canon/promotion";
 
 import {
   formatWhyNotPanel,
