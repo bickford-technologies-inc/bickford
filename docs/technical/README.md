@@ -23,6 +23,11 @@ This folder contains technical specifications, architecture, and integration gui
   - Configuration reference
   - Troubleshooting
 
+- **[VECTOR_EMBEDDINGS.md](VECTOR_EMBEDDINGS.md)** - Embeddings overview
+  - Model options and pricing
+  - Retrieval and recommendation use cases
+  - Dimension reduction guidance
+
 ### Technical Highlights
 
 | Specification | Value |
