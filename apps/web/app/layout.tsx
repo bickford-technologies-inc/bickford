@@ -5,7 +5,7 @@
  * - Must never be landing UI
  * - Must never replace Intents / Tracer views
  */
-import ChatDock from "../components/ChatDock";
+import ChatWindow from "../components/ChatWindow";
 import "./globals.css";
 
 export default function RootLayout({
@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
-        <ChatDock />
+        <ChatWindow />
       </body>
     </html>
   );
