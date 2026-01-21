@@ -152,4 +152,5 @@ Where:
 
 - [Quickstart Guide](QUICKSTART.md)
 - [API Reference](API.md)
+- [Technical Docs](technical/README.md)
 - [Acquisition Docs](ACQUISITION.md)
