@@ -66,6 +66,11 @@ export type SessionCompletionEvent = {
   metadata?: Record<string, any>;
 };
 
+export type RealtimeMetadata = {
+  input_modality?: "audio" | "text" | "multimodal";
+  transport?: "webrtc" | "websocket" | "sip";
+};
+
 /**
  * Destination configuration
  */
