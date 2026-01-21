@@ -366,7 +366,13 @@ import {
   EmbeddingProviderBatch,
   createInMemoryVectorIndex,
   buildKnowledgeSnapshot,
-  buildPerformanceSnapshot
+  buildPerformanceSnapshot,
+  buildKnowledgeGrowthSnapshot,
+  buildKnowledgePersistenceSnapshot,
+  buildPeakPerformanceSnapshot,
+  buildDynamicConfiguration,
+  buildDynamicConfigurationSnapshot,
+  applyDynamicConfiguration
 } from "@bickford/runtime/embeddingEnrichment";
 
 const provider: EmbeddingProvider = async (text) => embed(text);
@@ -383,11 +389,19 @@ await enrichEmbedding(
   index
 );
 
-const matches = await retrieveSimilarEmbeddings(
-  { tenantId: "org_123", text: "invoice automation", limit: 5 },
-  provider,
-  index
+const config = buildDynamicConfiguration("org_123", {
+  model: "text-embedding-3-small",
+  dimensions: 1536,
+  similarityThreshold: 0.78,
+  limit: 5
+});
+
+const query = applyDynamicConfiguration(
+  { tenantId: "org_123", text: "invoice automation" },
+  config
 );
+
+const matches = await retrieveSimilarEmbeddings(query, provider, index);
 
 const snapshot = buildKnowledgeSnapshot(
   "org_123",
@@ -402,6 +416,32 @@ const performance = buildPerformanceSnapshot(
   matches,
   { cadence: "daily" }
 );
+
+const growth = buildKnowledgeGrowthSnapshot(
+  "org_123",
+  "invoice automation",
+  matches,
+  ["sess_000", "sess_123"],
+  { evidenceWindow: "90d" }
+);
+
+const persistence = buildKnowledgePersistenceSnapshot(
+  "org_123",
+  "invoice automation",
+  matches.map((match) => match.key),
+  "ledger:vectors",
+  { promotionGate: "canon" }
+);
+
+const peak = buildPeakPerformanceSnapshot(
+  "org_123",
+  "invoice automation",
+  matches,
+  performance.topScore,
+  { metric: "rolling-7d" }
+);
+
+const configSnapshot = buildDynamicConfigurationSnapshot(config);
 
 await enrichEmbeddingsBatch(
   {

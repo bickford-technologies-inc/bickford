@@ -58,6 +58,59 @@ export type EmbeddingPerformanceSnapshot = {
   metadata?: Record<string, unknown>;
 };
 
+export type EmbeddingKnowledgeGrowthSnapshot = {
+  tenantId: string;
+  query: string;
+  retrievedCount: number;
+  uniqueKeys: string[];
+  newKeys: string[];
+  repeatedKeys: string[];
+  createdAt: string;
+  metadata?: Record<string, unknown>;
+};
+
+export type EmbeddingKnowledgePersistenceSnapshot = {
+  tenantId: string;
+  query: string;
+  persistedKeys: string[];
+  persistedCount: number;
+  destination: string;
+  createdAt: string;
+  metadata?: Record<string, unknown>;
+};
+
+export type EmbeddingPeakPerformanceSnapshot = {
+  tenantId: string;
+  query: string;
+  retrievedCount: number;
+  averageScore: number;
+  topScore: number;
+  peakScore: number;
+  peakKey?: string;
+  deltaFromPreviousPeak: number;
+  createdAt: string;
+  metadata?: Record<string, unknown>;
+};
+
+export type EmbeddingDynamicConfiguration = {
+  tenantId: string;
+  model: string;
+  dimensions?: number;
+  similarityThreshold?: number;
+  limit?: number;
+  createdAt: string;
+  metadata?: Record<string, unknown>;
+};
+
+export type EmbeddingDynamicConfigurationSnapshot = {
+  tenantId: string;
+  current: EmbeddingDynamicConfiguration;
+  previous?: EmbeddingDynamicConfiguration;
+  changedFields: string[];
+  createdAt: string;
+  metadata?: Record<string, unknown>;
+};
+
 export type EmbeddingProvider = (text: string) => Promise<number[]>;
 
 export type EmbeddingProviderBatch = (texts: string[]) => Promise<number[][]>;
@@ -218,5 +271,134 @@ export function buildPerformanceSnapshot(
     topScore,
     createdAt: new Date().toISOString(),
     metadata,
+  };
+}
+
+export function buildKnowledgeGrowthSnapshot(
+  tenantId: string,
+  query: string,
+  retrieved: EmbeddingQueryMatch[],
+  previouslySeenKeys: string[] = [],
+  metadata?: Record<string, unknown>
+): EmbeddingKnowledgeGrowthSnapshot {
+  const uniqueKeys = Array.from(new Set(retrieved.map((match) => match.key)));
+  const previouslySeen = new Set(previouslySeenKeys);
+  const newKeys = uniqueKeys.filter((key) => !previouslySeen.has(key));
+  const repeatedKeys = uniqueKeys.filter((key) => previouslySeen.has(key));
+  return {
+    tenantId,
+    query,
+    retrievedCount: retrieved.length,
+    uniqueKeys,
+    newKeys,
+    repeatedKeys,
+    createdAt: new Date().toISOString(),
+    metadata,
+  };
+}
+
+export function buildKnowledgePersistenceSnapshot(
+  tenantId: string,
+  query: string,
+  persistedKeys: string[],
+  destination: string,
+  metadata?: Record<string, unknown>
+): EmbeddingKnowledgePersistenceSnapshot {
+  return {
+    tenantId,
+    query,
+    persistedKeys,
+    persistedCount: persistedKeys.length,
+    destination,
+    createdAt: new Date().toISOString(),
+    metadata,
+  };
+}
+
+export function buildPeakPerformanceSnapshot(
+  tenantId: string,
+  query: string,
+  retrieved: EmbeddingQueryMatch[],
+  previousPeakScore = 0,
+  metadata?: Record<string, unknown>
+): EmbeddingPeakPerformanceSnapshot {
+  const retrievedCount = retrieved.length;
+  const scores = retrieved.map((match) => match.score);
+  const averageScore =
+    retrievedCount === 0
+      ? 0
+      : scores.reduce((sum, score) => sum + score, 0) / retrievedCount;
+  const topScore = retrievedCount === 0 ? 0 : Math.max(...scores);
+  const topMatch =
+    retrievedCount === 0
+      ? undefined
+      : retrieved.reduce((best, current) =>
+          current.score > best.score ? current : best
+        );
+  const peakScore = Math.max(previousPeakScore, topScore);
+  return {
+    tenantId,
+    query,
+    retrievedCount,
+    averageScore,
+    topScore,
+    peakScore,
+    peakKey: topMatch?.key,
+    deltaFromPreviousPeak: peakScore - previousPeakScore,
+    createdAt: new Date().toISOString(),
+    metadata,
+  };
+}
+
+export function buildDynamicConfiguration(
+  tenantId: string,
+  config: Omit<EmbeddingDynamicConfiguration, "tenantId" | "createdAt">,
+  metadata?: Record<string, unknown>
+): EmbeddingDynamicConfiguration {
+  return {
+    tenantId,
+    model: config.model,
+    dimensions: config.dimensions,
+    similarityThreshold: config.similarityThreshold,
+    limit: config.limit,
+    createdAt: new Date().toISOString(),
+    metadata: metadata ?? config.metadata,
+  };
+}
+
+export function buildDynamicConfigurationSnapshot(
+  current: EmbeddingDynamicConfiguration,
+  previous?: EmbeddingDynamicConfiguration,
+  metadata?: Record<string, unknown>
+): EmbeddingDynamicConfigurationSnapshot {
+  const trackedFields: Array<keyof EmbeddingDynamicConfiguration> = [
+    "model",
+    "dimensions",
+    "similarityThreshold",
+    "limit",
+  ];
+  const changedFields =
+    previous === undefined
+      ? trackedFields.map((field) => field.toString())
+      : trackedFields
+          .filter((field) => current[field] !== previous[field])
+          .map((field) => field.toString());
+  return {
+    tenantId: current.tenantId,
+    current,
+    previous,
+    changedFields,
+    createdAt: new Date().toISOString(),
+    metadata,
+  };
+}
+
+export function applyDynamicConfiguration(
+  query: EmbeddingQuery,
+  config: EmbeddingDynamicConfiguration
+): EmbeddingQuery {
+  return {
+    ...query,
+    limit: query.limit ?? config.limit,
   };
 }
