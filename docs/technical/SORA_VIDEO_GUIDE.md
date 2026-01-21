@@ -63,7 +63,10 @@ Capture these fields in your event payload to align with existing observability:
 ```ts
 import {
   createSoraVideoJob,
+  createSoraVideoJobAndPoll,
   downloadSoraContent,
+  listSoraVideos,
+  deleteSoraVideo,
   recordSoraVideoEvent,
 } from "@bickford/execution-convergence";
 
@@ -84,6 +87,18 @@ recordSoraVideoEvent("media-renders", {
 
 const videoBytes = await downloadSoraContent(job.id);
 console.log("Downloaded bytes:", videoBytes.byteLength);
+
+const completed = await createSoraVideoJobAndPoll({
+  model: "sora-2",
+  prompt: "Sunlit forest with floating lanterns, camera drifting upward.",
+  seconds: "6",
+});
+console.log("Completed status:", completed.status);
+
+const listing = await listSoraVideos({ limit: 10, order: "desc" });
+console.log("Latest jobs:", listing.data.length);
+
+await deleteSoraVideo("video_to_delete");
 ```
 
 ## Generate a video

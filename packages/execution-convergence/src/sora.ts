@@ -31,6 +31,18 @@ export type SoraVideoJob = {
 
 export type SoraContentVariant = "video" | "thumbnail" | "spritesheet";
 
+export type SoraListParams = {
+  limit?: number;
+  after?: string;
+  order?: "asc" | "desc";
+};
+
+export type SoraListResponse = {
+  data: SoraVideoJob[];
+  has_more?: boolean;
+  object?: string;
+};
+
 export type SoraLedgerPayload = {
   videoId: string;
   status: SoraVideoStatus;
@@ -135,6 +147,33 @@ export async function retrieveSoraVideoJob(
   };
 }
 
+export async function createSoraVideoJobAndPoll(
+  request: SoraVideoRequest,
+  options: {
+    apiKey?: string;
+    baseUrl?: string;
+    pollIntervalMs?: number;
+    maxAttempts?: number;
+  } = {}
+): Promise<SoraVideoJob> {
+  const job = await createSoraVideoJob(request, options);
+  const pollInterval = options.pollIntervalMs ?? 5000;
+  const maxAttempts = options.maxAttempts ?? 120;
+  let attempts = 0;
+  let current = job;
+
+  while (current.status === "queued" || current.status === "in_progress") {
+    if (attempts >= maxAttempts) {
+      return current;
+    }
+    await new Promise((resolve) => setTimeout(resolve, pollInterval));
+    current = await retrieveSoraVideoJob(current.id, options);
+    attempts += 1;
+  }
+
+  return current;
+}
+
 export async function downloadSoraContent(
   videoId: string,
   options: { apiKey?: string; baseUrl?: string; variant?: SoraContentVariant } = {}
@@ -163,6 +202,69 @@ export async function downloadSoraContent(
   }
 
   return response.arrayBuffer();
+}
+
+export async function listSoraVideos(
+  params: SoraListParams = {},
+  options: { apiKey?: string; baseUrl?: string } = {}
+): Promise<SoraListResponse> {
+  const apiKey = options.apiKey || process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error("OPENAI_API_KEY is required to list Sora videos.");
+  }
+
+  const query = new URLSearchParams();
+  if (params.limit) query.set("limit", String(params.limit));
+  if (params.after) query.set("after", params.after);
+  if (params.order) query.set("order", params.order);
+
+  const response = await fetch(`${buildBaseUrl(options.baseUrl)}/videos?${query.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Sora list failed: ${response.status} ${body}`);
+  }
+
+  const payload = await response.json();
+  return {
+    data: (payload.data || []).map((item: any) => ({
+      id: item.id,
+      status: item.status,
+      model: item.model,
+      progress: item.progress ?? undefined,
+      seconds: item.seconds ?? undefined,
+      size: item.size ?? undefined,
+      createdAt: item.created_at ?? undefined,
+    })),
+    has_more: payload.has_more ?? undefined,
+    object: payload.object ?? undefined,
+  };
+}
+
+export async function deleteSoraVideo(
+  videoId: string,
+  options: { apiKey?: string; baseUrl?: string } = {}
+): Promise<void> {
+  const apiKey = options.apiKey || process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error("OPENAI_API_KEY is required to delete a Sora video.");
+  }
+
+  const response = await fetch(`${buildBaseUrl(options.baseUrl)}/videos/${videoId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Sora delete failed: ${response.status} ${body}`);
+  }
 }
 
 export function buildSoraLedgerEntry(payload: SoraLedgerPayload): SoraLedgerEntry {
