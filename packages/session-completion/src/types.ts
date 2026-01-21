@@ -5,7 +5,7 @@
 
 export type ISO8601 = string;
 
-export type SessionType = "chat" | "api" | "autonomous" | "webhook";
+export type SessionType = "chat" | "api" | "autonomous" | "webhook" | "realtime";
 
 export type OutcomeStatus = "success" | "error" | "timeout" | "user_terminated";
 

@@ -15,6 +15,40 @@ This guide provides step-by-step instructions for integrating the **actual worki
 
 ---
 
+## Realtime API entrypoints (voice or multimodal)
+
+### Objective
+Route low-latency Realtime API sessions into the same Session Completion Runtime capture path so voice interactions trigger the standard Bickford pipeline (OPTR → canon → ledger).
+
+### Integration pattern
+
+1. **Connect to Realtime** using WebRTC (browser) or WebSocket (server proxy).
+2. **Normalize intent** into your session completion capture payload.
+3. **Capture the session** using the existing Session Completion Runtime client.
+4. **Continue** with OPTR decisioning and canon enforcement as usual.
+
+### Minimal payload example (server proxy)
+
+```ts
+import { captureRealtimeSessionCompletion } from "@bickford/session-completion";
+
+await captureRealtimeSessionCompletion({
+  sessionId: realtimeSessionId,
+  userId: user.id,
+  organizationId: user.organizationId,
+  startTime,
+  endTime,
+  inputTokens,
+  outputTokens,
+  model: "gpt-realtime",
+  outcome: "success",
+  inputModality: "audio",
+  transport: "websocket",
+});
+```
+
+---
+
 ## Integration Point 1: OpenAI API Gateway
 
 ### Objective
