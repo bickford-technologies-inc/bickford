@@ -23,10 +23,12 @@ This folder contains technical specifications, architecture, and integration gui
   - Configuration reference
   - Troubleshooting
 
-- **[VECTOR_EMBEDDINGS.md](VECTOR_EMBEDDINGS.md)** - Embeddings overview
-  - Model options and pricing
-  - Retrieval and recommendation use cases
-  - Dimension reduction guidance
+- **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
+  - Model selection
+  - Bickford integration pattern
+  - Generation workflow
+  - Monitoring and downloads
+  - Remixing and library management
 
 ### Technical Highlights
 
