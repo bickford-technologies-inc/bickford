@@ -104,6 +104,8 @@ Optional:
 
 - `GITHUB_TOKEN` - Auto-commit to GitHub
 - `ANTHROPIC_API_KEY` - Claude intent parsing
+- `OPENAI_API_KEY` - Enables speech-to-text transcription endpoint
+- `OPENAI_BASE_URL` - Optional OpenAI API base URL override
 - `DEMO_MODE=true` - Safe demo mode (no real execution)
 
 ## Docs
@@ -112,6 +114,7 @@ Optional:
 - [API Reference](docs/API.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Acquisition Docs](docs/ACQUISITION.md)
+- [Speech to Text](docs/technical/SPEECH_TO_TEXT.md)
 
 ## Quick Conflict Resolution Script
 
