@@ -23,6 +23,13 @@ This folder contains technical specifications, architecture, and integration gui
   - Configuration reference
   - Troubleshooting
 
+- **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
+  - Model selection
+  - Bickford integration pattern
+  - Generation workflow
+  - Monitoring and downloads
+  - Remixing and library management
+
 ### Technical Highlights
 
 | Specification | Value |

@@ -309,6 +309,40 @@ agent = initialize_agent(
 
 ---
 
+## Integration Point 4: Sora Video Generation
+
+### Objective
+Capture long-running video render jobs as first-class events, and align them with Bickford's ledger for traceability.
+
+### Recommended flow
+
+1. **Create a render job** via `POST /videos`, storing the returned `video_id`.
+2. **Write a ledger event** capturing the intent (prompt, model, size, seconds).
+3. **Subscribe to webhooks** (`video.completed`, `video.failed`) for completion.
+4. **Persist assets** (MP4, thumbnail, spritesheet) in your storage layer.
+5. **Log completion events** with `status`, `progress`, and `storage_uri`.
+
+### Event payload suggestion
+
+```json
+{
+  "event_type": "video.render",
+  "video_id": "video_abc123",
+  "model": "sora-2-pro",
+  "status": "queued",
+  "seconds": "8",
+  "size": "1280x720",
+  "prompt": "Wide tracking shot of a teal coupe driving through a desert highway.",
+  "storage_uri": "s3://media-bucket/videos/video_abc123.mp4"
+}
+```
+
+For full API usage and examples, see **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)**.
+
+If you want a canonical helper, use `createSoraVideoJob` and `recordSoraVideoEvent` from `@bickford/execution-convergence`.
+
+---
+
 ## Configuration Reference
 
 ### Environment Variables
