@@ -100,7 +100,10 @@ export async function captureRealtimeSessionCompletion(params: {
       status: params.outcome,
       error_message: params.errorMessage,
     },
-    metadata,
+    metadata: {
+      input_modality: params.inputModality,
+      transport: params.transport,
+    },
   };
 
   const runtime = getRuntime();
