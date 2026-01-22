@@ -22,6 +22,11 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
+- **[IMPROVING_READABILITY.md](IMPROVING_READABILITY.md)** - Copilot prompts for improving readability
+  - Variable naming improvements
+  - Reducing nested logic
+  - Simplifying conditionals
+  - Splitting large methods
 - **[REALTIME_API.md](REALTIME_API.md)** - Realtime API guide
   - Voice agent setup
   - Connection methods
