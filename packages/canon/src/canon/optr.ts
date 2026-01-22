@@ -20,7 +20,6 @@ import type {
 } from "@bickford/types";
 import { DenialReasonCode } from "@bickford/types";
 import type { WhyNotTrace } from "@bickford/authority";
-import type { AuthorityContext } from "@bickford/authority";
 import { requireCanonRefs } from "./invariants.js";
 
 /**
@@ -379,10 +378,7 @@ export function applyPathConstraints(
 /**
  * Stub: Compute OPTR value
  */
-export function computeOPTR(params: {
-  intent: string;
-  context: AuthorityContext;
-}): number {
+export function computeOPTR(params: { intent: string; context: any }): number {
   // OPTR computation
   return 1.0;
 }

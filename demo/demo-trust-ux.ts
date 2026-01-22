@@ -17,13 +17,14 @@ import {
   Action,
   DenialReasonCode,
   WhyNotTrace,
-} from "../packages/core/src/canon/types";
+} from "../packages/types/src/canon";
+import { DeniedDecisionPayload } from "../packages/types/src/index";
 import {
   gateSecondActionTooEarly,
   gateAuthorityBoundary,
   gateRiskBounds,
   gateCostBounds,
-} from "../packages/core/src/canon/optr";
+} from "../packages/canon/src/canon/optr";
 
 console.log("\n" + "═".repeat(80));
 console.log("  BICKFORD PHASE 3: Trust UX - Denial Ledger & WhyNot");
@@ -65,7 +66,7 @@ console.log("\n\n🚪 SCREEN 1: Gate Functions (Denial Creation)\n");
 console.log("─".repeat(80));
 
 console.log(
-  "\n1️⃣  Testing gateSecondActionTooEarly (missing prerequisites):\n"
+  "\n1️⃣  Testing gateSecondActionTooEarly (missing prerequisites):\n",
 );
 
 const canonPresent = new Set(["canon-load-tests"]); // Missing security-review
@@ -83,7 +84,7 @@ if (denial1) {
 }
 
 console.log(
-  "\n2️⃣  Testing gateAuthorityBoundary (missing canon references):\n"
+  "\n2️⃣  Testing gateAuthorityBoundary (missing canon references):\n",
 );
 
 const canonStore = new Map([
@@ -95,7 +96,7 @@ const denial2 = gateAuthorityBoundary(
   action1,
   ["canon-load-tests"], // Only one ref, missing security-review
   canonStore,
-  nowIso
+  nowIso,
 );
 
 if (denial2) {
@@ -204,11 +205,11 @@ console.log("     → Prisma: deniedDecision.create(...)");
 console.log("\n   For this demo (no database), showing payload structure:\n");
 
 const examplePayload: DeniedDecisionPayload = {
-  decisionId: "decision-demo-1",
+  decisionId: "example-decision-id",
   actionId: action1.id,
   tenantId,
   denied: true,
-  reason: "Missing prerequisite canon items",
+  reason: "Denied: Missing prerequisite canon items",
   timestamp: Date.now(),
 };
 
@@ -251,6 +252,6 @@ console.log("  ✅ PHASE 3 COMPLETE: Trust UX mechanically enforced");
 console.log("  Total denials in demo: " + collectedDenials.length);
 console.log(
   "  Reason codes used: " +
-    new Set(collectedDenials.flatMap((d) => d.reasonCodes)).size
+    new Set(collectedDenials.flatMap((d) => d.reasonCodes)).size,
 );
 console.log("═".repeat(80) + "\n");
