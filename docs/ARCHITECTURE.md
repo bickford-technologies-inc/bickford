@@ -156,4 +156,5 @@ Realtime inputs (voice or multimodal) enter the same execution pipeline as text.
 
 - [Quickstart Guide](QUICKSTART.md)
 - [API Reference](API.md)
+- [Technical Docs](technical/README.md)
 - [Acquisition Docs](ACQUISITION.md)
