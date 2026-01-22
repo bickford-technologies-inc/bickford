@@ -4,7 +4,7 @@ set -euo pipefail
 echo "🔒 Enforcing toolchain (Node + pnpm)"
 
 corepack enable
-corepack prepare pnpm@9.15.0 --activate
+corepack prepare pnpm@10.28.0 --activate
 
 echo "Using Node: $(node -v)"
 echo "Using pnpm: $(pnpm -v)"

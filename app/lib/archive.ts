@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { appendFile, mkdir, readFile } from "node:fs/promises";
+import { appendFile, mkdir, open } from "node:fs/promises";
 import path from "node:path";
 
 function formatLocalDate(date: Date) {
@@ -30,16 +30,56 @@ export async function readLatestDailyArchiveEntry<T>(
     return null;
   }
 
-  const contents = await readFile(filePath, "utf-8");
-  const lines = contents.trim().split("\n").filter(Boolean);
-  if (lines.length === 0) {
+  const lastLine = await readLastNonEmptyLine(filePath);
+  if (!lastLine) {
     return null;
   }
 
   try {
-    return JSON.parse(lines[lines.length - 1]) as T;
+    return JSON.parse(lastLine) as T;
   } catch (error) {
     console.error("Failed to parse archive entry", error);
     return null;
+  }
+}
+
+async function readLastNonEmptyLine(filePath: string): Promise<string | null> {
+  const fileHandle = await open(filePath, "r");
+  try {
+    const { size } = await fileHandle.stat();
+    if (size === 0) {
+      return null;
+    }
+
+    const chunkSize = 64 * 1024;
+    let position = size;
+    let buffer = "";
+
+    while (position > 0) {
+      const readSize = Math.min(chunkSize, position);
+      position -= readSize;
+      const readBuffer = Buffer.alloc(readSize);
+      const { bytesRead } = await fileHandle.read(
+        readBuffer,
+        0,
+        readSize,
+        position,
+      );
+      buffer = readBuffer.toString("utf8", 0, bytesRead) + buffer;
+
+      if (buffer.includes("\n")) {
+        const parts = buffer.split(/\r?\n/);
+        for (let i = parts.length - 1; i >= 0; i -= 1) {
+          if (parts[i].length > 0) {
+            return parts[i];
+          }
+        }
+        return null;
+      }
+    }
+
+    return buffer.length > 0 ? buffer : null;
+  } finally {
+    await fileHandle.close();
   }
 }
