@@ -33,7 +33,7 @@ others1.forEach(a => console.log(`    - ${a.agentId}: baseline=${a.ttvBaseline}m
 console.log();
 console.log("Result:");
 console.log(`  ✅ Allowed: ${result1.allowed}`);
-console.log(`  Rationale: ${result1.rationale}`);
+console.log(`  Reason: ${result1.reason ?? "No interference detected"}`);
 console.log();
 
 // Scenario 2: Harmful action (TTV increase detected)
@@ -59,9 +59,7 @@ others2.forEach(a => console.log(`    - ${a.agentId}: baseline=${a.ttvBaseline}m
 console.log();
 console.log("Result:");
 console.log(`  ❌ Allowed: ${result2.allowed}`);
-console.log(`  Violated Agent: ${result2.violatedAgent}`);
-console.log(`  Delta TTV: +${result2.deltaTTV}ms`);
-console.log(`  Rationale: ${result2.rationale}`);
+console.log(`  Reason: ${result2.reason ?? "No interference detected"}`);
 console.log();
 
 // Scenario 3: Multiple agents affected
@@ -87,9 +85,7 @@ others3.forEach(a => console.log(`    - ${a.agentId}: baseline=${a.ttvBaseline}m
 console.log();
 console.log("Result:");
 console.log(`  ❌ Allowed: ${result3.allowed}`);
-console.log(`  Violated Agent: ${result3.violatedAgent} (first violation detected)`);
-console.log(`  Delta TTV: +${result3.deltaTTV}ms`);
-console.log(`  Rationale: ${result3.rationale}`);
+console.log(`  Reason: ${result3.reason ?? "No interference detected"}`);
 console.log();
 
 console.log("=".repeat(70));
@@ -97,6 +93,6 @@ console.log("KEY INSIGHTS:");
 console.log("=".repeat(70));
 console.log("✅ Deterministic: Same inputs always produce same results");
 console.log("✅ Pre-execution: Check happens BEFORE action is taken");
-console.log("✅ Auditable: Clear rationale with violatedAgent and deltaTTV");
+console.log("✅ Auditable: Clear reason when the evaluator provides one");
 console.log("✅ Multi-agent safe: No agent can improve at expense of others");
 console.log();

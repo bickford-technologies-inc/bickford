@@ -76,6 +76,11 @@ export function formatWhyNotPanel(trace: WhyNotTrace): WhyNotPanelData {
     .update(proofString)
     .digest("hex");
   
+  const context =
+    trace.context && typeof trace.context === "object"
+      ? (trace.context as Record<string, any>)
+      : undefined;
+
   return {
     title: "Action Denied",
     summary: trace.message,
@@ -85,7 +90,7 @@ export function formatWhyNotPanel(trace: WhyNotTrace): WhyNotPanelData {
     actionDetails: {
       actionId: trace.actionId,
       timestamp: trace.ts,
-      context: trace.context,
+      context,
     },
     proofHash,
   };

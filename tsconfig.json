@@ -36,6 +36,7 @@
     "apps/**",
     "packages/**",
     "scripts/**",
-    "ci/**"
+    "ci/**",
+    "tests/**"
   ]
 }
