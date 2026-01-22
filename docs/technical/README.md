@@ -52,6 +52,11 @@ This folder contains technical specifications, architecture, and integration gui
   - Example logging refactor with AOP
   - Prompt and response walkthrough
 
+- **[REFACTORING_DATA_ACCESS_LAYERS.md](REFACTORING_DATA_ACCESS_LAYERS.md)** - Refactoring data access layers
+  - Repository pattern overview
+  - Example prompts and responses
+  - SQLite refactoring example
+
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
   - Bickford integration pattern
