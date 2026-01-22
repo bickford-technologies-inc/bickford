@@ -22,6 +22,9 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
+- **[COPILOT_PERFORMANCE_OPTIMIZATION.md](COPILOT_PERFORMANCE_OPTIMIZATION.md)** - Copilot performance refactoring example
+  - Performance hotspot identification
+  - Example prompt and optimized response
 - **[REALTIME_API.md](REALTIME_API.md)** - Realtime API guide
   - Voice agent setup
   - Connection methods
