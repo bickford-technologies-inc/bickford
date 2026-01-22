@@ -54,11 +54,21 @@ export type SoraLedgerPayload = {
   storageUri?: string;
   thumbnailUri?: string;
   spritesheetUri?: string;
+  performance?: SoraPerformanceMetrics;
+  performanceScore?: number;
 };
 
 export type SoraLedgerEntry = LedgerEntry & {
   kind: "VIDEO_RENDER";
   payload: SoraLedgerPayload;
+};
+
+export type SoraPerformanceMetrics = {
+  clarity: number;
+  continuity: number;
+  brandFit: number;
+  reviewTimeSeconds: number;
+  notes?: string;
 };
 
 function buildBaseUrl(baseUrl?: string) {
@@ -265,6 +275,35 @@ export async function deleteSoraVideo(
     const body = await response.text();
     throw new Error(`Sora delete failed: ${response.status} ${body}`);
   }
+}
+
+export function scoreSoraPerformance(metrics: SoraPerformanceMetrics): number {
+  const weights = {
+    clarity: 0.3,
+    continuity: 0.3,
+    brandFit: 0.3,
+    reviewTimeSeconds: -0.1,
+  };
+
+  const normalizedReview = metrics.reviewTimeSeconds / 60;
+  const score =
+    metrics.clarity * weights.clarity +
+    metrics.continuity * weights.continuity +
+    metrics.brandFit * weights.brandFit +
+    normalizedReview * weights.reviewTimeSeconds;
+
+  return Math.max(0, Number(score.toFixed(3)));
+}
+
+export function attachPerformanceMetrics(
+  payload: SoraLedgerPayload,
+  metrics: SoraPerformanceMetrics
+): SoraLedgerPayload {
+  return {
+    ...payload,
+    performance: metrics,
+    performanceScore: scoreSoraPerformance(metrics),
+  };
 }
 
 export function buildSoraLedgerEntry(payload: SoraLedgerPayload): SoraLedgerEntry {

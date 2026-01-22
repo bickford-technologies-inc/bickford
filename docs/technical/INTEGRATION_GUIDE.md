@@ -15,6 +15,40 @@ This guide provides step-by-step instructions for integrating the **actual worki
 
 ---
 
+## Realtime API entrypoints (voice or multimodal)
+
+### Objective
+Route low-latency Realtime API sessions into the same Session Completion Runtime capture path so voice interactions trigger the standard Bickford pipeline (OPTR → canon → ledger).
+
+### Integration pattern
+
+1. **Connect to Realtime** using WebRTC (browser) or WebSocket (server proxy).
+2. **Normalize intent** into your session completion capture payload.
+3. **Capture the session** using the existing Session Completion Runtime client.
+4. **Continue** with OPTR decisioning and canon enforcement as usual.
+
+### Minimal payload example (server proxy)
+
+```ts
+import { captureRealtimeSessionCompletion } from "@bickford/session-completion";
+
+await captureRealtimeSessionCompletion({
+  sessionId: realtimeSessionId,
+  userId: user.id,
+  organizationId: user.organizationId,
+  startTime,
+  endTime,
+  inputTokens,
+  outputTokens,
+  model: "gpt-realtime",
+  outcome: "success",
+  inputModality: "audio",
+  transport: "websocket",
+});
+```
+
+---
+
 ## Integration Point 1: OpenAI API Gateway
 
 ### Objective
@@ -340,6 +374,12 @@ Capture long-running video render jobs as first-class events, and align them wit
 For full API usage and examples, see **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)**.
 
 If you want a canonical helper, use `createSoraVideoJob` and `recordSoraVideoEvent` from `@bickford/execution-convergence`.
+
+To compound knowledge, store prompt + outcome metadata (e.g., success criteria, reviewer notes, tags) in the ledger so you can promote high-performing templates.
+
+To compound dynamic performance, add scored metrics per render (clarity, continuity, brand fit, review time) and promote defaults when they beat the baseline consistently. You can compute a composite score with `attachPerformanceMetrics` in `@bickford/execution-convergence`.
+
+To compound dynamic configuration, version presets, log deltas, and only promote new defaults when they outperform stable baselines.
 
 ---
 
