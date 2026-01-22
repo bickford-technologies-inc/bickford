@@ -61,6 +61,11 @@ This folder contains technical specifications, architecture, and integration gui
   - Example prompts and responses
   - SQLite refactoring example
 
+- **[COPILOT_CODING_AGENT_PILOT.md](COPILOT_CODING_AGENT_PILOT.md)** - Best practices for piloting GitHub Copilot coding agent
+  - Evaluation criteria and use cases
+  - Security and governance guidance
+  - Pilot planning steps and MCP enhancements
+
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
   - Bickford integration pattern
