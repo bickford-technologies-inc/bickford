@@ -6,11 +6,12 @@ echo "[DEBUG] repo root files:"
 ls -l
 echo "[DEBUG] ci tree:"
 ls -lR ci || true
-repo_root=""
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+repo_root="$(cd "$script_dir/.." && pwd)"
 if git_root=$(git rev-parse --show-toplevel 2>/dev/null); then
-  repo_root="$git_root"
-else
-  repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  if [[ -n "$git_root" ]]; then
+    repo_root="$git_root"
+  fi
 fi
 
 guard_path="$repo_root/ci/guards/ENVIRONMENT_PRECONDITION.sh"
