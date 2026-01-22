@@ -4,6 +4,7 @@ const { emitMaxTelemetry } = require('../max/emitTelemetry');
 const { persistMaxTelemetry } = require('../ledger/maxTelemetry');
 const { explainSlowdown } = require('../explain/generate');
 const { kickoffDeepResearch } = require('./deepResearch');
+const { valuePerHourUsd } = require('../business/processWorkflows');
 
 function summarizeDeepResearch(state) {
   const cfg = state?.deepResearch;
@@ -15,12 +16,30 @@ function summarizeDeepResearch(state) {
     ? cfg.tools.map(tool => tool?.type).filter(Boolean)
     : undefined;
 
+  const workflowValuePerHourUsd = cfg.valuePerHourUsd ?? (
+    cfg.businessProcessWorkflow
+      ? valuePerHourUsd(cfg.businessProcessWorkflow)
+      : undefined
+  );
+
   return {
     enabled: Boolean(cfg.enabled),
     model: cfg.model,
     background: cfg.background,
     maxToolCalls: cfg.maxToolCalls,
     tools,
+    workflowId: cfg.businessProcessWorkflow?.id,
+    workflowName: cfg.businessProcessWorkflow?.name,
+    valuePerHourUsd: workflowValuePerHourUsd,
+    continuousCompounding: Boolean(
+      cfg.continuousCompounding ??
+        cfg.compoundKnowledge ||
+        cfg.compoundConfig ||
+        cfg.adaptivePerformance?.enabled
+    ),
+    compoundKnowledge: cfg.compoundKnowledge,
+    adaptivePerformance: Boolean(cfg.adaptivePerformance?.enabled),
+    compoundConfig: Boolean(cfg.compoundConfig),
   };
 }
 

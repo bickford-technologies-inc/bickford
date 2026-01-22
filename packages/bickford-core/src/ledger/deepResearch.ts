@@ -10,6 +10,12 @@ export type DeepResearchLedgerEntry = {
   status?: string;
   background: boolean;
   maxToolCalls?: number;
+  effectiveMaxToolCalls?: number;
+  effectiveTimeoutMs?: number;
+  workflowId?: string;
+  workflowName?: string;
+  valuePerHourUsd?: number;
+  continuousCompounding?: boolean;
   tools: string[];
   requestedAt: string;
   error?: string;

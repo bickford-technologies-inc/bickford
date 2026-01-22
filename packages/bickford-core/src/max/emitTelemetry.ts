@@ -10,6 +10,13 @@ export function emitMaxTelemetry(
     background?: boolean;
     maxToolCalls?: number;
     tools?: string[];
+    workflowId?: string;
+    workflowName?: string;
+    valuePerHourUsd?: number;
+    continuousCompounding?: boolean;
+    compoundKnowledge?: boolean;
+    adaptivePerformance?: boolean;
+    compoundConfig?: boolean;
   },
 ): MaxTelemetry {
   return {
