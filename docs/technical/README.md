@@ -22,9 +22,10 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
-- **[AUDIT_LOG_EVENTS.md](AUDIT_LOG_EVENTS.md)** - Agent audit log events
-  - Enterprise audit log filter for agent activity
-  - Key fields and meanings
+- **[AI_MODEL_COMPARISON.md](AI_MODEL_COMPARISON.md)** - AI model comparison guide
+  - Task-based examples and prompts
+  - Model strengths and fit guidance
+  - Visual reasoning scenarios
 - **[REALTIME_API.md](REALTIME_API.md)** - Realtime API guide
   - Voice agent setup
   - Connection methods
