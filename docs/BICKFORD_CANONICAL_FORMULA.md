@@ -101,6 +101,30 @@ authority + non-interference + ledgered truth
 
 ---
 
+## 1️⃣ Bickford Execution Law
+
+**Execution is law. Memory is structure. Learning is monotonic.** Bickford is a Decision Continuity
+Runtime that minimizes Time-to-Value (TTV) by converting intent into governed, irreversible
+execution.
+
+### Mathematical Authority
+
+Bickford resolves execution paths \( p^* \) that minimize expected TTV subject to
+non-interference, authority, and ledgered truth. All admissible actions are constrained by global
+invariants.
+
+### Why This Matters
+
+AI systems fail when decisions decay. Bickford prevents decay by making decisions durable,
+replayable, auditable, and enforceable across time and tenants.
+
+### Regulatory Readiness
+
+Every execution is ledgered, cryptographically hashed, and replayable. This satisfies SOCn2 trust
+principles and FedRAMP Moderate/High evidence requirements.
+
+---
+
 ## 2️⃣ Full Codex Build Script — Guaranteed Vercel Deployment
 
 ### 🔒 Execution Contract (Do Not Deviate)
@@ -315,3 +339,8 @@ If you want next, I can:
 - Collapse this into a **single Codex instruction block**.
 - Generate a **FedRAMP / SOC-2 appendix** from the math.
 - Emit a **one-page “Execution Law” PDF**.
+
+Delivered artifacts:
+- `docs/CODEX_INSTRUCTION_BLOCK.md`
+- `docs/FEDRAMP_SOC2_APPENDIX.md`
+- `docs/execution-law.pdf`

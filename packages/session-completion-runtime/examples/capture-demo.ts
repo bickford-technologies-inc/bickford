@@ -51,13 +51,22 @@ const generateEvent = (index: number): SessionCompletionEvent => {
   const now = new Date();
   const startTime = new Date(now.getTime() - 300000); // 5 minutes ago
   
+  const sessionType = ["chat", "api", "autonomous", "realtime"][index % 4] as any;
+  const metadata =
+    sessionType === "realtime"
+      ? {
+          input_modality: ["audio", "text", "multimodal"][index % 3],
+          transport: ["webrtc", "websocket", "sip"][index % 3],
+        }
+      : undefined;
+
   return {
     event_type: "session.completed",
     event_id: `evt_demo_${now.getTime()}_${index}`,
     timestamp: now.toISOString(),
     session: {
       session_id: `sess_demo_${index}`,
-      session_type: ["chat", "api", "autonomous"][index % 3] as any,
+      session_type: sessionType,
       start_time: startTime.toISOString(),
       end_time: now.toISOString(),
       duration_ms: 300000,
@@ -78,6 +87,7 @@ const generateEvent = (index: number): SessionCompletionEvent => {
       status: ["success", "success", "success", "error"][index % 4] as any,
       error_message: index % 4 === 3 ? "Timeout error" : undefined,
     },
+    metadata,
   };
 };
 

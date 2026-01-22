@@ -8,7 +8,7 @@
  */
 
 import * as crypto from "crypto";
-import { WhyNotTrace, DenialReasonCode } from "../src/canon/types";
+import { DenialReasonCode, WhyNotTrace } from "@bickford/types";
 
 /**
  * WhyNot Panel Data

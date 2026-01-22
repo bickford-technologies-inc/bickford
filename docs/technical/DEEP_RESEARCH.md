@@ -60,6 +60,14 @@ const state = {
     model: "o3-deep-research",
     background: true,
     maxToolCalls: 6,
+    businessProcessWorkflow: {
+      id: "invoice-collections",
+      name: "Invoice collections escalation",
+      description: "Recover overdue invoices faster with cited policy evidence.",
+      owner: "Finance",
+      valueUsd: 120000,
+      cycleHours: 240
+    },
     tools: [
       { type: "web_search_preview" },
       {
@@ -68,7 +76,16 @@ const state = {
       }
     ],
     promptTemplate: "Provide a cited brief for: {{intent}}",
-    timeoutMs: 12000
+    timeoutMs: 12000,
+    compoundKnowledge: true,
+    continuousCompounding: true,
+    adaptivePerformance: {
+      enabled: true,
+      targetAvgDurationMs: 10000,
+      maxToolCallsRange: { min: 2, max: 10 },
+      timeoutRangeMs: { min: 8000, max: 20000 }
+    },
+    compoundConfig: true
   }
 };
 ```
@@ -79,11 +96,162 @@ What each setting enables:
 - `model`: Selects the deep research model to run.
 - `background`: Keeps the intent execution path fast while research continues.
 - `maxToolCalls`: Controls cost and latency ceilings for long-running tasks.
+- `businessProcessWorkflow`: Defines the business process workflow (value + cycle time) that deep research is supporting.
+- `valuePerHourUsd`: Optional override for the workflow-derived USD value per hour.
+- `continuousCompounding`: Forces compounding on for config/knowledge/performance so each run reads the latest state and writes back the next baseline.
 - `tools`: Chooses which data sources can be used.
 - `promptTemplate`: Standardizes the brief format for easier reuse.
 - `timeoutMs`: Limits how long the initial request can block before timing out.
+- `compoundKnowledge`: Reuses the latest stored summary for the same intent to build on prior learnings.
+- `adaptivePerformance`: Optionally tunes `maxToolCalls` and timeout bounds based on rolling performance.
+- `compoundConfig`: Reuses the last effective config for the same intent as a baseline.
 
 When configured, Bickford also records the deep research settings in MAX telemetry so you can trace how each intent was evaluated over time.
+
+### Define: business process workflows
+
+A **business process workflow** is a named, repeatable operational loop that creates measurable value when completed (for example, “invoice collections escalation” or “vendor compliance review”). In Bickford, the workflow definition provides the **value and cycle time** needed to quantify the USD value created per hour. The workflow is **not** an execution authority—it is a calibration input for value math and coaching context.
+
+#### Real-world workflow use cases (examples)
+
+Use these as starting points. Add/extend to match your organization’s actual workflows and owners.
+
+**Finance & revenue**
+- Invoice collections escalation
+- Quote-to-cash reconciliation
+- Contract renewal recovery
+- Revenue leakage audit
+
+**Sales**
+- Enterprise pipeline qualification
+- Deal desk approvals
+- Pricing exception review
+- Territory handoff coordination
+
+**Customer success**
+- Onboarding acceleration
+- Churn-risk recovery
+- Expansion opportunity discovery
+
+**Operations**
+- Vendor compliance review
+- Procurement cycle reduction
+- Supply-chain exception triage
+
+**Legal & compliance**
+- Policy exception review
+- Regulatory response drafting
+- Data retention compliance audit
+
+**Security**
+- Incident response triage
+- Access review completion
+- Threat intel enrichment
+
+**Engineering**
+- Release readiness review
+- On-call escalation routing
+- Reliability postmortem synthesis
+
+**Product**
+- Roadmap tradeoff analysis
+- Competitive feature teardown
+- Pricing/packaging updates
+
+#### Value in $USD per hour (grouping taxonomy)
+
+Measure value per hour using whatever grouping best reflects how your business accounts for impact. You can define **multiple parallel groupings** for the same workflow and track them independently.
+
+**Common groupings**
+- **Region:** AMER, EMEA, APAC, LATAM
+- **Business unit:** Cloud, AI, Security, Platform, Consulting
+- **Sales region:** Enterprise East/West, SMB, Strategic
+- **KPI:** ARR, NRR, CAC payback, margin, DSO, churn reduction
+- **Customer segment:** Enterprise, Mid-market, SMB, Public sector
+- **Product line:** Core, Add-on, Marketplace, Services
+- **Channel:** Direct, Partner, Reseller
+- **Program:** Cost optimization, Growth, Risk reduction
+- **Team/Role:** Finance Ops, RevOps, Legal, SRE
+- **Employee:** per individual contributor or per manager
+
+**How to make it continuous compounding**
+1. **Select a grouping** (e.g., region + business unit).
+2. **Define workflow value** (USD per cycle).
+3. **Define cycle hours** (time-to-complete).
+4. **Compute USD/hour** and persist it.
+5. **Run continuously** so each run compounds the baseline and enables coaching on what changed and why.
+
+Required attributes:
+
+- `id`: Stable identifier for the workflow.
+- `name`: Human-readable label.
+- `valueUsd`: Total USD value created when the workflow completes.
+- `cycleHours`: Total hours for one full workflow cycle.
+
+Optional attributes:
+
+- `description`: The outcome the workflow delivers.
+- `owner`: The team accountable for the workflow.
+
+### Determine USD value created per hour
+
+Compute value per hour using the workflow definition:
+
+```
+valuePerHourUsd = valueUsd / cycleHours
+```
+
+Example:
+
+- `valueUsd`: 120,000
+- `cycleHours`: 240
+- `valuePerHourUsd`: 500
+
+Bickford calculates this automatically when `businessProcessWorkflow` is present, and persists it alongside deep research configuration to keep compounding decisions grounded in measurable value.
+
+### Compounding knowledge growth & persistence
+
+When `compoundKnowledge` is enabled, Bickford reads the latest summary for the same intent from the deep research knowledge ledger and appends it to the next prompt. This creates a compounding knowledge growth loop: each run can build on the previous verified summary while persisting the trail for audit and reuse.
+
+To store summaries, append to the knowledge ledger after a deep research run completes:
+
+```ts
+import crypto from "node:crypto";
+import { appendDeepResearchKnowledge } from "@bickford-core/ledger/deepResearchKnowledge";
+
+appendDeepResearchKnowledge({
+  id: crypto.randomUUID(),
+  intent: "Evaluate vendor consolidation options",
+  summary: "Key findings: ...",
+  sources: ["https://example.com/report"],
+  createdAt: new Date().toISOString()
+});
+```
+
+### Compounding dynamic peak performance
+
+Each deep research run updates a performance ledger that tracks rolling execution metrics per intent. This gives you a compounding view of how long research requests take and how often they succeed over time.
+
+Recorded per intent:
+
+- Total samples, success count, failure count
+- Rolling average duration
+- Last duration + status
+- Best (lowest) average + last duration (peak performance baseline)
+
+This ledger is append-only (`.bickford-deep-research/performance.jsonl`) so you can trend performance and tune `maxToolCalls`, timeouts, or tool selection with evidence.
+
+When `adaptivePerformance.enabled` is true, Bickford uses the rolling averages from this ledger to adjust `maxToolCalls` and timeout values within your configured bounds.
+
+### Compounding dynamic configuration
+
+When `compoundConfig` is enabled, Bickford loads the last effective config for the same intent and uses it as the baseline for the next run. This compounds configuration choices over time (for example, keeping a stable `maxToolCalls` for intents that routinely hit latency limits).
+
+Configuration decisions are stored in `.bickford-deep-research/config.jsonl` with the effective values used per run, plus a reason code (submitted, request failed, request error, missing API key). When no new workflow metadata is supplied, the last stored workflow id/name and `valuePerHourUsd` compound forward to keep business value calibration stable.
+
+### Continuous compounding
+
+Continuous compounding keeps the loop active: each run **reads the latest state** (knowledge, config, performance) and **writes back the next baseline** even when only minor deltas are available. Enable `continuousCompounding` to make compounding explicit and keep the system aligned with persistence, automation, and coaching direction.
 
 ## Kick off a deep research task
 
