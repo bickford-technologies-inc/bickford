@@ -58,8 +58,15 @@ Bickford exposes a server-side transcription endpoint that proxies to OpenAI and
 - **Route**: `POST /api/audio/transcribe`
 - **Auth**: Uses server-side `OPENAI_API_KEY`
 - **Operation**: Use `operation=transcriptions` (default) or `operation=translations`
-- **Storage**: Writes an entry to `trace/speech-to-text-YYYY-MM-DD.jsonl`
+- **Storage**: Writes an entry to `trace/speech-to-text-YYYY-MM-DD.jsonl` plus a summary index at `trace/speech-to-text-index-YYYY-MM-DD.jsonl`
+- **Knowledge growth**: Appends condensed transcript knowledge to `trace/speech-to-text-knowledge-YYYY-MM-DD.jsonl`
+- **Dynamic configuration**: Appends normalized request configuration snapshots to `trace/speech-to-text-config-YYYY-MM-DD.jsonl`
+- **Dynamic performance**: Appends performance snapshots and peak comparisons to `trace/speech-to-text-performance-YYYY-MM-DD.jsonl`
 - **Trace ID**: Returns `x-bickford-trace-id` response header and stores it in the trace entry
+- **Trace fields**: Captures file hash (`sha256`), upstream status, and request duration in milliseconds
+- **Knowledge compounding**: The index entry stores `knowledge` metrics (words, segments, speakers) plus a short `transcriptPreview` for daily recall
+- **Dynamic configuration**: Trace and index entries include a `configuration` snapshot and `configurationFingerprint` to compare model and parameter usage over time
+- **Dynamic peak performance**: Each performance entry notes whether the request sets a new peak for `charsPerSecond` or `msPerMb`
 
 Example (transcription):
 
