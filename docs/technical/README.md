@@ -40,6 +40,11 @@ This folder contains technical specifications, architecture, and integration gui
   - Request setup and output structure
   - Prompting workflows and safety guidance
 
+- **[REFACTORING_DATA_ACCESS_LAYERS.md](REFACTORING_DATA_ACCESS_LAYERS.md)** - Refactoring data access layers
+  - Repository pattern overview
+  - Example prompts and responses
+  - SQLite refactoring example
+
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
   - Bickford integration pattern
