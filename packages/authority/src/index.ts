@@ -1,16 +1,6 @@
 import { Intent, Decision } from "@bickford/types";
 import crypto from "crypto";
-
-/**
- * Authorization logic for intent validation and decision
- * Currently validates intent structure and allows valid intents
- * This can be extended with more complex decision logic
- */
-export function authorize(input: {
-  tenantId: string;
-  intent: any;
-}): AuthorityDecision {
-  // Basic validation
+export type { WhyNotTrace } from "@bickford/types";
   if (!input || !input.intent) {
     return {
       id: crypto.randomUUID(),

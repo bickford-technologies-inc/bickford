@@ -27,13 +27,19 @@ const projectedTTV1: Record<string, number> = {
 const result1 = evaluateNonInterference(actor1, others1, projectedTTV1);
 
 console.log("Input:");
-console.log(`  Actor: ${actor1.agentId} (baseline TTV: ${actor1.ttvBaseline}ms)`);
+console.log(
+  `  Actor: ${actor1.agentId} (baseline TTV: ${actor1.ttvBaseline}ms)`,
+);
 console.log(`  Other agents:`);
-others1.forEach(a => console.log(`    - ${a.agentId}: baseline=${a.ttvBaseline}ms, projected=${projectedTTV1[a.agentId]}ms`));
+others1.forEach((a) =>
+  console.log(
+    `    - ${a.agentId}: baseline=${a.ttvBaseline}ms, projected=${projectedTTV1[a.agentId]}ms`,
+  ),
+);
 console.log();
 console.log("Result:");
 console.log(`  ✅ Allowed: ${result1.allowed}`);
-console.log(`  Reason: ${result1.reason ?? "No interference detected"}`);
+console.log(`  Reason: ${result1.reason}`);
 console.log();
 
 // Scenario 2: Harmful action (TTV increase detected)
@@ -47,19 +53,25 @@ const others2 = [
 ];
 const projectedTTV2: Record<string, number> = {
   "agent-B": 152.4, // Increase by 2.4ms
-  "agent-C": 200,   // No change
+  "agent-C": 200, // No change
 };
 
 const result2 = evaluateNonInterference(actor2, others2, projectedTTV2);
 
 console.log("Input:");
-console.log(`  Actor: ${actor2.agentId} (baseline TTV: ${actor2.ttvBaseline}ms)`);
+console.log(
+  `  Actor: ${actor2.agentId} (baseline TTV: ${actor2.ttvBaseline}ms)`,
+);
 console.log(`  Other agents:`);
-others2.forEach(a => console.log(`    - ${a.agentId}: baseline=${a.ttvBaseline}ms, projected=${projectedTTV2[a.agentId]}ms`));
+others2.forEach((a) =>
+  console.log(
+    `    - ${a.agentId}: baseline=${a.ttvBaseline}ms, projected=${projectedTTV2[a.agentId]}ms`,
+  ),
+);
 console.log();
 console.log("Result:");
 console.log(`  ❌ Allowed: ${result2.allowed}`);
-console.log(`  Reason: ${result2.reason ?? "No interference detected"}`);
+console.log(`  Reason: ${result2.reason}`);
 console.log();
 
 // Scenario 3: Multiple agents affected
@@ -79,13 +91,19 @@ const projectedTTV3: Record<string, number> = {
 const result3 = evaluateNonInterference(actor3, others3, projectedTTV3);
 
 console.log("Input:");
-console.log(`  Actor: ${actor3.agentId} (baseline TTV: ${actor3.ttvBaseline}ms)`);
+console.log(
+  `  Actor: ${actor3.agentId} (baseline TTV: ${actor3.ttvBaseline}ms)`,
+);
 console.log(`  Other agents:`);
-others3.forEach(a => console.log(`    - ${a.agentId}: baseline=${a.ttvBaseline}ms, projected=${projectedTTV3[a.agentId]}ms`));
+others3.forEach((a) =>
+  console.log(
+    `    - ${a.agentId}: baseline=${a.ttvBaseline}ms, projected=${projectedTTV3[a.agentId]}ms`,
+  ),
+);
 console.log();
 console.log("Result:");
 console.log(`  ❌ Allowed: ${result3.allowed}`);
-console.log(`  Reason: ${result3.reason ?? "No interference detected"}`);
+console.log(`  Reason: ${result3.reason}`);
 console.log();
 
 console.log("=".repeat(70));

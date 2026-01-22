@@ -47,7 +47,8 @@
     "assert:vercel-binding": "tsx scripts/assert-vercel-binding.ts"
   },
   "dependencies": {
-    "ai": "^6.0.45",
+    "ai": "^6.0.44",
+    "ajv": "^8.17.1",
     "pdf-lib": "^1.17.1"
   },
   "devDependencies": {
@@ -61,8 +62,5 @@
     "react-dom": "18.3.1",
     "tsx": "^4.7.0",
     "typescript": "^5.9.3"
-  },
-  "engines": {
-    "node": "20.x"
   }
 }
