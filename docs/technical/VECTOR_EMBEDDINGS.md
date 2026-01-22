@@ -123,6 +123,18 @@ Embeddings translate unstructured text into vectors, which makes them a practica
 - **Compounding dynamic peak performance**: capture top similarity scores over time and monitor when peak retrieval quality increases or regresses.
 - **Compounding dynamic configuration**: snapshot embedding configuration changes (model, dimensions, similarity thresholds, limits) so recall improvements can be tied to explicit configuration shifts.
 
+### Bickford runtime query options
+
+When querying the in-memory index, pass explicit query options to control the result set and enforce tag-based filtering.
+
+```ts
+await querySimilar(tenantId, "triage security incident", {
+  limit: 5,
+  minScore: 0.78,
+  requiredTags: ["security", "incident"],
+});
+```
+
 ## Example: Bickford-style similarity search
 
 ```python
