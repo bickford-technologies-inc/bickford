@@ -66,6 +66,11 @@ This folder contains technical specifications, architecture, and integration gui
   - Security and governance guidance
   - Pilot planning steps and MCP enhancements
 
+- **[AI_CODE_REVIEW.md](AI_CODE_REVIEW.md)** - Reviewing AI-generated code
+  - Functional checks and testing
+  - Context and intent validation
+  - Code quality and dependency scrutiny
+
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
   - Bickford integration pattern
