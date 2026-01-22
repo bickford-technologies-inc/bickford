@@ -5,7 +5,7 @@
 
 export type ISO8601 = string;
 
-export type SessionType = "chat" | "api" | "autonomous" | "webhook";
+export type SessionType = "chat" | "api" | "autonomous" | "webhook" | "realtime";
 
 export type OutcomeStatus = "success" | "error" | "timeout" | "user_terminated";
 
@@ -64,6 +64,11 @@ export type SessionCompletionEvent = {
   usage: UsageMetrics;
   outcome: SessionOutcome;
   metadata?: Record<string, any>;
+};
+
+export type RealtimeMetadata = {
+  input_modality?: "audio" | "text" | "multimodal";
+  transport?: "webrtc" | "websocket" | "sip";
 };
 
 /**
