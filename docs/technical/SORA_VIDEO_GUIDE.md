@@ -30,6 +30,32 @@ Optimized for **production-quality output**. It takes longer to render and costs
 
 Sora is best treated as a **long-running render capability** that plugs into Bickford's existing event capture and decision flow. Use it to generate video artifacts (demos, marketing clips, UX walkthroughs, or simulation outputs) while preserving observability and governance.
 
+### How it works (in Bickford terms)
+
+1. **Request**: a render is created (`POST /videos`) and a `video_id` is returned.
+2. **Ledger**: the request is captured as a ledger event (intent, model, size, seconds).
+3. **Observe**: webhooks or polling track status transitions.
+4. **Persist**: assets (MP4 + derivatives) are stored in your own storage.
+5. **Promote**: high-performing prompts/settings are promoted into stable presets.
+
+This keeps Sora inside the same execution, audit, and promotion loop as the rest of Bickford.
+
+### Value it creates
+
+- **Persistence**: every render becomes reusable knowledge, not a one-off experiment.
+- **Automation**: high-performing settings can be auto-promoted and reused.
+- **Direction**: teams can move faster with a clear, repeatable workflow.
+- **Governance**: ledgered events make decisions auditable and explainable.
+
+#### USD value created per hour (simple estimate)
+
+To quantify value, treat it as time saved × blended hourly cost. For example:
+
+- If compounding workflows save **2 hours per week** for a team that costs **$150/hour**, that is:
+  - **$300/week**, or **~$60/hour of render time** if you generate 5 hours of video work per week.
+
+You can adjust this estimate by swapping in your actual time saved and hourly cost.
+
 ### Recommended integration pattern
 
 1. **Create a render request** with `POST /videos` and capture the returned `video_id`.
@@ -46,6 +72,42 @@ Use the Bickford decision layer to guide model choice and cadence:
 - **`sora-2-pro`** for polished assets that require stability and quality.
 
 Treat remixing as a **single-change iteration primitive** so each step preserves continuity and reduces risk of regression.
+
+### Compounding knowledge loop
+
+To make Sora usage compound into reusable knowledge, treat each render as a learning event:
+
+1. **Capture intent**: prompt, model, size, seconds, and target outcome.
+2. **Capture outcome**: final status, asset URIs, reviewer notes, and success criteria.
+3. **Tag patterns**: label shots, lighting, camera moves, and styles that worked.
+4. **Promote winners**: snapshot high-performing prompts and settings into canonical templates.
+5. **Reuse & remix**: start new work from a known-good template, then apply one controlled change.
+
+This turns one-off generations into a feedback loop that improves future outputs and supports predictable automation.
+
+### Compounding dynamic performance
+
+Build a simple performance flywheel so each run improves the next:
+
+1. **Define success metrics**: clarity, continuity, brand fit, and time-to-review.
+2. **Score every render**: assign numeric scores and short reviewer notes.
+3. **Compare cohorts**: track performance by model, prompt pattern, or size.
+4. **Adjust policies**: bias `sora-2` for speed during exploration, `sora-2-pro` for final output.
+5. **Automate promotion**: when a prompt + setting consistently beats the baseline, promote it as the new default.
+
+This keeps performance improving over time without drifting from your intent.
+
+### Compounding dynamic configuration
+
+Make configuration changes additive and traceable so your defaults improve without losing history:
+
+1. **Version every config**: store model, size, seconds, prompt template, and guardrails as a named preset.
+2. **Log config deltas**: record what changed and why in the ledger (intent + outcome).
+3. **Freeze winners**: lock high-performing presets as stable baselines.
+4. **Branch experiments**: test variants as forks off a stable baseline.
+5. **Promote on evidence**: upgrade the default only when metrics consistently beat the baseline.
+
+This preserves institutional memory while allowing safe, data-backed evolution of defaults.
 
 ### Suggested event fields for the ledger
 
@@ -67,6 +129,7 @@ import {
   downloadSoraContent,
   listSoraVideos,
   deleteSoraVideo,
+  attachPerformanceMetrics,
   recordSoraVideoEvent,
 } from "@bickford/execution-convergence";
 
@@ -77,13 +140,23 @@ const job = await createSoraVideoJob({
   seconds: "8",
 });
 
-recordSoraVideoEvent("media-renders", {
+const basePayload = {
   videoId: job.id,
   status: job.status,
   model: job.model,
   seconds: job.seconds,
   size: job.size,
+};
+
+const withPerformance = attachPerformanceMetrics(basePayload, {
+  clarity: 4.6,
+  continuity: 4.2,
+  brandFit: 4.8,
+  reviewTimeSeconds: 45,
+  notes: "Strong continuity and brand palette match.",
 });
+
+recordSoraVideoEvent("media-renders", withPerformance);
 
 const videoBytes = await downloadSoraContent(job.id);
 console.log("Downloaded bytes:", videoBytes.byteLength);
