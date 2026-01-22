@@ -10,14 +10,15 @@ export function toLegacyIntent(i: Intent): Prisma.JsonObject {
 }
 
 export function toLegacyDecision(d: Decision): Prisma.JsonObject {
+  const decision = d as Decision & { outcome?: string; timestamp?: string };
   return {
-    ...d,
+    ...decision,
     intent:
-      typeof d.intent === "string"
-        ? { id: d.intent, action: "UNKNOWN" }
-        : toLegacyIntent(d.intent),
-    id: d.id ?? "UNKNOWN",
-    outcome: d.outcome ?? "UNKNOWN",
-    timestamp: d.timestamp ?? new Date().toISOString(),
+      typeof decision.intent === "string"
+        ? { id: decision.intent, action: "UNKNOWN" }
+        : toLegacyIntent(decision.intent),
+    id: decision.id ?? "UNKNOWN",
+    outcome: decision.outcome ?? "UNKNOWN",
+    timestamp: decision.timestamp ?? new Date().toISOString(),
   } as Prisma.JsonObject;
 }

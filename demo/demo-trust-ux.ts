@@ -12,18 +12,18 @@
  * This is a simplified demonstration that doesn't require a database.
  */
 
+import type { DeniedDecisionPayload } from "../packages/types/src/index";
 import {
   Action,
   DenialReasonCode,
   WhyNotTrace,
-  DeniedDecisionPayload,
-} from "../packages/bickford/src/canon/types";
+} from "../packages/core/src/canon/types";
 import {
   gateSecondActionTooEarly,
   gateAuthorityBoundary,
   gateRiskBounds,
   gateCostBounds,
-} from "../packages/bickford/src/canon/optr";
+} from "../packages/core/src/canon/optr";
 
 console.log("\n" + "═".repeat(80));
 console.log("  BICKFORD PHASE 3: Trust UX - Denial Ledger & WhyNot");
@@ -204,15 +204,12 @@ console.log("     → Prisma: deniedDecision.create(...)");
 console.log("\n   For this demo (no database), showing payload structure:\n");
 
 const examplePayload: DeniedDecisionPayload = {
-  ts: nowIso,
+  decisionId: "decision-demo-1",
   actionId: action1.id,
-  actionName: action1.name,
   tenantId,
-  goal: "Deploy safely to production",
-  reasonCodes: [DenialReasonCode.MISSING_CANON_PREREQS],
-  missingCanonIds: ["canon-security-review"],
-  message: "Denied: Missing prerequisite canon items",
-  context: { attempted: "production-deploy" },
+  denied: true,
+  reason: "Missing prerequisite canon items",
+  timestamp: Date.now(),
 };
 
 console.log("   Example Payload:");

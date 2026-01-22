@@ -20,7 +20,7 @@ import {
   TokenStreamProof,
   ISO8601,
 } from "@bickford/types";
-import { requireCanonRefs } from "./invariants";
+import { requireCanonRefs } from "./invariants.js";
 
 type ExecutionContextInput = {
   executionId: string;

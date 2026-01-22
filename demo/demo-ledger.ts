@@ -11,9 +11,21 @@
  *   tsx demo/demo-ledger.ts
  */
 
-import { appendLedger, getLedger } from "../packages/ledger/src/index";
+import { appendLedger, getLedger } from "../packages/core/src/ledger/index";
 import { authorize } from "../packages/authority/src/index";
 import type { Intent } from "../packages/types/src/index";
+import crypto from "node:crypto";
+
+type LedgerRecord = {
+  id: string;
+  hash: string;
+  createdAt: string;
+  intent: Intent;
+  decision: {
+    outcome?: string;
+    [key: string]: unknown;
+  };
+};
 
 async function main() {
   console.log("=== Bickford Ledger Persistence Demo ===\n");
@@ -29,7 +41,8 @@ async function main() {
 
   // Test 1: Append a ledger entry
   console.log("Test 1: Appending ledger entry...");
-  const intent: Intent = {
+  const intent: Intent & Record<string, unknown> = {
+    id: crypto.randomUUID(),
     action: "deploy_to_production",
     context: {
       service: "api",
@@ -39,11 +52,14 @@ async function main() {
     timestamp: new Date().toISOString(),
   };
 
-  const decision = authorize(intent);
+  const decision = authorize({
+    tenantId: process.env.TENANT_ID ?? "demo",
+    intent,
+  });
   console.log("  Decision:", decision.outcome);
   console.log("  Reason:", decision.reason);
 
-  const entry = await appendLedger(intent, decision);
+  const entry = (await appendLedger(intent, decision)) as unknown as LedgerRecord;
   console.log("  ✓ Ledger entry created");
   console.log("    ID:", entry.id);
   console.log("    Hash:", entry.hash.substring(0, 16) + "...");
@@ -52,7 +68,6 @@ async function main() {
   // Test 2: Verify hash integrity
   console.log("Test 2: Verifying hash integrity...");
   const payload = JSON.stringify({ intent, decision });
-  const crypto = await import("crypto");
   const expectedHash = crypto.createHash("sha256").update(payload).digest("hex");
   
   if (entry.hash === expectedHash) {
@@ -68,7 +83,7 @@ async function main() {
 
   // Test 3: Retrieve ledger
   console.log("Test 3: Retrieving ledger...");
-  const ledger = await getLedger();
+  const ledger = (await getLedger()) as unknown as LedgerRecord[];
   console.log("  ✓ Retrieved", ledger.length, "entries");
   
   if (ledger.length > 0) {
@@ -81,7 +96,8 @@ async function main() {
 
   // Test 4: Append another entry to test multiple entries
   console.log("Test 4: Appending another entry...");
-  const intent2: Intent = {
+  const intent2: Intent & Record<string, unknown> = {
+    id: crypto.randomUUID(),
     action: "rollback_deployment",
     context: {
       reason: "critical_bug_detected",
@@ -90,14 +106,17 @@ async function main() {
     timestamp: new Date().toISOString(),
   };
 
-  const decision2 = authorize(intent2);
-  const entry2 = await appendLedger(intent2, decision2);
+  const decision2 = authorize({
+    tenantId: process.env.TENANT_ID ?? "demo",
+    intent: intent2,
+  });
+  const entry2 = (await appendLedger(intent2, decision2)) as unknown as LedgerRecord;
   console.log("  ✓ Second entry created:", entry2.id.substring(0, 8) + "...");
   console.log();
 
   // Test 5: Verify entries persist
   console.log("Test 5: Verifying persistence...");
-  const ledger2 = await getLedger();
+  const ledger2 = (await getLedger()) as unknown as LedgerRecord[];
   console.log("  ✓ Total entries now:", ledger2.length);
   
   // Verify our entries are in the ledger
