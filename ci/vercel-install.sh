@@ -8,5 +8,5 @@ echo "[DEBUG] ci tree:"
 ls -lR ci || true
 bash "$(git rev-parse --show-toplevel)/ci/guards/ENVIRONMENT_PRECONDITION.sh"
 corepack enable
-corepack prepare pnpm@9.15.0 --activate
+corepack prepare pnpm@10.28.0 --activate
 pnpm install --frozen-lockfile
