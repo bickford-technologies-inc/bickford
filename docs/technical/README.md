@@ -22,6 +22,10 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
+- **[COPILOT_CODE_REVIEW_INSTRUCTIONS.md](COPILOT_CODE_REVIEW_INSTRUCTIONS.md)** - Custom instruction guidance
+  - Copilot code review instruction best practices
+  - Repository-wide and path-specific instruction patterns
+  - Troubleshooting and iteration guidance
 - **[REALTIME_API.md](REALTIME_API.md)** - Realtime API guide
   - Voice agent setup
   - Connection methods
