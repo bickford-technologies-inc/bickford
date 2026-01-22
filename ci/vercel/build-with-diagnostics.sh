@@ -7,7 +7,7 @@ LOG_FILE=".vercel-build.log"
   echo "=== Vercel Build Start ==="
   bash ci/guards/ENVIRONMENT_PRECONDITION.sh
   corepack enable
-  corepack prepare pnpm@9.15.0 --activate
+  corepack prepare pnpm@10.28.0 --activate
   pnpm install --frozen-lockfile
   pnpm build
 } 2>&1 | tee "$LOG_FILE"
