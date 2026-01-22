@@ -31,7 +31,8 @@ npm install @bickford/session-completion-runtime
 import { 
   SessionCompletionRuntime, 
   createDefaultConfig, 
-  captureChatSessionCompletion 
+  captureChatSessionCompletion,
+  captureRealtimeSessionCompletion
 } from "@bickford/session-completion-runtime";
 
 // Initialize runtime
@@ -58,6 +59,21 @@ await captureChatSessionCompletion({
   outputTokens: 890,
   model: "gpt-4",
   outcome: "success"
+});
+
+// Capture realtime session completion (voice or multimodal)
+await captureRealtimeSessionCompletion({
+  sessionId: "sess_realtime_456",
+  userId: "usr_xyz789",
+  organizationId: "org_company",
+  startTime: "2025-12-21T10:00:00Z",
+  endTime: "2025-12-21T10:02:30Z",
+  inputTokens: 520,
+  outputTokens: 410,
+  model: "gpt-realtime",
+  outcome: "success",
+  inputModality: "audio",
+  transport: "webrtc"
 });
 
 // Get metrics
