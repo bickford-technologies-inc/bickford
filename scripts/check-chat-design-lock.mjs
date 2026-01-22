@@ -16,7 +16,9 @@ const entries = ledger
 const entry = entries.at(-1);
 
 if (!entry) {
-  throw new Error(`Missing design-lock entry for bickford-web-chat in ${ledgerPath}`);
+  throw new Error(
+    `Missing design-lock entry for bickford-web-chat in ${ledgerPath}`,
+  );
 }
 
 const css = fs.readFileSync(cssPath, "utf8");
