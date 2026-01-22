@@ -9,20 +9,44 @@ function formatLocalDate(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
+async function ensureArchiveDir() {
+  const override = process.env.BICKFORD_TRACE_DIR;
+  const preferred =
+    override ??
+    (process.env.VERCEL
+      ? path.join("/tmp", "trace")
+      : path.join(process.cwd(), "trace"));
+
+  try {
+    await mkdir(preferred, { recursive: true });
+    return preferred;
+  } catch (error) {
+    const fallback = path.join("/tmp", "trace");
+    if (preferred !== fallback) {
+      await mkdir(fallback, { recursive: true });
+      return fallback;
+    }
+    throw error;
+  }
+}
+
 export async function appendDailyArchive(prefix: string, entry: unknown) {
   const now = new Date();
-  const archiveDir = path.join(process.cwd(), "trace");
-  await mkdir(archiveDir, { recursive: true });
+  const archiveDir = await ensureArchiveDir();
   const fileName = `${prefix}-${formatLocalDate(now)}.jsonl`;
   const filePath = path.join(archiveDir, fileName);
-  await appendFile(filePath, `${JSON.stringify(entry)}\n`);
+  try {
+    await appendFile(filePath, `${JSON.stringify(entry)}\n`);
+  } catch (error) {
+    console.error("Failed to append archive entry", error);
+  }
 }
 
 export async function readLatestDailyArchiveEntry<T>(
   prefix: string,
 ): Promise<T | null> {
   const now = new Date();
-  const archiveDir = path.join(process.cwd(), "trace");
+  const archiveDir = await ensureArchiveDir();
   const fileName = `${prefix}-${formatLocalDate(now)}.jsonl`;
   const filePath = path.join(archiveDir, fileName);
 
