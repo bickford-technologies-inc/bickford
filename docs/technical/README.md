@@ -22,6 +22,10 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
+- **[AI_MODEL_COMPARISON.md](AI_MODEL_COMPARISON.md)** - AI model comparison guide
+  - Task-based examples and prompts
+  - Model strengths and fit guidance
+  - Visual reasoning scenarios
 - **[REALTIME_API.md](REALTIME_API.md)** - Realtime API guide
   - Voice agent setup
   - Connection methods
@@ -39,10 +43,14 @@ This folder contains technical specifications, architecture, and integration gui
   - Model overview and use cases
   - Request setup and output structure
   - Prompting workflows and safety guidance
-- **[COPILOT_FEATURE_IMPLEMENTATION_OPTIONS.md](COPILOT_FEATURE_IMPLEMENTATION_OPTIONS.md)** - Feature option exploration with Copilot Chat
-  - Example prompt for option generation
-  - Tradeoff analysis for recent-items feature
-  - Guidance for follow-up prompts
+- **[COPILOT_CHAT_EXTRACTING_INFORMATION.md](COPILOT_CHAT_EXTRACTING_INFORMATION.md)** - Extracting information with Copilot Chat
+  - Issue and discussion summarization workflows
+  - Example prompts and responses
+
+- **[CROSS_CUTTING_CONCERNS.md](CROSS_CUTTING_CONCERNS.md)** - Copilot guidance for cross-cutting concerns
+  - Why cross-cutting concerns matter
+  - Example logging refactor with AOP
+  - Prompt and response walkthrough
 
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
