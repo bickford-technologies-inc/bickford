@@ -21,6 +21,7 @@ import type {
 import { DenialReasonCode } from "@bickford/types";
 import type { WhyNotTrace } from "@bickford/authority";
 import type { AuthorityContext } from "@bickford/authority";
+import { requireCanonRefs } from "./invariants.js";
 
 /**
  * Score a candidate path using OPTR objective function

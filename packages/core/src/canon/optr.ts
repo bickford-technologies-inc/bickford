@@ -17,8 +17,8 @@ import {
   WhyNotTrace,
   DenialReasonCode,
   AuthorityCheckResult,
-} from "./types";
-import { requireCanonRefs } from "./invariants";
+} from "./types.js";
+import { requireCanonRefs } from "./invariants.js";
 
 /**
  * Score a candidate path using OPTR objective function
