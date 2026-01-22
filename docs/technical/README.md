@@ -39,6 +39,9 @@ This folder contains technical specifications, architecture, and integration gui
   - Model overview and use cases
   - Request setup and output structure
   - Prompting workflows and safety guidance
+- **[COPILOT_CHAT_EXTRACTING_INFORMATION.md](COPILOT_CHAT_EXTRACTING_INFORMATION.md)** - Extracting information with Copilot Chat
+  - Issue and discussion summarization workflows
+  - Example prompts and responses
 
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
