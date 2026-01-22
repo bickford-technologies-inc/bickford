@@ -47,6 +47,11 @@ This folder contains technical specifications, architecture, and integration gui
   - Monitoring and downloads
   - Remixing and library management
 
+- **[DEEP_RESEARCH.md](DEEP_RESEARCH.md)** - Deep research models and workflows
+  - Model overview and use cases
+  - Request setup and output structure
+  - Prompting workflows and safety guidance
+
 ### Technical Highlights
 
 | Specification | Value |
