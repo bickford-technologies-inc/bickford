@@ -1,5 +1,4 @@
 import "./globals.css";
-import ChatDock from "./components/ChatDock";
 
 export default function RootLayout({
   children,
@@ -10,7 +9,6 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
-        <ChatDock />
       </body>
     </html>
   );

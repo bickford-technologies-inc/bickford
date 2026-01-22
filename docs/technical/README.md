@@ -22,10 +22,35 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
-- **[TEXT_TO_SPEECH.md](TEXT_TO_SPEECH.md)** - Audio output and TTS guidance
-  - Usage patterns and code samples
-  - Voice, model, and format selection
-  - Custom voice consent workflow
+- **[REALTIME_API.md](REALTIME_API.md)** - Realtime API guide
+  - Voice agent setup
+  - Connection methods
+  - API usage references
+  - Beta to GA migration notes
+
+- **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
+  - Model selection
+  - Bickford integration pattern
+  - Generation workflow
+  - Monitoring and downloads
+  - Remixing and library management
+
+- **[DEEP_RESEARCH.md](DEEP_RESEARCH.md)** - Deep research models and workflows
+  - Model overview and use cases
+  - Request setup and output structure
+  - Prompting workflows and safety guidance
+
+- **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
+  - Model selection
+  - Bickford integration pattern
+  - Generation workflow
+  - Monitoring and downloads
+  - Remixing and library management
+
+- **[DEEP_RESEARCH.md](DEEP_RESEARCH.md)** - Deep research models and workflows
+  - Model overview and use cases
+  - Request setup and output structure
+  - Prompting workflows and safety guidance
 
 ### Technical Highlights
 

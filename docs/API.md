@@ -21,6 +21,10 @@ Set `BICKFORD_API_TOKEN` in your `.env` file.
 
 Execute a natural language intent through the Bickford runtime.
 
+Every successful execution also writes a **compounding knowledge** entry to the daily `knowledge` archive so decisions accumulate into a persistent memory stream.
+Each execution also records **dynamic performance** in a daily `performance` archive, capturing execution duration and traceability to the ledger entry.
+Each execution also records **dynamic configuration** in a daily `configuration` archive, capturing the resolved configuration fingerprint and any overrides applied.
+
 **Endpoint:** `POST /api/execute`
 
 **Headers:**
@@ -31,7 +35,18 @@ Execute a natural language intent through the Bickford runtime.
 ```json
 {
   "origin": "agent-id",
-  "intent": "Add retry logic to API client"
+  "intent": "Add retry logic to API client",
+  "source": "realtime",
+  "sessionId": "session_123",
+  "transcript": "Add retry logic to the API client.",
+  "metadata": {
+    "model": "gpt-realtime",
+    "channel": "webrtc"
+  },
+  "configOverrides": {
+    "routing": "low-latency",
+    "region": "iad"
+  }
 }
 ```
 
@@ -51,6 +66,18 @@ Execute a natural language intent through the Bickford runtime.
     "decision": { ... },
     "hash": "sha256-hash",
     "createdAt": "2026-01-06T04:00:00.000Z"
+  },
+  "knowledge": {
+    "entryId": "uuid"
+  },
+  "performance": {
+    "entryId": "uuid",
+    "durationMs": 125,
+    "peakDurationMs": 210
+  },
+  "configuration": {
+    "entryId": "uuid",
+    "fingerprint": "abc123def4567890"
   }
 }
 ```
@@ -132,6 +159,98 @@ Check service health.
   "timestamp": "2026-01-06T04:00:00.000Z",
   "uptime": 123.45,
   "version": "1.0.0"
+}
+```
+
+---
+
+### Realtime Intent Capture
+
+Capture realtime transcripts and (optionally) extracted intent for persistence. This endpoint appends to the realtime archive, and if an `intent` is provided it also appends to the intent archive.
+
+**Endpoint:** `POST /api/realtime`
+
+**Headers:**
+- `Content-Type: application/json`
+- `Authorization: Bearer {token}` (if your deployment enforces auth)
+
+**Request Body:**
+```json
+{
+  "sessionId": "session_123",
+  "transcript": "User said: add a daily digest reminder.",
+  "intent": "Add a daily digest reminder",
+  "execute": true,
+  "source": "realtime",
+  "metadata": {
+    "model": "gpt-realtime",
+    "channel": "webrtc"
+  },
+  "configOverrides": {
+    "routing": "low-latency",
+    "region": "iad"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "status": "ok"
+}
+```
+
+If `execute` is true and an `intent` is provided, the response includes the execution result:
+
+```json
+{
+  "status": "ok",
+  "execution": {
+    "decision": {
+      "outcome": "ALLOW",
+      "allowed": true,
+      "canonId": "CANON-EXECUTE",
+      "rationale": "Intent accepted for execution.",
+      "timestamp": "2026-01-06T04:00:00.000Z"
+    },
+    "ledgerEntry": {
+      "id": "uuid",
+      "intent": {
+        "origin": "agent-id",
+        "intent": "Add a daily digest reminder",
+        "source": "realtime",
+        "sessionId": "session_123",
+        "transcript": "User said: add a daily digest reminder."
+      },
+      "context": {
+        "metadata": {
+          "model": "gpt-realtime",
+          "channel": "webrtc"
+        }
+      },
+      "decision": {
+        "outcome": "ALLOW",
+        "allowed": true,
+        "canonId": "CANON-EXECUTE",
+        "rationale": "Intent accepted for execution.",
+        "timestamp": "2026-01-06T04:00:00.000Z"
+      },
+      "hash": "sha256-hash",
+      "createdAt": "2026-01-06T04:00:00.000Z"
+    },
+    "knowledge": {
+      "entryId": "uuid"
+    },
+    "performance": {
+      "entryId": "uuid",
+      "durationMs": 125,
+      "peakDurationMs": 210
+    },
+    "configuration": {
+      "entryId": "uuid",
+      "fingerprint": "abc123def4567890"
+    }
+  }
 }
 ```
 

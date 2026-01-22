@@ -142,6 +142,28 @@ const ledgerEvent: LedgerEvent = {
 };
 ```
 
+## Embedding enrichment (Bickford integration)
+
+Embeddings serve as a structured signal for intent recall and evidence retrieval. In the Bickford stack, embeddings are an enrichment step that happens after session completion capture and before evidence promotion. The embedding output is treated as metadata that helps locate candidate evidence, not as canonical truth.
+
+### Placement in the flow
+
+1. **Session completion captured** (SCR event stored in ledger)
+2. **Embedding enrichment** (vectorize selected text fields)
+3. **Vector retrieval** (find similar sessions/artifacts)
+4. **Promotion gate** (only promoted evidence influences decisions)
+
+### Data contracts
+
+Embed only minimal fields required for intent recall (session summary, user request, tool outputs). Persist:
+
+- `embedding` vector in a vector index
+- `session_id` or `artifact_id` as the primary key
+- `tenant_id` for strict partitioning
+- `source_fields` metadata for traceability
+
+This keeps the ledger canonical while enabling fast semantic recall for OPTR routing and escalation decisions.
+
 ---
 
 ## Technical Specifications

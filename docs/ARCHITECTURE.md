@@ -72,7 +72,7 @@ Where:
 ## System Flow
 
 ```
-1. User submits intent
+1. User submits intent (text or realtime voice/multimodal)
    ↓
 2. Session completion captures event
    ↓
@@ -88,6 +88,10 @@ Where:
    ↓
 8. Response with hash + outcome
 ```
+
+### Realtime entrypoints
+
+Realtime inputs (voice or multimodal) enter the same execution pipeline as text. The Realtime API is treated as an input/output transport layer that feeds intent into Session Completion Runtime, then proceeds through OPTR, canon enforcement, and the ledger. This preserves Bickford’s authority guarantees while enabling low-latency voice interactions.
 
 ## Deployment Models
 
