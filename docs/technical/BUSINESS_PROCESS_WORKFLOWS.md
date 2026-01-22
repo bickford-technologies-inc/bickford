@@ -12,6 +12,11 @@ Business process workflows are repeatable, ordered sequences of work that turn a
 - **Policy change management**: Draft → review → approval → rollout → audit evidence capture.
 - **Hiring pipeline**: Sourcing → screening → interviews → offer → onboarding.
 - **Procurement**: Request → vendor evaluation → compliance checks → approval → purchase order issuance.
+- **Finance close**: Source data → reconciliation → close checklist → executive reporting → audit packet.
+- **Product launch**: Requirements → design review → security/privacy review → release → post-launch analysis.
+- **Customer support escalation**: Intake → categorization → escalation → resolution → root-cause tracking.
+- **Security access review**: Scope → attestations → remediation → evidence capture → compliance sign-off.
+- **Model evaluation**: Dataset curation → benchmark run → risk review → deployment approval → monitoring.
 
 ## Real use cases with $/hour value framing
 
@@ -51,15 +56,25 @@ value_per_hour_per_employee = total_value_usd / (years * 365 * 24 * employee_cou
 This makes it easy to compare outcomes across enterprises (e.g., hyperscalers and AI labs) on a normalized basis.
 
 ## Continuous compounding (value growth over time)
+## Compounding (value growth over time)
 
-When workflows feed compounding knowledge, automation, and tuning, their value can grow over time. A simple continuous compounding model:
+When workflows compound (learning, automation, better routing), value can increase over time.
+
+### Discrete compounding
+
+```
+compounded_value = initial_value * (1 + growth_rate) ^ years
+compounded_value_per_hour = compounded_value / (years * 365 * 24)
+```
+
+### Continuous compounding
 
 ```
 compounded_value = initial_value * e^(growth_rate * years)
 compounded_value_per_hour = compounded_value / (years * 365 * 24)
 ```
 
-Use this when value increases because the workflow improves itself (better models, better data, fewer rework loops).
+Use the continuous form when value increases because the workflow improves itself (better models, better data, fewer rework loops).
 
 ### Compound compounding (reinforcing flywheels)
 
@@ -73,10 +88,11 @@ compound_compounded_value = initial_value * e^(compound_growth * years)
 Use this to capture reinforcing compounding loops for long-lived enterprise systems.
 
 ## Enterprise grouping taxonomy for $/hour
+## Enterprise grouping taxonomy for $/hour (per employee and beyond)
 
-Use the same value-per-hour framing across a rich, extensible set of groupings. This list is intentionally broad so it can be expanded without limit as new dimensions emerge.
+Apply the same $/hour framing across an extensible set of groupings. The list below is intentionally expansive and can be extended indefinitely as new dimensions emerge.
 
-### Organization structure
+### Organization structure (per employee lens)
 
 - **Company** (global)
 - **Subsidiary**
@@ -92,6 +108,10 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Individual employee**
 - **Cost center**
 - **Program**
+- **Manager chain**
+- **Cost center**
+- **Office/site**
+- **Labor type** (full-time, contractor, partner)
 
 ### Revenue structure
 
@@ -101,12 +121,15 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Customer segment** (SMB, mid-market, enterprise)
 - **Industry**
 - **Channel** (direct, partner, marketplace)
-- **Sales region**
+- **Sales region** (geo or territory)
 - **Account portfolio**
 - **Deal size band**
 - **Pipeline stage**
 - **Revenue stream** (subscription, usage-based, services)
 - **Contract duration**
+- **ARR band**
+- **Contract term**
+- **Pricing model** (usage, seat, hybrid)
 - **Expansion vs. new logo**
 
 ### Operations structure
@@ -122,6 +145,9 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Automation tier**
 - **Exception rate**
 - **Backlog age**
+- **SOP version**
+- **Automation level**
+- **Manual touchpoints**
 
 ### Time structure
 
@@ -133,6 +159,8 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Hour**
 - **Shift**
 - **Seasonality band**
+- **Time zone**
+- **Holiday/peak season**
 
 ### Performance/KPI structure
 
@@ -151,6 +179,12 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **CAC payback**
 - **LTV**
 - **ARR per employee**
+- **Conversion rate**
+- **Win rate**
+- **Forecast accuracy**
+- **Time to resolution**
+- **Quality score**
+- **Compliance pass rate**
 
 ### People & capacity
 
@@ -162,6 +196,9 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Tenure band**
 - **Attrition band**
 - **Manager span of control**
+- **Hiring funnel stage**
+- **Attrition risk**
+- **On-call rotation**
 
 ### Platform/infra
 
@@ -175,6 +212,9 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Vendor**
 - **Cloud region**
 - **Runtime**
+- **Compute tier**
+- **Storage tier**
+- **Latency tier**
 
 ### Security & governance
 
@@ -184,6 +224,43 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Policy set**
 - **Regulatory requirement**
 - **Third-party risk tier**
+- **Threat severity**
+- **Control family**
+- **Exception type**
+
+### Product & engineering
+
+- **Feature area**
+- **Release train**
+- **Bug severity**
+- **Engineering squad**
+- **Service ownership**
+- **Architecture domain**
+- **Tech stack layer**
+
+### Customer & market
+
+- **Customer tier**
+- **Use-case category**
+- **Account health band**
+- **NPS segment**
+- **Support plan**
+
+### Finance & planning
+
+- **Budget vs. actual**
+- **CapEx vs. OpEx**
+- **Run rate**
+- **Cash flow band**
+- **Cost of goods**
+
+### Legal & risk
+
+- **Contract type**
+- **Clause library**
+- **Risk acceptance level**
+- **Jurisdiction**
+- **Litigation status**
 
 ### Knowledge compounding lenses
 
@@ -194,5 +271,8 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Automation coverage**
 - **Feedback loop depth**
 - **Model drift band**
+- **Model retraining trigger**
+- **Feedback loop stage**
+- **Annotation tier**
 
 Each grouping can be combined (e.g., “EMEA → Enterprise → Product Line A → Sales → Q2 → SLA adherence”) to produce a comparable $/hour value signal.
