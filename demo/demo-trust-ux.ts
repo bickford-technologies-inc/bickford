@@ -18,7 +18,6 @@ import {
   DenialReasonCode,
   WhyNotTrace,
 } from "../packages/types/src/canon";
-import { DeniedDecisionPayload } from "../packages/types/src/index";
 import {
   gateSecondActionTooEarly,
   gateAuthorityBoundary,
