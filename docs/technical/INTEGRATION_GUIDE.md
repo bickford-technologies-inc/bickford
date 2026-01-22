@@ -15,6 +15,18 @@ This guide provides step-by-step instructions for integrating the **actual worki
 
 ---
 
+## Embedding retrieval integration
+
+Use the updated embedding query signature to filter results by score and tags when running advisory semantic retrieval.
+
+```ts
+const matches = await querySimilar(tenantId, "escalate billing dispute", {
+  limit: 8,
+  minScore: 0.72,
+  requiredTags: ["billing", "escalation"],
+});
+```
+
 ## Realtime API entrypoints (voice or multimodal)
 
 ### Objective
