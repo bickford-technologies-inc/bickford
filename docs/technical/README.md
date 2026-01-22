@@ -25,6 +25,10 @@ This folder contains technical specifications, architecture, and integration gui
 - **[COPILOT_PERFORMANCE_OPTIMIZATION.md](COPILOT_PERFORMANCE_OPTIMIZATION.md)** - Copilot performance refactoring example
   - Performance hotspot identification
   - Example prompt and optimized response
+- **[COPILOT_CODE_REVIEW_INSTRUCTIONS.md](COPILOT_CODE_REVIEW_INSTRUCTIONS.md)** - Custom instruction guidance
+  - Copilot code review instruction best practices
+  - Repository-wide and path-specific instruction patterns
+  - Troubleshooting and iteration guidance
 - **[AI_MODEL_COMPARISON.md](AI_MODEL_COMPARISON.md)** - AI model comparison guide
   - Task-based examples and prompts
   - Model strengths and fit guidance
@@ -54,6 +58,21 @@ This folder contains technical specifications, architecture, and integration gui
   - Why cross-cutting concerns matter
   - Example logging refactor with AOP
   - Prompt and response walkthrough
+
+- **[REFACTORING_DATA_ACCESS_LAYERS.md](REFACTORING_DATA_ACCESS_LAYERS.md)** - Refactoring data access layers
+  - Repository pattern overview
+  - Example prompts and responses
+  - SQLite refactoring example
+
+- **[COPILOT_CODING_AGENT_PILOT.md](COPILOT_CODING_AGENT_PILOT.md)** - Best practices for piloting GitHub Copilot coding agent
+  - Evaluation criteria and use cases
+  - Security and governance guidance
+  - Pilot planning steps and MCP enhancements
+
+- **[AI_CODE_REVIEW.md](AI_CODE_REVIEW.md)** - Reviewing AI-generated code
+  - Functional checks and testing
+  - Context and intent validation
+  - Code quality and dependency scrutiny
 
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
