@@ -39,17 +39,7 @@ export type AuthorityDecision = {
   timestamp: string;
 };
 
-/**
- * WhyNotTrace
- * Canonical rationale surface.
- * Evaluation-only. No authority. No execution.
- */
-export type WhyNotTrace = {
-  decisionId: string;
-  deniedAt: number;
-  reasonCodes: string[];
-  narrative?: string;
-};
+export type { WhyNotTrace } from "@bickford/types";
 
 export { canonicalHash } from "./hash";
 export { signHash } from "./sign";
