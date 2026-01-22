@@ -1,17 +1,21 @@
+export type EmbeddingMetadata = Record<string, unknown> & {
+  tags?: string[];
+};
+
 export type EmbeddingRecord = {
   key: string;
   tenantId: string;
   embedding: number[];
   sourceFields: string[];
   createdAt: string;
-  metadata?: Record<string, unknown>;
+  metadata?: EmbeddingMetadata;
 };
 
 export type EmbeddingQueryMatch = {
   key: string;
   tenantId: string;
   score: number;
-  metadata?: Record<string, unknown>;
+  metadata?: EmbeddingMetadata;
 };
 
 export type EmbeddingInput = {
@@ -19,7 +23,7 @@ export type EmbeddingInput = {
   key: string;
   summary: string;
   sourceFields?: string[];
-  metadata?: Record<string, unknown>;
+  metadata?: EmbeddingMetadata;
   createdAt?: string;
 };
 
@@ -29,7 +33,7 @@ export type EmbeddingBatchInput = {
     key: string;
     summary: string;
     sourceFields?: string[];
-    metadata?: Record<string, unknown>;
+    metadata?: EmbeddingMetadata;
     createdAt?: string;
   }>;
 };
@@ -37,7 +41,13 @@ export type EmbeddingBatchInput = {
 export type EmbeddingQuery = {
   tenantId: string;
   text: string;
+  options?: EmbeddingQueryOptions;
+};
+
+export type EmbeddingQueryOptions = {
   limit?: number;
+  minScore?: number;
+  requiredTags?: string[];
 };
 
 export type EmbeddingKnowledgeSnapshot = {
@@ -120,7 +130,7 @@ export type EmbeddingVectorIndex = {
   query: (params: {
     tenantId: string;
     embedding: number[];
-    limit: number;
+    options?: EmbeddingQueryOptions;
   }) => Promise<EmbeddingQueryMatch[]>;
 };
 
@@ -162,25 +172,50 @@ export function assertTenantScope(tenantId: string, recordTenantId: string) {
 }
 
 export function createInMemoryVectorIndex() {
-  const records = new Map<string, EmbeddingRecord>();
+  const records = new Map<string, Map<string, EmbeddingRecord>>();
   return {
     async upsert(record: EmbeddingRecord) {
-      records.set(record.key, record);
+      const tenantRecords =
+        records.get(record.tenantId) ?? new Map<string, EmbeddingRecord>();
+      tenantRecords.set(record.key, record);
+      records.set(record.tenantId, tenantRecords);
     },
-    async query(params: { tenantId: string; embedding: number[]; limit: number }) {
+    async query(params: {
+      tenantId: string;
+      embedding: number[];
+      options?: EmbeddingQueryOptions;
+    }) {
       const matches: EmbeddingQueryMatch[] = [];
-      for (const record of records.values()) {
-        if (record.tenantId !== params.tenantId) {
+      const tenantRecords = records.get(params.tenantId);
+      if (!tenantRecords) {
+        return matches;
+      }
+      const requiredTags = params.options?.requiredTags ?? [];
+      const minScore = params.options?.minScore;
+      for (const record of tenantRecords.values()) {
+        const score = cosineSimilarity(params.embedding, record.embedding);
+        if (minScore !== undefined && score < minScore) {
+          continue;
+        }
+        if (
+          requiredTags.length > 0 &&
+          !requiredTags.every((tag) =>
+            Array.isArray(record.metadata?.tags)
+              ? record.metadata?.tags?.includes(tag)
+              : false
+          )
+        ) {
           continue;
         }
         matches.push({
           key: record.key,
           tenantId: record.tenantId,
-          score: cosineSimilarity(params.embedding, record.embedding),
+          score,
           metadata: record.metadata,
         });
       }
-      return matches.sort((a, b) => b.score - a.score).slice(0, params.limit);
+      const limit = params.options?.limit ?? 5;
+      return matches.sort((a, b) => b.score - a.score).slice(0, limit);
     },
   } satisfies EmbeddingVectorIndex;
 }
@@ -225,13 +260,15 @@ export async function enrichEmbeddingsBatch(
 export async function retrieveSimilarEmbeddings(
   query: EmbeddingQuery,
   provider: EmbeddingProvider,
-  index: EmbeddingVectorIndex
+  index: EmbeddingVectorIndex,
+  options?: EmbeddingQueryOptions
 ) {
   const embedding = await provider(query.text);
+  const resolvedOptions = { ...query.options, ...options };
   return index.query({
     tenantId: query.tenantId,
     embedding,
-    limit: query.limit ?? 5,
+    options: resolvedOptions,
   });
 }
 
@@ -399,6 +436,10 @@ export function applyDynamicConfiguration(
 ): EmbeddingQuery {
   return {
     ...query,
-    limit: query.limit ?? config.limit,
+    options: {
+      ...query.options,
+      limit: query.options?.limit ?? config.limit,
+      minScore: query.options?.minScore ?? config.similarityThreshold,
+    },
   };
 }
