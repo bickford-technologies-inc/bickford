@@ -22,6 +22,9 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
+- **[COPILOT_PERFORMANCE_OPTIMIZATION.md](COPILOT_PERFORMANCE_OPTIMIZATION.md)** - Copilot performance refactoring example
+  - Performance hotspot identification
+  - Example prompt and optimized response
 - **[COPILOT_CODE_REVIEW_INSTRUCTIONS.md](COPILOT_CODE_REVIEW_INSTRUCTIONS.md)** - Custom instruction guidance
   - Copilot code review instruction best practices
   - Repository-wide and path-specific instruction patterns
