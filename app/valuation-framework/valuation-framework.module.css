@@ -1,0 +1,420 @@
+.page {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.6;
+  color: #1a1a1a;
+  background: #ffffff;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 60px 40px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 80px;
+  padding: 60px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-radius: 12px;
+}
+
+.heroTitle {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-size: 24px;
+  opacity: 0.9;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.valuationHighlight {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 30px;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.valuationAmount {
+  font-size: 72px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #ffd700;
+}
+
+.valuationDesc {
+  font-size: 20px;
+  opacity: 0.9;
+}
+
+.section {
+  margin-bottom: 80px;
+}
+
+.sectionTitle {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #000000;
+  border-left: 5px solid #007bff;
+  padding-left: 20px;
+}
+
+.sectionTitleLight {
+  color: #ffffff;
+  border-left-color: #ffffff;
+}
+
+.sectionTitleAccentBlue {
+  color: #007bff;
+  border-left-color: #007bff;
+}
+
+.sectionTitleAccentGold {
+  color: #ffffff;
+  border-left-color: #ffd700;
+}
+
+.subsectionTitle {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #333333;
+}
+
+.valueDriverGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 30px;
+  margin: 40px 0;
+}
+
+.valueDriverCard {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 30px;
+  border-left: 5px solid #007bff;
+  position: relative;
+}
+
+.valueDriverCardPrimary {
+  border-left-color: #28a745;
+  background: #f0f9f4;
+}
+
+.valueDriverCardSecondary {
+  border-left-color: #ffc107;
+  background: #fff8e6;
+}
+
+.valueDriverCardTertiary {
+  border-left-color: #dc3545;
+  background: #fff0f0;
+}
+
+.driverHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.driverIcon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-right: 15px;
+  background: #007bff;
+  color: #ffffff;
+}
+
+.driverIconPrimary {
+  background: #28a745;
+}
+
+.driverIconSecondary {
+  background: #ffc107;
+  color: #000000;
+}
+
+.driverIconTertiary {
+  background: #dc3545;
+}
+
+.driverTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.driverValue {
+  font-size: 32px;
+  font-weight: 700;
+  color: #007bff;
+  margin: 15px 0;
+}
+
+.driverValuePrimary {
+  color: #28a745;
+}
+
+.driverValueSecondary {
+  color: #ffc107;
+}
+
+.driverValueTertiary {
+  color: #dc3545;
+}
+
+.driverDesc {
+  font-size: 16px;
+  color: #666666;
+  line-height: 1.6;
+}
+
+.driverList {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
+.technicalCapabilities {
+  background: #e7f3ff;
+  border-radius: 12px;
+  padding: 40px;
+  margin: 40px 0;
+}
+
+.capabilityGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.capabilityCard {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 25px;
+  border: 2px solid #007bff;
+}
+
+.capabilityCardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #000000;
+}
+
+.capabilityCardBody {
+  font-size: 14px;
+  color: #666666;
+  line-height: 1.6;
+}
+
+.marketAnalysis {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 40px;
+  margin: 40px 0;
+}
+
+.marketGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.marketCard {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  border: 2px solid #e5e5e5;
+}
+
+.marketValue {
+  font-size: 36px;
+  font-weight: 700;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.marketLabel {
+  font-size: 16px;
+  color: #666666;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.marketDesc {
+  font-size: 14px;
+  color: #666666;
+  line-height: 1.5;
+}
+
+.competitiveMoat {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 40px;
+  margin: 40px 0;
+}
+
+.moatGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.moatCard {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 25px;
+}
+
+.moatCardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+.moatCardBody {
+  font-size: 14px;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.valuationBreakdown {
+  background: #1e1e1e;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 40px;
+  margin: 40px 0;
+}
+
+.breakdownGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.breakdownItem {
+  text-align: center;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.breakdownValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffd700;
+  margin-bottom: 10px;
+}
+
+.breakdownLabel {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.breakdownFooter {
+  text-align: center;
+  margin-top: 40px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.breakdownFooterTitle {
+  color: #ffd700;
+  font-size: 24px;
+  margin-bottom: 15px;
+  padding-top: 20px;
+}
+
+.breakdownFooterBody {
+  font-size: 18px;
+  opacity: 0.9;
+  padding: 0 24px 24px;
+}
+
+.riskFactors {
+  background: #fff3cd;
+  border: 2px solid #ffc107;
+  border-radius: 12px;
+  padding: 40px;
+  margin: 40px 0;
+}
+
+.riskGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.riskCard {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 25px;
+  border-left: 4px solid #ffc107;
+}
+
+.riskCardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #000000;
+}
+
+.riskCardBody {
+  font-size: 14px;
+  color: #666666;
+  line-height: 1.6;
+}
+
+.conclusion {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 50px;
+  text-align: center;
+  margin: 40px 0;
+}
+
+.conclusionTitle {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.conclusionBody {
+  font-size: 18px;
+  opacity: 0.9;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .valueDriverGrid,
+  .capabilityGrid,
+  .marketGrid,
+  .moatGrid,
+  .breakdownGrid,
+  .riskGrid {
+    grid-template-columns: 1fr;
+  }
+}
