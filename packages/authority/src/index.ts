@@ -30,6 +30,7 @@ export type AuthorityDecision = {
 };
 
 export type { WhyNotTrace } from "@bickford/types";
+export type AuthorityContext = Record<string, unknown>;
 
 export { canonicalHash } from "./hash.js";
 export { signHash } from "./sign.js";

@@ -12,6 +12,7 @@
  * This is a simplified demonstration that doesn't require a database.
  */
 
+import type { DeniedDecisionPayload } from "../packages/types/src/index";
 import {
   Action,
   DenialReasonCode,

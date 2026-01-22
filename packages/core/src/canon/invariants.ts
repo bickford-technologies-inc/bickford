@@ -7,7 +7,7 @@
  * Violations are HARD_FAIL - execution cannot proceed.
  */
 
-import { Invariant, CanonLevel, AuthorityCheckResult, DenialReasonCode } from "./types";
+import { Invariant, CanonLevel, AuthorityCheckResult, DenialReasonCode } from "./types.js";
 
 export const INVARIANTS: Invariant[] = [
   {

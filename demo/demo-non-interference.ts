@@ -111,6 +111,6 @@ console.log("KEY INSIGHTS:");
 console.log("=".repeat(70));
 console.log("✅ Deterministic: Same inputs always produce same results");
 console.log("✅ Pre-execution: Check happens BEFORE action is taken");
-console.log("✅ Auditable: Clear rationale with violatedAgent and deltaTTV");
+console.log("✅ Auditable: Clear reason when the evaluator provides one");
 console.log("✅ Multi-agent safe: No agent can improve at expense of others");
 console.log();
