@@ -316,7 +316,7 @@ A layered, authoritative preinstall guard is now required for all CI and Vercel 
 **How to use (Vercel/CI install command):**
 
 ```bash
-bash ci/guards/ENVIRONMENT_PRECONDITION.sh && corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install --frozen-lockfile
+bash ci/guards/ENVIRONMENT_PRECONDITION.sh && corepack enable && corepack prepare pnpm@10.28.0 --activate && pnpm install --frozen-lockfile
 ```
 
 **Exit Codes:**
