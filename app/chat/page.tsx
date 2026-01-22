@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { runMakeBuyEngine } from "../lib/makeBuy";
 import styles from "./chat.module.css";
 
 type ChatRole = "user" | "agent";
@@ -45,6 +46,16 @@ export default function ChatPage() {
     if (!trimmed) return;
 
     const now = Date.now();
+    const decision = runMakeBuyEngine(trimmed);
+    const matchedSignals = decision.matchedSignals
+      .map((signal) => `${signal.label}:${signal.weight}`)
+      .join(", ");
+    const agentContent = [
+      `input=${trimmed} / output=${decision.value}`,
+      `score=${decision.score}`,
+      `signals=${matchedSignals || "none"}`,
+      "created by bickford via intent realization",
+    ].join("\n");
 
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
@@ -56,7 +67,7 @@ export default function ChatPage() {
     const agentMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: "agent",
-      content: "Acknowledged. Intent recorded.",
+      content: agentContent,
       timestamp: now + 1,
     };
 
