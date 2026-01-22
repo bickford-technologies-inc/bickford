@@ -19,7 +19,7 @@ const others1 = [
   { agentId: "agent-B", ttvBaseline: 150 },
   { agentId: "agent-C", ttvBaseline: 200 },
 ];
-const projectedTTV1 = {
+const projectedTTV1: Record<string, number> = {
   "agent-B": 150, // No change
   "agent-C": 200, // No change
 };
@@ -45,7 +45,7 @@ const others2 = [
   { agentId: "agent-B", ttvBaseline: 150 },
   { agentId: "agent-C", ttvBaseline: 200 },
 ];
-const projectedTTV2 = {
+const projectedTTV2: Record<string, number> = {
   "agent-B": 152.4, // Increase by 2.4ms
   "agent-C": 200,   // No change
 };
@@ -73,7 +73,7 @@ const others3 = [
   { agentId: "agent-B", ttvBaseline: 150 },
   { agentId: "agent-C", ttvBaseline: 200 },
 ];
-const projectedTTV3 = {
+const projectedTTV3: Record<string, number> = {
   "agent-B": 155, // Increase by 5ms
   "agent-C": 205, // Increase by 5ms
 };
