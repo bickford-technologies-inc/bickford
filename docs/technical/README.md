@@ -44,6 +44,11 @@ This folder contains technical specifications, architecture, and integration gui
   - Request setup and output structure
   - Prompting workflows and safety guidance
 
+- **[CROSS_CUTTING_CONCERNS.md](CROSS_CUTTING_CONCERNS.md)** - Copilot guidance for cross-cutting concerns
+  - Why cross-cutting concerns matter
+  - Example logging refactor with AOP
+  - Prompt and response walkthrough
+
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
   - Bickford integration pattern
