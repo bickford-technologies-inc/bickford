@@ -22,6 +22,14 @@ This folder contains technical specifications, architecture, and integration gui
   - Agent framework integrations
   - Configuration reference
   - Troubleshooting
+- **[COPILOT_CODE_REVIEW_INSTRUCTIONS.md](COPILOT_CODE_REVIEW_INSTRUCTIONS.md)** - Custom instruction guidance
+  - Copilot code review instruction best practices
+  - Repository-wide and path-specific instruction patterns
+  - Troubleshooting and iteration guidance
+- **[AI_MODEL_COMPARISON.md](AI_MODEL_COMPARISON.md)** - AI model comparison guide
+  - Task-based examples and prompts
+  - Model strengths and fit guidance
+  - Visual reasoning scenarios
 - **[REALTIME_API.md](REALTIME_API.md)** - Realtime API guide
   - Voice agent setup
   - Connection methods
@@ -39,6 +47,24 @@ This folder contains technical specifications, architecture, and integration gui
   - Model overview and use cases
   - Request setup and output structure
   - Prompting workflows and safety guidance
+- **[COPILOT_CHAT_EXTRACTING_INFORMATION.md](COPILOT_CHAT_EXTRACTING_INFORMATION.md)** - Extracting information with Copilot Chat
+  - Issue and discussion summarization workflows
+  - Example prompts and responses
+
+- **[CROSS_CUTTING_CONCERNS.md](CROSS_CUTTING_CONCERNS.md)** - Copilot guidance for cross-cutting concerns
+  - Why cross-cutting concerns matter
+  - Example logging refactor with AOP
+  - Prompt and response walkthrough
+
+- **[REFACTORING_DATA_ACCESS_LAYERS.md](REFACTORING_DATA_ACCESS_LAYERS.md)** - Refactoring data access layers
+  - Repository pattern overview
+  - Example prompts and responses
+  - SQLite refactoring example
+
+- **[COPILOT_CODING_AGENT_PILOT.md](COPILOT_CODING_AGENT_PILOT.md)** - Best practices for piloting GitHub Copilot coding agent
+  - Evaluation criteria and use cases
+  - Security and governance guidance
+  - Pilot planning steps and MCP enhancements
 
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
