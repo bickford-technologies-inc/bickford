@@ -13,6 +13,23 @@ Business process workflows are repeatable, ordered sequences of work that turn a
 - **Hiring pipeline**: Sourcing → screening → interviews → offer → onboarding.
 - **Procurement**: Request → vendor evaluation → compliance checks → approval → purchase order issuance.
 
+## Real use cases with $/hour value framing
+
+Use the same pattern across functions: assign a total value (cost avoided, revenue gained, risk reduced) and normalize to $/hour for comparison.
+
+- **Enterprise onboarding**: reduce manual provisioning time by 2,000 hours/year.
+  - `value_per_hour = total_labor_cost_avoided_usd / (years * 365 * 24)`
+- **Deal desk acceleration**: shorten time-to-contract by 10 days and improve close rate.
+  - `value_per_hour = incremental_gross_margin_usd / (years * 365 * 24)`
+- **Incident response**: reduce mean time to mitigation (MTTM) by 30%.
+  - `value_per_hour = outage_cost_avoided_usd / (years * 365 * 24)`
+- **Policy change management**: avoid compliance penalties.
+  - `value_per_hour = expected_penalty_avoided_usd / (years * 365 * 24)`
+- **Procurement**: consolidate vendors, lower unit cost.
+  - `value_per_hour = annual_savings_usd / (years * 365 * 24)`
+- **Hiring pipeline**: cut time-to-fill by 20%.
+  - `value_per_hour = productivity_gain_usd / (years * 365 * 24)`
+
 ## Value-per-hour framing
 
 To estimate value created per hour, divide the total value for a known time horizon by the total hours in that horizon:
@@ -22,6 +39,16 @@ value_per_hour = total_value_usd / (years * 365 * 24)
 ```
 
 This provides a simple baseline that can be refined later with actual utilization or working-hour assumptions.
+
+### Per-employee $/hour
+
+For per-employee measurement, divide by employee count to compare across teams or organizations:
+
+```
+value_per_hour_per_employee = total_value_usd / (years * 365 * 24 * employee_count)
+```
+
+This makes it easy to compare outcomes across enterprises (e.g., hyperscalers and AI labs) on a normalized basis.
 
 ## Continuous compounding (value growth over time)
 
@@ -34,6 +61,17 @@ compounded_value_per_hour = compounded_value / (years * 365 * 24)
 
 Use this when value increases because the workflow improves itself (better models, better data, fewer rework loops).
 
+### Compound compounding (reinforcing flywheels)
+
+Some workflows create second-order effects (e.g., better data → better models → higher automation → more data). Model that with layered growth:
+
+```
+compound_growth = base_growth_rate + flywheel_growth_rate
+compound_compounded_value = initial_value * e^(compound_growth * years)
+```
+
+Use this to capture reinforcing compounding loops for long-lived enterprise systems.
+
 ## Enterprise grouping taxonomy for $/hour
 
 Use the same value-per-hour framing across a rich, extensible set of groupings. This list is intentionally broad so it can be expanded without limit as new dimensions emerge.
@@ -41,6 +79,7 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 ### Organization structure
 
 - **Company** (global)
+- **Subsidiary**
 - **Region** (NA, EMEA, APAC, LATAM)
 - **Country**
 - **State/Province**
@@ -51,6 +90,8 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Team**
 - **Role family**
 - **Individual employee**
+- **Cost center**
+- **Program**
 
 ### Revenue structure
 
@@ -64,6 +105,9 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Account portfolio**
 - **Deal size band**
 - **Pipeline stage**
+- **Revenue stream** (subscription, usage-based, services)
+- **Contract duration**
+- **Expansion vs. new logo**
 
 ### Operations structure
 
@@ -75,6 +119,9 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Risk tier**
 - **Escalation level**
 - **Approval authority band**
+- **Automation tier**
+- **Exception rate**
+- **Backlog age**
 
 ### Time structure
 
@@ -85,6 +132,7 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Day**
 - **Hour**
 - **Shift**
+- **Seasonality band**
 
 ### Performance/KPI structure
 
@@ -99,6 +147,10 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Net retention**
 - **Churn**
 - **SLA adherence**
+- **NPS**
+- **CAC payback**
+- **LTV**
+- **ARR per employee**
 
 ### People & capacity
 
@@ -108,6 +160,8 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Time to proficiency**
 - **Training cohort**
 - **Tenure band**
+- **Attrition band**
+- **Manager span of control**
 
 ### Platform/infra
 
@@ -119,6 +173,8 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Model version**
 - **Feature flag**
 - **Vendor**
+- **Cloud region**
+- **Runtime**
 
 ### Security & governance
 
@@ -127,6 +183,7 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Audit scope**
 - **Policy set**
 - **Regulatory requirement**
+- **Third-party risk tier**
 
 ### Knowledge compounding lenses
 
@@ -135,5 +192,7 @@ Use the same value-per-hour framing across a rich, extensible set of groupings. 
 - **Recall frequency**
 - **Reusability score**
 - **Automation coverage**
+- **Feedback loop depth**
+- **Model drift band**
 
 Each grouping can be combined (e.g., “EMEA → Enterprise → Product Line A → Sales → Q2 → SLA adherence”) to produce a comparable $/hour value signal.

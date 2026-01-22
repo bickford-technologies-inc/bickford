@@ -68,6 +68,7 @@ async function getRepoDetails(repo) {
     languages: {},
     openIssues: repo.open_issues_count || 0,
     openPRs: 0,
+    openPRDetails: [],
     workflows: [],
     keyDirs: [],
     hasReadme: false,
@@ -85,13 +86,20 @@ async function getRepoDetails(repo) {
     details.languages = langResponse.data;
 
     // Count open PRs
-    const prResponse = await octokit.pulls.list({
+    const openPRs = await octokit.paginate(octokit.pulls.list, {
       owner: OWNER,
       repo: repo.name,
       state: 'open',
-      per_page: 1,
+      per_page: 100,
     });
-    details.openPRs = prResponse.data.length;
+    details.openPRs = openPRs.length;
+    details.openPRDetails = openPRs.map(pr => ({
+      number: pr.number,
+      title: pr.title,
+      url: pr.html_url,
+      updatedAt: pr.updated_at,
+      author: pr.user?.login || 'unknown',
+    }));
 
     // Check for workflow files
     try {
@@ -254,6 +262,13 @@ function generateInventoryMarkdown(repoDetails) {
     lines.push(`- **All Languages**: ${formatLanguages(repo.languages)}`);
     lines.push(`- **Open Issues**: ${repo.openIssues}`);
     lines.push(`- **Open PRs**: ${repo.openPRs}`);
+    if (repo.openPRDetails.length > 0) {
+      const prLines = repo.openPRDetails
+        .sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt))
+        .map(pr => `  - #${pr.number} ${pr.title} (by ${pr.author}, updated ${formatDate(pr.updatedAt)}) ${pr.url}`);
+      lines.push('- **Open PR Details**:');
+      lines.push(...prLines);
+    }
     lines.push(`- **Workflows**: ${repo.workflows.length > 0 ? repo.workflows.join(', ') : 'none'}`);
     lines.push(`- **Key Directories**: ${repo.keyDirs.length > 0 ? repo.keyDirs.join(', ') : 'none'}`);
     lines.push(`- **Has README**: ${repo.hasReadme ? 'yes' : 'no'}`);
