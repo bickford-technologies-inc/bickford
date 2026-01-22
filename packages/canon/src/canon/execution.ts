@@ -20,7 +20,7 @@ import {
   TokenStreamProof,
   ISO8601,
 } from "@bickford/types";
-import { requireCanonRefs } from "./invariants";
+import { requireCanonRefs } from "./invariants.js";
 
 type ExecutionContextInput = {
   executionId: string;
@@ -67,9 +67,7 @@ function hashSha256(value: string): string {
 }
 
 function stableStringify(value: Record<string, unknown>): string {
-  const entries = Object.entries(value).sort(([a], [b]) =>
-    a.localeCompare(b),
-  );
+  const entries = Object.entries(value).sort(([a], [b]) => a.localeCompare(b));
   return JSON.stringify(Object.fromEntries(entries));
 }
 
@@ -206,7 +204,7 @@ export interface ExecutionResult {
 
 export function executeWithCanon(
   action: Action,
-  context: ExecutionContext
+  context: ExecutionContext,
 ): ExecutionResult {
   // Hard gate: replay mode cannot execute
   if (context.mode === "replay") {
