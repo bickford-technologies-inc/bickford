@@ -4,12 +4,12 @@
  * LOCKED: This is the canonical Bickford decision framework
  */
 
-export * from "./types";
-export * from "./invariants";
-export * from "./optr";
-export * from "./promotion";
-export * from "./promote";
-export * from "./nonInterference";
-export * from "./execution";
-export * from "./migration";
-export * from "./runtime";
+export * from "./types.js";
+export * from "./invariants.js";
+export * from "./optr.js";
+export * from "./promotion.js";
+export * from "./promote.js";
+export * from "./nonInterference.js";
+export * from "./execution.js";
+export * from "./migration.js";
+export * from "./runtime.js";

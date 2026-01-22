@@ -21,19 +21,19 @@
 export * from "@bickford/types";
 
 // Invariants + Authority Enforcement
-export * from "./invariants";
+export * from "./invariants.js";
 
 // OPTR Decision Engine
-export * from "./optr";
+export * from "./optr.js";
 
 // Promotion Gate
-export * from "./promotion";
+export * from "./promotion.js";
 
 // Non-Interference
-export * from "./nonInterference";
+export * from "./nonInterference.js";
 
 // Authority Enforcement
-export * from "./authority";
+export * from "./authority.js";
 
 /**
  * Bickford Canon Version

@@ -13,9 +13,21 @@ import crypto from "node:crypto";
  *   tsx demo/demo-ledger.ts
  */
 
-import { appendLedger, getLedger } from "../packages/ledger/src/index";
+import { appendLedger, getLedger } from "../packages/core/src/ledger/index";
 import { authorize } from "../packages/authority/src/index";
 import type { Intent } from "../packages/types/src/index";
+import crypto from "node:crypto";
+
+type LedgerRecord = {
+  id: string;
+  hash: string;
+  createdAt: string;
+  intent: Intent;
+  decision: {
+    outcome?: string;
+    [key: string]: unknown;
+  };
+};
 
 async function main() {
   console.log("=== Bickford Ledger Persistence Demo ===\n");
@@ -81,7 +93,7 @@ async function main() {
 
   // Test 3: Retrieve ledger
   console.log("Test 3: Retrieving ledger...");
-  const ledger = await getLedger();
+  const ledger = (await getLedger()) as unknown as LedgerRecord[];
   console.log("  ✓ Retrieved", ledger.length, "entries");
 
   if (ledger.length > 0) {
@@ -112,7 +124,7 @@ async function main() {
 
   // Test 5: Verify entries persist
   console.log("Test 5: Verifying persistence...");
-  const ledger2 = await getLedger();
+  const ledger2 = (await getLedger()) as unknown as LedgerRecord[];
   console.log("  ✓ Total entries now:", ledger2.length);
 
   // Verify our entries are in the ledger
