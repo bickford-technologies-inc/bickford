@@ -35,11 +35,11 @@ Bickford's Execution Authority Platform provides deterministic runtime enforceme
 
 ### Strategic Value Proposition
 
-| Component | Value Delivered |
-| --- | --- |
-| Constitutional AI (Anthropic) | Training-time safety principles |
-| Execution Authority (Bickford) | Runtime enforcement guarantees |
-| Combined Platform | Enterprise-ready governance solution |
+| Component                      | Value Delivered                      |
+| ------------------------------ | ------------------------------------ |
+| Constitutional AI (Anthropic)  | Training-time safety principles      |
+| Execution Authority (Bickford) | Runtime enforcement guarantees       |
+| Combined Platform              | Enterprise-ready governance solution |
 
 ### Recommended Action
 
@@ -60,13 +60,13 @@ Constitutional AI represents a breakthrough in training-time alignment. Your RLH
 
 ### The Missing Layer
 
-| Anthropic's Current Layer | The Missing Layer |
-| --- | --- |
-| Training-time alignment | Runtime enforcement gates |
-| Constitutional principles | Deterministic constraints |
-| Policy documentation | Cryptographic audit trails |
-| Human oversight | Automated compliance certs |
-| Safety philosophy | Architectural impossibility |
+| Anthropic's Current Layer | The Missing Layer           |
+| ------------------------- | --------------------------- |
+| Training-time alignment   | Runtime enforcement gates   |
+| Constitutional principles | Deterministic constraints   |
+| Policy documentation      | Cryptographic audit trails  |
+| Human oversight           | Automated compliance certs  |
+| Safety philosophy         | Architectural impossibility |
 
 ### Market Reality
 
@@ -156,11 +156,11 @@ Bickford Chat (internally: Execution Convergence Runtime) is a multi-agent execu
 
 ### Constitutional AI Integration Points
 
-| Constitutional AI Principle | Bickford Enforcement Mechanism |
-| --- | --- |
-| Harmlessness training | Runtime safety gates that prevent harmful actions |
-| Honest/accurate responses | Cryptographic audit trails prevent retroactive manipulation |
-| Refusal of dangerous requests | Deterministic policy enforcement with no override path |
+| Constitutional AI Principle    | Bickford Enforcement Mechanism                                     |
+| ------------------------------ | ------------------------------------------------------------------ |
+| Harmlessness training          | Runtime safety gates that prevent harmful actions                  |
+| Honest/accurate responses      | Cryptographic audit trails prevent retroactive manipulation        |
+| Refusal of dangerous requests  | Deterministic policy enforcement with no override path             |
 | Transparency about limitations | Immutable decision logs show exactly what constraints were applied |
 
 **Critical Insight:** Constitutional AI creates models that want to be safe. Bickford creates systems where unsafe actions are architecturally impossible.
@@ -406,11 +406,11 @@ This was a real infrastructure incident resolved using the convergence pattern n
 
 **Claude Enterprise + Bickford Enforcement (Bundled Offering)**
 
-| Tier | Features | Annual Add-on Pricing |
-| --- | --- | --- |
-| Tier 1 | Audit trails | +$10K/year per deployment |
-| Tier 2 | Runtime enforcement | +$25K/year |
-| Tier 3 | Full governance suite | +$50K/year |
+| Tier   | Features              | Annual Add-on Pricing     |
+| ------ | --------------------- | ------------------------- |
+| Tier 1 | Audit trails          | +$10K/year per deployment |
+| Tier 2 | Runtime enforcement   | +$25K/year                |
+| Tier 3 | Full governance suite | +$50K/year                |
 
 ### Projected Adoption Rates
 
