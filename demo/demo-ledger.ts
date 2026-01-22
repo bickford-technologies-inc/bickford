@@ -16,7 +16,6 @@ import crypto from "node:crypto";
 import { appendLedger, getLedger } from "../packages/core/src/ledger/index";
 import { authorize } from "../packages/authority/src/index";
 import type { Intent } from "../packages/types/src/index";
-import crypto from "node:crypto";
 
 type LedgerRecord = {
   id: string;
@@ -59,14 +58,7 @@ async function main() {
   console.log("  Decision:", decision.outcome);
   console.log("  Reason:", decision.reason);
 
-  const ledgerEntry = {
-    id: decision.id,
-    event: {
-      id: intent.id,
-      timestamp: new Date().toISOString(),
-    },
-  };
-  const entry = await appendLedger("demo-thread", ledgerEntry);
+  const entry = await appendLedger(intent, decision);
   console.log("  ✓ Ledger entry created");
   console.log("    ID:", entry.id);
   console.log("    Hash:", entry.hash.substring(0, 16) + "...");

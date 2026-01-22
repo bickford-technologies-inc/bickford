@@ -1,7 +1,26 @@
-import { Intent, Decision } from "@bickford/types";
-import crypto from "crypto";
+import type { Intent } from "@bickford/types";
+import crypto from "node:crypto";
+
 export type { WhyNotTrace } from "@bickford/types";
-  if (!input || !input.intent) {
+
+export type AuthorityDecision = {
+  id: string;
+  intent: Intent;
+  outcome: "ALLOW" | "DENY";
+  reason: string;
+  timestamp: string;
+};
+
+export type AuthorityContext = Record<string, unknown>;
+
+export type AuthorizeInput = {
+  intent: Intent;
+  tenantId?: string;
+  context?: AuthorityContext;
+};
+
+export function authorize(input: AuthorizeInput): AuthorityDecision {
+  if (!input || !input.intent || !input.intent.action) {
     return {
       id: crypto.randomUUID(),
       intent: input?.intent ?? { id: "UNKNOWN", action: "UNKNOWN" },
@@ -20,17 +39,6 @@ export type { WhyNotTrace } from "@bickford/types";
     timestamp: new Date().toISOString(),
   };
 }
-
-export type AuthorityDecision = {
-  id: string;
-  intent: any;
-  outcome: "ALLOW" | "DENY";
-  reason: string;
-  timestamp: string;
-};
-
-export type { WhyNotTrace } from "@bickford/types";
-export type AuthorityContext = Record<string, unknown>;
 
 export { canonicalHash } from "./hash.js";
 export { signHash } from "./sign.js";
