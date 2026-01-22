@@ -16,7 +16,7 @@ This guide explains the Realtime API mechanics. For Bickford, the key question i
 
 | Realtime capability | What it enables in Bickford | Where it lands |
 | --- | --- | --- |
-| `conversation.item.create` with `input_text` or audio transcript | Capture spoken intent as text | Send intent to `POST /api/execute` to get a decision + ledger entry. |
+| `conversation.item.create` with `input_text` or audio transcript | Capture spoken intent as text | Send transcript + intent to `POST /api/realtime`, then forward intent to `POST /api/execute` for a decision + ledger entry. |
 | `response.output_text.delta` | Live feedback while the model is still speaking/typing | Streaming UI updates (recommended for `packages/web-ui` when realtime UI is built). |
 | `response.done` | Final, stable output | Persist the final transcript and decision summary. |
 | Session end | Durable audit trail | Capture a session completion event (use `@bickford/session-completion-runtime`). |
@@ -25,10 +25,64 @@ This guide explains the Realtime API mechanics. For Bickford, the key question i
 
 1. **Connect Realtime** (WebRTC or WebSocket). This unlocks low-latency speech input.
 2. **Turn speech into intent**: listen for `response.done` or transcript events, then map the final transcript into a single `intent` string.
-3. **Call Bickford**: send `intent` to `POST /api/execute` and keep the returned `ledgerEntry.id` for traceability.
-4. **Persist the session**: on session end, record the transcript, decision outcome, and `ledgerEntry.id` using the Session Completion Runtime so the outcome is recoverable and auditable.
+3. **Persist the transcript**: send `{ sessionId, transcript, intent, metadata }` to `POST /api/realtime` to store the raw transcript and intent together for auditability.
+4. **Optionally steer configuration**: include `configOverrides` on `POST /api/realtime` or `POST /api/execute` when you need a known runtime profile (e.g., `"routing": "low-latency"`). This creates a durable configuration artifact you can reference later.
+5. **Option A (single call)**: set `execute: true` on `POST /api/realtime` to archive and execute in one step (the transcript + metadata are captured in the ledger entry).
+6. **Option B (two steps)**: call `POST /api/execute` with the extracted intent and keep the returned `ledgerEntry.id` for traceability.
+7. **Persist the session**: on session end, record the transcript, decision outcome, and `ledgerEntry.id` using the Session Completion Runtime so the outcome is recoverable and auditable.
+8. **Compound knowledge**: every execution writes a knowledge record (`trace/knowledge-YYYY-MM-DD.jsonl`) so the system keeps a durable memory of decisions and their context.
+9. **Compound dynamic performance**: every execution writes a performance record (`trace/performance-YYYY-MM-DD.jsonl`) with duration and traceability so you can observe latency trends over time.
+10. **Compound dynamic configuration**: every execution writes a configuration record (`trace/configuration-YYYY-MM-DD.jsonl`) with the resolved configuration fingerprint and any overrides applied.
 
-> Coaching note: Steps 2–4 are the “why” behind the mechanics. They make realtime speech actionable by binding it to Bickford’s decision engine and ledger.
+> Coaching note: Steps 2–4 are the “why” behind the mechanics. They make realtime speech actionable by binding it to Bickford’s decision engine, ledger, and configuration trail.
+
+## Continuous compounding (business workflows + value tracking)
+
+If you want **continuous compounding**, aim for a loop where every realtime action produces:
+
+1. **A decision outcome** (execution + ledger).
+2. **A durable knowledge artifact** (so the system remembers).
+3. **A measurable value signal** (so you can steer automation by impact).
+
+Think of each workflow as: **Intent → Decision → Action → Knowledge → Value signal → Next intent**.
+
+### Real-world workflow examples (what each action enables)
+
+| Workflow | Realtime trigger | Automation action | Knowledge artifact | Value signal (USD/hr) |
+| --- | --- | --- | --- | --- |
+| Support triage | Live transcript identifies issue type | Auto-route to L1/L2 queue, draft reply | Resolution pattern + outcomes | Hours saved per resolved ticket |
+| Sales qualification | Call transcript signals buying intent | Create CRM opportunity, schedule follow-up | Qualified lead record | Rep time saved × avg hourly rate |
+| Incident response | “Service down” detected | Page on-call, open incident | Incident timeline + runbook path | Downtime avoided × revenue/hr |
+| Finance approvals | “Approve spend” detected | Route to approver + policy check | Approval decision + rationale | Approval cycle time reduced |
+| Legal intake | “Review contract” detected | Create case + assign reviewer | Risk classification + clause map | Review hours reduced |
+| R&D experiment | “Run experiment” detected | Start job + log params | Experiment snapshot + result | Research iteration time saved |
+
+> Coaching note: each workflow ties the **action** to a **value signal**, so you can decide what to automate next based on compounding returns.
+
+### Value tracking structure (examples you can extend)
+
+Track value as **USD per hour saved or gained**, segmented by the dimensions you care about. Below is a starter set — expand as needed:
+
+- **Region**: AMER, EMEA, APAC, LATAM, NA, EU, UK, ANZ.
+- **Business unit**: Sales, Support, Finance, Legal, Security, Engineering, Research, Operations.
+- **Sales region**: North America, EMEA Enterprise, APAC Enterprise, LATAM Mid-Market.
+- **Customer tier**: Enterprise, Mid-Market, SMB, Public Sector.
+- **Product line**: Core, Enterprise, Edge, Platform, API.
+- **Channel**: Inbound, Outbound, Partner, Self-serve.
+- **KPI**: Revenue/hr, Margin/hr, Tickets/hr, Incidents/hr, Deployments/hr, Conversion/hr.
+- **Team**: SRE, Infra, Security, Applied AI, Product, Growth.
+- **Role**: AE, CSM, SE, Support Engineer, Analyst, PM.
+- **Employee**: per-employee USD/hr baseline (use comp to normalize impact).
+- **Workflow**: onboarding, renewals, escalations, approvals, incident response.
+- **Account segment**: Top 50, Strategic, Long-tail.
+- **Deal stage**: Discovery, Evaluation, Procurement, Close.
+- **Risk class**: Low, Medium, High, Critical.
+- **SLA tier**: Platinum, Gold, Silver.
+- **Locale**: Country/State/City/Timezone.
+- **Shift**: Day, Swing, Overnight.
+- **System**: Datacenter/Cloud region, cluster, environment (prod/stage/dev).
+
+Each execution can include a `metadata` object capturing these dimensions so you can compute **compounding value per hour** over time.
 
 ## Realtime speech-to-speech sessions
 

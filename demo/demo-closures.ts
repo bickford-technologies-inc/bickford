@@ -24,12 +24,13 @@ import {
 } from "../packages/canon/src/canon/optr";
 
 import {
-  promotionGate,
   createExecutionContext,
   bufferTokensWithProof,
   sealChatItem,
   finalizeChatItem,
-} from "../packages/canon/src/canon";
+} from "../packages/canon/src/canon/execution";
+
+import { promotionGate } from "../packages/canon/src/canon/promotion";
 
 import {
   formatWhyNotPanel,
@@ -254,7 +255,7 @@ console.log("─".repeat(80));
 
 console.log("\n  Buffering tokens with ledger proof...");
 const tokens = ["The", " quick", " brown", " fox", " jumps"];
-const ledgerState = { lastSeq: 42, lastHash: "abc123" };
+const ledgerState = { seq: 42, hash: "abc123" };
 
 const streamProof = bufferTokensWithProof({
   executionId: "exec_demo_001",
@@ -263,7 +264,7 @@ const streamProof = bufferTokensWithProof({
   ledgerState,
   authCheck: (tokens, state) => {
     // Simple check: ensure ledger has valid state
-    return state.lastSeq > 0;
+    return state.seq > 0;
   },
   timestamp: nowIso,
 });
