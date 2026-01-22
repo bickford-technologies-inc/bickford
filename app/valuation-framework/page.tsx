@@ -164,8 +164,8 @@ export default function ValuationFrameworkPage() {
                 </h4>
                 <p className={styles.capabilityCardBody}>
                   <strong>Value Driver:</strong> Asymmetric authority model
-                  collapses divergent AI outputs into single authoritative truth.
-                  Eliminates "AI gave conflicting advice" problem.
+                  collapses divergent AI outputs into single authoritative
+                  truth. Eliminates "AI gave conflicting advice" problem.
                 </p>
               </div>
 
@@ -174,8 +174,8 @@ export default function ValuationFrameworkPage() {
                   📊 Real-time Compliance Certs
                 </h4>
                 <p className={styles.capabilityCardBody}>
-                  <strong>Value Driver:</strong> Automated generation of FedRAMP,
-                  HIPAA, SEC audit trails on demand. Reduces compliance
+                  <strong>Value Driver:</strong> Automated generation of
+                  FedRAMP, HIPAA, SEC audit trails on demand. Reduces compliance
                   preparation from weeks to minutes.
                 </p>
               </div>
@@ -234,7 +234,9 @@ export default function ValuationFrameworkPage() {
 
               <div className={styles.marketCard}>
                 <div className={styles.marketValue}>$2.1B</div>
-                <div className={styles.marketLabel}>Defense &amp; Intelligence</div>
+                <div className={styles.marketLabel}>
+                  Defense &amp; Intelligence
+                </div>
                 <div className={styles.marketDesc}>
                   FedRAMP High/IL5 requirements, zero-trust architecture,
                   classified data processing
@@ -302,7 +304,9 @@ export default function ValuationFrameworkPage() {
               </div>
 
               <div className={styles.moatCard}>
-                <h4 className={styles.moatCardTitle}>🔗 Constitutional AI Native</h4>
+                <h4 className={styles.moatCardTitle}>
+                  🔗 Constitutional AI Native
+                </h4>
                 <p className={styles.moatCardBody}>
                   Purpose-built for Constitutional AI principles.
                   Authority-auditor-executor model aligns perfectly with
@@ -319,7 +323,9 @@ export default function ValuationFrameworkPage() {
               </div>
 
               <div className={styles.moatCard}>
-                <h4 className={styles.moatCardTitle}>🛡️ Regulatory Expertise</h4>
+                <h4 className={styles.moatCardTitle}>
+                  🛡️ Regulatory Expertise
+                </h4>
                 <p className={styles.moatCardBody}>
                   Deep understanding of FedRAMP, HIPAA, SEC requirements. Policy
                   engine contains years of regulatory compliance knowledge.
@@ -327,7 +333,9 @@ export default function ValuationFrameworkPage() {
               </div>
 
               <div className={styles.moatCard}>
-                <h4 className={styles.moatCardTitle}>⚡ Execution Authority IP</h4>
+                <h4 className={styles.moatCardTitle}>
+                  ⚡ Execution Authority IP
+                </h4>
                 <p className={styles.moatCardBody}>
                   Proprietary convergence algorithms and cryptographic authority
                   protocols. Core IP around multi-agent truth collapse.
@@ -361,7 +369,9 @@ export default function ValuationFrameworkPage() {
                 >
                   🔗
                 </div>
-                <div className={styles.driverTitle}>Platform Network Effects</div>
+                <div className={styles.driverTitle}>
+                  Platform Network Effects
+                </div>
               </div>
               <div
                 className={`${styles.driverValue} ${styles.driverValueSecondary}`}
@@ -473,7 +483,9 @@ export default function ValuationFrameworkPage() {
 
         <section className={styles.section}>
           <div className={styles.riskFactors}>
-            <h2 className={styles.sectionTitle}>Risk Factors &amp; Mitigation</h2>
+            <h2 className={styles.sectionTitle}>
+              Risk Factors &amp; Mitigation
+            </h2>
 
             <div className={styles.riskGrid}>
               <div className={styles.riskCard}>
@@ -490,7 +502,9 @@ export default function ValuationFrameworkPage() {
               </div>
 
               <div className={styles.riskCard}>
-                <h4 className={styles.riskCardTitle}>⚠️ Competitive Response</h4>
+                <h4 className={styles.riskCardTitle}>
+                  ⚠️ Competitive Response
+                </h4>
                 <p className={styles.riskCardBody}>
                   <strong>Risk:</strong> Microsoft, Google, or OpenAI could
                   develop competing enforcement layers.
@@ -503,7 +517,9 @@ export default function ValuationFrameworkPage() {
               </div>
 
               <div className={styles.riskCard}>
-                <h4 className={styles.riskCardTitle}>⚠️ Integration Complexity</h4>
+                <h4 className={styles.riskCardTitle}>
+                  ⚠️ Integration Complexity
+                </h4>
                 <p className={styles.riskCardBody}>
                   <strong>Risk:</strong> Enterprise integration could be more
                   complex than projected 12-week timeline.
@@ -515,10 +531,12 @@ export default function ValuationFrameworkPage() {
               </div>
 
               <div className={styles.riskCard}>
-                <h4 className={styles.riskCardTitle}>⚠️ Market Adoption Rate</h4>
+                <h4 className={styles.riskCardTitle}>
+                  ⚠️ Market Adoption Rate
+                </h4>
                 <p className={styles.riskCardBody}>
-                  <strong>Risk:</strong> Regulated market adoption of AI could be
-                  slower than projected.
+                  <strong>Risk:</strong> Regulated market adoption of AI could
+                  be slower than projected.
                   <br />
                   <br />
                   <strong>Mitigation:</strong> Enforcement infrastructure
