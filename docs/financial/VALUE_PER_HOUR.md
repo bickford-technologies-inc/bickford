@@ -18,6 +18,14 @@ This document translates the locked 3-year value projection into a per-hour valu
 - **Procurement vendor approvals**: RFP decision workflow with authority binding and decision replay.
 - **Model deployment gating**: promotion gate decisions logged, authority enforced, deployment executed, ledgered proof.
 
+### Continuous Compounding Loop (Workflow-Centric)
+To make compounding explicit, each workflow should continuously read the latest state and write the next baseline:
+1. **Execute** the workflow with authority and constraints enforced.
+2. **Measure** value outcomes (time saved, error reduction, cycle time).
+3. **Persist** the result to the ledger and daily archives.
+4. **Replay** the latest baseline as the starting point for the next run.
+5. **Calibrate** allocation by grouping (region, BU, sales region, KPI, per employee).
+
 ---
 
 ## Baseline Value per Hour (Deterministic)
@@ -88,7 +96,7 @@ $3,350 × e^(0.0828 × 3) = $3,350 × 1.282 = $4,295
 
 ## Value per Hour by Measurable Grouping (Enterprise-Scale)
 
-Value per hour can be allocated to any measurable grouping. This list is intentionally expansive and extensible (add any enterprise dimension not listed):
+Value per hour can be allocated to any measurable grouping. This list is intentionally expansive and extensible (add any enterprise dimension not listed). It mirrors how enterprises like Anthropic, AWS, OpenAI, Microsoft, and Palantir commonly segment value across their organizations.
 
 ### Organizational
 - Company, subsidiary, division, business unit, function (Sales, Eng, Ops, Legal)
@@ -96,11 +104,13 @@ Value per hour can be allocated to any measurable grouping. This list is intenti
 - Team, squad, pod, department, org chart node
 - Cost center, profit center, P&L owner, budget owner
 - Role, job family, level, **per employee**, per contractor
+- Executive sponsor, steering committee, initiative owner
 
 ### Geographic
 - Region (AMER, EMEA, APAC), country, state, metro
 - Sales region/territory, district, zip-based market
 - Time zone, locale, regulatory jurisdiction
+- Operating region, data residency zone, legal entity domicile
 
 ### Customer & Revenue
 - Customer segment (enterprise, mid-market, SMB)
@@ -109,18 +119,32 @@ Value per hour can be allocated to any measurable grouping. This list is intenti
 - Channel (direct, partner, reseller), marketplace
 - Revenue stream, ARR/MRR, contract, renewal cohort
 - Pipeline stage, opportunity size band, win-rate tier
+- Customer health score, churn risk band, expansion tier
 
 ### Operational & Risk
 - Workflow type, runbook, process family
 - SLA tier, severity class, incident type
 - Compliance regime (SOC2, ISO, HIPAA, GDPR)
 - Risk tier, approval tier, exception class
+- Control owner, audit scope, policy version
 
 ### Performance & KPI
 - KPI (TTV, cycle time, throughput, error rate)
 - Quality score, audit score, reliability percentile
 - Cost per action, cost per decision, ROI band
 - Conversion funnel stage, adoption cohort
+- Employee productivity, utilization, capacity recovery
+- AI assist rate, automation rate, deflection rate
+
+### Financial & Investment
+- Capex vs Opex allocation, depreciation schedule, amortization horizon
+- Budget program, fiscal quarter, investment thesis
+- Cost of delay, savings realized, cash flow band
+
+### Data & Platform
+- Dataset, feature set, model family, environment (dev/stage/prod)
+- API surface, integration tier, partner ecosystem
+- Security boundary, data classification, retention tier
 
 ---
 
