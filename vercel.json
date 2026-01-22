@@ -3,7 +3,7 @@
 
   "framework": "nextjs",
 
-  "installCommand": "pnpm install",
+  "installCommand": "bash ci/vercel-install.sh",
 
   "buildCommand": "pnpm run build",
 
