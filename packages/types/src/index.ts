@@ -1,6 +1,6 @@
 // FORCE EMIT (side-effect imports only)
-import "./optr";
-import "./canon";
+import "./optr.js";
+import "./canon.js";
 
 // ======================
 // PUBLIC CANONICAL API
