@@ -33,6 +33,11 @@ export type ExecuteIntentResult = {
     context?: {
       metadata?: Record<string, unknown>;
     };
+    related: {
+      configurationId: string;
+      knowledgeId: string;
+      performanceId: string;
+    };
     decision: ExecuteIntentResult["decision"];
     hash: string;
     createdAt: string;
@@ -75,6 +80,9 @@ export async function executeIntent(
   const timestamp = now.toISOString();
   const origin = payload.origin ?? ENVIRONMENT_AGENT;
   const durationMs = Math.max(0, Date.now() - startedAtMs);
+  const configurationEntryId = crypto.randomUUID();
+  const knowledgeEntryId = crypto.randomUUID();
+  const performanceEntryId = crypto.randomUUID();
 
   const decision = {
     outcome: "ALLOW",
@@ -94,6 +102,11 @@ export async function executeIntent(
       transcript: payload.transcript,
     },
     context: payload.metadata ? { metadata: payload.metadata } : undefined,
+    related: {
+      configurationId: configurationEntryId,
+      knowledgeId: knowledgeEntryId,
+      performanceId: performanceEntryId,
+    },
     decision,
     hash: "",
     createdAt: timestamp,
@@ -105,7 +118,7 @@ export async function executeIntent(
     .digest("hex");
 
   const configuration = {
-    entryId: crypto.randomUUID(),
+    entryId: configurationEntryId,
     agent: ENVIRONMENT_AGENT,
     recordedAt: timestamp,
     scope: "execution",
@@ -125,7 +138,7 @@ export async function executeIntent(
   });
   await appendDailyArchive("ledger", ledgerEntry);
   const knowledgeEntry = {
-    entryId: crypto.randomUUID(),
+    entryId: knowledgeEntryId,
     agent: ENVIRONMENT_AGENT,
     recordedAt: timestamp,
     intent: payload.intent,
@@ -143,7 +156,7 @@ export async function executeIntent(
   );
   const previousPeak = latestPerformance?.peakDurationMs ?? 0;
   const performanceEntry = {
-    entryId: crypto.randomUUID(),
+    entryId: performanceEntryId,
     agent: ENVIRONMENT_AGENT,
     recordedAt: timestamp,
     intent: payload.intent,
