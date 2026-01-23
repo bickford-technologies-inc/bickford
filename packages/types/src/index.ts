@@ -58,7 +58,7 @@ export * from "./rubric.js";
 
 export type { Intent } from "./intent";
 
-export type { Action, WhyNotTrace } from "./canon";
+export type { Action, WhyNotTrace } from "./canon.js";
 
 export type {
   Conversation,
