@@ -228,7 +228,48 @@ FORBIDDEN:
 
 # ------------------------------------------------
 
-# 4) PRISMA (IF USED)
+# 4) GITHUB CHECKS & VERCEL GATES
+
+# ------------------------------------------------
+
+# Vercel only imports checks that already exist on the commit SHA.
+
+REQUIRED:
+
+- At least one successful GitHub Actions run after enabling checks
+- Check names MUST match the workflow status labels emitted
+
+EXPECTED:
+
+- Until a successful run completes, Vercel shows “No checks found”
+- Fix build failures before configuring Vercel gates
+
+FORBIDDEN:
+
+- Editing Vercel checks while CI is red
+- Assuming Vercel will invent missing statuses
+
+# ------------------------------------------------
+
+# 5) MONOREPO DEPENDENCY BOUNDARIES (TURBOPACK)
+
+# ------------------------------------------------
+
+# Turbopack forbids transitive dependency leakage.
+
+REQUIRED:
+
+- Every package MUST declare direct dependencies it imports
+- Cross-package imports MUST be declared in that package's package.json
+
+FORBIDDEN:
+
+- Relying on hoisted/transitive resolution
+- Importing @prisma/client without declaring it in the importing package
+
+# ------------------------------------------------
+
+# 6) PRISMA (IF USED)
 
 # ------------------------------------------------
 
@@ -259,7 +300,7 @@ FORBIDDEN:
 
 # ------------------------------------------------
 
-# 5) NEXT.JS ROUTING (STRICT)
+# 7) NEXT.JS ROUTING (STRICT)
 
 # ------------------------------------------------
 
@@ -283,7 +324,7 @@ RECOMMENDED:
 
 # ------------------------------------------------
 
-# 6) TYPESCRIPT & BUILD SAFETY
+# 8) TYPESCRIPT & BUILD SAFETY
 
 # ------------------------------------------------
 
@@ -303,7 +344,7 @@ FORBIDDEN:
 
 # ------------------------------------------------
 
-# 7) TURBO / MONOREPO BUILDS
+# 9) TURBO / MONOREPO BUILDS
 
 # ------------------------------------------------
 
@@ -322,7 +363,7 @@ FORBIDDEN:
 
 # ------------------------------------------------
 
-# 8) ENVIRONMENT VARIABLES
+# 10) ENVIRONMENT VARIABLES
 
 # ------------------------------------------------
 
@@ -340,7 +381,7 @@ FORBIDDEN:
 
 # ------------------------------------------------
 
-# 9) DEPLOYMENT INVARIANTS
+# 11) DEPLOYMENT INVARIANTS
 
 # ------------------------------------------------
 
@@ -359,7 +400,7 @@ FORBIDDEN:
 
 # ------------------------------------------------
 
-# 10) FAILURE HANDLING (MAX-SAFE)
+# 12) FAILURE HANDLING (MAX-SAFE)
 
 # ------------------------------------------------
 
