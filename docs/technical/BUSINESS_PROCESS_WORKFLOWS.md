@@ -18,6 +18,89 @@ Business process workflows are repeatable, ordered sequences of work that turn a
 - **Security access review**: Scope → attestations → remediation → evidence capture → compliance sign-off.
 - **Model evaluation**: Dataset curation → benchmark run → risk review → deployment approval → monitoring.
 
+## Automated change management for real-time release (intent-to-value)
+
+Design a workflow that treats every change as an executable intent, enforces guardrails, and releases continuously without batching. The objective is real-time delivery while preserving auditability, policy compliance, and non-interference.
+
+### Objectives
+
+- **Real-time release**: every approved change flows to production automatically.
+- **Instant intent-to-value**: minimize time from intent declaration to measurable impact.
+- **Auditable execution**: every decision and action is recorded with evidence.
+- **Non-interference**: changes cannot increase time-to-value for other agents or systems.
+
+### Actors
+
+- **Requester**: submits intent and context.
+- **Policy engine**: enforces constraints and validates admissibility.
+- **Automation orchestrator**: executes and sequences actions.
+- **Reviewer of record**: optional, only for risk tiers that require human approval.
+- **Release steward**: owns rollback, incident response, and change ledger integrity.
+
+### Inputs
+
+- **Intent**: target outcome, constraints, authority, timestamp.
+- **Structural knowledge**: schemas, invariants, service contracts.
+- **Policy set**: compliance, security, and operational constraints.
+- **Service topology**: ownership, dependencies, blast radius.
+- **Telemetry baselines**: SLOs, risk thresholds, and release health metrics.
+
+### Output
+
+- **Decision ledger entry** with a signed decision, executable actions, and evidence.
+- **Production release** with observability trace.
+- **Post-release observations** added to retained knowledge.
+
+### Workflow stages (real-time)
+
+1. **Intent declaration**
+   - Requester submits intent (`G, Θ, A, τ`) with affected services and expected value.
+   - Automation validates completeness (required fields, scopes, owners).
+2. **Structural validation**
+   - Confirm the change maps to existing schemas/contracts; reject or route to schema update if not.
+   - Enforce structural dominance: behavior changes must be encoded in structure first.
+3. **Policy admissibility**
+   - Evaluate constraints (security, compliance, legal, operational).
+   - Compute non-interference impact; reject if the change increases TTV for other agents.
+4. **Decision formation**
+   - Generate decision package (`I, R, E, σ`) with executable actions and rationale.
+   - Sign the decision and append to the immutable ledger.
+5. **Automated build + verification**
+   - Run automated checks (unit/integration, policy tests, contract validation).
+   - Use progressive policy gates: fail-fast for high-risk violations, auto-continue for low-risk.
+6. **Real-time release**
+   - Release immediately via progressive delivery (canary/feature flag).
+   - Enforce automatic rollback on SLO regression or policy breach.
+7. **Observe + learn**
+   - Capture telemetry, user impact, and ledger evidence.
+   - Update retained knowledge and structural encodings.
+8. **Compounding automation**
+   - Feed results into routing: higher-confidence changes auto-release faster.
+   - Increase decision continuity rate by reusing validated decisions.
+
+### Real-time control loop
+
+```
+Intent → Structural validation → Policy admissibility → Decision ledger
+      → Automated tests → Progressive delivery → Telemetry
+      → Learn/update structure → Faster next decision
+```
+
+### Release guarantees
+
+- **No silent change**: every action is tied to a signed decision record.
+- **Always-on compliance**: evidence is produced as a by-product of execution.
+- **Instant value**: changes release as soon as they satisfy constraints and tests.
+- **Reversibility**: automatic rollback on SLO degradation or policy violation.
+
+### Evidence artifacts (required)
+
+- Intent record and authority set.
+- Decision signature and rationale.
+- Test results and policy evaluation logs.
+- Release trace (deployment ID, time, target).
+- Observability snapshot (SLOs, error budgets, performance deltas).
+
 ## Real use cases with $/hour value framing
 
 Use the same pattern across functions: assign a total value (cost avoided, revenue gained, risk reduced) and normalize to $/hour for comparison.
