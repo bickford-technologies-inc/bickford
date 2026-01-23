@@ -17,8 +17,11 @@ log("🔍 Scanning for unresolved workspace module usage...");
 log("— Searching for unresolved module errors in repo —");
 const rgResult = spawnSync(
   "rg",
-  ["Cannot find module '@bickford/|Module not found: Can't resolve '@bickford/", "."],
-  { cwd: root, stdio: "inherit" }
+  [
+    "Cannot find module '@bickford/|Module not found: Can't resolve '@bickford/",
+    ".",
+  ],
+  { cwd: root, stdio: "inherit" },
 );
 if (rgResult.error) {
   log(`⚠️ Unable to run rg: ${rgResult.error.message}`);
@@ -27,7 +30,7 @@ if (rgResult.error) {
 log("— Enumerating workspace packages —");
 
 const packageJson = JSON.parse(
-  readFileSync(path.join(root, "package.json"), "utf-8")
+  readFileSync(path.join(root, "package.json"), "utf-8"),
 );
 const workspaces = Array.isArray(packageJson.workspaces)
   ? packageJson.workspaces
@@ -43,9 +46,7 @@ for (const workspace of workspaces) {
     continue;
   }
 
-  const workspacePackage = JSON.parse(
-    readFileSync(packageJsonPath, "utf-8")
-  );
+  const workspacePackage = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
   const name = workspacePackage.name || "";
 
   if (!name) {

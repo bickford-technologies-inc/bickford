@@ -1,0 +1,11 @@
+{
+  "summary": {
+    "generatedAt": "2026-01-23T15:51:02.127Z",
+    "sourceLedger": "execution-ledger.jsonl",
+    "valuePerHour": 0,
+    "totalExecutions": 0,
+    "totalTtvSecondsRecovered": 0,
+    "totalEstimatedDollarValue": 0
+  },
+  "reports": []
+}
