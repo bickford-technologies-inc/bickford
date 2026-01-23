@@ -78,3 +78,5 @@ export type InterferenceResult = {
 
 export * from "./deniedDecision.js";
 export * from "./rubric.js";
+
+export * from "./conversation.js";

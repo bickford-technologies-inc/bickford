@@ -1,5 +1,16 @@
 export type ChatRole = "user" | "agent";
 
+export type TraceSummary = {
+  decision: string;
+  canonId: string;
+  ledgerId: string;
+  ledgerHash: string;
+  durationMs: number;
+  peakDurationMs: number;
+  knowledgeId: string;
+  rationale: string;
+};
+
 export type ChatMessage = {
   id: string;
   role: ChatRole;
@@ -7,26 +18,42 @@ export type ChatMessage = {
   timestamp: number;
 };
 
-export type DailyArchive = {
-  date: string;
-  messages: ChatMessage[];
-};
-
-export type ChatState = {
-  currentDate: string;
-  messages: ChatMessage[];
-  archives: DailyArchive[];
+export type TimelineEntry = {
+  id: string;
+  label: string;
+  summary: string;
+  timestamp: number;
+  trace: TraceSummary | null;
 };
 
 export const AGENT_NAME = "bickford";
 export const ARCHIVE_NOTE =
   "single agent for the full environment • archives chat history daily at local midnight";
 
+export const CHAT_CONVERSATION_KEY = "bickford.chat.active.v1";
+
+export function loadConversationId(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(CHAT_CONVERSATION_KEY);
+}
+
+export function persistConversationId(id: string | null) {
+  if (typeof window === "undefined") return;
+  if (id) {
+    localStorage.setItem(CHAT_CONVERSATION_KEY, id);
+  } else {
+    localStorage.removeItem(CHAT_CONVERSATION_KEY);
+  }
+}
+
+export function formatTimestamp(timestamp: number) {
+  return new Date(timestamp).toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export const CHAT_STORAGE_KEY = "bickford.chat.unified.v1";
-const LEGACY_DAILY_KEY = "bickford.chat.daily.v1";
-const LEGACY_HISTORY_KEY = "bickford.chat.history";
-const LEGACY_HISTORY_DAY_KEY = "bickford.chat.history.day";
-const LEGACY_ARCHIVE_KEY = "bickford.chat.archive";
 
 function formatLocalDate(date: Date) {
   const year = date.getFullYear();
@@ -51,19 +78,35 @@ function utcDateKeyToLocal(dateKey: string) {
   return formatLocalDate(parsed);
 }
 
+function createConversationId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  return `conversation-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
 function migrateUtcDates(state: ChatState): ChatState {
   const localToday = todayKey();
-  const utcToday = utcKey();
-  if (state.currentDate !== utcToday || state.currentDate === localToday) {
-    return state;
-  }
   return {
-    ...state,
     currentDate: utcDateKeyToLocal(state.currentDate),
-    archives: state.archives.map((archive) => ({
-      ...archive,
-      date: utcDateKeyToLocal(archive.date),
-    })),
+    conversationId: state.conversationId ?? createConversationId(),
+    messages: Array.isArray(state.messages)
+      ? normalizeMessages(state.messages)
+      : [],
+    archives: Array.isArray(state.archives)
+      ? state.archives.map((archive) => ({
+          id:
+            typeof archive.id === "string"
+              ? archive.id
+              : `${archive.date}-${createConversationId()}`,
+          date: archive.date,
+          conversationId:
+            typeof archive.conversationId === "string"
+              ? archive.conversationId
+              : createConversationId(),
+          messages: normalizeMessages(archive.messages ?? []),
+        }))
+      : [],
   };
 }
 
@@ -127,7 +170,12 @@ function parseStoredState(raw: string | null): ChatState | null {
 
 export function hydrateChatState(): ChatState {
   if (typeof window === "undefined") {
-    return { currentDate: todayKey(), messages: [], archives: [] };
+    return {
+      currentDate: todayKey(),
+      conversationId: createConversationId(),
+      messages: [],
+      archives: [],
+    };
   }
 
   const stored = parseStoredState(localStorage.getItem(CHAT_STORAGE_KEY));
@@ -168,7 +216,15 @@ export function hydrateChatState(): ChatState {
       : [],
     archives: Array.isArray(legacyArchives)
       ? legacyArchives.map((archive) => ({
+          id:
+            typeof archive.id === "string"
+              ? archive.id
+              : `${archive.date}-${createConversationId()}`,
           date: archive.date,
+          conversationId:
+            typeof archive.conversationId === "string"
+              ? archive.conversationId
+              : createConversationId(),
           messages: normalizeMessages(archive.messages ?? []),
         }))
       : [],
@@ -183,11 +239,36 @@ export function reconcileDaily(state: ChatState): ChatState {
 
   const archives = [...state.archives];
   if (state.messages.length > 0) {
-    archives.unshift({ date: state.currentDate, messages: state.messages });
+    archives.unshift({
+      id: `${state.currentDate}-${state.conversationId}`,
+      date: state.currentDate,
+      conversationId: state.conversationId,
+      messages: state.messages,
+    });
   }
 
   return {
     currentDate: today,
+    conversationId: createConversationId(),
+    messages: [],
+    archives,
+  };
+}
+
+export function startNewConversation(state: ChatState): ChatState {
+  const archives = [...state.archives];
+  if (state.messages.length > 0) {
+    archives.unshift({
+      id: `${state.currentDate}-${state.conversationId}`,
+      date: state.currentDate,
+      conversationId: state.conversationId,
+      messages: state.messages,
+    });
+  }
+
+  return {
+    ...state,
+    conversationId: createConversationId(),
     messages: [],
     archives,
   };
