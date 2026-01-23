@@ -58,6 +58,54 @@ function messagePreview(messages: ChatMessage[]) {
   return firstUser?.content?.slice(0, 42) || "Untitled intent";
 }
 
+function buildAgentReply(intent: string) {
+  const normalized = intent.trim().toLowerCase();
+  const cleaned = normalized.replace(/[^a-z0-9\s]/g, "").trim();
+  const firstWord = cleaned.split(/\s+/)[0];
+
+  if (firstWord && GREETINGS.has(firstWord)) {
+    return RESPONSE_CONFIG.greetingReply;
+  }
+
+  if (normalized.endsWith("?")) {
+    return RESPONSE_CONFIG.questionReply;
+  }
+
+  return RESPONSE_CONFIG.defaultReply;
+}
+
+function buildTimeline(state: ChatState): TimelineEntry[] {
+  const entries: TimelineEntry[] = [];
+  if (state.messages.length > 0) {
+    const latestTimestamp =
+      state.messages[state.messages.length - 1]?.timestamp ?? Date.now();
+    entries.push({
+      id: "today",
+      label: "Today",
+      summary: messagePreview(state.messages),
+      timestamp: latestTimestamp,
+    });
+  }
+
+  for (const archive of state.archives) {
+    const latestTimestamp =
+      archive.messages[archive.messages.length - 1]?.timestamp ?? Date.now();
+    entries.push({
+      id: archive.date,
+      label: archive.date,
+      summary: messagePreview(archive.messages),
+      timestamp: latestTimestamp,
+    });
+  }
+
+  return entries;
+}
+
+function formatTimestamp(timestamp: number) {
+  return new Date(timestamp).toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+  });
 function buildTranscript(messages: ChatMessage[]) {
   return messages
     .map((message) => {
@@ -295,7 +343,7 @@ export default function ChatPage() {
       const agentMessage: ChatMessage = {
         id: crypto.randomUUID(),
         role: "agent",
-        content: agentContent,
+        content: buildAgentReply(trimmed),
         timestamp: now + 1,
       };
 
