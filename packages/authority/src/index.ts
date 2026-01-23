@@ -40,6 +40,6 @@ export function authorize(input: AuthorizeInput): AuthorityDecision {
   };
 }
 
-export { canonicalHash } from "./hash.js";
-export { signHash } from "./sign.js";
-export { verifySignature } from "./verify.js";
+export { canonicalHash } from "./hash";
+export { signHash } from "./sign";
+export { verifySignature } from "./verify";

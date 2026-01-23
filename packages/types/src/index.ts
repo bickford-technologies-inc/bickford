@@ -11,30 +11,7 @@ export * from "./canon.js";
 // Explicitly allowed stable surfaces
 export type { ExecutionResult } from "./ExecutionResult.js";
 
-// ======================
-// DENIED DECISION PAYLOAD
-// ======================
-
-/**
- * CANONICAL GATE
- * index.ts MUST NOT introduce new surface area.
- * It forwards canon only.
- */
-export type DeniedDecisionPayload = {
-  decisionId: string;
-
-  // REQUIRED CONTEXT
-  actionId: string;
-  tenantId: string;
-
-  // DENIAL METADATA
-  denied: true;
-  reason: string;
-
-  // OPTIONAL TRACEABILITY
-  ruleId?: string;
-  timestamp?: number;
-};
+export type { HardwareAttestation } from "./HardwareAttestation.js";
 
 // ======================
 // LEDGER TYPES
