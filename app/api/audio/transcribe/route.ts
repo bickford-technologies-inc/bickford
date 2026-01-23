@@ -5,6 +5,8 @@ import path from "node:path";
 import { appendDailyArchive } from "../../../lib/archive";
 import { ENVIRONMENT_AGENT } from "../../../lib/agent";
 
+export const runtime = "nodejs";
+
 const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
 
 type PerformancePeakEntry = {

@@ -113,6 +113,7 @@ Optional:
 - [Quickstart Guide](docs/QUICKSTART.md)
 - [API Reference](docs/API.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [TTV Acceleration Playbook](docs/ACCELERATE_TTV_EXPERTISE.md)
 - [Deep Research](docs/technical/DEEP_RESEARCH.md)
 - [Acquisition Docs](docs/ACQUISITION.md)
 - [Speech to Text](docs/technical/SPEECH_TO_TEXT.md)

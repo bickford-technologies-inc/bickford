@@ -35,6 +35,7 @@ export interface CanonAuditEntry {
   decisionId: string;
   canonRule: string;
   canonRulesEvaluated: string[];
+  canonViolations: Array<{ ruleId: string; reason: string; status: CanonRuleStatus }>;
   actionAttempted: string;
   context: HealthcareContext;
   enforcementResult: "allowed" | "blocked";
@@ -164,6 +165,7 @@ function evaluateHealthcareRequest(
     decisionId: `dec_healthcare_${crypto.randomUUID()}`,
     canonRule: rule,
     canonRulesEvaluated: config.rules.map((item) => item.id),
+    canonViolations: ruleViolations,
     actionAttempted,
     context,
     enforcementResult,
@@ -175,7 +177,7 @@ function evaluateHealthcareRequest(
 
   return {
     allowed: enforcementResult === "allowed",
-    reason: ruleViolations[0]?.reason,
+    reason: enforcedViolations[0]?.reason ?? ruleViolations[0]?.reason,
     auditEntry,
   };
 }
