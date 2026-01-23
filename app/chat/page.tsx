@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AGENT_NAME,
   ARCHIVE_NOTE,
-  formatTimestamp,
   loadConversationId,
   persistConversationId,
   type ChatMessage,
@@ -41,14 +40,11 @@ type ChatApiResponse = {
 
 function buildTimeline(summaries: ConversationSummary[]): TimelineEntry[] {
   return summaries.map((summary) => {
-    const lastTimestamp =
-      summary.lastMessageAt ?? Date.parse(summary.updatedAt) ?? Date.now();
     return {
       id: summary.id,
-      label: summary.title || "Untitled",
-      summary: summary.preview || "No messages yet",
-      timestamp: lastTimestamp,
-      trace: summary.trace ?? null,
+      label: summary.label,
+      summary: summary.summary,
+      timestamp: summary.timestamp,
     };
   });
 }
@@ -74,38 +70,6 @@ function buildAgentReply(intent: string) {
   return RESPONSE_CONFIG.defaultReply;
 }
 
-function buildTimeline(state: ChatState): TimelineEntry[] {
-  const entries: TimelineEntry[] = [];
-  if (state.messages.length > 0) {
-    const latestTimestamp =
-      state.messages[state.messages.length - 1]?.timestamp ?? Date.now();
-    entries.push({
-      id: "today",
-      label: "Today",
-      summary: messagePreview(state.messages),
-      timestamp: latestTimestamp,
-    });
-  }
-
-  for (const archive of state.archives) {
-    const latestTimestamp =
-      archive.messages[archive.messages.length - 1]?.timestamp ?? Date.now();
-    entries.push({
-      id: archive.date,
-      label: archive.date,
-      summary: messagePreview(archive.messages),
-      timestamp: latestTimestamp,
-    });
-  }
-
-  return entries;
-}
-
-function formatTimestamp(timestamp: number) {
-  return new Date(timestamp).toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
-  });
 function buildTranscript(messages: ChatMessage[]) {
   return messages
     .map((message) => {
@@ -549,9 +513,7 @@ export default function ChatPage() {
                     onClick={handleRetry}
                     disabled={isRetrying}
                   >
-                    {isRetrying
-                      ? "Retrying..."
-                      : persistenceError.retryLabel}
+                    {isRetrying ? "Retrying..." : persistenceError.retryLabel}
                   </button>
                 </div>
               ) : null}
