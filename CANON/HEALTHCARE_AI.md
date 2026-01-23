@@ -1,4 +1,8 @@
-# Healthcare AI Canon
+# Bickford Canon — Healthcare AI Governance
+
+STATUS: PROPOSED
+AUTHORITY: CANON WORKING GROUP
+VERSION: 0.1.0
 
 rules:
   - id: PHI_ACCESS_MINIMUM_NECESSARY
