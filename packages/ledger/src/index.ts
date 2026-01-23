@@ -36,4 +36,6 @@ export function readAll(): LedgerEntry[] {
 export { appendProofLedger, readProofLedger } from "./proofLedger.js";
 export { appendLedger } from "./ledger.js";
 export { getLedger } from "./ledger.js";
+export { loadConversation, saveConversation } from "./conversationStore.js";
 export * from "./types";
+export * from "./conversationStore.js";

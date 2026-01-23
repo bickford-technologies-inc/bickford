@@ -1,102 +1,133 @@
 // app/chat/page.tsx
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AGENT_NAME,
   ARCHIVE_NOTE,
-  hydrateChatState,
-  msUntilNextMidnight,
-  persistChatState,
-  reconcileDaily,
+  formatTimestamp,
+  loadConversationId,
+  persistConversationId,
   type ChatMessage,
-  type ChatState,
+  type TraceSummary,
+  type TimelineEntry,
 } from "../components/chatState";
 import styles from "./chat.module.css";
 
-type TraceSummary = {
-  decision: string;
-  canonId: string;
-  ledgerId: string;
-  ledgerHash: string;
-  durationMs: number;
-  peakDurationMs: number;
-  knowledgeId: string;
-  rationale: string;
+type ConversationSummary = {
+  id: string;
+  title: string;
+  preview: string;
+  updatedAt: string;
+  lastMessageAt?: number;
+  messageCount: number;
+  trace?: TraceSummary | null;
 };
 
-type TimelineEntry = {
+type Conversation = {
   id: string;
-  label: string;
-  summary: string;
-  timestamp: number;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  messages: ChatMessage[];
+  trace?: TraceSummary | null;
 };
+
+type ChatApiResponse = {
+  conversation: Conversation | null;
+  timeline: ConversationSummary[];
+  transcript?: string;
+};
+
+function buildTimeline(summaries: ConversationSummary[]): TimelineEntry[] {
+  return summaries.map((summary) => {
+    const lastTimestamp =
+      summary.lastMessageAt ?? Date.parse(summary.updatedAt) ?? Date.now();
+    return {
+      id: summary.id,
+      label: summary.title || "Untitled",
+      summary: summary.preview || "No messages yet",
+      timestamp: lastTimestamp,
+      trace: summary.trace ?? null,
+    };
+  });
+}
 
 function messagePreview(messages: ChatMessage[]) {
   const firstUser = messages.find((message) => message.role === "user");
   return firstUser?.content?.slice(0, 42) || "Untitled intent";
 }
 
-function buildTimeline(state: ChatState): TimelineEntry[] {
-  const entries: TimelineEntry[] = [];
-  if (state.messages.length > 0) {
-    const latestTimestamp =
-      state.messages[state.messages.length - 1]?.timestamp ?? Date.now();
-    entries.push({
-      id: "today",
-      label: "Today",
-      summary: messagePreview(state.messages),
-      timestamp: latestTimestamp,
-    });
-  }
-
-  for (const archive of state.archives) {
-    const latestTimestamp =
-      archive.messages[archive.messages.length - 1]?.timestamp ?? Date.now();
-    entries.push({
-      id: archive.date,
-      label: archive.date,
-      summary: messagePreview(archive.messages),
-      timestamp: latestTimestamp,
-    });
-  }
-
-  return entries;
-}
-
-function formatTimestamp(timestamp: number) {
-  return new Date(timestamp).toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
-  });
+function buildTranscript(messages: ChatMessage[]) {
+  return messages
+    .map((message) => {
+      const roleLabel = message.role === "user" ? "User" : "Agent";
+      return `${roleLabel}: ${message.content}`;
+    })
+    .join("\n");
 }
 
 export default function ChatPage() {
-  const [state, setState] = useState<ChatState>(() => hydrateChatState());
-  const [selectedThread, setSelectedThread] = useState<string>("today");
+  const [conversationId, setConversationId] = useState<string | null>(() =>
+    loadConversationId(),
+  );
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [timeline, setTimeline] = useState<ConversationSummary[]>([]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [trace, setTrace] = useState<TraceSummary | null>(null);
 
-  useEffect(() => {
-    persistChatState(state);
-  }, [state]);
+  const timelineEntries = useMemo(() => buildTimeline(timeline), [timeline]);
+
+  const applyPayload = useCallback((payload: ChatApiResponse) => {
+    setTimeline(payload.timeline ?? []);
+    if (payload.conversation) {
+      setConversationId(payload.conversation.id);
+      persistConversationId(payload.conversation.id);
+      setMessages(payload.conversation.messages ?? []);
+      setTrace(payload.conversation.trace ?? null);
+    } else {
+      setMessages([]);
+      setTrace(null);
+    }
+  }, []);
+
+  const fetchConversation = useCallback(
+    async (targetId?: string | null) => {
+      const query = targetId ? `?conversationId=${targetId}` : "";
+      const response = await fetch(`/api/chat${query}`);
+      if (!response.ok) {
+        return;
+      }
+      const payload = (await response.json()) as ChatApiResponse;
+      applyPayload(payload);
+    },
+    [applyPayload],
+  );
 
   useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      setState((current) => reconcileDaily(current));
-      setSelectedThread("today");
-    }, msUntilNextMidnight());
-    return () => window.clearTimeout(timeout);
-  }, [state.currentDate]);
+    void fetchConversation(conversationId);
+  }, [conversationId, fetchConversation]);
 
-  const timeline = useMemo(() => buildTimeline(state), [state]);
+  const createConversation = useCallback(async () => {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "create" }),
+    });
+    if (!response.ok) {
+      return;
+    }
+    const payload = (await response.json()) as ChatApiResponse;
+    applyPayload(payload);
+  }, [applyPayload]);
 
-  const activeMessages = useMemo(() => {
-    if (selectedThread === "today") return state.messages;
-    const archive = state.archives.find((entry) => entry.date === selectedThread);
-    return archive?.messages ?? state.messages;
-  }, [selectedThread, state.archives, state.messages]);
+  const selectConversation = useCallback(
+    async (id: string) => {
+      await fetchConversation(id);
+    },
+    [fetchConversation],
+  );
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -113,29 +144,48 @@ export default function ChatPage() {
 
     setIsSending(true);
     setInput("");
+    setMessages((current) => [...current, userMessage]);
 
     try {
-      const [executeResponse] = await Promise.all([
-        fetch("/api/execute", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            intent: trimmed,
-            origin: "chatdock",
-            source: "web",
-            sessionId: state.currentDate,
-          }),
+      const chatResponse = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          conversationId,
+          message: userMessage,
         }),
-        fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            intent: trimmed,
-            origin: "chatdock",
-            sessionId: state.currentDate,
-          }),
+      });
+
+      if (!chatResponse.ok) {
+        throw new Error("Failed to persist message");
+      }
+
+      const chatPayload = (await chatResponse.json()) as ChatApiResponse;
+      applyPayload(chatPayload);
+
+      const resolvedConversationId =
+        chatPayload.conversation?.id ?? conversationId;
+      const transcript =
+        chatPayload.transcript ??
+        (chatPayload.conversation
+          ? buildTranscript(chatPayload.conversation.messages)
+          : buildTranscript([...messages, userMessage]));
+
+      const executeResponse = await fetch("/api/execute", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          intent: trimmed,
+          origin: "chatdock",
+          source: "web",
+          sessionId: resolvedConversationId ?? "chatdock",
+          transcript,
+          metadata: {
+            conversationId: resolvedConversationId,
+            preview: messagePreview(chatPayload.conversation?.messages ?? []),
+          },
         }),
-      ]);
+      });
 
       if (!executeResponse.ok) {
         const errorText = await executeResponse.text();
@@ -147,6 +197,17 @@ export default function ChatPage() {
         ledgerEntry: { id: string; hash: string };
         knowledge: { entryId: string };
         performance: { durationMs: number; peakDurationMs: number };
+      };
+
+      const traceSummary: TraceSummary = {
+        decision: executePayload.decision.outcome,
+        canonId: executePayload.decision.canonId,
+        ledgerId: executePayload.ledgerEntry.id,
+        ledgerHash: executePayload.ledgerEntry.hash,
+        durationMs: executePayload.performance.durationMs,
+        peakDurationMs: executePayload.performance.peakDurationMs,
+        knowledgeId: executePayload.knowledge.entryId,
+        rationale: executePayload.decision.rationale,
       };
 
       const agentContent = [
@@ -164,21 +225,23 @@ export default function ChatPage() {
         timestamp: now + 1,
       };
 
-      setTrace({
-        decision: executePayload.decision.outcome,
-        canonId: executePayload.decision.canonId,
-        ledgerId: executePayload.ledgerEntry.id,
-        ledgerHash: executePayload.ledgerEntry.hash,
-        durationMs: executePayload.performance.durationMs,
-        peakDurationMs: executePayload.performance.peakDurationMs,
-        knowledgeId: executePayload.knowledge.entryId,
-        rationale: executePayload.decision.rationale,
+      const updateResponse = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          conversationId: resolvedConversationId,
+          message: agentMessage,
+          trace: traceSummary,
+        }),
       });
 
-      setState((current) => ({
-        ...current,
-        messages: [...current.messages, userMessage, agentMessage],
-      }));
+      if (updateResponse.ok) {
+        const updatedPayload = (await updateResponse.json()) as ChatApiResponse;
+        applyPayload(updatedPayload);
+      } else {
+        setMessages((current) => [...current, agentMessage]);
+        setTrace(traceSummary);
+      }
     } catch (error) {
       const agentMessage: ChatMessage = {
         id: crypto.randomUUID(),
@@ -190,10 +253,15 @@ export default function ChatPage() {
         timestamp: now + 1,
       };
 
-      setState((current) => ({
-        ...current,
-        messages: [...current.messages, userMessage, agentMessage],
-      }));
+      setMessages((current) => [...current, agentMessage]);
+      await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          conversationId,
+          message: agentMessage,
+        }),
+      });
     } finally {
       setIsSending(false);
     }
@@ -205,7 +273,11 @@ export default function ChatPage() {
         <div className={styles.sidebarHeader}>
           <span className={styles.logo}>bickford</span>
         </div>
-        <button className={styles.newChatButton} type="button">
+        <button
+          className={styles.newChatButton}
+          type="button"
+          onClick={createConversation}
+        >
           <span className={styles.iconCircle}>+</span> New chat
         </button>
         <div className={styles.search}>
@@ -215,22 +287,23 @@ export default function ChatPage() {
         <div className={styles.sidebarSection}>
           <div className={styles.sectionTitle}>Projects</div>
           <div className={styles.timeline}>
-            {timeline.length === 0 ? (
+            {timelineEntries.length === 0 ? (
               <div className={styles.timelineEmpty}>No decisions yet.</div>
             ) : (
-              timeline.map((entry) => (
+              timelineEntries.map((entry) => (
                 <button
                   key={entry.id}
                   type="button"
                   className={`${styles.timelineItem} ${
-                    selectedThread === entry.id ? styles.timelineActive : ""
+                    conversationId === entry.id ? styles.timelineActive : ""
                   }`}
-                  onClick={() => setSelectedThread(entry.id)}
+                  onClick={() => selectConversation(entry.id)}
                 >
                   <div className={styles.timelineLabel}>{entry.label}</div>
                   <div className={styles.timelineSummary}>{entry.summary}</div>
                   <div className={styles.timelineMeta}>
-                    {formatTimestamp(entry.timestamp)} · bickford
+                    {formatTimestamp(entry.timestamp)} ·{" "}
+                    {entry.trace?.decision ?? "Pending"} · bickford
                   </div>
                 </button>
               ))
@@ -246,14 +319,14 @@ export default function ChatPage() {
         </header>
 
         <div className={styles.chatArea}>
-          {activeMessages.length === 0 ? (
+          {messages.length === 0 ? (
             <div className={styles.emptyState}>
               <p>What should we do next?</p>
               <span>{ARCHIVE_NOTE}</span>
             </div>
           ) : (
             <div className={styles.thread}>
-              {activeMessages.map((message) => (
+              {messages.map((message) => (
                 <div
                   key={message.id}
                   className={`${styles.message} ${
@@ -284,55 +357,16 @@ export default function ChatPage() {
             <button className={styles.inputIcon} type="button">
               🎙
             </button>
-            <button
-              className={styles.sendButton}
-              type="submit"
-              disabled={isSending}
-            >
-              ⦿
-            </button>
           </div>
+          <button
+            className={styles.sendButton}
+            type="submit"
+            disabled={isSending || !input.trim()}
+          >
+            Send
+          </button>
         </form>
       </main>
-
-      <aside className={styles.trace}>
-        <div className={styles.traceHeader}>Decision Trace Viewer</div>
-        {trace ? (
-          <div className={styles.traceBody}>
-            <div className={styles.traceItem}>
-              <span>Decision</span>
-              <strong>{trace.decision}</strong>
-            </div>
-            <div className={styles.traceItem}>
-              <span>Canon</span>
-              <strong>{trace.canonId}</strong>
-            </div>
-            <div className={styles.traceItem}>
-              <span>Ledger</span>
-              <strong>{trace.ledgerId}</strong>
-            </div>
-            <div className={styles.traceItem}>
-              <span>Hash</span>
-              <strong>{trace.ledgerHash.slice(0, 16)}...</strong>
-            </div>
-            <div className={styles.traceItem}>
-              <span>Knowledge</span>
-              <strong>{trace.knowledgeId}</strong>
-            </div>
-            <div className={styles.traceItem}>
-              <span>Runtime</span>
-              <strong>
-                {trace.durationMs}ms (peak {trace.peakDurationMs}ms)
-              </strong>
-            </div>
-            <div className={styles.traceNote}>{trace.rationale}</div>
-          </div>
-        ) : (
-          <div className={styles.traceEmpty}>
-            No trace yet. Execute an intent to reveal the ledger.
-          </div>
-        )}
-      </aside>
     </section>
   );
 }
