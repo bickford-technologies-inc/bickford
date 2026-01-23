@@ -62,6 +62,7 @@ export type { Action, WhyNotTrace } from "./canon";
 export type { ExecutionContext } from "./canon";
 export type { TokenStreamProof } from "./canon";
 export type { ISO8601 } from "./canon";
+export type { CandidatePath } from "./canon";
 
 export type {
   Conversation,
