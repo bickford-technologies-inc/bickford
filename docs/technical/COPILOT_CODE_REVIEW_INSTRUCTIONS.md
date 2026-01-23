@@ -751,6 +751,37 @@ Let \( E_a(K_t) \) be cognitive energy to apply knowledge.
 
 Memory executes automatically via structure.
 
+## 12.1 Compounding Continuously and Infinitely
+
+Compounding is continuous and unbounded over time:
+
+\[
+\lim_{t \to \infty} K_t = K_{\infty}, \quad \lim_{t \to \infty} E_a(K_t) = 0
+\]
+
+Knowledge compounds continuously and infinitely as structure grows monotonically.
+
+## 12.2 Power → USD Value of Bickford
+
+Let \( P(t) \) be the realized execution power (throughput-weighted, authority-compliant actions).
+Define USD value as:
+
+\[
+USD(t) = \int_{0}^{t} P(\tau) \cdot v(\tau) \, d\tau
+\]
+
+where \( v(t) \) is the marginal USD value per unit of execution power under constraints.
+
+## 12.3 Bounded Power Statement
+
+Bickford can increase execution power up to the admissible frontier defined by constraints:
+
+\[
+P^*(t) = \sup \{ P(t) \mid \pi(t) \vDash \Theta \land \sigma \in A \land \Delta \mathbb{E}[TTV_j \mid \pi_i] \le 0 \}
+\]
+
+Power is maximized only within authority, non-interference, and governance bounds.
+
 ## 13. UI and Design Binding
 
 For any execution surface \( U \):
@@ -786,4 +817,3 @@ Execution = Solve → Act → Observe → Persist
 Bickford does not run scripts.
 
 Bickford resolves.
-
