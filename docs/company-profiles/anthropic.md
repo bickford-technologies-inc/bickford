@@ -248,6 +248,33 @@ The combined drag of enterprise trust, regulatory uncertainty, and safety overhe
 | **Hours saved** | **582 hrs** |
 | **Cost saved (@ $300/hr)** | **$174,600** |
 
+## Scaled Annual Impact (Frequency Model)
+
+**Why this matters:** The workflow benchmark above is per full run of all seven workflows. To show recurring impact, the model multiplies per-run savings by expected annual occurrence rates for each workflow.
+
+**Frequency assumptions**
+
+- Total annual workflow occurrences modeled: **539**.
+- Frequencies are conservative, tied to observable enterprise cadence (release cycles, enterprise procurement volume, regulatory launches, incident response volume, and latency optimization cycles).
+- Per-run savings are taken directly from the benchmark above (no additional extrapolation).
+
+| Workflow | Annual occurrences | Annual hours saved | Annual savings (@ $300/hr) |
+| --- | ---: | ---: | ---: |
+| Safety and governance overhead | 36 | 2,592 | $777,600 |
+| Regulatory uncertainty | 18 | 1,800 | $540,000 |
+| Enterprise trust & procurement friction | 228 | 27,360 | $8,208,000 |
+| Platform differentiation pressure | 80 | 7,200 | $2,160,000 |
+| Security and misuse risk | 60 | 3,600 | $1,080,000 |
+| International expansion constraints | 10 | 950 | $285,000 |
+| Latency-sensitive product expectations | 107 | 4,815 | $1,444,500 |
+| **Total (annualized)** | **539** | **48,317** | **$14,495,100** |
+
+**Annual impact summary**
+
+- **Annual hours saved:** 48,317 hours.
+- **Annual cost savings:** **$14.5M** (48,317 × $300/hour).
+- **Methodology:** annual savings = per-workflow savings × annual occurrences (all inputs are explicit and auditable).
+
 ## Contact Information
 
 | Field            | Value                                                                |
