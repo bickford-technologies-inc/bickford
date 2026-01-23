@@ -40,11 +40,13 @@ type ChatApiResponse = {
 
 function buildTimeline(summaries: ConversationSummary[]): TimelineEntry[] {
   return summaries.map((summary) => {
+    const fallbackTimestamp = Date.parse(summary.updatedAt);
     return {
       id: summary.id,
-      label: summary.label,
-      summary: summary.summary,
-      timestamp: summary.timestamp,
+      label: summary.title,
+      summary: summary.preview,
+      timestamp: summary.lastMessageAt ?? fallbackTimestamp,
+      trace: summary.trace ?? null,
     };
   });
 }
