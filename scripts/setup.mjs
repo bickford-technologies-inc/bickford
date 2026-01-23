@@ -36,6 +36,30 @@ function ensureEnvFile() {
   console.log(`[setup] Created minimal ${envFile}`);
 }
 
+function hydrateOpenAiKey() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return false;
+  }
+
+  let contents = '';
+  try {
+    contents = readFileSync(envFile, 'utf8');
+  } catch {
+    return false;
+  }
+
+  if (contents.match(/^OPENAI_API_KEY=/m)) {
+    contents = contents.replace(/^OPENAI_API_KEY=.*/m, `OPENAI_API_KEY=${apiKey}`);
+  } else {
+    contents = `${contents.trimEnd()}\nOPENAI_API_KEY=${apiKey}\n`;
+  }
+
+  writeFileSync(envFile, contents, 'utf8');
+  console.log('[setup] OPENAI_API_KEY detected in environment and stored in .env');
+  return true;
+}
+
 function printNextSteps() {
   let contents = '';
   try {
@@ -55,4 +79,5 @@ function printNextSteps() {
 }
 
 ensureEnvFile();
+hydrateOpenAiKey();
 printNextSteps();
