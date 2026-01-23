@@ -329,7 +329,7 @@ This is **decision decay under regulation**.
 
 ---
 
-## 10) Best-in-class benchmarking to identify gaps (and fix them)
+## 10) Best-in-class benchmarking to identify gaps (and compound them)
 
 ### 10.1 Decision-level failure pattern
 - Bickford measures itself only against past performance.
@@ -354,7 +354,7 @@ This is **decision decay under regulation**.
 - **Clarity**: gaps are explicit, measurable, and ranked by TTV impact.
 - **Focus**: engineering effort targets the highest leverage deltas first.
 - **Proof**: benchmark deltas are ledgered and repeatable.
-- **Compounding**: closed gaps become new structural baselines.
+- **Compounding**: closed gaps become new structural baselines that raise the best-in-class floor each cycle.
 
 ### 10.5 Validation protocol (benchmark-driven)
 1. **Benchmark inventory**: list top-tier reference systems and metrics.
@@ -364,9 +364,11 @@ This is **decision decay under regulation**.
    - gap closure rate (per cycle)
    - benchmark delta reduction (%)
    - TTV reduction attributable to gap fixes
+   - best-in-class compounding rate (delta reduced per cycle)
 5. **Success threshold**:
    - ≥50% delta reduction on top-ranked gaps
    - measurable TTV improvement within one cycle
+   - sustained compounding against best-in-class for 3+ cycles
 
 ---
 
