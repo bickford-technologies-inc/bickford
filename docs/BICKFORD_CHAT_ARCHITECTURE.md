@@ -28,6 +28,7 @@ Intent Normalization + Authority Binding
 Model Orchestration Layer
   ├── ChatGPT 5.2 (reasoning, synthesis)
   ├── Claude Sonnet 4.5 (analysis, critique, safety)
+  ├── Quantum OPTR Accelerator (policy search, feasibility)
   └── Codex Agent (execution, code, GitHub)
   ↓
 Execution Law / OPTR
@@ -101,7 +102,7 @@ No execution proceeds without a valid authority proof.
 
 ---
 
-## 4. Model Orchestration (5.2 / 4.5 / Codex)
+## 4. Model Orchestration (5.2 / 4.5 / Quantum / Codex)
 
 ### ChatGPT 5.2 — **Reasoning Engine**
 
@@ -126,6 +127,25 @@ Used for:
 - regulatory and safety alignment
 
 Claude does **not** mutate state.
+
+---
+
+### Quantum OPTR Accelerator — **Policy Search Engine**
+
+Used for:
+
+- constrained policy search under OPTR
+- feasibility checks across high-dimensional constraint sets
+- generation of *candidate* action paths
+
+Quantum outputs are **advisory** and **non-executable**:
+
+- no direct state mutation
+- no authority binding
+- no ledger writes
+- always revalidated by OPTR invariants and non-interference rules
+
+The accelerator exists to **shorten time-to-value**, not to bypass controls.
 
 ---
 
