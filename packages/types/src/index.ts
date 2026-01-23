@@ -73,3 +73,4 @@ export type {
 
 export type { OPTRScore } from "./canon";
 export type { OPTRRun } from "./canon";
+export type { OPTRWeights } from "./canon";
