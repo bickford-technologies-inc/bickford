@@ -44,7 +44,12 @@
     "canon:compare:tenant": "node scripts/compare-tenant-baseline.mjs",
     "realize-intent": "node scripts/realize-intent.mjs",
     "capture:ui": "node scripts/capture-ui.mjs",
-    "assert:vercel-binding": "tsx scripts/assert-vercel-binding.ts"
+    "assert:vercel-binding": "tsx scripts/assert-vercel-binding.ts",
+    "bickford:realize": "node scripts/bickford-realize.mjs",
+    "benchmark:gaps": "node scripts/benchmark-gaps.mjs"
+  },
+  "bin": {
+    "bickford": "./scripts/bickford-realize.mjs"
   },
   "dependencies": {
     "ai": "^6.0.44",

@@ -73,6 +73,10 @@ This folder contains technical specifications, architecture, and integration gui
   - Functional checks and testing
   - Context and intent validation
   - Code quality and dependency scrutiny
+- **[BENCHMARK_GAPS.md](BENCHMARK_GAPS.md)** - Best-in-class benchmarking and gap remediation
+  - Benchmark baseline inputs
+  - Gap detection outputs
+  - Remediation loop for compounding improvements
 
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
