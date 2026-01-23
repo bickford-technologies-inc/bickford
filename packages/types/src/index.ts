@@ -56,27 +56,27 @@ export type InterferenceResult = {
 export * from "./deniedDecision.js";
 export * from "./rubric.js";
 
-export type { Intent } from "./intent";
+export type { Intent } from "./intent.js";
 
-export type { Action, WhyNotTrace } from "./canon";
-export type { ExecutionContext } from "./canon";
-export type { TokenStreamProof } from "./canon";
-export type { ISO8601 } from "./canon";
-export type { CandidatePath } from "./canon";
-export type { CandidateFeatures } from "./canon";
-export type { PathConstraint } from "./canon";
+export type { Action, WhyNotTrace } from "./canon.js";
+export type { ExecutionContext } from "./canon.js";
+export type { TokenStreamProof } from "./canon.js";
+export type { ISO8601 } from "./canon.js";
+export type { CandidatePath } from "./canon.js";
+export type { CandidateFeatures } from "./canon.js";
+export type { PathConstraint } from "./canon.js";
 
 export type {
   Conversation,
   ConversationMessage,
   ConversationTraceSummary,
-} from "./conversation";
+} from "./conversation.js";
 
-export type { OPTRScore } from "./canon";
-export type { OPTRRun } from "./canon";
-export type { OPTRWeights } from "./canon";
+export type { OPTRScore } from "./canon.js";
+export type { OPTRRun } from "./canon.js";
+export type { OPTRWeights } from "./canon.js";
 
-export type { AuthorityCheckResult } from "./canon";
-export type { ConfidenceEnvelope } from "./canon";
+export type { AuthorityCheckResult } from "./canon.js";
+export type { ConfidenceEnvelope } from "./canon.js";
 
-export type { PromotionDecision, PromotionTests } from "./canon";
+export type { PromotionDecision, PromotionTests } from "./canon.js";
