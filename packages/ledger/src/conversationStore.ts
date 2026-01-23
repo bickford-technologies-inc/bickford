@@ -21,9 +21,18 @@ async function ensureConversationDir() {
       ? path.join("/tmp", "trace")
       : path.join(process.cwd(), "trace"));
   const target = path.join(preferred, "conversations");
-
-  await mkdir(target, { recursive: true });
-  return target;
+  try {
+    await mkdir(target, { recursive: true });
+    return target;
+  } catch (error) {
+    const fallbackBase = path.join("/tmp", "trace");
+    const fallback = path.join(fallbackBase, "conversations");
+    if (target !== fallback) {
+      await mkdir(fallback, { recursive: true });
+      return fallback;
+    }
+    throw error;
+  }
 }
 
 function conversationPath(baseDir: string, id: string) {
