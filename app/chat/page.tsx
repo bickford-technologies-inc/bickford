@@ -32,9 +32,34 @@ type TimelineEntry = {
   timestamp: number;
 };
 
+const RESPONSE_CONFIG = {
+  version: "v2",
+  greetings: ["hello", "hey", "hi", "hiya", "sup", "yo"],
+  greetingReply: "Hi. What are we building today?",
+  questionReply: "Acknowledged. I will log that. What should we do next?",
+  defaultReply: "Acknowledged. Intent recorded. What should we do next?",
+};
+const GREETINGS = new Set(RESPONSE_CONFIG.greetings);
+
 function messagePreview(messages: ChatMessage[]) {
   const firstUser = messages.find((message) => message.role === "user");
   return firstUser?.content?.slice(0, 42) || "Untitled intent";
+}
+
+function buildAgentReply(intent: string) {
+  const normalized = intent.trim().toLowerCase();
+  const cleaned = normalized.replace(/[^a-z0-9\s]/g, "").trim();
+  const firstWord = cleaned.split(/\s+/)[0];
+
+  if (firstWord && GREETINGS.has(firstWord)) {
+    return RESPONSE_CONFIG.greetingReply;
+  }
+
+  if (normalized.endsWith("?")) {
+    return RESPONSE_CONFIG.questionReply;
+  }
+
+  return RESPONSE_CONFIG.defaultReply;
 }
 
 function buildTimeline(state: ChatState): TimelineEntry[] {
@@ -124,6 +149,9 @@ export default function ChatPage() {
             origin: "chatdock",
             source: "web",
             sessionId: state.currentDate,
+            configOverrides: {
+              responseConfig: RESPONSE_CONFIG,
+            },
           }),
         }),
         fetch("/api/chat", {
@@ -149,18 +177,10 @@ export default function ChatPage() {
         performance: { durationMs: number; peakDurationMs: number };
       };
 
-      const agentContent = [
-        `Decision: ${executePayload.decision.outcome}`,
-        `Canon: ${executePayload.decision.canonId}`,
-        `Rationale: ${executePayload.decision.rationale}`,
-        `Ledger: ${executePayload.ledgerEntry.id}`,
-        `Knowledge: ${executePayload.knowledge.entryId}`,
-      ].join("\n");
-
       const agentMessage: ChatMessage = {
         id: crypto.randomUUID(),
         role: "agent",
-        content: agentContent,
+        content: buildAgentReply(trimmed),
         timestamp: now + 1,
       };
 
