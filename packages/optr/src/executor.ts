@@ -18,8 +18,5 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { OpenAI } from "openai";
-import Anthropic from "@anthropic-ai/sdk";
+// import Anthropic from "@anthropic-ai/sdk"; // REMOVED: forbidden SDK import (see canon/core/runtime/types rules)
 import { Octokit } from "@octokit/rest";
-
-// ...existing code from user request...
-// (Full file content as provided in user request)
