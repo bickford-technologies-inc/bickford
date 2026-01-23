@@ -25,6 +25,14 @@ export type ExecutionEvent = {
 export type LedgerEntry = {
   id: string;
   event: ExecutionEvent;
+  timestamp?: number;
+  workflow?: string;
+  intent?: unknown;
+  agentResults?: AgentResult[];
+  selectedOptr?: AgentResult;
+  commitHash?: string;
+  previousHash?: string;
+  hash?: string;
 };
 
 export type ExecutionAdapter = {
@@ -52,6 +60,24 @@ export type InterferenceResult = {
   allowed: boolean;
   reason?: string;
 };
+
+export interface AgentResult {
+  agent: "codex" | "claude" | "copilot" | "mscopilot";
+  output: unknown;
+  admissible: boolean;
+  ttvEstimate: number;
+  invariants: string[];
+  executionTime: number;
+  hash: string;
+  timestamp: number;
+}
+
+export interface IntentContext {
+  workflow: string;
+  intent: unknown;
+  constraints: string[];
+  metadata?: Record<string, unknown>;
+}
 
 export * from "./deniedDecision.js";
 export * from "./rubric.js";
