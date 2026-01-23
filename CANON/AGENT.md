@@ -15,6 +15,7 @@ AGENTS MUST:
 - Attach confidence score (0–1)
 - Log Time-to-Green delta
 - Obey promoted canon without exception
+- Maintain dynamically structured quantum multi-agent, continuously compounding knowledge import and shared export across the repo
 
 AGENTS MAY:
 
