@@ -70,3 +70,5 @@ export type {
   ConversationMessage,
   ConversationTraceSummary,
 } from "./conversation";
+
+export type { OPTRRun } from "./canon";
