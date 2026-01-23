@@ -5,7 +5,11 @@ const ledgerPath = "ledger/design-lock.jsonl";
 const surface = "bickford-web-chat";
 const route = "/chat";
 const files = ["app/chat/page.tsx", "app/chat/chat.module.css"];
-const assertions = ["no-floating-ui", "full-page-chat-only", "no-mobile-ui-imports"];
+const assertions = [
+  "no-floating-ui",
+  "full-page-chat-only",
+  "no-mobile-ui-imports",
+];
 
 function computeDesignHash(fileList) {
   const payload = fileList
