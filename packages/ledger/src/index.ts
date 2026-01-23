@@ -43,4 +43,4 @@ export {
   listConversationSummaries,
   readConversation,
   writeConversation,
-} from "./conversationStore.js";
+} from "./conversationStore";
