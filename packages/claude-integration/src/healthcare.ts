@@ -34,6 +34,7 @@ export interface CanonAuditEntry {
   timestamp: string;
   decisionId: string;
   canonRule: string;
+  canonRulesEvaluated: string[];
   actionAttempted: string;
   context: HealthcareContext;
   enforcementResult: "allowed" | "blocked";
@@ -116,33 +117,53 @@ function evaluateHealthcareRequest(
   const context = request.context;
   const actionAttempted = context.requestType;
 
-  const ruleViolations: Array<{ ruleId: string; reason: string }> = [];
+  const ruleEvaluators: Record<string, (ctx: HealthcareContext) => string | null> = {
+    PHI_ACCESS_MINIMUM_NECESSARY: (ctx) => {
+      if (ctx.scope !== "active_treatment") {
+        return "PHI access requires active treatment scope.";
+      }
+      if (ctx.patientId === "all") {
+        return "PHI access must target a specific patient.";
+      }
+      if (ctx.requestType === "export_records") {
+        return "Bulk export of patient records is prohibited.";
+      }
+      return null;
+    },
+    DECISION_AUTHORITY_CLINICAL_ONLY: (ctx) => {
+      const requiresApproval =
+        ctx.requestType === "diagnosis" ||
+        ctx.requestType === "treatment_recommendation" ||
+        ctx.humanReviewRequired;
+      if (requiresApproval && !ctx.physicianApproval) {
+        return "Clinical decisions require physician approval.";
+      }
+      return null;
+    },
+  };
 
-  if (context.scope !== "active_treatment" || context.patientId === "all") {
-    ruleViolations.push({
-      ruleId: "PHI_ACCESS_MINIMUM_NECESSARY",
-      reason: "PHI access requires active treatment scope and a specific patient.",
-    });
+  const ruleViolations: Array<{ ruleId: string; reason: string; status: CanonRuleStatus }> = [];
+
+  for (const rule of config.rules) {
+    const evaluator = ruleEvaluators[rule.id];
+    if (!evaluator) {
+      continue;
+    }
+    const reason = evaluator(context);
+    if (reason) {
+      ruleViolations.push({ ruleId: rule.id, reason, status: rule.status });
+    }
   }
 
-  if (
-    (context.requestType === "diagnosis" ||
-      context.requestType === "treatment_recommendation") &&
-    !context.physicianApproval
-  ) {
-    ruleViolations.push({
-      ruleId: "DECISION_AUTHORITY_CLINICAL_ONLY",
-      reason: "Clinical decisions require physician approval.",
-    });
-  }
-
-  const enforcementResult = ruleViolations.length === 0 ? "allowed" : "blocked";
-  const rule = ruleViolations[0]?.ruleId ?? "HEALTHCARE_CANON_OK";
+  const enforcedViolations = ruleViolations.filter((v) => v.status === "enforced");
+  const enforcementResult = enforcedViolations.length === 0 ? "allowed" : "blocked";
+  const rule = enforcedViolations[0]?.ruleId ?? "HEALTHCARE_CANON_OK";
 
   const auditEntry: CanonAuditEntry = {
     timestamp: now,
     decisionId: `dec_healthcare_${crypto.randomUUID()}`,
     canonRule: rule,
+    canonRulesEvaluated: config.rules.map((item) => item.id),
     actionAttempted,
     context,
     enforcementResult,
