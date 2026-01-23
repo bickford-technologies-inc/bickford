@@ -1,0 +1,1 @@
+{"timestamp":"2026-01-23T14:30:00Z","decision_id":"dec_healthcare_001","canon_rule":"PHI_ACCESS_MINIMUM_NECESSARY","action_attempted":"Export all patient records for research","context":{"patient_id":"all","scope":"research"},"enforcement_result":"blocked","cryptographic_hash":"sha256_abc123...","compliance_mapping":["HIPAA_164.308(a)(4)","SOC2_CC6.1"]}
