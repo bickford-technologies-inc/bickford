@@ -72,6 +72,15 @@ importers:
       '@bickford/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@bickford/vercel':
+        specifier: workspace:*
+        version: link:../../packages/vercel
+      '@bickford/vercel-integration':
+        specifier: workspace:*
+        version: link:../../packages/vercel-integration
+      '@bickford/web':
+        specifier: workspace:*
+        version: link:../../packages/web
       next:
         specifier: 14.2.5
         version: 14.2.5(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -81,6 +90,9 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
     devDependencies:
       '@types/node':
         specifier: ^25.0.6
@@ -186,6 +198,9 @@ importers:
       '@bickford/db':
         specifier: workspace:*
         version: link:../db
+      '@bickford/monitorability-core':
+        specifier: workspace:*
+        version: link:../monitorability-core
       '@bickford/types':
         specifier: workspace:*
         version: link:../types
@@ -316,6 +331,9 @@ importers:
 
   packages/executor:
     dependencies:
+      '@bickford/canon':
+        specifier: workspace:*
+        version: link:../canon
       '@bickford/types':
         specifier: workspace:*
         version: link:../types
@@ -428,6 +446,9 @@ importers:
 
   packages/web-ui:
     dependencies:
+      '@bickford/execution-convergence':
+        specifier: workspace:*
+        version: link:../execution-convergence
       '@bickford/ledger':
         specifier: workspace:*
         version: link:../ledger
@@ -6127,6 +6148,9 @@ packages:
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
 
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
   zod@4.3.5:
     resolution: {integrity: sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==}
 
@@ -7696,7 +7720,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@modelcontextprotocol/sdk@1.25.3(hono@4.11.5)(zod@4.3.5)':
+  '@modelcontextprotocol/sdk@1.25.3(hono@4.11.5)(zod@3.25.76)':
     dependencies:
       '@hono/node-server': 1.19.9(hono@4.11.5)
       ajv: 8.17.1
@@ -7712,8 +7736,8 @@ snapshots:
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.1
       raw-body: 3.0.2
-      zod: 4.3.5
-      zod-to-json-schema: 3.25.1(zod@4.3.5)
+      zod: 3.25.76
+      zod-to-json-schema: 3.25.1(zod@3.25.76)
     transitivePeerDependencies:
       - hono
       - supports-color
@@ -8560,8 +8584,8 @@ snapshots:
 
   '@vercel/sdk@1.18.7(hono@4.11.5)':
     dependencies:
-      '@modelcontextprotocol/sdk': 1.25.3(hono@4.11.5)(zod@4.3.5)
-      zod: 4.3.5
+      '@modelcontextprotocol/sdk': 1.25.3(hono@4.11.5)(zod@3.25.76)
+      zod: 3.25.76
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - hono
@@ -9617,8 +9641,8 @@ snapshots:
       '@babel/parser': 7.28.6
       eslint: 9.39.2(jiti@2.6.1)
       hermes-parser: 0.25.1
-      zod: 4.3.5
-      zod-validation-error: 4.0.2(zod@4.3.5)
+      zod: 3.25.76
+      zod-validation-error: 4.0.2(zod@3.25.76)
     transitivePeerDependencies:
       - supports-color
 
@@ -13111,13 +13135,15 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-to-json-schema@3.25.1(zod@4.3.5):
+  zod-to-json-schema@3.25.1(zod@3.25.76):
     dependencies:
-      zod: 4.3.5
+      zod: 3.25.76
 
-  zod-validation-error@4.0.2(zod@4.3.5):
+  zod-validation-error@4.0.2(zod@3.25.76):
     dependencies:
-      zod: 4.3.5
+      zod: 3.25.76
+
+  zod@3.25.76: {}
 
   zod@4.3.5: {}
 

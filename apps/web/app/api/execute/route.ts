@@ -1,4 +1,3 @@
-import { Request } from "next/server";
 import { validateIntent } from "@bickford/core/intent/validateIntent";
 
 export const runtime = "nodejs";

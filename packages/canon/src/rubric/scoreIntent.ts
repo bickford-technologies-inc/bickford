@@ -2,14 +2,9 @@ import { NationStateRubric, RubricEvaluation } from "@bickford/types";
 import { REQUIRED_NATION_STATE_RUBRIC } from "./nationStateRubric";
 
 export function scoreIntent(
-  rubric: Record<string, 0 | 1>,
+  rubric: NationStateRubric,
   evaluatedBy: string,
-): {
-  rubric: Record<string, 0 | 1>;
-  totalScore: number;
-  evaluatedBy: string;
-  ts: number;
-} {
+): RubricEvaluation {
   const totalScore = Object.values(rubric)
     .map(Number)
     .reduce((sum, v) => sum + v, 0);

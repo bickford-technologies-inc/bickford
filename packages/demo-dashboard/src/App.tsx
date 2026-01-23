@@ -80,7 +80,9 @@ export default function App() {
           <form className="chatRow" onSubmit={submit}>
             <input
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                setText(event.target.value)
+              }
               placeholder="Type an intent (demo)"
             />
             <button type="submit">Submit</button>

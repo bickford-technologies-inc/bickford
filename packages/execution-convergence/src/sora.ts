@@ -93,10 +93,10 @@ export async function createSoraVideoJob(
   if (request.remixVideoId) form.append("remix_video_id", request.remixVideoId);
 
   if (request.inputReference) {
-    const data = request.inputReference.data instanceof ArrayBuffer
-      ? new Uint8Array(request.inputReference.data)
-      : request.inputReference.data;
-    const blob = new Blob([data], { type: request.inputReference.mimeType });
+    const data = request.inputReference.data instanceof Uint8Array
+      ? request.inputReference.data
+      : new Uint8Array(request.inputReference.data);
+    const blob = new Blob([data as BlobPart], { type: request.inputReference.mimeType });
     form.append("input_reference", blob, request.inputReference.fileName);
   }
 
@@ -113,7 +113,7 @@ export async function createSoraVideoJob(
     throw new Error(`Sora create failed: ${response.status} ${body}`);
   }
 
-  const payload = await response.json();
+  const payload = (await response.json()) as Record<string, any>;
   return {
     id: payload.id,
     status: payload.status,
@@ -145,7 +145,7 @@ export async function retrieveSoraVideoJob(
     throw new Error(`Sora retrieve failed: ${response.status} ${body}`);
   }
 
-  const payload = await response.json();
+  const payload = (await response.json()) as Record<string, any>;
   return {
     id: payload.id,
     status: payload.status,
@@ -239,7 +239,7 @@ export async function listSoraVideos(
     throw new Error(`Sora list failed: ${response.status} ${body}`);
   }
 
-  const payload = await response.json();
+  const payload = (await response.json()) as Record<string, any>;
   return {
     data: (payload.data || []).map((item: any) => ({
       id: item.id,
