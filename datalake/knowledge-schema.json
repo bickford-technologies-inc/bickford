@@ -1,5 +1,39 @@
 {
-  "state": {},
-  "last_update": null,
+  "state": {
+    "definitions": {
+      "workflow_generator": {
+        "definition": "A workflow generator is a structured capability that turns a declared intent into a concrete, executable workflow specification. It accepts a target outcome, constraints, and authority boundaries, then outputs a repeatable workflow definition that can be executed, audited, and continuously improved.",
+        "purpose": [
+          "Convert intent into a standardized workflow blueprint executable by humans, agents, or systems.",
+          "Ensure every workflow is constraint-aware, authority-bound, and ledger-ready.",
+          "Reduce time-to-value by making workflows explicit, reusable, and testable."
+        ],
+        "inputs": [
+          "Intent declaration (target outcome, constraints, authority, timestamp)",
+          "Knowledge state (schemas, invariants, prior workflow baselines)",
+          "Execution context (systems, owners, available actions)"
+        ],
+        "outputs": [
+          "Workflow specification (steps, handoffs, artifacts)",
+          "Admissibility checks (constraints + authority)",
+          "Test plan (execution + regression checks)",
+          "Ledger-ready decision metadata"
+        ],
+        "process": [
+          "Intent parsing",
+          "Constraint/authority binding",
+          "Structure synthesis",
+          "Execution packaging",
+          "Validation design"
+        ],
+        "validation": [
+          "Execution checks (simulate or run end-to-end)",
+          "Constraint checks (no violations)",
+          "Regression checks (preserve prior guarantees)"
+        ]
+      }
+    }
+  },
+  "last_update": "2026-01-23T19:10:04Z",
   "ledger_refs": []
 }
