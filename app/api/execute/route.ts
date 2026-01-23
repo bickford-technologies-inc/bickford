@@ -1,5 +1,7 @@
 import { executeIntent } from "../../lib/execute";
 
+export const runtime = "nodejs";
+
 type ExecutePayload = {
   intent: string;
   origin?: string;
