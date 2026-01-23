@@ -15,6 +15,23 @@
 
 Anthropic is an AI research and safety company founded in May 2021 by Dario and Daniela Amodei. Its mission is to build reliable and steerable AI systems, exemplified by its Claude large-language model. Early backers included Jaan Tallinn, Dustin Moskovitz, and others, with a Series A of US$124 million and a Series B of US$580 million. In 2023 and 2024, Amazon invested a total of US$4 billion, securing a minority stake and making AWS Anthropic’s primary cloud provider. Anthropic’s research emphasizes ethical AI development through innovations like constitutional AI. Its competitors include OpenAI and other major foundation-model labs. Valuation details beyond disclosed rounds remain private.
 
+## Business Pain Points (Anthropic)
+
+Anthropic’s business pain points mirror the structural challenges of frontier AI labs while reflecting the operational demands of scaling enterprise-grade AI systems:
+
+- **Compute intensity and cost volatility:** Training, fine-tuning, and serving frontier models require massive GPU/TPU capacity, exposing margins to hardware pricing swings, supply constraints, and cloud dependency.  
+- **Inference economics at scale:** Sustaining low-latency, high-availability inference for enterprise workloads drives ongoing optimization pressure on model efficiency, caching, and serving infrastructure.  
+- **Safety and governance overhead:** Constitutional AI and safety commitments add additional research, evaluation, and policy work that can slow product release cycles and increase operational complexity.  
+- **Regulatory uncertainty:** Rapidly evolving AI regulation (privacy, IP, safety, auditability) increases compliance cost and introduces go-to-market risk in regulated industries.  
+- **Data provenance and licensing:** High-quality training data access and licensing is costly, contested, and legally sensitive, especially for enterprise and multimodal data sources.  
+- **Enterprise trust and procurement friction:** Large customers require rigorous security, auditability, and reliability guarantees, extending sales cycles and raising integration demands.  
+- **Talent competition:** Retaining frontier ML researchers and systems engineers is expensive and competitive, with direct pressure from peers like OpenAI, Google DeepMind, and Meta.  
+- **Platform differentiation pressure:** As foundation models converge on quality, differentiation increasingly depends on tooling, governance, and enterprise-grade execution infrastructure.  
+- **Latency-sensitive product expectations:** Customers expect real-time performance for agentic and workflow products, driving investment in optimized model routing and infrastructure.  
+- **Vendor concentration risk:** Reliance on a small number of cloud and hardware partners creates leverage asymmetry and exposure to contractual or availability shocks.  
+- **Security and misuse risk:** Preventing abuse, prompt injection, data exfiltration, and model misuse requires continuous monitoring, red-teaming, and policy enforcement.  
+- **International expansion constraints:** Export controls, data residency, and sovereign AI requirements complicate expansion into global regulated markets.  
+
 ## Contact Information
 
 | Field            | Value                                                                |
