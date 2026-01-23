@@ -55,4 +55,4 @@ The wrapper always appends an audit entry to the supplied JSONL ledger and block
 
 ### Audit entries
 
-Each audit entry includes the evaluated canon rule IDs, the enforcement decision, and a stable SHA-256 hash for ledger integrity. You can switch to `audit_only` enforcement to allow all requests while still recording the decision trail.
+Each audit entry includes the evaluated canon rule IDs, any detected rule violations (with status), the enforcement decision, and a stable SHA-256 hash for ledger integrity. You can switch to `audit_only` enforcement to allow all requests while still recording the decision trail.
