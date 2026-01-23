@@ -81,6 +81,33 @@ function buildTranscript(messages: ChatMessage[]) {
     .join("\n");
 }
 
+const GREETINGS = new Set([
+  "hello",
+  "hi",
+  "hey",
+  "greetings",
+  "howdy",
+  "yo",
+  "sup",
+]);
+
+const RESPONSE_CONFIG = {
+  greetingReply: "Hello! How can I help you today?",
+  questionReply: "That's a great question! Let me think...",
+  defaultReply: "I'm here to help. What would you like to do next?",
+};
+
+function formatTimestamp(ts: number | string): string {
+  const date = new Date(typeof ts === "string" ? parseInt(ts, 10) : ts);
+  return date.toLocaleString(undefined, {
+    year: "2-digit",
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export default function ChatPage() {
   const [conversationId, setConversationId] = useState<string | null>(() =>
     loadConversationId(),
