@@ -9,6 +9,12 @@
  * - Intent parsing
  */
 
+import {
+  createHealthcareCanonConfig,
+  enforceHealthcareCanon,
+  HEALTHCARE_CANON_RULES,
+} from "./healthcare";
+
 /**
  * Placeholder - Execute gate function
  * Validates whether a tool execution should be allowed
@@ -28,7 +34,16 @@ export function wrapTool(tool: any): any {
   return tool;
 }
 
+export {
+  createHealthcareCanonConfig,
+  enforceHealthcareCanon,
+  HEALTHCARE_CANON_RULES,
+};
+
 export default {
   executeGate,
   wrapTool,
+  createHealthcareCanonConfig,
+  enforceHealthcareCanon,
+  HEALTHCARE_CANON_RULES,
 };

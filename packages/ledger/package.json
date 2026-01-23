@@ -2,21 +2,17 @@
   "name": "@bickford/ledger",
   "version": "0.0.0",
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "import": "./src/index.ts",
-      "require": "./src/index.ts",
-      "types": "./src/index.ts"
-    }
+    ".": "./src/index.ts"
   },
   "files": [
     "src",
     "dist"
   ],
   "scripts": {
-    "build": "pnpm exec tsc -p tsconfig.build.json"
+    "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@bickford/types": "workspace:*"
