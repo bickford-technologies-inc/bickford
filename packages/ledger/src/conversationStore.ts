@@ -1,7 +1,7 @@
-import crypto from "node:crypto";
-import { existsSync } from "node:fs";
+import * as crypto from "node:crypto";
+import * as fs from "node:fs";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
-import path from "node:path";
+import * as path from "node:path";
 
 import type {
   Conversation,
@@ -77,7 +77,7 @@ export async function readConversation(
 ): Promise<Conversation | null> {
   const dir = await ensureConversationDir();
   const filePath = conversationPath(dir, conversationId);
-  if (!existsSync(filePath)) {
+  if (!fs.existsSync(filePath)) {
     return null;
   }
   const raw = await readFile(filePath, "utf8");

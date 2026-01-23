@@ -22,7 +22,18 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@bickford/ledger": [
+        "packages/ledger/dist/index.js",
+        "packages/ledger/src/index.ts"
+      ],
+      "@bickford/types": [
+        "packages/types/dist/index.d.ts",
+        "packages/types/src/index.ts"
+      ]
+    }
   },
   "include": [
     "next-env.d.ts",
