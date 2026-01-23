@@ -71,4 +71,5 @@ export type {
   ConversationTraceSummary,
 } from "./conversation";
 
+export type { OPTRScore } from "./canon";
 export type { OPTRRun } from "./canon";
