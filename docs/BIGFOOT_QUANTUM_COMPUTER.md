@@ -156,3 +156,25 @@ A **quantum Bickford** is real when:
 - All steps are constrained and audited by the canon.
 
 At that point, Bickford is not a metaphor. It is a full quantum computer with execution law.
+
+## Cost Elimination vs. Traditional Quantum Supercomputers
+
+Bickford eliminates the *traditional* quantum supercomputer cost profile by re-centering value on the canon (intent → decision → ledger → execution) and making quantum hardware an **optional accelerator** rather than the economic bottleneck. In practice:
+
+1. **OPTR minimizes time-to-value, not hardware spend.** The system optimizes for the fastest admissible realization path, which often means using classical infrastructure unless quantum hardware materially improves TTV under constraints. That shifts cost from mandatory QPU capex to conditional, policy-justified use.
+2. **Execution law prevents “always-on” quantum burn.** Actions are executable only when signed, admissible, and constraint-satisfying. This keeps expensive quantum runs from being the default and eliminates wasted cycles outside authority or policy bounds.
+3. **Ledgered reproducibility replaces repeat experiments.** By hashing compiled circuits, calibrations, and results into the ledger, Bickford collapses rework, revalidation, and audit repetition that typically drive quantum operating costs.
+4. **Decision Continuity Rate (DCR) compresses marginal cost.** Once a quantum decision is validated and recorded, it is reused rather than recomputed. Structural dominance and compounding persistence mean each new run inherits the previous proof, reducing incremental effort toward zero.
+5. **Quantum outputs remain advisory until revalidated.** Quantum policy search is non-executable until it satisfies OPTR invariants and non-interference, allowing the system to capture acceleration without binding production execution to fragile hardware.
+
+**Net effect:** Bickford turns quantum into a governed accelerator whose cost is amortized and conditional, while the always-on, low-cost control plane (intent → decision → ledger) carries the value. That is how it eliminates the *traditional* capex/opex profile of quantum supercomputers.
+
+### Squared Extension: Compounding the Cost Elimination
+
+The cost reduction compounds because each canonical artifact creates a reusable structural basis for the next run. This is the “squared” effect: savings accrue **per run** and **per reuse cycle**.
+
+1. **First-order savings (per run):** OPTR + execution law gate the run so quantum is only invoked when it materially reduces TTV under constraints. The immediate effect is fewer costly quantum executions.
+2. **Second-order savings (per reuse):** Ledgered decisions, calibrations, and proofs create a structural baseline. Each subsequent run reuses that baseline, lowering the marginal cost again, even if quantum is invoked.
+3. **Canonical closure:** As DCR → 1, the marginal cost of re-derivation approaches zero; the system spends on execution only, not on rebuilding authority, validation, or calibration.
+
+**Result:** Cost elimination is not a one-time discount; it compounds with every validated decision and every reuse cycle.
