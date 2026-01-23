@@ -340,7 +340,55 @@ The ledger stores:
 
 ---
 
-## 11. Decision Trace Viewer
+## 11. Data Lake (Repo Brain)
+
+The repo acts as a **data lake** that functions as Bickford’s brain. It is the
+single, structured memory substrate that turns intent into durable knowledge.
+
+### Core Inputs
+
+- **Ledger streams** (intent, decision, authority proofs, outcomes)
+- **UI/CSS hashes** (runtime contract compliance)
+- **Execution artifacts** (PRs, commits, test results, deploy logs)
+- **Conversation traces** (normalized chat sessions and decision traces)
+- **Domain knowledge** (canon, playbooks, invariants, and policies)
+
+### Structural Encoding (Dominance Rule)
+
+Knowledge only counts once it is encoded in a structure the system can reason over:
+
+```
+K_t → S(K_t) → admissible policies
+```
+
+Raw logs without schema are inert; **schema + hash = admissible memory**.
+
+### Storage Surfaces (Repo-First)
+
+- `execution-ledger.jsonl` for append-only decision history
+- `ledger/` and `packages/ledger/` for durable persistence
+- `canon/` for invariants and execution law
+- `docs/` for formalized workflows and proofs
+- `artifacts/` for evidence, snapshots, and audit exports
+
+### Retrieval + Replay
+
+- Deterministic replay by ledger entry and trace ID
+- Cross-link to commits, deploys, and UI hash proofs
+- Exportable evidence bundles for regulator-grade review
+
+### Governance
+
+- **No deletion** (append-only invariant)
+- **No mutation** without a new ledger entry
+- **Authority-bound writes** only
+
+This turns the repo into a **compounding intelligence store**: every decision
+is permanently queryable, replayable, and reusable for future intent.
+
+---
+
+## 12. Decision Trace Viewer
 
 ### Purpose
 
@@ -362,7 +410,7 @@ The ledger stores:
 
 ---
 
-## 12. GitHub + Codex Integration
+## 13. GitHub + Codex Integration
 
 Codex operates as:
 
@@ -387,7 +435,7 @@ Deploy is blocked unless:
 
 ---
 
-## 13. Why This Architecture Matters
+## 14. Why This Architecture Matters
 
 Most systems do this:
 
@@ -401,6 +449,6 @@ That is **decision continuity**.
 
 ---
 
-## 14. One-Sentence Summary (Canonical)
+## 15. One-Sentence Summary (Canonical)
 
 > **Bickford is a deterministic execution runtime where ChatGPT 5.2 reasons, Claude 4.5 critiques, Codex executes, and a ledger remembers — permanently.**
