@@ -1,5 +1,7 @@
 import crypto from "node:crypto";
 
+export const runtime = "nodejs";
+
 import {
   appendConversationMessage,
   createConversation,

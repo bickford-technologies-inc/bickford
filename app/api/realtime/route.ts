@@ -2,6 +2,8 @@ import { appendDailyArchive } from "../../lib/archive";
 import { ENVIRONMENT_AGENT } from "../../lib/agent";
 import { executeIntent } from "../../lib/execute";
 
+export const runtime = "nodejs";
+
 type RealtimeIntentPayload = {
   sessionId: string;
   transcript: string;
