@@ -61,7 +61,7 @@ export * from "./decision.js";
 /**
  * Compat MUST be last to avoid shadowing
  */
-export * from "./compat.js";
+// export * from "./compat.js";
 
 // OPTR SUPPORT TYPES — TEMPORARY CANON SURFACE
 // Added to satisfy build; semantics finalized in Phase 2B
