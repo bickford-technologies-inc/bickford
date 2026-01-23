@@ -74,38 +74,6 @@ function buildAgentReply(intent: string) {
   return RESPONSE_CONFIG.defaultReply;
 }
 
-function buildTimeline(state: ChatState): TimelineEntry[] {
-  const entries: TimelineEntry[] = [];
-  if (state.messages.length > 0) {
-    const latestTimestamp =
-      state.messages[state.messages.length - 1]?.timestamp ?? Date.now();
-    entries.push({
-      id: "today",
-      label: "Today",
-      summary: messagePreview(state.messages),
-      timestamp: latestTimestamp,
-    });
-  }
-
-  for (const archive of state.archives) {
-    const latestTimestamp =
-      archive.messages[archive.messages.length - 1]?.timestamp ?? Date.now();
-    entries.push({
-      id: archive.date,
-      label: archive.date,
-      summary: messagePreview(archive.messages),
-      timestamp: latestTimestamp,
-    });
-  }
-
-  return entries;
-}
-
-function formatTimestamp(timestamp: number) {
-  return new Date(timestamp).toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
-  });
 function buildTranscript(messages: ChatMessage[]) {
   return messages
     .map((message) => {
