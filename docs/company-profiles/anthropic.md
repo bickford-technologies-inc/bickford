@@ -44,6 +44,18 @@ The combined drag of enterprise trust, regulatory uncertainty, and safety overhe
 - Hours are person-hours consumed per workflow run.
 - **1 employee hour = $300** in loaded cost.
 
+**Pain Point → Bickford Capability Map**
+
+| Anthropic pain point | Bickford capability | Workflow anchor |
+| --- | --- | --- |
+| Safety and governance overhead | Authority onboarding, policy ingestion, decision continuity | Authority onboarding & scope binding |
+| Regulatory uncertainty | Policy ingestion, audit/export, jurisdictional policy bundles | Audit, reporting, and export |
+| Enterprise trust & procurement friction | Auditability, decision records, authority proofs | Decision record & continuity lock |
+| Platform differentiation pressure | Canon enforcement artifacts, governance proofs | Execution gating & safe dispatch |
+| Security and misuse risk | Non-interference enforcement, incident response | Incident response & postmortem |
+| International expansion constraints | Jurisdictional policy mapping, sovereignty controls | Policy ingestion & constitutional mapping |
+| Latency-sensitive product expectations | OPTR path optimization, certified configuration | Execution gating & safe dispatch |
+
 ### 1) Safety and Governance Overhead
 
 **Real use case:** Claude model update requires safety evaluation, policy alignment, and release approval before deployment to enterprise customers.
