@@ -139,6 +139,7 @@ value_per_hour_per_employee = total_value_usd / (years * 365 * 24 * employee_cou
 This makes it easy to compare outcomes across enterprises (e.g., hyperscalers and AI labs) on a normalized basis.
 
 ## Continuous compounding (value growth over time)
+
 ## Compounding (value growth over time)
 
 When workflows compound (learning, automation, better routing), value can increase over time.
@@ -171,6 +172,7 @@ compound_compounded_value = initial_value * e^(compound_growth * years)
 Use this to capture reinforcing compounding loops for long-lived enterprise systems.
 
 ## Enterprise grouping taxonomy for $/hour
+
 ## Enterprise grouping taxonomy for $/hour (per employee and beyond)
 
 Apply the same $/hour framing across an extensible set of groupings. The list below is intentionally expansive and can be extended indefinitely as new dimensions emerge.
