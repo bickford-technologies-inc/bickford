@@ -59,6 +59,7 @@ Quality checks are enforced via **GitHub Actions CI**, not local git hooks:
 All linting, type checking, testing, and building happens in the cloud via GitHub Actions.
 
 For the end-to-end execution workflow (intent to realized output), see [`docs/EXECUTION_WORKFLOW.md`](docs/EXECUTION_WORKFLOW.md).
+For canonical chat workflows and the art of the possible, see [`docs/BICKFORD_CHAT_WORKFLOWS.md`](docs/BICKFORD_CHAT_WORKFLOWS.md).
 
 ---
 
