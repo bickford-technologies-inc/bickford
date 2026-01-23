@@ -69,6 +69,7 @@ export type { PathConstraint } from "./canon.js";
 export type {
   Conversation,
   ConversationMessage,
+  ConversationSummary,
   ConversationTraceSummary,
 } from "./conversation.js";
 
