@@ -56,6 +56,10 @@ export type InterferenceResult = {
 export * from "./deniedDecision.js";
 export * from "./rubric.js";
 
+export type { Intent } from "./intent";
+
+export type { WhyNotTrace } from "./canon";
+
 export type {
   Conversation,
   ConversationMessage,
