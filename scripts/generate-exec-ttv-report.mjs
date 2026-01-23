@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 
-const ledgerPath = process.env.EXECUTION_LEDGER_PATH || "execution-ledger.jsonl";
+const ledgerPath =
+  process.env.EXECUTION_LEDGER_PATH || "execution-ledger.jsonl";
 const outputDir = process.env.TTV_REPORT_DIR || "artifacts";
 const valuePerHour = Number(process.env.TTV_VALUE_PER_HOUR || "0");
 
@@ -14,7 +15,10 @@ function parseLedgerLine(line) {
 }
 
 function extractSnapshot(entry) {
-  if (entry?.ttvSnapshot?.baselineSeconds && entry?.ttvSnapshot?.realizedSeconds) {
+  if (
+    entry?.ttvSnapshot?.baselineSeconds &&
+    entry?.ttvSnapshot?.realizedSeconds
+  ) {
     return entry.ttvSnapshot;
   }
 
@@ -36,7 +40,9 @@ function extractSnapshot(entry) {
 }
 
 if (!fs.existsSync(ledgerPath)) {
-  console.log(`No execution ledger found at ${ledgerPath}; skipping TTV report.`);
+  console.log(
+    `No execution ledger found at ${ledgerPath}; skipping TTV report.`,
+  );
   process.exit(0);
 }
 
@@ -50,7 +56,8 @@ for (const line of lines) {
   const snapshot = extractSnapshot(entry);
   if (!snapshot) continue;
 
-  const ttvSecondsRecovered = snapshot.baselineSeconds - snapshot.realizedSeconds;
+  const ttvSecondsRecovered =
+    snapshot.baselineSeconds - snapshot.realizedSeconds;
   const estimatedDollarValue = (ttvSecondsRecovered / 3600) * valuePerHour;
   const executionHash =
     entry.hash || entry.executionHash || entry.id || "unknown";
