@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 
 type ChatRole = 'user' | 'agent'
 
@@ -91,9 +91,10 @@ function normalizeMessages(
     .filter((message) => message)
     .map((message) => {
       const role = message.role ?? message.author ?? 'agent'
+      const normalizedRole: ChatRole = role === 'user' ? 'user' : 'agent'
       return {
         id: message.id ?? crypto.randomUUID(),
-        role: role === 'user' ? 'user' : 'agent',
+        role: normalizedRole,
         content: message.content ?? message.text ?? '',
         timestamp:
           typeof message.timestamp === 'number'
@@ -250,7 +251,7 @@ export default function UnifiedChatDock() {
     return [...today, ...state.archives]
   }, [state.archives, state.currentDate, state.messages])
 
-  function sendMessage(event?: React.FormEvent) {
+  function sendMessage(event?: FormEvent) {
     if (event) event.preventDefault()
     const trimmed = input.trim()
     if (!trimmed) return
@@ -354,7 +355,7 @@ export default function UnifiedChatDock() {
           <form className="chatDockFooter" onSubmit={sendMessage}>
             <input
               value={input}
-              onChange={(event) => setInput(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => setInput(event.target.value)}
               placeholder="Share a thought or decision..."
             />
             <button type="submit">Send</button>

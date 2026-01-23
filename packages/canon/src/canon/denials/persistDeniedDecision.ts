@@ -7,6 +7,7 @@
  */
 
 import type { DeniedDecisionPayload } from "../../types/denied";
+import { getPrisma } from "../../db/prisma.js";
 
 /**
  * Persist a denied decision to the ledger
@@ -49,7 +50,8 @@ export async function getDeniedDecisions(params: {
   limit?: number;
 }): Promise<DeniedDecisionPayload[]> {
   try {
-    const records = await getPrisma().deniedDecision.findMany({
+    const prisma = await getPrisma();
+    const records = await prisma.deniedDecision.findMany({
       where: {
         ...(params.actionId && { actionId: params.actionId }),
         ...(params.tenantId && { tenantId: params.tenantId }),
