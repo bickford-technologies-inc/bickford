@@ -47,7 +47,8 @@
     "capture:ui": "node scripts/capture-ui.mjs",
     "assert:vercel-binding": "tsx scripts/assert-vercel-binding.ts",
     "bickford:realize": "node scripts/bickford-realize.mjs",
-    "benchmark:gaps": "node scripts/benchmark-gaps.mjs"
+    "benchmark:gaps": "node scripts/benchmark-gaps.mjs",
+    "design:lock": "node scripts/record-design-lock.mjs"
   },
   "bin": {
     "bickford": "./scripts/bickford-realize.mjs"

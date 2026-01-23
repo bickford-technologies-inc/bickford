@@ -22,7 +22,10 @@ function extractSnapshot(entry) {
     return entry.metrics;
   }
 
-  if (typeof entry?.baselineSeconds === "number" && typeof entry?.realizedSeconds === "number") {
+  if (
+    typeof entry?.baselineSeconds === "number" &&
+    typeof entry?.realizedSeconds === "number"
+  ) {
     return {
       baselineSeconds: entry.baselineSeconds,
       realizedSeconds: entry.realizedSeconds,
@@ -49,7 +52,8 @@ for (const line of lines) {
 
   const ttvSecondsRecovered = snapshot.baselineSeconds - snapshot.realizedSeconds;
   const estimatedDollarValue = (ttvSecondsRecovered / 3600) * valuePerHour;
-  const executionHash = entry.hash || entry.executionHash || entry.id || "unknown";
+  const executionHash =
+    entry.hash || entry.executionHash || entry.id || "unknown";
 
   reports.push({
     executionHash,
@@ -63,8 +67,14 @@ const summary = {
   sourceLedger: ledgerPath,
   valuePerHour,
   totalExecutions: reports.length,
-  totalTtvSecondsRecovered: reports.reduce((sum, r) => sum + r.ttvSecondsRecovered, 0),
-  totalEstimatedDollarValue: reports.reduce((sum, r) => sum + r.estimatedDollarValue, 0),
+  totalTtvSecondsRecovered: reports.reduce(
+    (sum, r) => sum + r.ttvSecondsRecovered,
+    0,
+  ),
+  totalEstimatedDollarValue: reports.reduce(
+    (sum, r) => sum + r.estimatedDollarValue,
+    0,
+  ),
 };
 
 fs.mkdirSync(outputDir, { recursive: true });
