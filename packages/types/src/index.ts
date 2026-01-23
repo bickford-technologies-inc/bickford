@@ -78,3 +78,5 @@ export type { OPTRWeights } from "./canon";
 
 export type { AuthorityCheckResult } from "./canon";
 export type { ConfidenceEnvelope } from "./canon";
+
+export type { PromotionDecision, PromotionTests } from "./canon";
