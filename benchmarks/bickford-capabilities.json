@@ -1,0 +1,50 @@
+{
+  "metadata": {
+    "captured_at": "2026-01-20",
+    "notes": "Current Bickford capability snapshot for benchmarking."
+  },
+  "capabilities": [
+    {
+      "id": "autonomous_fix_rate_percent",
+      "current": 72,
+      "unit": "percent",
+      "evidence": "Pending automated remediation expansion",
+      "owner": "execution-convergence"
+    },
+    {
+      "id": "deployment_recovery_ttv_minutes",
+      "current": 14,
+      "unit": "minutes",
+      "evidence": "Manual gap remediation still required",
+      "owner": "ops"
+    },
+    {
+      "id": "deterministic_build_rate_percent",
+      "current": 93,
+      "unit": "percent",
+      "evidence": "CI guardrails enforced",
+      "owner": "ci"
+    },
+    {
+      "id": "ledger_immutability",
+      "current": true,
+      "unit": "boolean",
+      "evidence": "Append-only execution ledger",
+      "owner": "ledger"
+    },
+    {
+      "id": "non_interference_enforced",
+      "current": false,
+      "unit": "boolean",
+      "evidence": "Policy drafted; enforcement pending",
+      "owner": "optr"
+    },
+    {
+      "id": "performance_observability_coverage_percent",
+      "current": 68,
+      "unit": "percent",
+      "evidence": "Telemetry coverage incomplete",
+      "owner": "monitorability"
+    }
+  ]
+}
