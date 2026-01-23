@@ -215,7 +215,10 @@ export default function ChatPage() {
         `Canon: ${executePayload.decision.canonId}`,
         `Rationale: ${executePayload.decision.rationale}`,
         `Ledger: ${executePayload.ledgerEntry.id}`,
+        `Ledger Hash: ${executePayload.ledgerEntry.hash}`,
         `Knowledge: ${executePayload.knowledge.entryId}`,
+        `Duration: ${executePayload.performance.durationMs}ms`,
+        `Peak Duration: ${executePayload.performance.peakDurationMs}ms`,
       ].join("\n");
 
       const agentMessage: ChatMessage = {
