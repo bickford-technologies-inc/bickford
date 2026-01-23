@@ -52,3 +52,7 @@ await governedClaude.messages.create({
 ```
 
 The wrapper always appends an audit entry to the supplied JSONL ledger and blocks disallowed requests when `enforcement` is set to `block_with_audit`.
+
+### Audit entries
+
+Each audit entry includes the evaluated canon rule IDs, the enforcement decision, and a stable SHA-256 hash for ledger integrity. You can switch to `audit_only` enforcement to allow all requests while still recording the decision trail.
