@@ -1,5 +1,14 @@
 {
-  "state": {},
-  "last_update": null,
-  "ledger_refs": []
+  "state": {
+    "sales_scenarios": {
+      "count": 10,
+      "message_ref": "82e80437412e0e4498937c0d06627eb1",
+      "summary": "10 sales scenarios with objections, timelines, pricing, outcomes, and lessons for training.",
+      "last_updated": "2026-01-23T21:28:38Z"
+    }
+  },
+  "last_update": "2026-01-23T21:28:38Z",
+  "ledger_refs": [
+    "81464388cdb6037d8d1122fe9ba32dc7"
+  ]
 }
