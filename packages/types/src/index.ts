@@ -53,6 +53,8 @@ export type InterferenceResult = {
   reason?: string;
 };
 
+export type { AgentResult, IntentContext, OptrResult } from "./optr.js";
+
 export * from "./deniedDecision.js";
 export * from "./rubric.js";
 
