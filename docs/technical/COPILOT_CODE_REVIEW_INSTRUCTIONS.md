@@ -599,157 +599,191 @@ Remember that creating effective instructions is an iterative process. Start wit
 
 # User-provided custom instructions
 
-BICKFORD — CANONICAL MATHEMATICAL FORMULATION
+# BICKFORD — CANONICAL MATHEMATICAL FORMULATION
 
 (Decision Continuity Runtime · Execution Is Law)
 
-0. Time and Agents
+## 0. Time and Agents
 
-Let time t ∈ R≥0.
-Let agents i ∈ {1,…,N} be human, AI, or system actors.
-Let st ∈ S be observable system state at time t.
+Let time \( t \in \mathbb{R}_{\ge 0} \).
+Let agents \( i \in \{1,\ldots,N\} \) be human, AI, or system actors.
+Let \( s_t \in S \) be observable system state at time \( t \).
 
-1. Intent
+## 1. Intent
 
 An intent is a constrained objective declaration:
 
-I = (G, Θ, A, τ)
+\[
+I = (G, \Theta, A, \tau)
+\]
 
 Where:
 
-G: target outcome
+- \( G \): target outcome
+- \( \Theta \subseteq C \): constraints (legal, safety, design, governance)
+- \( A \): authority set permitted to act
+- \( \tau \): declaration timestamp
 
-Θ ⊆ C: constraints (legal, safety, design, governance)
+## 2. Knowledge and Structure
 
-A: authority set permitted to act
-
-τ: declaration timestamp
-
-2. Knowledge and Structure
-
-Let Kt be retained knowledge at time t.
-Let S(Kt) be its structural encoding (schemas, invariants, ledgers, hashes).
+Let \( K_t \) be retained knowledge at time \( t \).
+Let \( S(K_t) \) be its structural encoding (schemas, invariants, ledgers, hashes).
 
 Structural Dominance Invariant:
 
-∀k ∈ Kt, behavior(k) = behavior(S(k))
+\[
+\forall k \in K_t,\; \text{behavior}(k) = \text{behavior}(S(k))
+\]
 
 Knowledge has no effect unless structurally encoded.
 
-3. Decision
+## 3. Decision
 
 A decision is executable intent:
 
-D = (I, R, E, σ)
+\[
+D = (I, R, E, \sigma)
+\]
 
 Where:
 
-R: rationale
+- \( R \): rationale
+- \( E \): admissible executable actions
+- \( \sigma \): cryptographic authority signature
 
-E: admissible executable actions
+## 4. Ledger
 
-σ: cryptographic authority signature
+All decisions are persisted to an append-only ledger \( L \):
 
-4. Ledger
-
-All decisions are persisted to an append-only ledger L:
-
-Lt+1 = Lt ∪ {(D, h(D), t)}
+\[
+L_{t+1} = L_t \cup \{(D, h(D), t)\}
+\]
 
 Ledger Invariant: no deletion, mutation, or reordering.
 
-5. Policy Space
+## 5. Policy Space
 
-For agent i:
+For agent \( i \):
 
-Πi(S(Kt)) = {πi ∣ πi admissible under S(Kt)}
+\[
+\Pi_i(S(K_t)) = \{\pi_i \mid \pi_i \text{ admissible under } S(K_t)\}
+\]
 
 Policies map state to action:
 
-πi : S → A
+\[
+\pi_i : S \to A
+\]
 
-6. Time-to-Value (TTV)
+## 6. Time-to-Value (TTV)
 
-Let realized value under policy π be V(t, π).
+Let realized value under policy \( \pi \) be \( V(t, \pi) \).
 
-TTV(π) = inf {t ≥ 0 ∣ V(t, π) ≥ G}
+\[
+TTV(\pi) = \inf \{ t \ge 0 \mid V(t, \pi) \ge G \}
+\]
 
-7. OPTR — Optimal Path to Realization
+## 7. OPTR — Optimal Path to Realization
 
 Bickford selects:
 
-π* = arg minπ E[TTV(π)]
+\[
+\pi^* = \arg\min_{\pi} \mathbb{E}[TTV(\pi)]
+\]
 
 Risk-aware extension:
 
-E[TTV(π) + λC C(π) + λR R(π) − λP log p(π)]
+\[
+\mathbb{E}[TTV(\pi) + \lambda_C C(\pi) + \lambda_R R(\pi) - \lambda_P \log p(\pi)]
+\]
 
-Subject to π ⊨ Θ.
+Subject to \( \pi \vDash \Theta \).
 
-8. Non-Interference (Multi-Agent Law)
+## 8. Non-Interference (Multi-Agent Law)
 
-For agents i ≠ j:
+For agents \( i \ne j \):
 
-ΔE[TTVj ∣ πi] ≤ 0
+\[
+\Delta \mathbb{E}[TTV_j \mid \pi_i] \le 0
+\]
 
 Actions increasing another agent’s time-to-value are inadmissible.
 
-9. Execution Law
+## 9. Execution Law
 
-An action a is executable iff:
+An action \( a \) is executable iff:
 
-a ∈ E ∧ σ ∈ A ∧ a ⊨ Θ
+\[
+a \in E \;\wedge\; \sigma \in A \;\wedge\; a \vDash \Theta
+\]
 
 Otherwise execution is denied and recorded.
 
-10. Learning
+## 10. Learning
 
 After execution:
 
-Kt+1 = Kt ∪ Observe(st, π*)
+\[
+K_{t+1} = K_t \cup \text{Observe}(s_t, \pi^*)
+\]
 
 Structural update:
 
-S(Kt+1) ⊇ S(Kt)
+\[
+S(K_{t+1}) \supseteq S(K_t)
+\]
 
 Structure grows monotonically.
 
-11. Decision Continuity Rate
+## 11. Decision Continuity Rate
 
-DCR = decisions reused / decisions required, lim t→∞ DCR = 1
+\[
+DCR = \frac{\text{decisions reused}}{\text{decisions required}},\quad \lim_{t \to \infty} DCR = 1
+\]
 
-12. Compounding Persistence
+## 12. Compounding Persistence
 
-Let Ea(Kt) be cognitive energy to apply knowledge.
+Let \( E_a(K_t) \) be cognitive energy to apply knowledge.
 
-lim t→∞ Ea(Kt) = 0
+\[
+\lim_{t \to \infty} E_a(K_t) = 0
+\]
 
 Memory executes automatically via structure.
 
-13. UI and Design Binding
+## 13. UI and Design Binding
 
-For any execution surface U:
+For any execution surface \( U \):
 
-h(Uruntime) = h(Uledger)
+\[
+h(U_{runtime}) = h(U_{ledger})
+\]
 
 UI drift invalidates execution.
 
-14. Compliance
+## 14. Compliance
 
-For any regulator R:
+For any regulator \( R \):
 
-Evidence(R) = {L, S(K), π*, σ, h(⋅)}
+\[
+\text{Evidence}(R) = \{ L, S(K), \pi^*, \sigma, h(\cdot) \}
+\]
 
 Compliance is derived, not implemented.
 
-15. Terminal Definition
+## 15. Terminal Definition
 
-Bickford = ⟨I, D, L, S(K), OPTR, TTV, Πadm, Execute⟩
+\[
+\text{Bickford} = \langle I, D, L, S(K), OPTR, TTV, \Pi_{adm}, Execute \rangle
+\]
 
-Canonical Law
+Canonical Law:
 
 Reality = Objective + Constraints + Structure
+
 Execution = Solve → Act → Observe → Persist
 
 Bickford does not run scripts.
+
 Bickford resolves.
+

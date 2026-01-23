@@ -9,16 +9,22 @@
     "packages/types"
   ],
   "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "install:all": "npm install",
+    "dev:api": "npm run -w bickford-backend dev",
+    "dev:web": "npm run -w @bickford/web-ui dev -- --port 5173",
+    "dev:mobile": "npm run -w bickford-mobile-ui dev -- --port 5174",
+    "dev": "node scripts/dev-stack.mjs",
     "detect:promotions": "node scripts/detect-promotions.mjs",
     "promote": "node scripts/promote-package.mjs",
     "preflight": "node scripts/assert-declared-deps.mjs && node scripts/require-optr-exports.mjs",
     "canon:enforce": "node scripts/enforce-deprecation-windows.mjs",
     "canon:viz": "node scripts/render-canon-drift.mjs",
     "preinstall": "node scripts/assert-lockfile.mjs",
-    "prebuild": "node scripts/assert-no-phantom-workspace-deps.mjs && node scripts/assert-no-sdk-domain-imports.mjs && node scripts/assert-node.mjs && node scripts/assert-vercel-project.mjs && node scripts/check-chat-design-lock.mjs && bash ci/guards/EXECUTION_AUTHORITY_GUARD.sh && bash ci/guards/ENVIRONMENT_PRECONDITION.sh",
+    "prebuild": "node scripts/assert-no-phantom-workspace-deps.mjs && node scripts/assert-no-sdk-domain-imports.mjs && node scripts/assert-node.mjs && node scripts/assert-vercel-project.mjs && node scripts/check-chat-design-lock.mjs && node scripts/generate-exec-ttv-report.mjs && bash ci/guards/EXECUTION_AUTHORITY_GUARD.sh && bash ci/guards/ENVIRONMENT_PRECONDITION.sh",
     "build:types": "pnpm --filter @bickford/types build",
     "build": "pnpm run build:types && pnpm run prebuild && pnpm run realize-intent && node scripts/assert-intent-phase.mjs && next build",
-    "start": "next start",
+    "start": "node scripts/start.mjs",
     "check:resolution": "bash scripts/check-workspace-resolution.sh",
     "build:all": "bash scripts/build-all.sh",
     "canon:bump": "node scripts/bump-canon-version.mjs",
@@ -42,9 +48,16 @@
     "canon:remediate:queue": "node scripts/build-remediation-queue.mjs",
     "canon:exec:report": "node scripts/generate-exec-ttv-report.mjs",
     "canon:compare:tenant": "node scripts/compare-tenant-baseline.mjs",
+    "design:lock": "node scripts/record-design-lock.mjs",
     "realize-intent": "node scripts/realize-intent.mjs",
     "capture:ui": "node scripts/capture-ui.mjs",
-    "assert:vercel-binding": "tsx scripts/assert-vercel-binding.ts"
+    "assert:vercel-binding": "tsx scripts/assert-vercel-binding.ts",
+    "bickford:realize": "node scripts/bickford-realize.mjs",
+    "benchmark:gaps": "node scripts/benchmark-gaps.mjs",
+    "design:lock": "node scripts/record-design-lock.mjs"
+  },
+  "bin": {
+    "bickford": "./scripts/bickford-realize.mjs"
   },
   "dependencies": {
     "ai": "^6.0.44",
