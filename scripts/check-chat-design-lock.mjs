@@ -5,14 +5,15 @@ const ledgerPath = "ledger/design-lock.jsonl";
 const cssPath = "app/chat/chat.module.css";
 
 const ledger = fs.readFileSync(ledgerPath, "utf8");
-const entry = ledger
+const entries = ledger
   .trim()
   .split("\n")
   .map((line) => JSON.parse(line))
-  .find(
+  .filter(
     (item) =>
       item.type === "design-lock" && item.surface === "bickford-web-chat",
   );
+const entry = entries.at(-1);
 
 if (!entry) {
   throw new Error(`Missing design-lock entry for bickford-web-chat in ${ledgerPath}`);
