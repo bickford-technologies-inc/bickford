@@ -4,18 +4,18 @@ on:
   workflow_dispatch:
     inputs:
       workflow_name:
-        description: 'Workflow name (unique identifier)'
+        description: "Workflow name (unique identifier)"
         required: true
         type: string
       intent:
-        description: 'Execution intent (what to accomplish)'
+        description: "Execution intent (what to accomplish)"
         required: true
         type: string
       constraints:
-        description: 'Constraints (comma-separated)'
+        description: "Constraints (comma-separated)"
         required: false
         type: string
-        default: ''
+        default: ""
   issues:
     types: [opened, labeled]
 
