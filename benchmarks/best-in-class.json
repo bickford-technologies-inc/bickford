@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "source": "benchmark-baseline",
+    "version": "2026-01-20",
+    "notes": "Best-in-class targets for Bickford capability and performance benchmarking."
+  },
+  "capabilities": [
+    {
+      "id": "autonomous_fix_rate_percent",
+      "category": "autonomy",
+      "metric": "Autonomous remediation success rate",
+      "target": 95,
+      "unit": "percent",
+      "evidence": "CI+deploy loop convergence rate"
+    },
+    {
+      "id": "deployment_recovery_ttv_minutes",
+      "category": "execution",
+      "metric": "TTV to green deploy after failure",
+      "target": 5,
+      "unit": "minutes",
+      "evidence": "ARL loop convergence window"
+    },
+    {
+      "id": "deterministic_build_rate_percent",
+      "category": "build",
+      "metric": "Deterministic build success rate",
+      "target": 99,
+      "unit": "percent",
+      "evidence": "CI build reproducibility"
+    },
+    {
+      "id": "ledger_immutability",
+      "category": "ledger",
+      "metric": "Append-only ledger enforcement",
+      "target": true,
+      "unit": "boolean",
+      "evidence": "Ledger mutation controls"
+    },
+    {
+      "id": "non_interference_enforced",
+      "category": "governance",
+      "metric": "Multi-agent non-interference enforcement",
+      "target": true,
+      "unit": "boolean",
+      "evidence": "Non-interference gate"
+    },
+    {
+      "id": "performance_observability_coverage_percent",
+      "category": "observability",
+      "metric": "Performance telemetry coverage",
+      "target": 90,
+      "unit": "percent",
+      "evidence": "Latency/throughput metrics collected"
+    }
+  ]
+}
