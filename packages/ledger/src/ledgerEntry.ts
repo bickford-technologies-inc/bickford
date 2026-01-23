@@ -16,12 +16,10 @@ type DbRow = {
 export function toLedgerEntry(db: DbRow): LedgerEntry {
   return {
     id: db.id,
-    threadId: db.threadId,
-    role: db.role,
-    content: db.content,
-    ts: Date.parse(db.createdAt),
-
-    intent: db.intent,
-    decision: db.decision,
+    event: {
+      id: db.id,
+      timestamp: db.createdAt,
+    },
+    // intent, decision, etc. can be added if LedgerEntry is extended
   };
 }
