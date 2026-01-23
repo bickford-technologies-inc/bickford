@@ -165,7 +165,7 @@ export function createDeniedDecisionProof(trace: WhyNotTrace): {
   const id = `deny_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
   // Convert reason codes to strings immediately
-  const reasonCodesStr = trace.reasonCodes.map((c) => c.toString());
+  const reasonCodesStr = trace.reasonCodes.map((c: string | number) => c.toString());
 
   // Normalize arrays (undefined -> empty array)
   const missingCanonIds = trace.missingCanonIds || [];
