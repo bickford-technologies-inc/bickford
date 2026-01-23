@@ -77,3 +77,4 @@ export type { OPTRRun } from "./canon";
 export type { OPTRWeights } from "./canon";
 
 export type { AuthorityCheckResult } from "./canon";
+export type { ConfidenceEnvelope } from "./canon";
