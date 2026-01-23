@@ -64,6 +64,7 @@ export type { TokenStreamProof } from "./canon";
 export type { ISO8601 } from "./canon";
 export type { CandidatePath } from "./canon";
 export type { CandidateFeatures } from "./canon";
+export type { PathConstraint } from "./canon";
 
 export type {
   Conversation,
