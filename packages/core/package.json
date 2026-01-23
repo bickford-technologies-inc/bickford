@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./intent/validateIntent": "./src/intent/validateIntent.ts"
+    "./intent/validateIntent": "./src/intent/validateIntent.ts",
+    "./ledger": "./src/ledger/index.ts"
   },
   "files": [
     "dist"

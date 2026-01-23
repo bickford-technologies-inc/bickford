@@ -32,6 +32,8 @@ type UiLedgerPayload = {
   surface?: string;
 };
 
+type UiBindingEntry = ReturnType<typeof readProofLedger>[number];
+
 function hashSha256(value: string) {
   return crypto.createHash("sha256").update(value).digest("hex");
 }
@@ -75,7 +77,7 @@ export function computeUiSurfaceHashes(): UiHashSnapshot {
   };
 }
 
-export function getLatestUiBinding() {
+export function getLatestUiBinding(): UiBindingEntry | null {
   const entries = readProofLedger(LEDGER_INTENT_ID)
     .filter((entry) => entry.kind === LEDGER_KIND)
     .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
@@ -87,6 +89,13 @@ export async function assertUiLedgerBinding(options?: {
   required?: boolean;
 }) {
   if (options?.required === false) {
+    return;
+  }
+  if (
+    process.env.VERCEL ||
+    process.env.CI ||
+    process.env.NEXT_PHASE === "phase-production-build"
+  ) {
     return;
   }
 

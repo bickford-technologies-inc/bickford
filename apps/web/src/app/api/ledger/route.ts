@@ -1,4 +1,4 @@
-import { ledger } from "@bickford/core";
+import { getLedger, getPrismaClient } from "@bickford/core/ledger";
 
 export async function GET() {
   // Build / CI / static export guard
@@ -13,9 +13,9 @@ export async function GET() {
   }
 
   // Ensure Prisma client is initialized (for environments that require explicit init)
-  ledger.getPrismaClient();
+  getPrismaClient();
 
-  const entries = await ledger.getLedger();
+  const entries = await getLedger();
   return new Response(JSON.stringify({ entries }), {
     headers: { "Content-Type": "application/json" },
   });

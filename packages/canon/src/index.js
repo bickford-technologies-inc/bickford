@@ -1,18 +1,25 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-// Canonical public API surface for @bickford/bickford
-__exportStar(require("./canon/promotion"), exports);
+export { enforceInvariants } from "./runtime";
+export { optr } from "./optr";
+export * from "./export-control/classifications";
+export * from "./export-control/jurisdictions";
+export * from "./export-control/checks";
+export * from "./invariants/exportControl";
+export * from "./artifacts/exportDecisionArtifact";
+export * from "./nation/treatyCompliance";
+export * from "./nation/wartimeEscalation";
+export * from "./oversight/parliamentaryNotification";
+export * from "./coalition/disputeResolution";
+export * from "./security/adversarialDetection";
+export * from "./rubric/nationStateRubric";
+export * from "./rubric/scoreIntent";
+export * from "./invariants/rubricInvariant";
+export * from "./types/denied";
+export * from "./rubric/types";
+export * from "@bickford/monitorability-core";
+
+// Enhanced systems for user intent realization and automation
+export * from "./canon/knowledge-persistence";
+export * from "./canon/dynamic-config";
+export * from "./canon/recursive-learning";
+export * from "./canon/runtime-resiliency";
+export * from "./canon/self-correcting";

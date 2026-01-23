@@ -1,4 +1,3 @@
-import { Request } from "next/server";
 import { appendLedger } from "@bickford/ledger";
 import { LedgerEntry } from "@bickford/types";
 import crypto from "node:crypto";

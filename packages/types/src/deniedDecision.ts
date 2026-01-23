@@ -1,6 +1,6 @@
 export type DeniedDecisionPayload = {
   // CORE IDENTITY
-  decisionId: string;
+  decisionId?: string;
   actionId: string;
   tenantId: string;
 
@@ -8,7 +8,7 @@ export type DeniedDecisionPayload = {
   denied: true;
 
   // TIMING
-  ts: number;
+  ts: string;
 
   // HUMAN / SYSTEM EXPLANATION
   message: string;
