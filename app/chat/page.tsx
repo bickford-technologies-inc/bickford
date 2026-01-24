@@ -272,6 +272,19 @@ export default function ChatPage() {
       timestamp: now,
     };
 
+    const decision = runMakeBuyEngine(trimmed);
+    const agentMessage: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: "agent",
+      content: [
+        `input=${trimmed}`,
+        `output=${decision.value}`,
+        "created by bickford via intent realization",
+      ].join("\n"),
+      timestamp: now + 1,
+    };
+
+    setMessages((prev) => [...prev, userMessage, agentMessage]);
     setIsSending(true);
     setInput("");
     setPersistenceError(null);
