@@ -12,6 +12,7 @@ import {
   type TimelineEntry,
 } from "../components/chatState";
 import { createClientId } from "../lib/ids";
+import { runMakeBuyEngine } from "../lib/makeBuy";
 import styles from "./chat.module.css";
 
 const GREETINGS = new Set(["hi", "hello", "hey", "greetings", "yo"]);
@@ -88,22 +89,6 @@ function buildTranscript(messages: ChatMessage[]) {
     })
     .join("\n");
 }
-
-const GREETINGS = new Set([
-  "hello",
-  "hi",
-  "hey",
-  "greetings",
-  "howdy",
-  "yo",
-  "sup",
-]);
-
-const RESPONSE_CONFIG = {
-  greetingReply: "Hello! How can I help you today?",
-  questionReply: "That's a great question! Let me think...",
-  defaultReply: "I'm here to help. What would you like to do next?",
-};
 
 function formatTimestamp(ts: number | string): string {
   const date = new Date(typeof ts === "string" ? parseInt(ts, 10) : ts);

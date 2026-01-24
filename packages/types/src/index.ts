@@ -58,12 +58,16 @@ export type { AgentResult, IntentContext, OptrResult } from "./optr.js";
 export * from "./deniedDecision.js";
 export * from "./rubric.js";
 
-export type { Intent } from "./intent";
+export type { Intent } from "./intent.js";
 
 export type { Action, WhyNotTrace } from "./canon.js";
 
 export type {
   Conversation,
   ConversationMessage,
+  ConversationMemoryMatch,
+  ConversationMemoryOptions,
+  ConversationRole,
+  ConversationSummary,
   ConversationTraceSummary,
-} from "./conversation";
+} from "./conversation.js";
