@@ -14,6 +14,13 @@ import {
 import { createClientId } from "../lib/ids";
 import styles from "./chat.module.css";
 
+const GREETINGS = new Set(["hi", "hello", "hey", "greetings", "yo"]);
+const RESPONSE_CONFIG = {
+  greetingReply: "Hello — share the intent you want to execute.",
+  questionReply: "Understood. I'll resolve the intent and respond with the run.",
+  defaultReply: "Intent received. Preparing execution trace now.",
+};
+
 type ConversationSummary = {
   id: string;
   title: string;
