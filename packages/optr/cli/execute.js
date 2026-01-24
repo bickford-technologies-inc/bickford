@@ -1,76 +1,3 @@
-import { readFile, writeFile } from "fs/promises";
-import { optrExecutor } from "../dist/executor.js";
-
-function parseArgs(argv) {
-  const args = {};
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    if (!arg.startsWith("--")) {
-      continue;
-    }
-    const key = arg.slice(2);
-    const value = argv[i + 1] && !argv[i + 1].startsWith("--") ? argv[i + 1] : "";
-    args[key] = value;
-  }
-  return args;
-}
-
-function buildContext(args) {
-  const timestamp = new Date().toISOString();
-  if (args.context) {
-    return readFile(args.context, "utf8").then((data) => JSON.parse(data));
-  }
-  return Promise.resolve({
-    workflow: args.workflow ?? "optr-workflow",
-    intent: args.intent ?? "",
-    constraints: args.constraints ? args.constraints.split(",") : [],
-    authority: args.authority ? args.authority.split(",") : [],
-    timestamp,
-  });
-}
-
-function buildRunner(agentId, offset) {
-  return async (context) => {
-    const ttvBase = Math.max(1, context.intent.length / 10);
-    const executionTimeMs = 500 + offset * 200;
-    return {
-      agentId,
-      admissible: true,
-      invariants: 0.9 - offset * 0.05,
-      ttv: ttvBase + offset,
-      executionTimeMs,
-      preference: 0.5 + offset * 0.1,
-      output: `${agentId} completed: ${context.intent}`,
-      evidence: {
-        constraints: context.constraints,
-      },
-    };
-  };
-}
-
-async function run() {
-  const args = parseArgs(process.argv.slice(2));
-  const context = await buildContext(args);
-  const result = await optrExecutor(context, {
-    runCodex: buildRunner("codex", 0),
-    runClaude: buildRunner("claude", 1),
-    runCopilot: buildRunner("copilot", 2),
-    runMsCopilot: buildRunner("ms-copilot", 3),
-  });
-
-  const output = {
-    selection: result.selection,
-    ledger: result.ledgerEntry,
-  };
-
-  if (args.output) {
-    await writeFile(args.output, JSON.stringify(output, null, 2));
-  } else {
-    console.log(JSON.stringify(output, null, 2));
-  }
-}
-
-run();
 #!/usr/bin/env node
 // packages/optr/cli/execute.js
 /**
@@ -84,16 +11,13 @@ run();
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import optrExecutor, {
+import {
+  optrExecutor,
   createDefaultRunners,
   canonicalSelectOptr,
-} from "../src/executor.js";
+} from "../dist/executor.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// ============================================================================
-// CLI Argument Parsing
-// ============================================================================
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -108,10 +32,6 @@ function parseArgs() {
   return parsed;
 }
 
-// ============================================================================
-// Configuration
-// ============================================================================
-
 function getConfig() {
   const datalakeRoot =
     process.env.DATALAKE_ROOT || path.join(process.cwd(), "datalake");
@@ -121,30 +41,15 @@ function getConfig() {
   return {
     datalakeRoot,
     ledgerPath,
-    githubToken: process.env.GITHUB_TOKEN,
-    openaiKey: process.env.OPENAI_API_KEY,
-    anthropicKey: process.env.ANTHROPIC_API_KEY,
-    repository: process.env.GITHUB_REPOSITORY
-      ? {
-          owner: process.env.GITHUB_REPOSITORY.split("/")[0],
-          repo: process.env.GITHUB_REPOSITORY.split("/")[1],
-        }
-      : undefined,
   };
 }
 
-// ============================================================================
-// Load or Create Intent Context
-// ============================================================================
-
 function getIntentContext(args) {
-  // Option 1: Load from file
   if (args.context) {
     const content = fs.readFileSync(args.context, "utf-8");
     return JSON.parse(content);
   }
 
-  // Option 2: Build from CLI args
   if (args.workflow && args.intent) {
     const constraints = args.constraints
       ? args.constraints.split(",").map((value) => value.trim())
@@ -164,94 +69,35 @@ function getIntentContext(args) {
   throw new Error("Must provide either --context <file> or --workflow + --intent");
 }
 
-// ============================================================================
-// Main Execution
-// ============================================================================
-
 async function main() {
-  console.log("[OPTR CLI] Starting multi-agent executor...\n");
+  const args = parseArgs();
+  const config = getConfig();
+  const context = getIntentContext(args);
 
-  try {
-    // Parse arguments
-    const args = parseArgs();
-    const config = getConfig();
-    const context = getIntentContext(args);
+  console.log("[OPTR CLI] Starting multi-agent executor...");
+  console.log(`[OPTR CLI] Workflow: ${context.workflow}`);
+  console.log(`[OPTR CLI] Intent: ${context.intent}`);
 
-    // Display configuration
-    console.log("[OPTR CLI] Configuration:");
-    console.log(`  Datalake: ${config.datalakeRoot}`);
-    console.log(`  Ledger: ${config.ledgerPath}`);
-    console.log(
-      `  GitHub: ${
-        config.repository
-          ? `${config.repository.owner}/${config.repository.repo}`
-          : "not configured"
-      }`,
-    );
-    console.log(`  OpenAI: ${config.openaiKey ? "configured" : "not configured"}`);
-    console.log(
-      `  Anthropic: ${config.anthropicKey ? "configured" : "not configured"}`,
-    );
-    console.log();
+  const selection = await optrExecutor(
+    context,
+    createDefaultRunners(),
+    canonicalSelectOptr,
+    config
+  );
 
-    console.log("[OPTR CLI] Intent Context:");
-    console.log(`  Workflow: ${context.workflow}`);
-    console.log(`  Intent: ${context.intent}`);
-    console.log(`  Constraints: ${context.constraints.join(", ")}`);
-    console.log();
+  const output = {
+    selection,
+  };
 
-    // Create agent runners
-    const runners = createDefaultRunners(config);
-
-    // Execute OPTR workflow
-    console.log("[OPTR CLI] Executing parallel agent workflow...\n");
-    console.log("=".repeat(80));
-    console.log();
-
-    const result = await optrExecutor(
-      context,
-      runners,
-      canonicalSelectOptr,
-      config,
-    );
-
-    console.log();
-    console.log("=".repeat(80));
-    console.log();
-    console.log("[OPTR CLI] Execution complete!\n");
-
-    // Display results
-    console.log("[OPTR CLI] Selected Agent:");
-    console.log(`  Agent: ${result.agent}`);
-    console.log(`  Admissible: ${result.admissible}`);
-    console.log(`  TTV Estimate: ${result.ttvEstimate}ms`);
-    console.log(`  Invariants: ${result.invariants.join(", ")}`);
-    console.log(`  Hash: ${result.hash}`);
-    console.log();
-
-    // Save result to file if specified
-    if (args.output) {
-      fs.writeFileSync(args.output, `${JSON.stringify(result, null, 2)}\n`);
-      console.log(`[OPTR CLI] Result saved to: ${args.output}`);
-    }
-
-    // Exit with appropriate code
-    process.exit(result.admissible ? 0 : 1);
-  } catch (error) {
-    console.error("[OPTR CLI] Error:", error.message);
-    console.error(error.stack);
-    process.exit(1);
+  if (args.output) {
+    fs.writeFileSync(args.output, JSON.stringify(output, null, 2));
+    console.log(`[OPTR CLI] Output written to ${args.output}`);
+  } else {
+    console.log(JSON.stringify(output, null, 2));
   }
 }
 
-// Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
-}
-
-export { main };
-// OPTR Multi-Agent Executor CLI (see canonical spec)
-// (Full implementation as provided in user request)
-
-// ...existing code from user request...
-// (Full file content as provided in user request)
+main().catch((error) => {
+  console.error("[OPTR CLI] Execution failed:", error);
+  process.exit(1);
+});
