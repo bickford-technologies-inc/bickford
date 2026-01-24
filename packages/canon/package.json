@@ -39,7 +39,9 @@
     "@bickford/authority": "workspace:*",
     "@bickford/monitorability-core": "workspace:*",
     "@bickford/types": "workspace:*",
-    "@bickford/db": "workspace:*"
+    "@bickford/db": "workspace:*",
+    "express-rate-limit": "^7.5.1",
+    "rate-limit-redis": "^4.2.1"
   },
   "type": "module"
 }

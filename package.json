@@ -11,10 +11,10 @@
   "scripts": {
     "setup": "node scripts/setup.mjs",
     "install:all": "npm install",
-    "dev:api": "npm run -w bickford-backend dev",
-    "dev:web": "npm run -w @bickford/web-ui dev -- --port 5173",
-    "dev:mobile": "npm run -w bickford-mobile-ui dev -- --port 5174",
     "dev": "node scripts/dev-stack.mjs",
+    "dev:api": "pnpm --filter bickford-backend dev",
+    "dev:web": "pnpm --filter @bickford/web-ui dev",
+    "dev:mobile": "pnpm --filter bickford-mobile-ui dev",
     "detect:promotions": "node scripts/detect-promotions.mjs",
     "promote": "node scripts/promote-package.mjs",
     "preflight": "node scripts/assert-declared-deps.mjs && node scripts/require-optr-exports.mjs",
@@ -23,10 +23,11 @@
     "preinstall": "node scripts/assert-lockfile.mjs",
     "prebuild": "node scripts/assert-no-phantom-workspace-deps.mjs && node scripts/assert-no-sdk-domain-imports.mjs && node scripts/assert-node.mjs && node scripts/assert-vercel-project.mjs && node scripts/check-chat-design-lock.mjs && node scripts/generate-exec-ttv-report.mjs && bash ci/guards/EXECUTION_AUTHORITY_GUARD.sh && bash ci/guards/ENVIRONMENT_PRECONDITION.sh",
     "build:types": "pnpm --filter @bickford/types build",
-    "build": "pnpm run build:types && pnpm run prebuild && pnpm run realize-intent && node scripts/assert-intent-phase.mjs && next build",
+    "build:ledger": "pnpm --filter @bickford/ledger build",
+    "build": "pnpm run build:types && pnpm run build:ledger && pnpm run prebuild && pnpm run realize-intent && node scripts/assert-intent-phase.mjs && next build",
     "start": "node scripts/start.mjs",
-    "check:resolution": "bash scripts/check-workspace-resolution.sh",
-    "build:all": "bash scripts/build-all.sh",
+    "check:resolution": "node scripts/check-workspace-resolution.mjs",
+    "build:all": "node scripts/build-all.mjs",
     "canon:bump": "node scripts/bump-canon-version.mjs",
     "canon:confidence": "node scripts/invariant-confidence.mjs",
     "canon:propagate": "node scripts/ci-propagate-canon.mjs",
@@ -48,20 +49,17 @@
     "canon:remediate:queue": "node scripts/build-remediation-queue.mjs",
     "canon:exec:report": "node scripts/generate-exec-ttv-report.mjs",
     "canon:compare:tenant": "node scripts/compare-tenant-baseline.mjs",
-    "design:lock": "node scripts/record-design-lock.mjs",
     "realize-intent": "node scripts/realize-intent.mjs",
     "capture:ui": "node scripts/capture-ui.mjs",
     "assert:vercel-binding": "tsx scripts/assert-vercel-binding.ts",
     "bickford:realize": "node scripts/bickford-realize.mjs",
-    "benchmark:gaps": "node scripts/benchmark-gaps.mjs",
-    "design:lock": "node scripts/record-design-lock.mjs"
+    "benchmark:gaps": "node scripts/benchmark-gaps.mjs"
   },
   "bin": {
     "bickford": "./scripts/bickford-realize.mjs"
   },
   "dependencies": {
     "ai": "^6.0.44",
-    "ajv": "^8.17.1",
     "pdf-lib": "^1.17.1"
   },
   "devDependencies": {
@@ -69,7 +67,6 @@
     "@types/node": "25.0.9",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
-    "ajv": "^8.17.1",
     "next": "14.2.5",
     "react": "18.3.1",
     "react-dom": "18.3.1",
