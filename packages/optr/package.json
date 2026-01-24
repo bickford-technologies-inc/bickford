@@ -9,6 +9,10 @@
   },
   "files": [
     "dist",
+    "cli"
+  ],
+  "bin": {
+    "optr-execute": "cli/execute.js"
     "cli/execute.js",
     "src/executor.js"
   ],
@@ -17,6 +21,7 @@
   },
   "scripts": {
     "build": "pnpm exec pnpm exec tsc -p tsconfig.build.json",
+    "execute": "node cli/execute.js",
     "typecheck": "pnpm exec pnpm exec tsc --noEmit",
     "lint": "npm run typecheck",
     "test": "echo 'No tests yet'",
