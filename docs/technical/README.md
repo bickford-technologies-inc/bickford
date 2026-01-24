@@ -42,6 +42,10 @@ This folder contains technical specifications, architecture, and integration gui
   - Memory hierarchy and locations
   - Imports and lookup behavior
   - Rule organization patterns
+- **[CLAUDE_CODE_CONTROL_PLANE.md](CLAUDE_CODE_CONTROL_PLANE.md)** - Claude Code control plane runtime contract
+  - Identity and model routing
+  - Cost and performance governors
+  - Execution authority and tooling boundaries
 
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
