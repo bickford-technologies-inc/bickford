@@ -36,6 +36,7 @@ Introduce a predictable workflow data layout in the datalake:
 ```
 
 **Required fields in `metadata.json`:**
+
 - `workflow_id`, `name`, `keywords`, `intents`, `owners`
 - `constraints` (Θ), `authority_set` (A)
 - `status` (active, deprecated, draft)
@@ -43,6 +44,7 @@ Introduce a predictable workflow data layout in the datalake:
 - `value_per_hour`, `risk_tier`, `non_interference_constraints`
 
 **Required fields in `definition.yaml`:**
+
 - canonical intent structure (G, Θ, A, τ)
 - steps (ordered stages)
 - admissible actions (E)
@@ -50,6 +52,7 @@ Introduce a predictable workflow data layout in the datalake:
 - execution guardrails
 
 **Indexes:**
+
 - `workflow_index.jsonl` stored at `/datalake/indexes/` with keyword → workflow_id mappings.
 - Optional vector index derived from workflow descriptions and intents for semantic search.
 
@@ -99,6 +102,7 @@ For each candidate workflow:
 4. If all pass, generate decision package (`I, R, E, σ`) and append to ledger.
 
 If no candidate passes admissibility:
+
 - Create a **new workflow proposal** folder in `/datalake/workflows/<workflow_id>/`.
 - Store generated draft `metadata.json` and `definition.yaml` with status `draft`.
 - Record a decision entry that execution is **denied** pending approval.
@@ -158,7 +162,7 @@ When an existing workflow requires modification:
 
 ## Success criteria
 
-- >90% of chat intents map to a workflow within 2 seconds.
+- > 90% of chat intents map to a workflow within 2 seconds.
 - 100% of workflow executions have ledger entries and evidence.
 - No executed workflow violates authority, constraint, or non-interference rules.
 - Decision continuity rate increases over time with re-used workflows.
