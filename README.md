@@ -8,6 +8,12 @@ Triggering a deploy: trivial change for Vercel.
 
 Bickford is a decision continuity runtime that turns intent into verified outcomes. It captures reality, authorizes execution through OPTR and canon enforcement, enforces non-interference, and records proof in an append-only ledger so decisions persist and value compounds.
 
+## Definitions
+
+- **Fully automated workflow execution engine**: A runtime that takes declared intent, computes admissible execution paths, enforces constraints, executes actions, and records evidence without manual intervention.
+- **Fully automated workflow execution system**: The end-to-end platform that combines the execution engine with governance, guardrails, auditing, and deployment surfaces to realize intent reliably.
+- **Bickford**: The fully automated workflow execution engine and system for the Bickford workflow execution platform, providing deterministic intent-to-reality execution.
+
 ## Quick Start
 
 ```bash
