@@ -38,6 +38,10 @@ This folder contains technical specifications, architecture, and integration gui
   - Connection methods
   - API usage references
   - Beta to GA migration notes
+- **[CLAUDE_CODE_MEMORY.md](CLAUDE_CODE_MEMORY.md)** - Claude Code memory management
+  - Memory hierarchy and locations
+  - Imports and lookup behavior
+  - Rule organization patterns
 
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
