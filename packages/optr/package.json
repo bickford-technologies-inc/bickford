@@ -25,9 +25,13 @@
   "author": "Bickford",
   "license": "PROPRIETARY",
   "dependencies": {
-    "@bickford/types": "workspace:*"
+    "@anthropic-ai/sdk": "^0.71.2",
+    "@bickford/types": "workspace:*",
+    "@octokit/rest": "^22.0.1",
+    "openai": "^6.16.0"
   },
   "devDependencies": {
+    "@types/node": "^25.0.10",
     "typescript": "^5.0.0"
   },
   "type": "module"
