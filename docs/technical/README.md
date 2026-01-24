@@ -50,6 +50,10 @@ This folder contains technical specifications, architecture, and integration gui
   - Model overview and use cases
   - Request setup and output structure
   - Prompting workflows and safety guidance
+- **[WORKFLOW_GENERATOR.md](WORKFLOW_GENERATOR.md)** - Workflow generator definition
+  - Intent-driven workflow creation
+  - Constraint and authority binding
+  - Testing expectations for generated workflows
 - **[COPILOT_CHAT_EXTRACTING_INFORMATION.md](COPILOT_CHAT_EXTRACTING_INFORMATION.md)** - Extracting information with Copilot Chat
   - Issue and discussion summarization workflows
   - Example prompts and responses
