@@ -301,6 +301,21 @@ Enforcement infrastructure that converts Constitutional AI from research positio
 - **Business:** First regulated enterprise deployment (defense, healthcare, or finance)
 - **Strategic:** Mechanical Constitutional AI proof for customer demos
 
+### Decision-Continuity Economics (Why the Roadmap Compounds)
+- **Eliminate governance decay in Year 1:** Automated enforcement replaces repeat audit cycles, targeting ~$14M in annual governance cost reduction.
+- **Revenue acceleration:** Procurement timelines compress (12 months → 3 months), enabling $225M-$700M in Year 1 regulated-market pull-through.
+- **Risk mitigation:** Cryptographic evidence reduces regulatory and reputational exposure (EU AI Act-class penalties and enterprise incident fallout).
+
+### Compounding Value Trajectory
+- **Audit leverage compounds:** Each deployment contributes reusable proof artifacts, lowering marginal audit cost from ~$200K to ~$25K by Year 3.
+- **Cycle time collapse:** Security review timelines drop from months to weeks as ledgered evidence accumulates.
+- **Compounding impact:** Year 1 value $239M-$714M → $1.4B+ over three years as decision continuity scales.
+
+### Strategic Moat Rationale
+- **Only verifiable enforcement platform:** Constitutional AI + runtime enforcement becomes a defensible moat vs. policy-only competitors.
+- **Regulated-market lock-in:** Defense, healthcare, and finance buyers require proof artifacts that competitors cannot reproduce without rebuilding enforcement.
+- **Durable pricing power:** 20-40% premium pricing supported by provable governance and reusable compliance evidence.
+
 ---
 
 ## SLIDE 13: Customer Validation Opportunity

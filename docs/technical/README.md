@@ -50,6 +50,10 @@ This folder contains technical specifications, architecture, and integration gui
   - Entra admin enablement steps and consent flows
   - Permission categories and revocation guidance
   - Usage examples and troubleshooting
+- **[RAG_MEMORY_LEDGER.md](RAG_MEMORY_LEDGER.md)** - RAG-enabled memory ledger
+  - Architecture overview and component roles
+  - Usage and configuration examples
+  - Performance metrics, analytics, and troubleshooting
 
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
