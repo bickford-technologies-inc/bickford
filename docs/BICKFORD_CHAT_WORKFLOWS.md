@@ -157,6 +157,115 @@ intent, decisioning, execution, and evidence.
 **Datalake artifacts**
 - `gold/metrics/`, `gold/playbooks/`.
 
+## Closed-loop workflows enabled by BRDL + GitHub execution
+
+These workflows become possible with the closed-loop architecture that binds Bickford Chat,
+BRDL schemas, OPTR selection, and GitHub execution into a single canonical boundary.
+
+### 12) Chat → BRDL schema-conformant ingestion
+
+**Trigger:** Intent declared in Chat with canonical schema requirements.
+
+**Inputs**
+- Chat intent payload, authority signals, referenced context.
+
+**Outputs**
+- `intent.schema.json`-conformant record with hash and authority binding.
+
+**BRDL artifacts**
+- `brdl/intents/`, `brdl/schemas/`, `ledger.jsonl`.
+
+### 13) Intent → Decision → OPTR selection
+
+**Trigger:** Intent is structurally valid and admissible candidates exist.
+
+**Inputs**
+- Intent record, constraints, admissible action set.
+
+**Outputs**
+- Decision record with OPTR policy selection and authority signature.
+
+**BRDL artifacts**
+- `brdl/decisions/`, `brdl/ledger/`, `brdl/schemas/`.
+
+### 14) Decision-bound GitHub execution
+
+**Trigger:** OPTR-selected decision passes execution boundary checks.
+
+**Inputs**
+- Decision record, GitHub execution plan, boundary rules.
+
+**Outputs**
+- GitHub commits/PRs tied to execution IDs and ledger hashes.
+
+**BRDL artifacts**
+- `brdl/executions/`, `brdl/ledger/`.
+
+### 15) Evidence capture + verification loop
+
+**Trigger:** GitHub execution completes or fails.
+
+**Inputs**
+- Build/test artifacts, run logs, trace outputs.
+
+**Outputs**
+- Evidence bundle and verification report with checksums.
+
+**BRDL artifacts**
+- `brdl/evidence/`, `brdl/verifications/`.
+
+### 16) Execution denial + corrective intent
+
+**Trigger:** OPTR or execution boundary rejects an action.
+
+**Inputs**
+- Denial reason, missing authority, failed constraint.
+
+**Outputs**
+- Recorded denial decision plus next-action intent for remediation.
+
+**BRDL artifacts**
+- `brdl/decisions/`, `brdl/ledger/`, `brdl/evidence/`.
+
+### 17) Replayable audit packages
+
+**Trigger:** Compliance review or post-incident verification.
+
+**Inputs**
+- Intent, decision, execution, evidence, verification chain.
+
+**Outputs**
+- Reconstructed audit bundle with hashes and provenance.
+
+**BRDL artifacts**
+- `brdl/ledger/`, `brdl/evidence/`, `brdl/verifications/`.
+
+### 18) Schema evolution + workflow promotion
+
+**Trigger:** Verified evidence reveals improved structures or invariants.
+
+**Inputs**
+- Verification outcomes, learned constraints, updated contracts.
+
+**Outputs**
+- Promoted schema updates and new workflow definitions.
+
+**BRDL artifacts**
+- `brdl/schemas/`, `brdl/decisions/`, `brdl/intents/`.
+
+### 19) Closed-loop status reporting (Chat proof bundle)
+
+**Trigger:** Verification completes or a knowledge gap is detected.
+
+**Inputs**
+- Evidence bundle, verification results, decision metadata.
+
+**Outputs**
+- Chat response with proof bundle + recommended next steps.
+
+**BRDL artifacts**
+- `brdl/verifications/`, `brdl/ledger/`.
+
 ## Art of the possible
 
 Bickford chat can be used to:
