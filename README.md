@@ -8,6 +8,12 @@ Triggering a deploy: trivial change for Vercel.
 
 Bickford is a decision continuity runtime that turns intent into verified outcomes. It captures reality, authorizes execution through OPTR and canon enforcement, enforces non-interference, and records proof in an append-only ledger so decisions persist and value compounds.
 
+## Definitions
+
+- **Fully automated workflow execution engine**: A runtime that takes declared intent, computes admissible execution paths, enforces constraints, executes actions, and records evidence without manual intervention.
+- **Fully automated workflow execution system**: The end-to-end platform that combines the execution engine with governance, guardrails, auditing, and deployment surfaces to realize intent reliably.
+- **Bickford**: The fully automated workflow execution engine and system for the Bickford workflow execution platform, providing deterministic intent-to-reality execution.
+
 ## Quick Start
 
 ```bash
@@ -368,3 +374,25 @@ For all Codespace users: see [`CODESPACE_CANONICAL_BEHAVIOR_CONFIRMATION.md`](./
 
 4. **Reboot test:**
    - Reboot, log in, run `docker ps` — containers should be running
+
+## Full Execution Automation
+
+This repository supports end-to-end automation for PR review, conflict resolution, auto-approval, merging, and deployment to Vercel.
+
+### Automated Workflow
+
+- `.github/workflows/optr.yml` now runs every 5 minutes (via schedule) and on demand.
+- All open PRs are reviewed, auto-approved, and merged if possible.
+- Vercel auto-deploys on push to `main`.
+
+### Scripts
+
+- `scripts/retry-auto-merge.sh`: Continuously retries auto-approval and auto-merge for all open PRs. Run in a background process or CI job for hands-off merging.
+- `scripts/vercel-deployment-status.sh`: Check latest Vercel deployment status for your project (requires Vercel CLI and token).
+- `scripts/set-branch-protection.md`: Manual instructions for setting up branch protection and auto-merge in GitHub settings (required for full automation).
+
+### Setup Checklist
+
+1. Configure branch protection and auto-merge for `main` (see `scripts/set-branch-protection.md`).
+2. Ensure Vercel is connected to this repo and set to auto-deploy on push to `main`.
+3. Use the provided scripts and workflow for continuous, hands-off operation.

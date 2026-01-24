@@ -1,0 +1,49 @@
+{
+  "company": "Anthropic",
+  "sources": [
+    {
+      "path": "docs/company-profiles/anthropic.md",
+      "category": "company-profile"
+    },
+    {
+      "path": "docs/ANTHROPIC_PAIN_POINTS_BENCHMARK.md",
+      "category": "benchmark"
+    },
+    {
+      "path": "docs/anthropic-constitutional-ai-enforcement-one-pager.md",
+      "category": "one-pager"
+    },
+    {
+      "path": "docs/financial/ANTHROPIC_CONSTITUTIONAL_AI_ONE_PAGER.md",
+      "category": "one-pager"
+    },
+    {
+      "path": "docs/financial/ANTHROPIC_CONSTITUTIONAL_AI_SLIDE_DECK.md",
+      "category": "slide-deck"
+    },
+    {
+      "path": "docs/financial/ANTHROPIC_PAIN_POINTS_BENCHMARK.md",
+      "category": "benchmark"
+    },
+    {
+      "path": "docs/financial/ANTHROPIC_SALE_POSITIONING.md",
+      "category": "sales"
+    },
+    {
+      "path": "docs/financial/OPTR_ANTHROPIC_ACQUISITION_ANALYSIS.md",
+      "category": "optr-analysis"
+    },
+    {
+      "path": "docs/financial/CONSTITUTIONAL_AI_ENFORCEMENT_DECK.md",
+      "category": "slide-deck"
+    },
+    {
+      "path": "docs/financial/CONSTITUTIONAL_AI_ENFORCEMENT_INFRASTRUCTURE.md",
+      "category": "memo"
+    },
+    {
+      "path": "docs/financial/STRATEGIC_ACQUISITION_PROPOSAL.md",
+      "category": "proposal"
+    }
+  ]
+}

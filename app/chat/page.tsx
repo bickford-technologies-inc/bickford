@@ -11,7 +11,15 @@ import {
   type TraceSummary,
   type TimelineEntry,
 } from "../components/chatState";
+import { createClientId } from "../lib/ids";
 import styles from "./chat.module.css";
+
+const GREETINGS = new Set(["hi", "hello", "hey", "greetings", "yo"]);
+const RESPONSE_CONFIG = {
+  greetingReply: "Hello — share the intent you want to execute.",
+  questionReply: "Understood. I'll resolve the intent and respond with the run.",
+  defaultReply: "Intent received. Preparing execution trace now.",
+};
 
 type ConversationSummary = {
   id: string;
@@ -79,6 +87,33 @@ function buildTranscript(messages: ChatMessage[]) {
       return `${roleLabel}: ${message.content}`;
     })
     .join("\n");
+}
+
+const GREETINGS = new Set([
+  "hello",
+  "hi",
+  "hey",
+  "greetings",
+  "howdy",
+  "yo",
+  "sup",
+]);
+
+const RESPONSE_CONFIG = {
+  greetingReply: "Hello! How can I help you today?",
+  questionReply: "That's a great question! Let me think...",
+  defaultReply: "I'm here to help. What would you like to do next?",
+};
+
+function formatTimestamp(ts: number | string): string {
+  const date = new Date(typeof ts === "string" ? parseInt(ts, 10) : ts);
+  return date.toLocaleString(undefined, {
+    year: "2-digit",
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 export default function ChatPage() {
@@ -231,12 +266,25 @@ export default function ChatPage() {
 
     const now = Date.now();
     const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
+      id: createClientId(),
       role: "user",
       content: trimmed,
       timestamp: now,
     };
 
+    const decision = runMakeBuyEngine(trimmed);
+    const agentMessage: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: "agent",
+      content: [
+        `input=${trimmed}`,
+        `output=${decision.value}`,
+        "created by bickford via intent realization",
+      ].join("\n"),
+      timestamp: now + 1,
+    };
+
+    setMessages((prev) => [...prev, userMessage, agentMessage]);
     setIsSending(true);
     setInput("");
     setPersistenceError(null);
@@ -307,7 +355,7 @@ export default function ChatPage() {
       ].join("\n");
 
       const agentMessage: ChatMessage = {
-        id: crypto.randomUUID(),
+        id: createClientId(),
         role: "agent",
         content: buildAgentReply(trimmed),
         timestamp: now + 1,
@@ -406,7 +454,7 @@ export default function ChatPage() {
             ].join("\n");
 
             const agentMessage: ChatMessage = {
-              id: crypto.randomUUID(),
+              id: createClientId(),
               role: "agent",
               content: agentContent,
               timestamp: now + 1,
@@ -423,7 +471,7 @@ export default function ChatPage() {
       }
 
       const agentMessage: ChatMessage = {
-        id: crypto.randomUUID(),
+        id: createClientId(),
         role: "agent",
         content:
           error instanceof Error
