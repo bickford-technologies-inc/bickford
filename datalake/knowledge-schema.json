@@ -1,5 +1,54 @@
 {
-  "state": {},
-  "last_update": null,
+  "state": {
+<<<<<<< HEAD
+    "sales_scenarios": {
+      "count": 10,
+      "message_ref": "82e80437412e0e4498937c0d06627eb1",
+      "summary": "10 sales scenarios with objections, timelines, pricing, outcomes, and lessons for training.",
+      "last_updated": "2026-01-23T21:28:38Z"
+    }
+  },
+  "last_update": "2026-01-23T21:28:38Z",
+  "ledger_refs": [
+    "81464388cdb6037d8d1122fe9ba32dc7"
+  ]
+}
+=======
+    "definitions": {
+      "workflow_generator": {
+        "definition": "A workflow generator is a structured capability that turns a declared intent into a concrete, executable workflow specification. It accepts a target outcome, constraints, and authority boundaries, then outputs a repeatable workflow definition that can be executed, audited, and continuously improved.",
+        "purpose": [
+          "Convert intent into a standardized workflow blueprint executable by humans, agents, or systems.",
+          "Ensure every workflow is constraint-aware, authority-bound, and ledger-ready.",
+          "Reduce time-to-value by making workflows explicit, reusable, and testable."
+        ],
+        "inputs": [
+          "Intent declaration (target outcome, constraints, authority, timestamp)",
+          "Knowledge state (schemas, invariants, prior workflow baselines)",
+          "Execution context (systems, owners, available actions)"
+        ],
+        "outputs": [
+          "Workflow specification (steps, handoffs, artifacts)",
+          "Admissibility checks (constraints + authority)",
+          "Test plan (execution + regression checks)",
+          "Ledger-ready decision metadata"
+        ],
+        "process": [
+          "Intent parsing",
+          "Constraint/authority binding",
+          "Structure synthesis",
+          "Execution packaging",
+          "Validation design"
+        ],
+        "validation": [
+          "Execution checks (simulate or run end-to-end)",
+          "Constraint checks (no violations)",
+          "Regression checks (preserve prior guarantees)"
+        ]
+      }
+    }
+  },
+  "last_update": "2026-01-23T19:10:04Z",
   "ledger_refs": []
 }
+>>>>>>> a7b83b8 (commit)

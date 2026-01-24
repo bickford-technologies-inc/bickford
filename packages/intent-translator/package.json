@@ -1,7 +1,7 @@
 {
   "name": "@bickford/intent-translator",
   "version": "0.0.0",
-  "description": "Bickford Intent Translation Engine validators and orchestration",
+  "description": "Bickford Intent Translation Engine for Vercel-compatible output",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {

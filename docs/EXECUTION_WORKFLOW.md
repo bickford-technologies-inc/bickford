@@ -9,6 +9,11 @@ Provide a deterministic, auditable workflow for executing intent in Bickford—f
 - **Intent declaration:** `intent.json` acts as the declared target state that Bickford must realize.
 - **Execution boundary:** `pnpm run build` is the canonical pipeline for realizing intent in production contexts. It chains type compilation, prebuild guards, intent realization, and the Next.js build.
 - **Operational guardrails:** Preinstall and prebuild scripts enforce invariants before any execution is allowed.
+- **Canonical law reference:** The workflow is constrained by the canonical formulation; structure and guardrails determine admissible execution. (See `docs/BICKFORD_CANONICAL_MATHEMATICAL_FORMULATION.md`.)
+
+## Operator Responsibilities (Non-Execution Principle)
+
+Bickford does not execute scripts autonomously. Operators (humans or CI) run the commands, and Bickford resolves the admissible path, evidence, and constraints.
 
 ## Workflow Architecture (Phased)
 
@@ -67,6 +72,29 @@ Provide a deterministic, auditable workflow for executing intent in Bickford—f
 
 **Outputs:** audit trail that proves execution and enforcement.
 
+## Evidence & Artifacts (What to Capture)
+
+When execution occurs, capture evidence that binds the workflow to the canonical law:
+
+- Guard outputs from `pnpm run prebuild` (authority enforcement).
+- `artifacts/ttv-report.json` (time-to-value evidence emitted by `generate-exec-ttv-report.mjs`).
+- Build logs (Next.js compile + route summary) and generated output in `.next/` or Vercel outputs.
+- Ledger entries or trace artifacts when decisions are executed.
+
+These artifacts form the proof set that execution matched intent and constraints.
+
+## Vercel Build Alignment (Production Context)
+
+Vercel builds should follow the canonical pipeline:
+
+1. Install (`preinstall` guard + dependency resolution)
+2. `pnpm run build:types`
+3. `pnpm run prebuild`
+4. `pnpm run realize-intent`
+5. `pnpm run build`
+
+If any guard fails, the deployment halts and the failure is captured as evidence.
+
 ## Failure Handling (Deterministic)
 
 - Any guard failure halts the workflow.
@@ -77,6 +105,7 @@ Provide a deterministic, auditable workflow for executing intent in Bickford—f
 
 - Tests are mandatory to close knowledge gaps before realizing intent.
 - Minimum validation is a type build + prebuild guard run; additional tests are encouraged for feature changes.
+- Capture guard output logs as evidence when running required validations.
 
 ## Canonical Command Path
 
