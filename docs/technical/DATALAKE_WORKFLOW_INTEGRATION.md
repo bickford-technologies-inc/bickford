@@ -162,6 +162,7 @@ When an existing workflow requires modification:
 
 ## Success criteria
 
+- >90% of chat intents map to a workflow within 2 seconds.
 - > 90% of chat intents map to a workflow within 2 seconds.
 - 100% of workflow executions have ledger entries and evidence.
 - No executed workflow violates authority, constraint, or non-interference rules.
