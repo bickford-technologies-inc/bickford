@@ -391,6 +391,33 @@ class SessionCompletionCallback(BaseCallback):
 **Q3 2026**: Real-time analytics dashboard, anomaly detection
 **Q4 2026**: Multi-region deployment, edge runtime support
 
+### Decision-Continuity Economics (Roadmap Optimization)
+
+- **Eliminate compliance decay** by turning audits into reusable proof artifacts with cryptographic continuity.
+- **Compress enterprise procurement cycles** with ledger-backed evidence that compounds across customers.
+- **Shift governance spend from recurring audit labor to one-time enforcement automation.**
+
+### Compounding Value Flywheel
+
+1. **Every enforced decision becomes a reusable artifact** (ledger + proof).
+2. **Every new customer reuses prior artifacts**, reducing marginal review cost.
+3. **Decision continuity rate rises**, shortening time-to-close and lowering compliance friction.
+
+### Strategic Moat Rationale
+
+- **Only verifiable Constitutional AI**: enforcement proof is mechanical, not policy-based.
+- **Audit trail accumulation** makes replication increasingly expensive for competitors.
+- **Regulated-market lock-in** through reusable proof sets and deterministic governance.
+
+### Gap Analysis (Current → Decision-Continuity Target)
+
+| Gap | Current State | Decision-Continuity Target | Closure Path |
+| --- | --- | --- | --- |
+| Proof reusability | Audits are point-in-time, manual, and customer-specific. | Proof artifacts are cryptographic, reusable, and portable. | Convert audit outputs into ledgered proof sets with canonical schemas. |
+| Procurement cycle time | 6–12 months for regulated enterprise review. | 2 weeks–2 months with reusable evidence. | Package compliance bundles and automate evidence exports. |
+| Enforcement visibility | Policies documented, enforcement inferred. | Enforcement is mechanically verifiable at runtime. | Bind execution to canon gates and hash-chained decision logs. |
+| Decision continuity rate | Low reuse; repeated reviews restart from zero. | High reuse; prior decisions amortize compliance cost. | Track DCR and require reuse thresholds for releases. |
+
 **Future Capabilities**:
 - Predictive session completion (anticipate user intent before session ends)
 - Cross-session analytics (user behavior patterns across multiple sessions)
