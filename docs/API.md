@@ -72,6 +72,17 @@ curl "https://api.anthropic.com/v1/organizations/api_keys?status=active&limit=50
   -H "X-Api-Key: $ANTHROPIC_ADMIN_API_KEY"
 ```
 
+**Node.js example:**
+```ts
+const response = await fetch(
+  "https://api.anthropic.com/v1/organizations/api_keys?status=active&limit=50",
+  { headers: { "X-Api-Key": process.env.ANTHROPIC_ADMIN_API_KEY ?? "" } }
+);
+
+const payload = await response.json();
+console.log(payload.data);
+```
+
 ### Execute Intent
 
 Execute a natural language intent through the Bickford runtime.
