@@ -1,3 +1,96 @@
+name: OPTR Executor
+
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      workflow:
+        description: "Workflow name"
+        required: false
+        default: "manual-optr"
+      intent:
+        description: "Intent statement"
+        required: false
+        default: "Manual OPTR execution"
+      constraints:
+        description: "Constraints (comma-separated)"
+        required: false
+        default: "canonical"
+
+jobs:
+  optr-execute:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build OPTR package
+        run: pnpm --filter @bickford/optr build
+
+      - name: Run OPTR executor
+        run: |
+          node packages/optr/cli/execute.js \
+            --workflow "${{ inputs.workflow || 'issue-optr' }}" \
+            --intent "${{ inputs.intent || github.event.issue.title || 'Issue-driven OPTR' }}" \
+            --constraints "${{ inputs.constraints || 'canonical' }}" \
+            --output optr-result.json
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: optr-artifacts
+          path: |
+            datalake
+            optr-result.json
+
+  execute-optr-path:
+    runs-on: ubuntu-latest
+    needs: optr-execute
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: optr-artifacts
+
+      - name: Execute selected path
+        run: |
+          echo "Selected path execution placeholder"
+          cat optr-result.json
+
+  compliance-report:
+    runs-on: ubuntu-latest
+    needs: optr-execute
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: optr-artifacts
+
+      - name: Generate compliance report
+        run: |
+          echo "Compliance report placeholder" > compliance-report.txt
+
+      - name: Upload compliance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: compliance-report
+          path: compliance-report.txt
 name: OPTR Multi-Agent Executor
 
 on:
