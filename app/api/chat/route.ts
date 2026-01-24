@@ -4,9 +4,11 @@ export const runtime = "nodejs";
 
 import {
   appendConversationMessage,
+  buildConversationMemoryContext,
   createConversation,
   listConversationSummaries,
   readConversation,
+  searchConversationMemory,
   writeConversation,
 } from "@bickford/ledger";
 import type {
@@ -123,6 +125,14 @@ export async function POST(request: Request) {
 
   const timeline = await listConversationSummaries();
   const transcript = buildTranscript(conversation.messages);
+  const memoryMatches =
+    message.role === "user"
+      ? await searchConversationMemory(message.content, {
+          excludeConversationId: conversation.id,
+          includeRoles: ["user", "agent"],
+        })
+      : [];
+  const memoryContext = buildConversationMemoryContext(memoryMatches);
 
   await appendDailyArchive("chat", {
     agent: ENVIRONMENT_AGENT,
@@ -134,6 +144,10 @@ export async function POST(request: Request) {
       message,
       trace: payload.trace ?? null,
       transcript,
+      memory: {
+        matches: memoryMatches,
+        context: memoryContext,
+      },
     },
   });
 
@@ -141,5 +155,9 @@ export async function POST(request: Request) {
     conversation,
     timeline,
     transcript,
+    memory: {
+      matches: memoryMatches,
+      context: memoryContext,
+    },
   });
 }
