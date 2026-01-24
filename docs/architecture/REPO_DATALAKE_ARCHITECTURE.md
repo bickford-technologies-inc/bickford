@@ -1,9 +1,11 @@
 # Repo Datalake Architecture
 
 ## Purpose
+
 Define the canonical datalake surface for Bickford so decisions, retained knowledge, and agent interchange artifacts are persisted deterministically in an append-only, shareable structure.
 
 ## Principles
+
 - **Append-only**: ledger entries are never mutated, deleted, or reordered.
 - **Monotonic structure**: schemas only grow; structural knowledge is never contracted.
 - **Shared access**: all agents can read/import/export without mediation.
@@ -22,6 +24,7 @@ Define the canonical datalake surface for Bickford so decisions, retained knowle
 ```
 
 ### Ledger Lake (`/datalake/ledger.jsonl`)
+
 Each line is a decision entry:
 
 ```json
@@ -40,6 +43,7 @@ Each line is a decision entry:
 **Invariant**: append-only; no updates or deletes.
 
 ### Knowledge Lake (`/datalake/knowledge-schema.json`)
+
 Structural schema of retained knowledge:
 
 ```json
@@ -53,6 +57,7 @@ Structural schema of retained knowledge:
 **Invariant**: monotonic growth; never contracts.
 
 ### Agent Lake (`/datalake/agents.json`)
+
 Registry of agents and import/export references:
 
 ```json
@@ -70,6 +75,7 @@ Registry of agents and import/export references:
 ```
 
 ### Interchange Lake (`/datalake/interchange/`)
+
 Agent import/export files for multi-agent exchange:
 
 ```
@@ -78,15 +84,18 @@ Agent import/export files for multi-agent exchange:
 ```
 
 ## Flows
+
 - **New decision**: append to `ledger.jsonl`; update `knowledge-schema.json` with new `ledger_refs`.
 - **New knowledge**: update `knowledge-schema.json`; optionally emit to `interchange/agent-<id>-import.json`.
 - **Agent export**: write `interchange/agent-<id>-export.json`.
 
 ## Governance
+
 - Ledger entries are immutable and globally readable.
 - Knowledge schema changes must be additive.
 - Agents operate under the shared structure; no private ledgers or hidden state.
 
 ## Open Questions
+
 - Do we want a canonical hash function for decision signatures?
 - Should interchange files include versioned schemas or be free-form JSON?

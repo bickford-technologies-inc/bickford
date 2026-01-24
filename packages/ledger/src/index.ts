@@ -33,14 +33,14 @@ export function readAll(): LedgerEntry[] {
     .map((f) => JSON.parse(fs.readFileSync(path.join(ROOT, f), "utf8")));
 }
 
-export { appendProofLedger, readProofLedger } from "./proofLedger";
-export { appendLedger, listThreads, writeThread } from "./ledger";
-export * from "./types";
-export * from "./conversationStore";
+export { appendProofLedger, readProofLedger } from "./proofLedger.ts";
+export { appendLedger, listThreads, writeThread } from "./ledger.ts";
+export * from "./types.ts";
+export * from "./conversationStore.ts";
 export {
   appendConversationMessage,
   createConversation,
   listConversationSummaries,
   readConversation,
   writeConversation,
-} from "./conversationStore";
+} from "./conversationStore.ts";

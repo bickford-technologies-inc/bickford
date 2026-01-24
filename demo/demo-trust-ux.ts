@@ -209,7 +209,8 @@ const examplePayload: DeniedDecisionPayload = {
   tenantId,
   denied: true,
   reason: "Denied: Missing prerequisite canon items",
-  timestamp: Date.now(),
+  message: "Action denied due to missing canon items.",
+  ts: new Date().toISOString(),
 };
 
 console.log("   Example Payload:");

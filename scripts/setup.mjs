@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -60,6 +61,18 @@ function hydrateOpenAiKey() {
   return true;
 }
 
+function ensureGitPullStrategy() {
+  const probe = spawnSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' });
+  if (probe.status !== 0) {
+    return;
+  }
+
+  spawnSync('git', ['config', '--local', 'pull.rebase', 'true'], { encoding: 'utf8' });
+  spawnSync('git', ['config', '--local', 'rebase.autoStash', 'true'], { encoding: 'utf8' });
+  spawnSync('git', ['config', '--local', 'fetch.prune', 'true'], { encoding: 'utf8' });
+  console.log('[setup] Git pull strategy configured (rebase + autostash)');
+}
+
 function printNextSteps() {
   let contents = '';
   try {
@@ -80,4 +93,5 @@ function printNextSteps() {
 
 ensureEnvFile();
 hydrateOpenAiKey();
+ensureGitPullStrategy();
 printNextSteps();
