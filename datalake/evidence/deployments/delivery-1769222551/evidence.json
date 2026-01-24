@@ -1,0 +1,25 @@
+{
+  "sessionId": "delivery-1769222551",
+  "timestamp": 1769222594,
+  "executionAuthority": "GitHub",
+  "intent": {
+    "action": "deliver_prs",
+    "target": "all_open_prs"
+  },
+  "decision": {
+    "agent": "PR Delivery Manager",
+    "criteria": ["ci_passing", "not_draft"]
+  },
+  "execution": {
+    "platform": "GitHub",
+    "method": "gh_cli",
+    "total": 25,
+    "delivered": 0,
+    "remaining": 25
+  },
+  "evidence": {
+    "path": "datalake/evidence/deployments/delivery-1769222551",
+    "immutable": true,
+    "ledger": "github_audit_trail"
+  }
+}

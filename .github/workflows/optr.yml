@@ -1,0 +1,36 @@
+name: OPTR Multi-Agent Executor
+
+on:
+  schedule:
+    - cron: "*/5 * * * *" # every 5 minutes
+  workflow_dispatch:
+    inputs:
+      workflow_name:
+        description: "Workflow name (unique identifier)"
+        required: true
+        type: string
+      intent:
+        description: "Execution intent (what to accomplish)"
+        required: true
+        type: string
+      constraints:
+        description: "Constraints (comma-separated)"
+        required: false
+        type: string
+        default: ""
+  issues:
+    types: [opened, labeled]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo workflow inputs
+        run: |
+          echo "Workflow: ${{ github.event.inputs.workflow_name }}"
+          echo "Intent: ${{ github.event.inputs.intent }}"
+          echo "Constraints: ${{ github.event.inputs.constraints }}"
+      - name: Notify deployment status (placeholder)
+        run: |
+          echo "Deployment to Vercel will be triggered automatically on merge to main."
+          echo "Check Vercel dashboard or use Vercel CLI/API for deployment status."
