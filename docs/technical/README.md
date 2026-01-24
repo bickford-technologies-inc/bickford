@@ -46,6 +46,10 @@ This folder contains technical specifications, architecture, and integration gui
   - Core endpoints and authentication
   - Client SDK benefits and examples
   - Rate limits, request sizes, and platform options
+- **[MICROSOFT_365_CONNECTOR.md](MICROSOFT_365_CONNECTOR.md)** - Microsoft 365 connector setup guide
+  - Entra admin enablement steps and consent flows
+  - Permission categories and revocation guidance
+  - Usage examples and troubleshooting
 
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
