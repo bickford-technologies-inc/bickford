@@ -52,3 +52,20 @@ export type ConversationSummary = {
   messageCount: number;
   trace?: ConversationTraceSummary | null;
 };
+
+export type ConversationMemoryMatch = {
+  conversationId: string;
+  conversationTitle: string;
+  messageId: string;
+  role: ConversationRole;
+  content: string;
+  timestamp: number;
+  score: number;
+};
+
+export type ConversationMemoryOptions = {
+  limit?: number;
+  minScore?: number;
+  excludeConversationId?: string;
+  includeRoles?: ConversationRole[];
+};
