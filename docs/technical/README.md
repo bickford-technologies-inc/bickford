@@ -38,6 +38,14 @@ This folder contains technical specifications, architecture, and integration gui
   - Connection methods
   - API usage references
   - Beta to GA migration notes
+- **[CLAUDE_CODE_MEMORY.md](CLAUDE_CODE_MEMORY.md)** - Claude Code memory management
+  - Memory hierarchy and locations
+  - Imports and lookup behavior
+  - Rule organization patterns
+- **[MICROSOFT_365_CONNECTOR.md](MICROSOFT_365_CONNECTOR.md)** - Microsoft 365 connector setup guide
+  - Entra admin enablement steps and consent flows
+  - Permission categories and revocation guidance
+  - Usage examples and troubleshooting
 
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
