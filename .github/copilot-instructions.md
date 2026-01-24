@@ -10,7 +10,7 @@
 
 - Package manager: **pnpm** (repo pins `pnpm@10.28.0`) and Node 20.x. Prefer `pnpm` for scripts; CI/guards rely on it.【F:package.json†L1-L55】
 - Build pipeline: `pnpm run build` runs type build, prebuild guards, intent realization, and `next build` (see `scripts/*` in `prebuild`).【F:package.json†L9-L33】
-- Start server: `npm run start` (Next.js) after build; local quick start uses `npm run start` per README.【F:README.md†L12-L20】
+- Start server: `pnpm run start` (Next.js) after build; local quick start should use `pnpm run start` to match the repo package manager.【F:package.json†L1-L36】
 - Deployment: push to `main` or `vercel --prod`; configuration lives in `vercel.json`.【F:README.md†L67-L87】
 - Conflict resolution automation: `./resolve-and-push.sh <branch>` or `npm run resolve:push -- <branch>` (see README).【F:README.md†L120-L197】
 
