@@ -7,7 +7,7 @@
  * An action is inadmissible if it increases any other agent's Time-to-Value.
  */
 
-import { Action, WhyNotTrace, DenialReasonCode } from "./types";
+import { Action, WhyNotTrace, DenialReasonCode } from "./types.js";
 
 /**
  * Check if an action maintains non-interference property

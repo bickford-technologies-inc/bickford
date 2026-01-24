@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -36,6 +37,42 @@ function ensureEnvFile() {
   console.log(`[setup] Created minimal ${envFile}`);
 }
 
+function hydrateOpenAiKey() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return false;
+  }
+
+  let contents = '';
+  try {
+    contents = readFileSync(envFile, 'utf8');
+  } catch {
+    return false;
+  }
+
+  if (contents.match(/^OPENAI_API_KEY=/m)) {
+    contents = contents.replace(/^OPENAI_API_KEY=.*/m, `OPENAI_API_KEY=${apiKey}`);
+  } else {
+    contents = `${contents.trimEnd()}\nOPENAI_API_KEY=${apiKey}\n`;
+  }
+
+  writeFileSync(envFile, contents, 'utf8');
+  console.log('[setup] OPENAI_API_KEY detected in environment and stored in .env');
+  return true;
+}
+
+function ensureGitPullStrategy() {
+  const probe = spawnSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' });
+  if (probe.status !== 0) {
+    return;
+  }
+
+  spawnSync('git', ['config', '--local', 'pull.rebase', 'true'], { encoding: 'utf8' });
+  spawnSync('git', ['config', '--local', 'rebase.autoStash', 'true'], { encoding: 'utf8' });
+  spawnSync('git', ['config', '--local', 'fetch.prune', 'true'], { encoding: 'utf8' });
+  console.log('[setup] Git pull strategy configured (rebase + autostash)');
+}
+
 function printNextSteps() {
   let contents = '';
   try {
@@ -55,4 +92,6 @@ function printNextSteps() {
 }
 
 ensureEnvFile();
+hydrateOpenAiKey();
+ensureGitPullStrategy();
 printNextSteps();

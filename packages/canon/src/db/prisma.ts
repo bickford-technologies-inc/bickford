@@ -5,6 +5,10 @@ export async function getPrisma() {
         console.log("Would create denied decision:", params);
         return { id: "stub" };
       },
+      findMany: async (params: any) => {
+        console.log("Would query denied decisions:", params);
+        return [];
+      },
     },
   };
 }

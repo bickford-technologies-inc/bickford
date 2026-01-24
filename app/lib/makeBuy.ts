@@ -1,88 +1,115 @@
+export type MakeBuyValue = "make" | "buy";
+
 type MakeBuySignal = {
-  phrase: string;
+  label: string;
   weight: number;
-  tag: string;
+  value: MakeBuyValue;
+  keywords: string[];
+  tieBreaker?: boolean;
+};
+
+export type MakeBuyMatchedSignal = {
+  label: string;
+  weight: number;
+  value: MakeBuyValue;
 };
 
 export type MakeBuyDecision = {
-  value: "make" | "buy";
+  value: MakeBuyValue;
   score: number;
-  signals: string[];
+  matchedSignals: MakeBuyMatchedSignal[];
 };
 
-const MAKE_SIGNALS: MakeBuySignal[] = [
-  { phrase: "build", weight: 2, tag: "build" },
-  { phrase: "custom", weight: 2, tag: "custom" },
-  { phrase: "proprietary", weight: 3, tag: "proprietary" },
-  { phrase: "differentiator", weight: 3, tag: "differentiator" },
-  { phrase: "unique", weight: 2, tag: "unique" },
-  { phrase: "ip", weight: 2, tag: "ip" },
-  { phrase: "control", weight: 1, tag: "control" },
-  { phrase: "latency", weight: 1, tag: "latency" },
-  { phrase: "compliance", weight: 2, tag: "compliance" },
-  { phrase: "security", weight: 2, tag: "security" },
-  { phrase: "integration", weight: 1, tag: "integration" },
+const SIGNALS: MakeBuySignal[] = [
+  {
+    label: "build/custom",
+    weight: 4,
+    value: "make",
+    keywords: ["build", "custom", "bespoke", "from scratch"],
+    tieBreaker: true,
+  },
+  {
+    label: "in-house engineering",
+    weight: 3,
+    value: "make",
+    keywords: ["in-house", "internal", "own", "engineering"],
+  },
+  {
+    label: "integrate existing tool",
+    weight: 3,
+    value: "buy",
+    keywords: ["vendor", "saas", "subscription", "license", "third-party"],
+  },
+  {
+    label: "buy off the shelf",
+    weight: 4,
+    value: "buy",
+    keywords: ["off the shelf", "purchase", "procure", "buy"],
+  },
+  {
+    label: "faster to implement",
+    weight: 2,
+    value: "buy",
+    keywords: ["fast", "quick", "immediate", "time to market"],
+  },
+  {
+    label: "control roadmap",
+    weight: 2,
+    value: "make",
+    keywords: ["control", "roadmap", "differentiator", "competitive"],
+  },
 ];
 
-const BUY_SIGNALS: MakeBuySignal[] = [
-  { phrase: "buy", weight: 2, tag: "buy" },
-  { phrase: "purchase", weight: 2, tag: "purchase" },
-  { phrase: "vendor", weight: 2, tag: "vendor" },
-  { phrase: "saas", weight: 2, tag: "saas" },
-  { phrase: "off the shelf", weight: 3, tag: "off-the-shelf" },
-  { phrase: "outsource", weight: 2, tag: "outsource" },
-  { phrase: "partner", weight: 1, tag: "partner" },
-  { phrase: "license", weight: 2, tag: "license" },
-  { phrase: "subscription", weight: 1, tag: "subscription" },
-  { phrase: "time to market", weight: 2, tag: "time-to-market" },
-  { phrase: "faster", weight: 1, tag: "faster" },
-];
+function normalizeIntent(intent: string): string {
+  return intent.toLowerCase();
+}
 
-function scoreSignals(intent: string, signals: MakeBuySignal[]) {
-  const matches: string[] = [];
-  const total = signals.reduce((acc, signal) => {
-    if (intent.includes(signal.phrase)) {
-      matches.push(signal.tag);
-      return acc + signal.weight;
-    }
-    return acc;
-  }, 0);
-  return { total, matches };
+function intentMatchesKeyword(normalizedIntent: string, keyword: string): boolean {
+  return normalizedIntent.includes(keyword);
 }
 
 export function runMakeBuyEngine(intent: string): MakeBuyDecision {
-  const normalized = intent.toLowerCase();
-  const makeScore = scoreSignals(normalized, MAKE_SIGNALS);
-  const buyScore = scoreSignals(normalized, BUY_SIGNALS);
-  const score = makeScore.total - buyScore.total;
+  const normalizedIntent = normalizeIntent(intent);
+  const matchedSignals: MakeBuyMatchedSignal[] = [];
+  let makeScore = 0;
+  let buyScore = 0;
+  let hasTieBreakerSignal = false;
 
-  if (score > 0) {
-    return {
-      value: "make",
-      score,
-      signals: [...makeScore.matches, ...buyScore.matches],
-    };
+  for (const signal of SIGNALS) {
+    const matched = signal.keywords.some((keyword) =>
+      intentMatchesKeyword(normalizedIntent, keyword),
+    );
+
+    if (!matched) continue;
+
+    matchedSignals.push({
+      label: signal.label,
+      weight: signal.weight,
+      value: signal.value,
+    });
+
+    if (signal.value === "make") {
+      makeScore += signal.weight;
+      if (signal.tieBreaker) {
+        hasTieBreakerSignal = true;
+      }
+    } else {
+      buyScore += signal.weight;
+    }
   }
 
-  if (score < 0) {
-    return {
-      value: "buy",
-      score,
-      signals: [...makeScore.matches, ...buyScore.matches],
-    };
+  let value: MakeBuyValue;
+  if (makeScore === buyScore) {
+    value = hasTieBreakerSignal ? "make" : "buy";
+  } else {
+    value = makeScore > buyScore ? "make" : "buy";
   }
 
-  if (normalized.includes("build") || normalized.includes("custom")) {
-    return {
-      value: "make",
-      score,
-      signals: [...makeScore.matches, ...buyScore.matches],
-    };
-  }
+  const score = value === "make" ? makeScore : buyScore;
 
   return {
-    value: "buy",
+    value,
     score,
-    signals: [...makeScore.matches, ...buyScore.matches],
+    matchedSignals,
   };
 }

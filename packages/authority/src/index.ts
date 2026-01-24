@@ -1,17 +1,26 @@
-import { Intent, Decision } from "@bickford/types";
-import crypto from "crypto";
+import type { Intent } from "@bickford/types";
+import crypto from "node:crypto";
 
-/**
- * Authorization logic for intent validation and decision
- * Currently validates intent structure and allows valid intents
- * This can be extended with more complex decision logic
- */
-export function authorize(input: {
-  tenantId: string;
-  intent: any;
-}): AuthorityDecision {
-  // Basic validation
-  if (!input || !input.intent) {
+export type { WhyNotTrace } from "@bickford/types";
+
+export type AuthorityDecision = {
+  id: string;
+  intent: Intent;
+  outcome: "ALLOW" | "DENY";
+  reason: string;
+  timestamp: string;
+};
+
+export type AuthorityContext = Record<string, unknown>;
+
+export type AuthorizeInput = {
+  intent: Intent;
+  tenantId?: string;
+  context?: AuthorityContext;
+};
+
+export function authorize(input: AuthorizeInput): AuthorityDecision {
+  if (!input || !input.intent || !input.intent.action) {
     return {
       id: crypto.randomUUID(),
       intent: input?.intent ?? { id: "UNKNOWN", action: "UNKNOWN" },
@@ -31,16 +40,6 @@ export function authorize(input: {
   };
 }
 
-export type AuthorityDecision = {
-  id: string;
-  intent: any;
-  outcome: "ALLOW" | "DENY";
-  reason: string;
-  timestamp: string;
-};
-
-export type { WhyNotTrace } from "@bickford/types";
-
-export { canonicalHash } from "./hash";
-export { signHash } from "./sign";
-export { verifySignature } from "./verify";
+export { canonicalHash } from "./hash.js";
+export { signHash } from "./sign.js";
+export { verifySignature } from "./verify.js";

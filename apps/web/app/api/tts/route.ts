@@ -1,5 +1,3 @@
-import { Request } from "next/server";
-
 export const runtime = "nodejs";
 
 const SUPPORTED_FORMATS = new Map([

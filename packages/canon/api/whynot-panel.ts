@@ -1,7 +1,7 @@
 /**
  * Denied Decision Persistence and WhyNot Panel
  * TIMESTAMP: 2026-01-12T20:50:00-05:00
- * 
+ *
  * Implements:
  * - Persistence of denied decision proofs
  * - WhyNot panel data formatting for Trust UX
@@ -12,7 +12,7 @@ import { DenialReasonCode, WhyNotTrace } from "@bickford/types";
 
 /**
  * WhyNot Panel Data
- * 
+ *
  * Formatted data structure for Trust UX panel showing denial reasons
  * and violated constraints.
  */
@@ -20,7 +20,7 @@ export type WhyNotPanelData = {
   title: string;
   summary: string;
   denialReasons: Array<{
-    code: DenialReasonCode;
+    code: (typeof DenialReasonCode)[keyof typeof DenialReasonCode];
     description: string;
     severity: "HIGH" | "MEDIUM" | "LOW";
   }>;
@@ -46,24 +46,30 @@ export type WhyNotPanelData = {
  * Convert WhyNot trace to panel data for UI display
  */
 export function formatWhyNotPanel(trace: WhyNotTrace): WhyNotPanelData {
-  const denialReasons = trace.reasonCodes.map(code => ({
-    code,
-    description: getDenialDescription(code),
-    severity: getDenialSeverity(code),
-  }));
-  
-  const violatedConstraints = (trace.violatedInvariantIds || []).map(id => ({
-    id,
-    type: "INVARIANT",
-    message: `Invariant ${id} would be violated`,
-  }));
-  
-  const missingPrerequisites = (trace.missingCanonIds || []).map(id => ({
-    id,
-    title: `Canon Item ${id}`,
-    why: "Required knowledge not yet promoted to CANON level",
-  }));
-  
+  const denialReasons = trace.reasonCodes.map(
+    (code: (typeof DenialReasonCode)[keyof typeof DenialReasonCode]) => ({
+      code,
+      description: getDenialDescription(code),
+      severity: getDenialSeverity(code),
+    }),
+  );
+
+  const violatedConstraints = (trace.violatedInvariantIds || []).map(
+    (id: string) => ({
+      id,
+      type: "INVARIANT",
+      message: `Invariant ${id} would be violated`,
+    }),
+  );
+
+  const missingPrerequisites = (trace.missingCanonIds || []).map(
+    (id: string) => ({
+      id,
+      title: `Canon Item ${id}`,
+      why: "Required knowledge not yet promoted to CANON level",
+    }),
+  );
+
   // Create proof hash for audit trail
   const proofString = JSON.stringify({
     actionId: trace.actionId,
@@ -75,7 +81,7 @@ export function formatWhyNotPanel(trace: WhyNotTrace): WhyNotPanelData {
     .createHash("sha256")
     .update(proofString)
     .digest("hex");
-  
+
   return {
     title: "Action Denied",
     summary: trace.message,
@@ -85,7 +91,10 @@ export function formatWhyNotPanel(trace: WhyNotTrace): WhyNotPanelData {
     actionDetails: {
       actionId: trace.actionId,
       timestamp: trace.ts,
-      context: trace.context,
+      context:
+        typeof trace.context === "object" && trace.context !== null
+          ? (trace.context as Record<string, any>)
+          : undefined,
     },
     proofHash,
   };
@@ -94,7 +103,7 @@ export function formatWhyNotPanel(trace: WhyNotTrace): WhyNotPanelData {
 /**
  * Get human-readable description for denial reason code
  */
-function getDenialDescription(code: DenialReasonCode): string {
+function getDenialDescription(code: typeof DenialReasonCode[keyof typeof DenialReasonCode]): string {
   switch (code) {
     case DenialReasonCode.MISSING_CANON_PREREQS:
       return "Required canon knowledge is not available. Actions must cite promoted canon items.";
@@ -118,7 +127,7 @@ function getDenialDescription(code: DenialReasonCode): string {
 /**
  * Get severity level for denial reason
  */
-function getDenialSeverity(code: DenialReasonCode): "HIGH" | "MEDIUM" | "LOW" {
+function getDenialSeverity(code: typeof DenialReasonCode[keyof typeof DenialReasonCode]): "HIGH" | "MEDIUM" | "LOW" {
   switch (code) {
     case DenialReasonCode.INVARIANT_VIOLATION:
     case DenialReasonCode.AUTHORITY_BOUNDARY_FAIL:
@@ -137,7 +146,7 @@ function getDenialSeverity(code: DenialReasonCode): "HIGH" | "MEDIUM" | "LOW" {
 
 /**
  * Persist denied decision proof
- * 
+ *
  * Creates a database record for the denied decision with proof hash.
  * Returns the proof record for audit trail.
  */
@@ -154,14 +163,14 @@ export function createDeniedDecisionProof(trace: WhyNotTrace): {
   createdAt: string;
 } {
   const id = `deny_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  
+
   // Convert reason codes to strings immediately
-  const reasonCodesStr = trace.reasonCodes.map(c => c.toString());
-  
+  const reasonCodesStr = trace.reasonCodes.map((c: string | number) => c.toString());
+
   // Normalize arrays (undefined -> empty array)
   const missingCanonIds = trace.missingCanonIds || [];
   const violatedInvariantIds = trace.violatedInvariantIds || [];
-  
+
   // Create proof hash using normalized data
   const proofString = JSON.stringify({
     id,
@@ -176,7 +185,7 @@ export function createDeniedDecisionProof(trace: WhyNotTrace): {
     .createHash("sha256")
     .update(proofString)
     .digest("hex");
-  
+
   return {
     id,
     actionId: trace.actionId,
@@ -193,11 +202,11 @@ export function createDeniedDecisionProof(trace: WhyNotTrace): {
 
 /**
  * Verify denied decision proof
- * 
+ *
  * Ensures the proof hash matches the stored decision data.
  */
 export function verifyDeniedDecisionProof(
-  proof: ReturnType<typeof createDeniedDecisionProof>
+  proof: ReturnType<typeof createDeniedDecisionProof>,
 ): { valid: boolean; reason?: string } {
   // Recompute proof hash
   const proofString = JSON.stringify({
@@ -213,13 +222,13 @@ export function verifyDeniedDecisionProof(
     .createHash("sha256")
     .update(proofString)
     .digest("hex");
-  
+
   if (proof.proofHash !== expectedHash) {
     return {
       valid: false,
-      reason: "Proof hash mismatch - decision data was tampered with"
+      reason: "Proof hash mismatch - decision data was tampered with",
     };
   }
-  
+
   return { valid: true };
 }

@@ -9,6 +9,14 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./rubric/scoreIntent": {
+      "types": "./dist/rubric/scoreIntent.d.ts",
+      "default": "./dist/rubric/scoreIntent.js"
+    },
+    "./invariants/rubricInvariant": {
+      "types": "./dist/invariants/rubricInvariant.d.ts",
+      "default": "./dist/invariants/rubricInvariant.js"
+    },
     "./schema": "./src/schema.ts"
   },
   "files": [
@@ -29,8 +37,11 @@
   },
   "dependencies": {
     "@bickford/authority": "workspace:*",
+    "@bickford/monitorability-core": "workspace:*",
     "@bickford/types": "workspace:*",
-    "@bickford/db": "workspace:*"
+    "@bickford/db": "workspace:*",
+    "express-rate-limit": "^7.5.1",
+    "rate-limit-redis": "^4.2.1"
   },
   "type": "module"
 }

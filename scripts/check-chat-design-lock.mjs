@@ -2,28 +2,41 @@ import crypto from "crypto";
 import fs from "fs";
 
 const ledgerPath = "ledger/design-lock.jsonl";
-const cssPath = "app/chat/chat.module.css";
+
+function computeDesignHash(files) {
+  const payload = files
+    .map((file) => {
+      const contents = fs.readFileSync(file, "utf8");
+      return `# ${file}\n${contents}`;
+    })
+    .join("\n");
+
+  return crypto.createHash("sha256").update(payload).digest("hex");
+}
 
 const ledger = fs.readFileSync(ledgerPath, "utf8");
-const entry = ledger
+const entries = ledger
   .trim()
   .split("\n")
   .map((line) => JSON.parse(line))
-  .find(
+  .filter(
     (item) =>
       item.type === "design-lock" && item.surface === "bickford-web-chat",
   );
+const entry = entries.at(-1);
 
 if (!entry) {
-  throw new Error(`Missing design-lock entry for bickford-web-chat in ${ledgerPath}`);
+  throw new Error(
+    `Missing design-lock entry for bickford-web-chat in ${ledgerPath}`,
+  );
 }
 
-const css = fs.readFileSync(cssPath, "utf8");
-const hash = crypto.createHash("sha256").update(css).digest("hex");
+const files = entry.files ?? ["app/chat/page.tsx", "app/chat/chat.module.css"];
+const hash = computeDesignHash(files);
 
 if (hash !== entry.design_hash) {
   throw new Error(
-    `Design hash mismatch for ${cssPath}. Expected ${entry.design_hash}, got ${hash}.`,
+    `Design hash mismatch for ${files.join(", ")}. Expected ${entry.design_hash}, got ${hash}.`,
   );
 }
 
