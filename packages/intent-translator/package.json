@@ -20,15 +20,11 @@
   "keywords": [
     "bickford",
     "intent",
-    "vercel",
-    "translation"
+    "translator",
+    "vercel"
   ],
   "author": "Bickford",
   "license": "PROPRIETARY",
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.71.2",
-    "openai": "^6.16.0"
-  },
   "devDependencies": {
     "typescript": "^5.9.3"
   },
