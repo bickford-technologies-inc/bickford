@@ -14,6 +14,8 @@ import {
   enforceHealthcareCanon,
   HEALTHCARE_CANON_RULES,
 } from "./healthcare";
+import { MemoryLedger } from "./memory-ledger";
+import { RAGAnthropicClient } from "./rag-anthropic-client";
 
 /**
  * Placeholder - Execute gate function
@@ -38,6 +40,8 @@ export {
   createHealthcareCanonConfig,
   enforceHealthcareCanon,
   HEALTHCARE_CANON_RULES,
+  MemoryLedger,
+  RAGAnthropicClient,
 };
 
 export default {
@@ -46,4 +50,6 @@ export default {
   createHealthcareCanonConfig,
   enforceHealthcareCanon,
   HEALTHCARE_CANON_RULES,
+  MemoryLedger,
+  RAGAnthropicClient,
 };
