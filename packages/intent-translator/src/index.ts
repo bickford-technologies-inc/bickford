@@ -6,8 +6,6 @@
  * Rejects invalid translations with visual proof
  */
 
-import Anthropic from '@anthropic-ai/sdk';
-import { OpenAI } from 'openai';
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import fs from 'node:fs/promises';
@@ -67,6 +65,46 @@ export interface ValidationResult {
   buildOutput?: string;
 }
 
+export interface ClaudeClient {
+  messages: {
+    create: (payload: {
+      model: string;
+      max_tokens: number;
+      messages: Array<{
+        role: 'user' | 'assistant' | 'system';
+        content: string;
+      }>;
+    }) => Promise<{
+      content: Array<{
+        type: 'text' | string;
+        text?: string;
+      }>;
+    }>;
+  };
+}
+
+export interface OpenAIClient {
+  chat: {
+    completions: {
+      create: (payload: {
+        model: string;
+        temperature: number;
+        max_tokens: number;
+        messages: Array<{
+          role: 'user' | 'assistant' | 'system';
+          content: string;
+        }>;
+      }) => Promise<{
+        choices: Array<{
+          message: {
+            content: string | null;
+          };
+        }>;
+      }>;
+    };
+  };
+}
+
 export interface RejectionResponse {
   accepted: false;
   reason: string;
@@ -85,15 +123,15 @@ export interface RejectionResponse {
 // ============================================================================
 
 export class IntentTranslationEngine {
-  private claude: Anthropic;
-  private openai: OpenAI;
+  private claude: ClaudeClient;
+  private openai: OpenAIClient;
 
-  constructor(config: {
-    anthropicKey: string;
-    openaiKey: string;
+  constructor(clients: {
+    claude: ClaudeClient;
+    openai: OpenAIClient;
   }) {
-    this.claude = new Anthropic({ apiKey: config.anthropicKey });
-    this.openai = new OpenAI({ apiKey: config.openaiKey });
+    this.claude = clients.claude;
+    this.openai = clients.openai;
   }
 
   async process(chatInput: string): Promise<{

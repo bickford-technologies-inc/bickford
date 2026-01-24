@@ -12,11 +12,6 @@
     "cli"
   ],
   "bin": {
-    "optr-execute": "cli/execute.js"
-    "cli/execute.js",
-    "src/executor.js"
-  ],
-  "bin": {
     "optr-execute": "./cli/execute.js"
   },
   "scripts": {
