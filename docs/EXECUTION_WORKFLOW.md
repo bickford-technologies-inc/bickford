@@ -105,6 +105,7 @@ If any guard fails, the deployment halts and the failure is captured as evidence
 
 - Tests are mandatory to close knowledge gaps before realizing intent.
 - Minimum validation is a type build + prebuild guard run; additional tests are encouraged for feature changes.
+- Capture guard output logs as evidence when running required validations.
 
 ## Canonical Command Path
 

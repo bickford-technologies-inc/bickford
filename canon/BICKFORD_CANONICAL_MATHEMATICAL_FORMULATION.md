@@ -9,6 +9,8 @@ Bickford resolves.
 
 # Bickford — Canonical Mathematical Formulation
 
+(Decision Continuity Runtime · Execution Is Law)
+
 ## 0. Time and Agents
 
 Let time t ∈ R≥0.  
@@ -151,3 +153,7 @@ Bickford = ⟨I, D, L, S(K), OPTR, TTV, Π_adm, Execute⟩
 
 Reality = Objective + Constraints + Structure  
 Execution = Solve → Act → Observe → Persist
+
+Bickford does not run scripts.
+
+Bickford resolves.

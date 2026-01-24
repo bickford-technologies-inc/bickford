@@ -2,7 +2,7 @@
 
 ## Summary
 
-This architecture defines a closed-loop system where **Bickford Chat** is the intent interface, **GitHub** is the realization engine, and **BRDL** is the canonical memory. It embeds execution law, decision continuity, and structural dominance by ensuring every conversation is captured, every intent is structured, and every execution is governed by admissible policy selection and ledgered evidence.
+This architecture defines a closed-loop system where **Bickford Chat** is the intent interface, **GitHub** is the realization engine, and **BRDL** is the canonical memory. It embeds execution law, decision continuity, and structural dominance by ensuring every conversation is captured, every intent is structured, and every execution is governed by admissible policy selection and ledgered evidence. It also applies **max-extend TTV reduction** by reusing decisions and OPTR outputs to minimize time-to-value under admissible constraints.
 
 ## System Roles
 
@@ -100,6 +100,7 @@ Evidence is derived from ledger, structure, policy, and signatures. Compliance e
 - **Execution Law:** actions execute only with admissible authority and constraints.
 - **Structural Dominance:** intent must be encoded before it can influence behavior.
 - **Decision Continuity:** decisions are reused and compounded over time.
+- **Max-extend TTV:** prefer reuse of prior decisions, cached policies, and evidence templates to reduce realization latency.
 - **UI Binding:** runtime surfaces must hash-match ledgered design specs.
 
 ## Implementation Pointers

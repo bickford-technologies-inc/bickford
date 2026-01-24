@@ -11,6 +11,7 @@ This guide operationalizes the closed-loop system where **Bickford Chat is the i
 - **Agent orchestration** selects an admissible policy (OPTR) without violating non-interference.
 - **GitHub realization** executes through the canonical build boundary and ledgered evidence.
 - **Learning loop** upgrades structure and reduces time-to-value (TTV).
+- **Max-extend TTV reduction** keeps the shortest admissible path active by preferring reusable decisions, precomputed policies, and deterministic evidence capture.
 
 ## Implementation Steps
 
@@ -62,6 +63,8 @@ This guide operationalizes the closed-loop system where **Bickford Chat is the i
 - `candidates`, `scores`, `selected_policy`, `non_interference_checks`
 
 **Invariant:** policy selection must satisfy constraints and non-interference law.
+
+**Max-extend TTV reduction:** persist OPTR scoring outputs so future intents can reuse the top policy without recomputation unless constraints drift.
 
 ### 5) GitHub Realization (Canonical Execution Boundary)
 
@@ -121,6 +124,7 @@ artifacts/
 4. **Policy selected** via OPTR with non-interference checks.
 5. **Canonical build executed** with evidence captured.
 6. **Learning updated** in gold.
+7. **Max-extend TTV** by recording reusable decisions and policy outputs for fast reuse on similar intents.
 
 ## Governance Guardrails
 
