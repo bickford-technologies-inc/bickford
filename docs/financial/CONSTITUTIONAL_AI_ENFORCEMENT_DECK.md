@@ -296,6 +296,35 @@ Enforcement infrastructure that converts Constitutional AI from research positio
 - **Week 11-12:** Chrome/Excel agent enforcement deployment
 - **Deliverable:** Production-ready governed agentic products
 
+### Decision-Continuity Economics (Why the Roadmap Compounds)
+- **Year 1:** Eliminate governance decay by turning audits into reusable proof (ledger-backed compliance artifacts).
+- **Years 2–3:** Each deployment compounds evidence, cutting future audits from months → weeks → days.
+- **Financial leverage:** Governance work shifts from recurring cost to reusable asset (compounding ROI).
+
+### Compounding Value Flywheel
+1. **Enforce decisions at runtime** → 2. **Ledger proof captured** → 3. **Audit reuse** → 4. **Faster enterprise close** → repeat.
+
+### Strategic Moat Rationale
+- **Only verifiable Constitutional AI**: cryptographic enforcement is difficult to replicate quickly.
+- **Compounding evidence advantage**: every deployment strengthens competitive differentiation.
+- **Procurement acceleration**: proof bundles reduce enterprise friction, widening lead over policy-only competitors.
+
+### Gap Analysis (Decay → Continuity)
+**Current (Decay State):**
+- Governance reviews repeat every audit cycle (evidence does not persist).
+- Enterprise deals stall 6–12 months due to manual compliance rework.
+- Regulated markets remain gated without runtime enforcement proof.
+
+**Target (Decision Continuity):**
+- Audit artifacts persist and compound with each deployment.
+- Security review time compresses from months to weeks.
+- Regulated market access unlocked with cryptographic proof bundles.
+
+**Delta (Quantified Impact):**
+- **Cost decay eliminated:** $14M recurring governance overhead → reusable evidence.
+- **Revenue acceleration:** $225M–$700M from faster regulated procurement.
+- **Risk mitigation:** $100M–$1B+ avoided regulatory/reputational exposure.
+
 ### Success Metrics
 - **Technical:** <50ms latency overhead for Canon rule enforcement
 - **Business:** First regulated enterprise deployment (defense, healthcare, or finance)
