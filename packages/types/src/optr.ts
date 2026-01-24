@@ -16,6 +16,20 @@ export interface InterferenceResult {
   displacedAgents?: string[];
 }
 
+export type AgentResult = {
+  agent: "codex" | "claude" | "copilot" | "mscopilot";
+  output: unknown;
+  admissible: boolean;
+  ttvEstimate: number;
+  invariants: string[];
+};
+
+export type IntentContext = {
+  workflow: string;
+  intent: unknown;
+  constraints: string[];
+};
+
 // Force TypeScript emit for this module
 export const __forceEmitOptr = true;
 

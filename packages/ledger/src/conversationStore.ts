@@ -1,7 +1,7 @@
-import crypto from "node:crypto";
-import { existsSync } from "node:fs";
+import * as crypto from "node:crypto";
+import * as fs from "node:fs";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
-import path from "node:path";
+import * as path from "node:path";
 
 import type {
   Conversation,
@@ -21,9 +21,18 @@ async function ensureConversationDir() {
       ? path.join("/tmp", "trace")
       : path.join(process.cwd(), "trace"));
   const target = path.join(preferred, "conversations");
-
-  await mkdir(target, { recursive: true });
-  return target;
+  try {
+    await mkdir(target, { recursive: true });
+    return target;
+  } catch (error) {
+    const fallbackBase = path.join("/tmp", "trace");
+    const fallback = path.join(fallbackBase, "conversations");
+    if (target !== fallback) {
+      await mkdir(fallback, { recursive: true });
+      return fallback;
+    }
+    throw error;
+  }
 }
 
 function conversationPath(baseDir: string, id: string) {
@@ -77,7 +86,7 @@ export async function readConversation(
 ): Promise<Conversation | null> {
   const dir = await ensureConversationDir();
   const filePath = conversationPath(dir, conversationId);
-  if (!existsSync(filePath)) {
+  if (!fs.existsSync(filePath)) {
     return null;
   }
   const raw = await readFile(filePath, "utf8");

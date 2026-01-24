@@ -6,4 +6,4 @@ export function converge(...args: any[]): any {
   return { status: "converged", args };
 }
 
-export * from "./sora.js";
+export * from "./sora";

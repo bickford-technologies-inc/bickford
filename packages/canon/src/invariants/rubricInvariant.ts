@@ -15,3 +15,5 @@ export const NATION_STATE_RUBRIC_INVARIANT = {
     return { ok: true };
   },
 };
+
+export const RUBRIC_INVARIANT = NATION_STATE_RUBRIC_INVARIANT;

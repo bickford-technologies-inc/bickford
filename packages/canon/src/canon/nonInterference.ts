@@ -179,6 +179,36 @@ export function checkNonInterference(
   context: AuthorityContext,
   action: string,
 ): boolean {
-  // Non-interference check logic
-  return true;
+  const actingAgentId =
+    (context.actingAgentId as string) ||
+    (context.agentId as string) ||
+    "unknown";
+  const deltaExpectedTTV = context.deltaExpectedTTV as
+    | Record<string, number>
+    | undefined;
+  const actionPayload = context.action as Action | undefined;
+  const otherAgents = context.otherAgents as
+    | Array<{
+        id: string;
+        currentGoal: string;
+        dependsOnResources?: string[];
+        dependsOnState?: string[];
+      }>
+    | undefined;
+
+  const computed =
+    deltaExpectedTTV ??
+    (actionPayload && otherAgents
+      ? estimateTTVImpact({ action: actionPayload, otherAgents })
+      : null);
+
+  if (!computed) return false;
+
+  const check = nonInterferenceOK({
+    actingAgentId,
+    actionId: action,
+    deltaExpectedTTV: computed,
+  });
+
+  return check.ok;
 }

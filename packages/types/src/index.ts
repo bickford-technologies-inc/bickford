@@ -11,30 +11,7 @@ export * from "./canon.js";
 // Explicitly allowed stable surfaces
 export type { ExecutionResult } from "./ExecutionResult.js";
 
-// ======================
-// DENIED DECISION PAYLOAD
-// ======================
-
-/**
- * CANONICAL GATE
- * index.ts MUST NOT introduce new surface area.
- * It forwards canon only.
- */
-export type DeniedDecisionPayload = {
-  decisionId: string;
-
-  // REQUIRED CONTEXT
-  actionId: string;
-  tenantId: string;
-
-  // DENIAL METADATA
-  denied: true;
-  reason: string;
-
-  // OPTIONAL TRACEABILITY
-  ruleId?: string;
-  timestamp?: number;
-};
+export type { HardwareAttestation } from "./HardwareAttestation.js";
 
 // ======================
 // LEDGER TYPES
@@ -61,7 +38,7 @@ export * from "./decision.js";
 /**
  * Compat MUST be last to avoid shadowing
  */
-export * from "./compat.js";
+// export * from "./compat.js";
 
 // OPTR SUPPORT TYPES — TEMPORARY CANON SURFACE
 // Added to satisfy build; semantics finalized in Phase 2B
@@ -76,7 +53,17 @@ export type InterferenceResult = {
   reason?: string;
 };
 
+export type { AgentResult, IntentContext, OptrResult } from "./optr.js";
+
 export * from "./deniedDecision.js";
 export * from "./rubric.js";
 
-export * from "./conversation.js";
+export type { Intent } from "./intent";
+
+export type { Action, WhyNotTrace } from "./canon.js";
+
+export type {
+  Conversation,
+  ConversationMessage,
+  ConversationTraceSummary,
+} from "./conversation";
