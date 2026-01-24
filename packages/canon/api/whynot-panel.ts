@@ -103,9 +103,7 @@ export function formatWhyNotPanel(trace: WhyNotTrace): WhyNotPanelData {
 /**
  * Get human-readable description for denial reason code
  */
-function getDenialDescription(
-  code: (typeof DenialReasonCode)[keyof typeof DenialReasonCode],
-): string {
+function getDenialDescription(code: typeof DenialReasonCode[keyof typeof DenialReasonCode]): string {
   switch (code) {
     case DenialReasonCode.MISSING_CANON_PREREQS:
       return "Required canon knowledge is not available. Actions must cite promoted canon items.";
@@ -129,9 +127,7 @@ function getDenialDescription(
 /**
  * Get severity level for denial reason
  */
-function getDenialSeverity(
-  code: (typeof DenialReasonCode)[keyof typeof DenialReasonCode],
-): "HIGH" | "MEDIUM" | "LOW" {
+function getDenialSeverity(code: typeof DenialReasonCode[keyof typeof DenialReasonCode]): "HIGH" | "MEDIUM" | "LOW" {
   switch (code) {
     case DenialReasonCode.INVARIANT_VIOLATION:
     case DenialReasonCode.AUTHORITY_BOUNDARY_FAIL:
@@ -169,9 +165,7 @@ export function createDeniedDecisionProof(trace: WhyNotTrace): {
   const id = `deny_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
   // Convert reason codes to strings immediately
-  const reasonCodesStr = trace.reasonCodes.map((c: string | number) =>
-    c.toString(),
-  );
+  const reasonCodesStr = trace.reasonCodes.map((c: string | number) => c.toString());
 
   // Normalize arrays (undefined -> empty array)
   const missingCanonIds = trace.missingCanonIds || [];

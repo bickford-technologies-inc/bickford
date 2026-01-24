@@ -1,6 +1,6 @@
 // FORCE EMIT (side-effect imports only)
-import "./optr.js";
-import "./canon.js";
+import "./optr";
+import "./canon";
 
 // ======================
 // PUBLIC CANONICAL API
@@ -25,14 +25,6 @@ export type ExecutionEvent = {
 export type LedgerEntry = {
   id: string;
   event: ExecutionEvent;
-  timestamp?: number;
-  workflow?: string;
-  intent?: unknown;
-  agentResults?: AgentResult[];
-  selectedOptr?: AgentResult;
-  commitHash?: string;
-  previousHash?: string;
-  hash?: string;
 };
 
 export type ExecutionAdapter = {
@@ -61,49 +53,15 @@ export type InterferenceResult = {
   reason?: string;
 };
 
-export interface AgentResult {
-  agent: "codex" | "claude" | "copilot" | "mscopilot";
-  output: unknown;
-  admissible: boolean;
-  ttvEstimate: number;
-  invariants: string[];
-  executionTime: number;
-  hash: string;
-  timestamp: number;
-}
-
-export interface IntentContext {
-  workflow: string;
-  intent: unknown;
-  constraints: string[];
-  metadata?: Record<string, unknown>;
-}
-
 export * from "./deniedDecision.js";
 export * from "./rubric.js";
 
-export type { Intent } from "./intent.js";
+export type { Intent } from "./intent";
 
-export type { Action, WhyNotTrace } from "./canon.js";
-export type { ExecutionContext } from "./canon.js";
-export type { TokenStreamProof } from "./canon.js";
-export type { ISO8601 } from "./canon.js";
-export type { CandidatePath } from "./canon.js";
-export type { CandidateFeatures } from "./canon.js";
-export type { PathConstraint } from "./canon.js";
+export type { WhyNotTrace } from "./canon";
 
 export type {
   Conversation,
   ConversationMessage,
-  ConversationSummary,
   ConversationTraceSummary,
-} from "./conversation.js";
-
-export type { OPTRScore } from "./canon.js";
-export type { OPTRRun } from "./canon.js";
-export type { OPTRWeights } from "./canon.js";
-
-export type { AuthorityCheckResult } from "./canon.js";
-export type { ConfidenceEnvelope } from "./canon.js";
-
-export type { PromotionDecision, PromotionTests } from "./canon.js";
+} from "./conversation";
