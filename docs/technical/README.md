@@ -42,6 +42,10 @@ This folder contains technical specifications, architecture, and integration gui
   - Memory hierarchy and locations
   - Imports and lookup behavior
   - Rule organization patterns
+- **[CLAUDE_API_OVERVIEW.md](CLAUDE_API_OVERVIEW.md)** - Claude API overview
+  - Core endpoints and authentication
+  - Client SDK benefits and examples
+  - Rate limits, request sizes, and platform options
 
 - **[SORA_VIDEO_GUIDE.md](SORA_VIDEO_GUIDE.md)** - Video generation with Sora
   - Model selection
