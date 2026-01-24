@@ -37,6 +37,7 @@ export { appendProofLedger, readProofLedger } from "./proofLedger.ts";
 export { appendLedger, listThreads, writeThread } from "./ledger.ts";
 export * from "./types.ts";
 export * from "./conversationStore.ts";
+export * from "./conversationMemory.ts";
 export {
   appendConversationMessage,
   createConversation,
