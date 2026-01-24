@@ -53,27 +53,17 @@ export type InterferenceResult = {
   reason?: string;
 };
 
+export type { AgentResult, IntentContext, OptrResult } from "./optr.js";
+
 export * from "./deniedDecision.js";
 export * from "./rubric.js";
 
 export type { Intent } from "./intent";
 
-export type { Action, WhyNotTrace } from "./canon";
-export type { ExecutionContext } from "./canon";
-export type { TokenStreamProof } from "./canon";
-export type { ISO8601 } from "./canon";
-export type { CandidatePath } from "./canon";
-export type { CandidateFeatures } from "./canon";
-export type { PathConstraint } from "./canon";
+export type { Action, WhyNotTrace } from "./canon.js";
 
 export type {
   Conversation,
   ConversationMessage,
   ConversationTraceSummary,
 } from "./conversation";
-
-export type { OPTRScore } from "./canon";
-export type { OPTRRun } from "./canon";
-export type { OPTRWeights } from "./canon";
-
-export type { AuthorityCheckResult } from "./canon";
