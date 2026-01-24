@@ -62,7 +62,7 @@ export function gateSecondActionTooEarly(
   nowIso: string,
 ): WhyNotTrace | null {
   const missing = nextAction.prerequisitesCanonIds.filter(
-    (id) => !canonIdsPresent.has(id),
+    (id: string) => !canonIdsPresent.has(id),
   );
 
   if (missing.length === 0) return null;

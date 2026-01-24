@@ -98,9 +98,10 @@ function normalizeMessages(
     .filter((message) => message)
     .map((message) => {
       const role = message.role ?? message.author ?? "agent";
+      const normalizedRole: ChatRole = role === "user" ? "user" : "agent";
       return {
         id: message.id ?? crypto.randomUUID(),
-        role: role === "user" ? "user" : "agent",
+        role: normalizedRole,
         content: message.content ?? message.text ?? "",
         timestamp:
           typeof message.timestamp === "number"

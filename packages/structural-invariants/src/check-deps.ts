@@ -4,7 +4,17 @@ import path from "path";
 import glob from "fast-glob";
 import { builtinModules } from "module";
 import { parse } from "@babel/parser";
-import traverse from "@babel/traverse";
+import * as traverseModule from "@babel/traverse";
+import type { NodePath, TraverseOptions } from "@babel/traverse";
+import type { CallExpression, ImportDeclaration, Node } from "@babel/types";
+
+const traverse = traverseModule.default as unknown as (
+  parent: Node,
+  opts: TraverseOptions,
+  scope?: traverseModule.Scope,
+  state?: unknown,
+  parentPath?: traverseModule.NodePath,
+) => void;
 
 export async function runCheckDeps() {
   const ROOT = process.cwd();
@@ -78,10 +88,11 @@ export async function runCheckDeps() {
         });
 
         traverse(ast, {
-          ImportDeclaration({ node }) {
-            imports.add(node.source.value);
+          ImportDeclaration(path: NodePath<ImportDeclaration>) {
+            imports.add(path.node.source.value);
           },
-          CallExpression({ node }) {
+          CallExpression(path: NodePath<CallExpression>) {
+            const { node } = path;
             if (
               node.callee.type === "Identifier" &&
               node.callee.name === "require" &&

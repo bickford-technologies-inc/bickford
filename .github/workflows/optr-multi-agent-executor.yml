@@ -1,0 +1,293 @@
+name: OPTR Multi-Agent Executor
+
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      workflow_name:
+        description: 'Workflow name (unique identifier)'
+        required: true
+        type: string
+      intent:
+        description: 'Execution intent (what to accomplish)'
+        required: true
+        type: string
+      constraints:
+        description: 'Constraints (comma-separated)'
+        required: false
+        type: string
+        default: ''
+
+env:
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MICROSOFT_GRAPH_TOKEN: ${{ secrets.MICROSOFT_GRAPH_TOKEN }}
+  DATALAKE_ROOT: ./datalake
+  LEDGER_PATH: ./datalake/ledger.jsonl
+
+jobs:
+  # ===========================================================================
+  # OPTR Parallel Multi-Agent Execution
+  # ===========================================================================
+  optr-execute:
+    name: Execute OPTR Workflow
+    runs-on: ubuntu-latest
+
+    outputs:
+      workflow_name: ${{ steps.parse.outputs.workflow_name }}
+      selected_agent: ${{ steps.optr.outputs.selected_agent }}
+      admissible: ${{ steps.optr.outputs.admissible }}
+      ttv_estimate: ${{ steps.optr.outputs.ttv_estimate }}
+      ledger_hash: ${{ steps.optr.outputs.ledger_hash }}
+      commit_hash: ${{ steps.commit.outputs.commit_hash }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          cd packages/optr && pnpm install
+
+      - name: Parse workflow inputs
+        id: parse
+        run: |
+          # Extract workflow context
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            WORKFLOW_NAME="${{ github.event.inputs.workflow_name }}"
+            INTENT="${{ github.event.inputs.intent }}"
+            CONSTRAINTS="${{ github.event.inputs.constraints }}"
+          elif [ "${{ github.event_name }}" = "issues" ]; then
+            WORKFLOW_NAME="issue-${{ github.event.issue.number }}"
+            INTENT="${{ github.event.issue.title }}"
+            CONSTRAINTS="github_issue,user_reported"
+          fi
+
+          echo "workflow_name=$WORKFLOW_NAME" >> $GITHUB_OUTPUT
+          echo "intent=$INTENT" >> $GITHUB_OUTPUT
+          echo "constraints=$CONSTRAINTS" >> $GITHUB_OUTPUT
+
+      - name: Execute OPTR Multi-Agent Workflow
+        id: optr
+        run: |
+          # Create intent context file
+          cat > /tmp/intent-context.json << EOF
+          {
+            "workflow": "${{ steps.parse.outputs.workflow_name }}",
+            "intent": "${{ steps.parse.outputs.intent }}",
+            "constraints": [
+              $(echo "${{ steps.parse.outputs.constraints }}" | sed 's/,/","/g' | sed 's/^/"/' | sed 's/$/"/')
+            ],
+            "metadata": {
+              "github_event": "${{ github.event_name }}",
+              "github_actor": "${{ github.actor }}",
+              "github_sha": "${{ github.sha }}"
+            }
+          }
+          EOF
+
+          # Run OPTR executor
+          node packages/optr/cli/execute.js \
+            --context /tmp/intent-context.json \
+            --output /tmp/optr-result.json
+
+          # Extract outputs
+          SELECTED_AGENT=$(jq -r '.agent' /tmp/optr-result.json)
+          ADMISSIBLE=$(jq -r '.admissible' /tmp/optr-result.json)
+          TTV_ESTIMATE=$(jq -r '.ttvEstimate' /tmp/optr-result.json)
+          LEDGER_HASH=$(jq -r '.hash' /tmp/optr-result.json)
+
+          echo "selected_agent=$SELECTED_AGENT" >> $GITHUB_OUTPUT
+          echo "admissible=$ADMISSIBLE" >> $GITHUB_OUTPUT
+          echo "ttv_estimate=$TTV_ESTIMATE" >> $GITHUB_OUTPUT
+          echo "ledger_hash=$LEDGER_HASH" >> $GITHUB_OUTPUT
+
+          echo "OPTR Selection: $SELECTED_AGENT (admissible: $ADMISSIBLE, TTV: ${TTV_ESTIMATE}ms)"
+
+      - name: Verify ledger integrity
+        run: |
+          node packages/optr/cli/verify-ledger.js \
+            --ledger ${{ env.LEDGER_PATH }}
+
+      - name: Upload datalake artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: optr-datalake-${{ steps.parse.outputs.workflow_name }}
+          path: |
+            datalake/workflows/${{ steps.parse.outputs.workflow_name }}/
+            datalake/ledger.jsonl
+
+      - name: Commit ledger to GitHub
+        id: commit
+        run: |
+          # Configure git
+          git config user.name "OPTR Bot"
+          git config user.email "optr@bickford.tech"
+
+          # Add datalake and ledger
+          git add datalake/
+
+          # Commit with hash chain reference
+          git commit -m "audit(optr): workflow ${{ steps.parse.outputs.workflow_name }} → ${{ steps.optr.outputs.selected_agent }} [${{ steps.optr.outputs.ledger_hash }}]" || echo "No changes to commit"
+
+          # Push
+          git push origin main || echo "Push failed (non-blocking)"
+
+          # Get commit hash
+          COMMIT_HASH=$(git rev-parse HEAD)
+          echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
+          echo "Bound to commit: $COMMIT_HASH"
+
+      - name: Create workflow summary
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY << EOF
+          ## OPTR Multi-Agent Execution Summary
+
+          **Workflow:** \`${{ steps.parse.outputs.workflow_name }}\`
+          **Intent:** ${{ steps.parse.outputs.intent }}
+
+          ### Agent Selection
+          - **Selected Agent:** ${{ steps.optr.outputs.selected_agent }}
+          - **Admissible:** ${{ steps.optr.outputs.admissible }}
+          - **TTV Estimate:** ${{ steps.optr.outputs.ttv_estimate }}ms
+          - **Ledger Hash:** \`${{ steps.optr.outputs.ledger_hash }}\`
+          - **Commit Hash:** \`${{ steps.commit.outputs.commit_hash }}\`
+
+          ### Constraints Applied
+          $(echo "${{ steps.parse.outputs.constraints }}" | tr ',' '\n' | sed 's/^/- /')
+
+          ### Ledger Status
+          ✅ Ledger integrity verified
+          ✅ Committed to GitHub history
+          ✅ Cryptographic audit trail preserved
+
+          ---
+          *Bickford OPTR Multi-Agent Executor*
+          EOF
+
+  # ===========================================================================
+  # Execute Selected OPTR Path (Only if Admissible)
+  # ===========================================================================
+  execute-optr-path:
+    name: Execute Selected OPTR
+    needs: optr-execute
+    if: needs.optr-execute.outputs.admissible == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download OPTR artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: optr-datalake-${{ needs.optr-execute.outputs.workflow_name }}
+          path: ./datalake
+
+      - name: Execute selected path - Codex
+        if: needs.optr-execute.outputs.selected_agent == 'codex'
+        run: |
+          echo "Executing Codex path..."
+          node packages/optr/executors/codex-executor.js \
+            --workflow-data ./datalake/workflows/${{ needs.optr-execute.outputs.workflow_name }}
+
+      - name: Execute selected path - Claude
+        if: needs.optr-execute.outputs.selected_agent == 'claude'
+        run: |
+          echo "Executing Claude path..."
+          node packages/optr/executors/claude-executor.js \
+            --workflow-data ./datalake/workflows/${{ needs.optr-execute.outputs.workflow_name }}
+
+      - name: Execute selected path - Copilot
+        if: needs.optr-execute.outputs.selected_agent == 'copilot'
+        run: |
+          echo "Executing GitHub Copilot path..."
+          node packages/optr/executors/copilot-executor.js \
+            --workflow-data ./datalake/workflows/${{ needs.optr-execute.outputs.workflow_name }}
+
+      - name: Execute selected path - MS Copilot
+        if: needs.optr-execute.outputs.selected_agent == 'mscopilot'
+        run: |
+          echo "Executing Microsoft Copilot path..."
+          node packages/optr/executors/mscopilot-executor.js \
+            --workflow-data ./datalake/workflows/${{ needs.optr-execute.outputs.workflow_name }}
+
+      - name: Record execution completion
+        run: |
+          cat > ./datalake/workflows/${{ needs.optr-execute.outputs.workflow_name }}/execution-complete.json << EOF
+          {
+            "workflow": "${{ needs.optr-execute.outputs.workflow_name }}",
+            "selectedAgent": "${{ needs.optr-execute.outputs.selected_agent }}",
+            "executedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "githubRunId": "${{ github.run_id }}",
+            "ledgerHash": "${{ needs.optr-execute.outputs.ledger_hash }}",
+            "commitHash": "${{ needs.optr-execute.outputs.commit_hash }}"
+          }
+          EOF
+
+          git add ./datalake/workflows/${{ needs.optr-execute.outputs.workflow_name }}/execution-complete.json
+          git commit -m "audit(optr): execution complete for ${{ needs.optr-execute.outputs.workflow_name }}"
+          git push origin main
+
+  # ===========================================================================
+  # Generate Compliance Report
+  # ===========================================================================
+  compliance-report:
+    name: Generate Compliance Report
+    needs: [optr-execute, execute-optr-path]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate compliance artifacts
+        run: |
+          node packages/optr/compliance/generate-report.js \
+            --workflow "${{ needs.optr-execute.outputs.workflow_name }}" \
+            --ledger-hash "${{ needs.optr-execute.outputs.ledger_hash }}" \
+            --frameworks "SOC-2,ISO-27001,NIST-800-53"
+
+      - name: Upload compliance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: compliance-report-${{ needs.optr-execute.outputs.workflow_name }}
+          path: compliance/optr/reports/

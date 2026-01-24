@@ -10,6 +10,7 @@
  */
 
 import { WhyNotTrace, DeniedDecisionPayload, Action } from "@bickford/types";
+import crypto from "node:crypto";
 
 function persistDeniedDecision(_: DeniedDecisionPayload) {
   // TODO: wire to @bickford/canon persistence
@@ -33,11 +34,13 @@ export async function mechanicalDeny(params: {
 
   // Build denial payload
   const payload: DeniedDecisionPayload = {
+    decisionId: crypto.randomUUID(),
     ts: trace.ts,
     actionId: trace.actionId,
     tenantId,
     reasonCodes: trace.reasonCodes,
     message: trace.message,
+    reason: trace.message,
     denied: true,
   };
 
