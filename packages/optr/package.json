@@ -13,6 +13,11 @@
   ],
   "bin": {
     "optr-execute": "cli/execute.js"
+    "cli/execute.js",
+    "src/executor.js"
+  ],
+  "bin": {
+    "optr-execute": "./cli/execute.js"
   },
   "scripts": {
     "build": "pnpm exec pnpm exec tsc -p tsconfig.build.json",
