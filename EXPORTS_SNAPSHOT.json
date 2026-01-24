@@ -26,6 +26,7 @@
     "VERSION"
   ],
   "@bickford/types": [
+    "Action",
     "AgentContext",
     "AgentId",
     "AgentStateRow",

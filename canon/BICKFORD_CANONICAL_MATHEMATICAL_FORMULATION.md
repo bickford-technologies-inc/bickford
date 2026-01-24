@@ -1,4 +1,15 @@
+# (Decision Continuity Runtime · Execution Is Law)
+
+Reality = Objective + Constraints + Structure  
+Execution = Solve → Act → Observe → Persist
+
+Bickford does not run scripts.
+
+Bickford resolves.
+
 # Bickford — Canonical Mathematical Formulation
+
+(Decision Continuity Runtime · Execution Is Law)
 
 ## 0. Time and Agents
 
@@ -13,6 +24,7 @@ An intent is a constrained objective declaration:
 I = (G, Θ, A, τ)
 
 Where:
+
 - G: target outcome
 - Θ ⊆ C: constraints (legal, safety, design, governance)
 - A: authority set permitted to act
@@ -36,6 +48,7 @@ A decision is executable intent:
 D = (I, R, E, σ)
 
 Where:
+
 - R: rationale
 - E: admissible executable actions
 - σ: cryptographic authority signature
@@ -44,7 +57,7 @@ Where:
 
 All decisions are persisted to an append-only ledger L:
 
-L_{t+1} = L_t ∪ {(D, h(D), t)}
+L\_{t+1} = L_t ∪ {(D, h(D), t)}
 
 **Ledger Invariant:** no deletion, mutation, or reordering.
 
@@ -68,7 +81,7 @@ TTV(π) = inf {t ≥ 0 ∣ V(t, π) ≥ G}
 
 Bickford selects:
 
-π* = argmin_π E[TTV(π)]
+π\* = argmin_π E[TTV(π)]
 
 **Risk-aware extension:**
 
@@ -96,23 +109,23 @@ Otherwise execution is denied and recorded.
 
 After execution:
 
-K_{t+1} = K_t ∪ Observe(s_t, π*)
+K\_{t+1} = K_t ∪ Observe(s_t, π\*)
 
 Structural update:
 
-S(K_{t+1}) ⊇ S(K_t)
+S(K\_{t+1}) ⊇ S(K_t)
 
 Structure grows monotonically.
 
 ## 11. Decision Continuity Rate
 
-DCR = decisions reused / decisions required, lim_{t → ∞} DCR = 1
+DCR = decisions reused / decisions required, lim\_{t → ∞} DCR = 1
 
 ## 12. Compounding Persistence
 
 Let E_a(K_t) be cognitive energy to apply knowledge.
 
-lim_{t → ∞} E_a(K_t) = 0
+lim\_{t → ∞} E_a(K_t) = 0
 
 Memory executes automatically via structure.
 
@@ -128,7 +141,7 @@ UI drift invalidates execution.
 
 For any regulator R:
 
-Evidence(R) = {L, S(K), π*, σ, h(⋅)}
+Evidence(R) = {L, S(K), π\*, σ, h(⋅)}
 
 Compliance is derived, not implemented.
 
@@ -140,3 +153,7 @@ Bickford = ⟨I, D, L, S(K), OPTR, TTV, Π_adm, Execute⟩
 
 Reality = Objective + Constraints + Structure  
 Execution = Solve → Act → Observe → Persist
+
+Bickford does not run scripts.
+
+Bickford resolves.

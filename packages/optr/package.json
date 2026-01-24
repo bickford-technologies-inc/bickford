@@ -8,10 +8,20 @@
     ".": "./src/index.ts"
   },
   "files": [
-    "dist"
+    "dist",
+    "cli"
   ],
+  "bin": {
+    "optr-execute": "cli/execute.js"
+    "cli/execute.js",
+    "src/executor.js"
+  ],
+  "bin": {
+    "optr-execute": "./cli/execute.js"
+  },
   "scripts": {
     "build": "pnpm exec pnpm exec tsc -p tsconfig.build.json",
+    "execute": "node cli/execute.js",
     "typecheck": "pnpm exec pnpm exec tsc --noEmit",
     "lint": "npm run typecheck",
     "test": "echo 'No tests yet'",
@@ -25,9 +35,13 @@
   "author": "Bickford",
   "license": "PROPRIETARY",
   "dependencies": {
-    "@bickford/types": "workspace:*"
+    "@anthropic-ai/sdk": "^0.71.2",
+    "@bickford/types": "workspace:*",
+    "@octokit/rest": "^22.0.1",
+    "openai": "^6.16.0"
   },
   "devDependencies": {
+    "@types/node": "^25.0.10",
     "typescript": "^5.0.0"
   },
   "type": "module"
