@@ -73,6 +73,18 @@ const ledger = await getLedger();
 console.log("Total entries:", ledger.length);
 ```
 
+## Memory-Enabled Ledger (RAG Bridge Example)
+
+For a standalone example that adds embeddings, similarity search, and analytics on
+top of a hash-chained ledger, see:
+
+```
+packages/ledger/examples/memory-ledger.ts
+```
+
+This example uses Bun + SQLite and is intended for local experimentation rather than
+production deployment.
+
 ## API
 
 ### `appendLedger(intent, decision)`

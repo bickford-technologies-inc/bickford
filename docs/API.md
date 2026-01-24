@@ -17,6 +17,72 @@ Set `BICKFORD_API_TOKEN` in your `.env` file.
 
 ## Endpoints
 
+### List API Keys
+
+List API keys for the organization.
+
+**Endpoint:** `GET /v1/organizations/api_keys`
+
+**How to use it:**
+1. Ensure you have an organization admin API key available as `ANTHROPIC_ADMIN_API_KEY`.
+2. Call the endpoint with `X-Api-Key` and optional query parameters to paginate or filter results.
+3. Use `after_id`/`before_id` with `first_id`/`last_id` from the response to page through results.
+
+**Query Parameters:**
+- `after_id` (optional string): ID of the object to use as a cursor for pagination. When provided, returns the page of results immediately after this object.
+- `before_id` (optional string): ID of the object to use as a cursor for pagination. When provided, returns the page of results immediately before this object.
+- `created_by_user_id` (optional string): Filter by the ID of the User who created the object.
+- `limit` (optional number): Number of items to return per page. Defaults to `20`. Ranges from `1` to `1000`.
+- `status` (optional `"active" | "inactive" | "archived"`): Filter by API key status.
+- `workspace_id` (optional string): Filter by Workspace ID.
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "id": "string",
+      "created_at": "2024-02-02T19:20:30.000Z",
+      "created_by": {
+        "id": "string",
+        "type": "string"
+      },
+      "name": "string",
+      "partial_key_hint": "string",
+      "status": "active",
+      "type": "api_key",
+      "workspace_id": "string"
+    }
+  ],
+  "first_id": "string",
+  "has_more": false,
+  "last_id": "string"
+}
+```
+
+**Example:**
+```http
+curl https://api.anthropic.com/v1/organizations/api_keys \
+  -H "X-Api-Key: $ANTHROPIC_ADMIN_API_KEY"
+```
+
+**Example with filtering and pagination:**
+```http
+curl "https://api.anthropic.com/v1/organizations/api_keys?status=active&limit=50&after_id=api_key_123" \
+  -H "X-Api-Key: $ANTHROPIC_ADMIN_API_KEY"
+```
+
+**Node.js example:**
+```ts
+const response = await fetch(
+  "https://api.anthropic.com/v1/organizations/api_keys?status=active&limit=50",
+  { headers: { "X-Api-Key": process.env.ANTHROPIC_ADMIN_API_KEY ?? "" } }
+);
+
+const payload = await response.json();
+console.log(payload.data);
+```
+
 ### Execute Intent
 
 Execute a natural language intent through the Bickford runtime.
