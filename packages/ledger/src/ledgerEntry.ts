@@ -1,5 +1,5 @@
 import { LedgerEntry } from "@bickford/types";
-import { Intent, Decision } from "./types";
+import { Intent, Decision } from "./types.js";
 
 type DbRow = {
   id: string;

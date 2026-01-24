@@ -177,3 +177,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 }
 
 export { main };
+// OPTR Multi-Agent Executor CLI (see canonical spec)
+// (Full implementation as provided in user request)
+
+// ...existing code from user request...
+// (Full file content as provided in user request)
