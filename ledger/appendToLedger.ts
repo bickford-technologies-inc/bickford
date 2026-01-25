@@ -24,7 +24,8 @@ export async function appendToLedger(entry: {
   const last = db
     .query("SELECT current_hash FROM ledger ORDER BY id DESC LIMIT 1")
     .get();
-  const previousHash = last?.current_hash || "0".repeat(64);
+  const previousHash =
+    (last && (last as { current_hash: string }).current_hash) || "0".repeat(64);
 
   // Compute current hash
   const hashInput = previousHash + JSON.stringify(entry);
@@ -37,8 +38,8 @@ export async function appendToLedger(entry: {
       JSON.stringify(entry.payload),
       entry.metadata ? JSON.stringify(entry.metadata) : null,
       entry.timestamp,
-      previousHash,
-      currentHash,
+      String(previousHash),
+      String(currentHash),
     ],
   );
 }

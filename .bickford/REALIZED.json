@@ -3,6 +3,6 @@
     "action": "provision",
     "target": "example-resource"
   },
-  "realized_at": "2026-01-25T22:16:59.557Z",
+  "realized_at": "2026-01-25T22:27:23.186Z",
   "build": "local"
 }
