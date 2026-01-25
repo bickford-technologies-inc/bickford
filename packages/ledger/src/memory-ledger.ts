@@ -1,5 +1,5 @@
 // Memory-Enabled Ledger for Bickford: Compliance + Intelligence
-import Database = require("better-sqlite3");
+import { Database } from "bun:sqlite";
 import { createHash } from "crypto";
 
 export interface MemoryLedgerEntry {
@@ -26,7 +26,7 @@ export interface MemoryLedgerEntry {
 }
 
 export class MemoryLedger {
-  private db: Database.Database;
+  private db: Database;
   private embeddingCache = new Map<string, number[]>();
 
   constructor(dbPath: string = "./data/bickford-memory.db") {
@@ -68,7 +68,7 @@ export class MemoryLedger {
   ): Promise<MemoryLedgerEntry> {
     const id = crypto.randomUUID();
     const lastEntry = this.db
-      .query(
+      .prepare(
         `SELECT current_hash FROM memory_ledger ORDER BY created_at DESC LIMIT 1`,
       )
       .get() as { current_hash: string } | null;
@@ -79,15 +79,17 @@ export class MemoryLedger {
     const currentHash = createHash("sha256")
       .update(previousHash + JSON.stringify(entry))
       .digest("hex");
-    this.db.run(
-      `
+    this.db
+      .prepare(
+        `
       INSERT INTO memory_ledger (
         id, event_type, previous_hash, current_hash,
         query, response, model, success, confidence, violation_type,
         embedding, tags, category, quality_score, processing_time, timestamp
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
-      [
+      )
+      .run(
         id,
         entry.eventType,
         previousHash,
@@ -104,8 +106,7 @@ export class MemoryLedger {
         entry.metadata.qualityScore || null,
         entry.metadata.processingTime || null,
         entry.timestamp,
-      ],
-    );
+      );
     return {
       id,
       eventType: entry.eventType,
@@ -153,7 +154,7 @@ export class MemoryLedger {
     const whereClause =
       conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
     const candidates = this.db
-      .query(
+      .prepare(
         `SELECT * FROM memory_ledger ${whereClause} ORDER BY created_at DESC LIMIT 100`,
       )
       .all(...params) as any[];
@@ -195,24 +196,24 @@ export class MemoryLedger {
 
   getAnalytics() {
     const stats = this.db
-      .query(
+      .prepare(
         `
       SELECT COUNT(*) as total, SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as successes, AVG(quality_score) as avg_quality FROM memory_ledger
     `,
       )
       .get() as any;
     const topCategories = this.db
-      .query(
+      .prepare(
         `SELECT category, COUNT(*) as count FROM memory_ledger WHERE category IS NOT NULL GROUP BY category ORDER BY count DESC LIMIT 10`,
       )
       .all() as any[];
     const violationPatterns = this.db
-      .query(
+      .prepare(
         `SELECT violation_type as type, COUNT(*) as count FROM memory_ledger WHERE violation_type IS NOT NULL GROUP BY violation_type ORDER BY count DESC LIMIT 10`,
       )
       .all() as any[];
     const topicCoverage = this.db
-      .query(
+      .prepare(
         `SELECT category as topic, COUNT(*) as count, AVG(quality_score) as avgQuality FROM memory_ledger WHERE category IS NOT NULL AND quality_score IS NOT NULL GROUP BY category ORDER BY count DESC LIMIT 20`,
       )
       .all() as any[];
@@ -238,7 +239,7 @@ export class MemoryLedger {
 
   verifyIntegrity(): { valid: boolean; violations: string[] } {
     const entries = this.db
-      .query(`SELECT * FROM memory_ledger ORDER BY created_at ASC`)
+      .prepare(`SELECT * FROM memory_ledger ORDER BY created_at ASC`)
       .all() as any[];
     const violations: string[] = [];
     for (let i = 1; i < entries.length; i++) {
@@ -264,7 +265,7 @@ export class MemoryLedger {
     const whereClause =
       conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
     const entries = this.db
-      .query(
+      .prepare(
         `SELECT query, response FROM memory_ledger ${whereClause} ORDER BY quality_score DESC, created_at DESC LIMIT ?`,
       )
       .all(...params, limit) as any[];
