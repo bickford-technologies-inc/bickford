@@ -396,3 +396,22 @@ This repository supports end-to-end automation for PR review, conflict resolutio
 1. Configure branch protection and auto-merge for `main` (see `scripts/set-branch-protection.md`).
 2. Ensure Vercel is connected to this repo and set to auto-deploy on push to `main`.
 3. Use the provided scripts and workflow for continuous, hands-off operation.
+
+## Environment Variable Sync: Railway → Vercel
+
+All environment variables for production and preview deploys on Vercel (`bickford`) are automatically synced from the Railway project (`tender-generosity`).
+
+- **How it works:**
+  - Update secrets or config in Railway (project: `tender-generosity`).
+  - On the next deploy, Vercel (`bickford`) will receive the latest variables for both production and preview environments.
+  - No manual copy-paste needed—sync is automatic and secure.
+
+- **Best practices:**
+  - Use Railway’s environment management for all secrets and config.
+  - For different variables in preview vs. production, create a `preview` environment in Railway and map it in the sync config.
+  - Audit changes using Railway and Vercel logs.
+
+- **To update variables:**
+  1. Go to Railway → `tender-generosity` → Variables.
+  2. Edit/add variables as needed.
+  3. Redeploy your Railway or Vercel project to propagate changes.

@@ -59,9 +59,11 @@
     "bickford": "./scripts/bickford-realize.mjs"
   },
   "dependencies": {
+    "@prisma/client": "6.19.2",
     "ai": "^6.0.44",
     "ajv": "^8.17.1",
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
+    "prisma": "6.19.2"
   },
   "devDependencies": {
     "@types/babel__traverse": "^7.28.0",

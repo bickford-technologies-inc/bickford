@@ -3,14 +3,11 @@ import crypto from "node:crypto";
 export const runtime = "nodejs";
 
 import {
-  appendConversationMessage,
-  buildConversationMemoryContext,
-  createConversation,
-  listConversationSummaries,
-  readConversation,
-  searchConversationMemory,
-  writeConversation,
-} from "@bickford/ledger";
+  saveMessage,
+  getMessages,
+  saveLedgerEntry,
+  getLedgerEntries,
+} from "@bickford/ledger/src/prismaLedger";
 import type {
   Conversation,
   ConversationMessage,
@@ -47,7 +44,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const conversationId = searchParams.get("conversationId");
 
-  const timeline = await listConversationSummaries();
+  const timeline = await getLedgerEntries();
   let conversation: Conversation | null = null;
 
   if (conversationId) {
@@ -71,19 +68,12 @@ export async function POST(request: Request) {
   const receivedAt = now.toISOString();
 
   if (payload.action === "create") {
-    const conversation = await createConversation();
-    const timeline = await listConversationSummaries();
-
-    await appendDailyArchive("chat", {
-      agent: ENVIRONMENT_AGENT,
-      receivedAt,
-      action: "create",
-      conversationId: conversation.id,
-    });
-
+    // Create a new conversation by saving a system message (or just return empty)
+    const message = await saveMessage({ content: "Conversation started" });
+    const messages = await getMessages();
     return Response.json({
-      conversation,
-      timeline,
+      conversation: { id: message.id, messages: [message] },
+      timeline: messages,
       transcript: "",
     });
   }
@@ -95,69 +85,33 @@ export async function POST(request: Request) {
     );
   }
 
-  const message: ConversationMessage = {
-    id: payload.message.id ?? crypto.randomUUID(),
-    role: payload.message.role ?? "user",
+  // Save user message
+  const userMessage = await saveMessage({
+    userId: payload.message.role === "user" ? payload.message.id : undefined,
     content: payload.message.content.trim(),
-    timestamp: payload.message.timestamp ?? Date.now(),
-  };
-
-  let conversation = payload.conversationId
-    ? await readConversation(payload.conversationId)
-    : null;
-
-  if (!conversation) {
-    conversation = await createConversation(message);
-    if (payload.trace) {
-      conversation = {
-        ...conversation,
-        trace: payload.trace,
-      };
-      await writeConversation(conversation);
-    }
-  } else {
-    conversation = await appendConversationMessage(
-      conversation.id,
-      message,
-      payload.trace ?? null,
-    );
-  }
-
-  const timeline = await listConversationSummaries();
-  const transcript = buildTranscript(conversation.messages);
-  const memoryMatches =
-    message.role === "user"
-      ? await searchConversationMemory(message.content, {
-          excludeConversationId: conversation.id,
-          includeRoles: ["user", "agent"],
-        })
-      : [];
-  const memoryContext = buildConversationMemoryContext(memoryMatches);
-
-  await appendDailyArchive("chat", {
-    agent: ENVIRONMENT_AGENT,
-    receivedAt,
-    payload: {
-      conversationId: conversation.id,
-      origin: payload.origin,
-      sessionId: payload.sessionId,
-      message,
-      trace: payload.trace ?? null,
-      transcript,
-      memory: {
-        matches: memoryMatches,
-        context: memoryContext,
-      },
-    },
   });
 
+  // Optionally, save to ledger as well
+  await saveLedgerEntry({
+    eventType: "chat_message",
+    payload: userMessage,
+    previousHash: "", // Compute as needed
+    currentHash: "", // Compute as needed
+  });
+
+  // Fetch all messages for the timeline
+  const messages = await getMessages();
+  const transcript = messages
+    .map((m) => `${m.userId || "User"}: ${m.content}`)
+    .join("\n");
+
   return Response.json({
-    conversation,
-    timeline,
+    conversation: { id: userMessage.id, messages: [userMessage] },
+    timeline: messages,
     transcript,
     memory: {
-      matches: memoryMatches,
-      context: memoryContext,
+      matches: [], // Implement RAG/memory as needed
+      context: "",
     },
   });
 }

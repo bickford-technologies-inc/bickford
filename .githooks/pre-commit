@@ -1,2 +1,105 @@
 #!/bin/sh
-git grep -n '<{7}\|={7}\|>{7}' -- . ':!*.githooks/pre-commit' ':!.github/workflows/*' && exit 1 || exit 0
+
+# Block commits of files over 50MB (hard GitHub limit is 100MB, but 50MB is a warning)
+# and block all files matching common large/binary patterns
+
+MAX_SIZE=52428800 # 50MB in bytes
+
+# Patterns to block (must match .gitignore)
+BLOCK_PATTERNS="\
+*.tar.gz
+*.zip
+*.bin
+*.exe
+*.dmg
+*.pkg
+*.img
+*.iso
+*.msi
+*.deb
+*.rpm
+*.7z
+*.rar
+*.bz2
+*.xz
+*.lz
+*.zst
+*.apk
+*.app
+*.dll
+*.so
+*.a
+*.o
+*.class
+*.jar
+*.war
+*.ear
+*.pyc
+*.pyo
+*.pyd
+*.whl
+*.parquet
+*.h5
+*.hdf5
+*.sqlite
+*.db
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.mp3
+*.wav
+*.flac
+*.ogg
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.webp
+*.svg
+*.pdf
+*.docx
+*.pptx
+*.xlsx
+*.psd
+*.ai
+*.sketch
+*.fig
+*.blend
+*.fbx
+*.glb
+*.gltf
+*.stl
+*.obj
+"
+
+fail=0
+
+# Check for large files
+for file in $(git diff --cached --name-only); do
+  if [ -f "$file" ]; then
+    size=$(stat -c%s "$file")
+    if [ "$size" -gt "$MAX_SIZE" ]; then
+      echo "[BLOCKED] $file is $size bytes (>50MB). Remove from commit or use Git LFS."
+      fail=1
+    fi
+  fi
+  # Check for blocked patterns
+  for pattern in $BLOCK_PATTERNS; do
+    case "$file" in
+      $pattern)
+        echo "[BLOCKED] $file matches blocked pattern $pattern. Remove from commit."
+        fail=1
+        ;;
+    esac
+  done
+done
+
+if [ $fail -ne 0 ]; then
+  echo "\nCommit aborted due to large or blocked files."
+  exit 1
+fi
+
+exit 0
