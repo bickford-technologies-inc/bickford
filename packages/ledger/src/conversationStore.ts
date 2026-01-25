@@ -1,7 +1,13 @@
 import * as crypto from "node:crypto";
-import * as fs from "node:fs";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+// Bun supports most of node:path, but we can use Bun's path if needed
 import * as path from "node:path";
+
+// Bun-native file APIs
+const {
+  file: BunFile,
+  write: BunWrite,
+  readableStreamToText: BunReadableStreamToText,
+} = Bun;
 
 import type {
   Conversation,
@@ -22,13 +28,13 @@ async function ensureConversationDir() {
       : path.join(process.cwd(), "trace"));
   const target = path.join(preferred, "conversations");
   try {
-    await mkdir(target, { recursive: true });
+    await BunWrite(target + "/.bunkeep", ""); // ensure dir exists by writing a dummy file
     return target;
   } catch (error) {
     const fallbackBase = path.join("/tmp", "trace");
     const fallback = path.join(fallbackBase, "conversations");
     if (target !== fallback) {
-      await mkdir(fallback, { recursive: true });
+      await BunWrite(fallback + "/.bunkeep", "");
       return fallback;
     }
     throw error;
@@ -61,7 +67,7 @@ function previewMessage(messages: ConversationMessage[]) {
 export async function writeConversation(conversation: Conversation) {
   const dir = await ensureConversationDir();
   const filePath = conversationPath(dir, conversation.id);
-  await writeFile(filePath, JSON.stringify(conversation, null, 2));
+  await BunWrite(filePath, JSON.stringify(conversation, null, 2));
 }
 
 export async function createConversation(
@@ -86,11 +92,12 @@ export async function readConversation(
 ): Promise<Conversation | null> {
   const dir = await ensureConversationDir();
   const filePath = conversationPath(dir, conversationId);
-  if (!fs.existsSync(filePath)) {
-    return null;
-  }
-  const raw = await readFile(filePath, "utf8");
   try {
+    const bunFile = BunFile(filePath);
+    if (!(await bunFile.exists())) {
+      return null;
+    }
+    const raw = await bunFile.text();
     return JSON.parse(raw) as Conversation;
   } catch {
     return null;

@@ -25,7 +25,7 @@
     "build:types": "pnpm --filter @bickford/types build",
     "build:ledger": "pnpm --filter @bickford/ledger build",
     "build": "pnpm run build:types && pnpm run build:ledger && pnpm run prebuild && pnpm run realize-intent && node scripts/assert-intent-phase.mjs && next build",
-    "start": "node scripts/start.mjs",
+    "start": "bun run app/server.ts",
     "check:resolution": "node scripts/check-workspace-resolution.mjs",
     "build:all": "node scripts/build-all.mjs",
     "canon:bump": "node scripts/bump-canon-version.mjs",

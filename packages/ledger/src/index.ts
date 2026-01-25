@@ -1,9 +1,12 @@
-import * as fs from "node:fs";
 import * as path from "node:path";
 import * as crypto from "node:crypto";
 
+const { file: BunFile, write: BunWrite } = Bun;
+
 const ROOT = path.resolve(process.cwd(), ".bickford-ledger");
-if (!fs.existsSync(ROOT)) fs.mkdirSync(ROOT, { recursive: true });
+
+// Ensure the directory exists by writing a dummy file
+await BunWrite(ROOT + "/.bunkeep", "");
 
 export interface LedgerEntry {
   id: string;
@@ -12,7 +15,7 @@ export interface LedgerEntry {
   payload: unknown;
 }
 
-export function persist(entry: Omit<LedgerEntry, "id" | "timestamp">) {
+export async function persist(entry: Omit<LedgerEntry, "id" | "timestamp">) {
   const id = crypto.randomUUID();
   const record: LedgerEntry = {
     id,
@@ -21,16 +24,27 @@ export function persist(entry: Omit<LedgerEntry, "id" | "timestamp">) {
   };
 
   const file = path.join(ROOT, `${record.timestamp}-${id}.json`);
-  fs.writeFileSync(file, JSON.stringify(record, null, 2));
+  await BunWrite(file, JSON.stringify(record, null, 2));
   return record;
 }
 
-export function readAll(): LedgerEntry[] {
-  if (!fs.existsSync(ROOT)) return [];
-  return fs
-    .readdirSync(ROOT)
-    .sort()
-    .map((f) => JSON.parse(fs.readFileSync(path.join(ROOT, f), "utf8")));
+export async function readAll(): Promise<LedgerEntry[]> {
+  try {
+    const bunFile = BunFile(ROOT);
+    if (!(await bunFile.exists())) return [];
+    const files = (await bunFile.dir()).sort();
+    const entries = [];
+    for (const f of files) {
+      const entryFile = BunFile(path.join(ROOT, f));
+      if (await entryFile.exists()) {
+        const content = await entryFile.text();
+        entries.push(JSON.parse(content));
+      }
+    }
+    return entries;
+  } catch {
+    return [];
+  }
 }
 
 export { appendProofLedger, readProofLedger } from "./proofLedger.js";
@@ -38,10 +52,3 @@ export { appendLedger, listThreads, writeThread } from "./ledger.js";
 export * from "./types.js";
 export * from "./conversationStore.js";
 export * from "./conversationMemory.js";
-export {
-  appendConversationMessage,
-  createConversation,
-  listConversationSummaries,
-  readConversation,
-  writeConversation,
-} from "./conversationStore.js";

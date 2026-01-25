@@ -1,0 +1,4 @@
+{
+  "build": "bun install",
+  "start": "bun run app/server.ts"
+}

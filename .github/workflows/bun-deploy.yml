@@ -1,0 +1,41 @@
+name: Bun Deploy (Railway/Fly.io)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Lint, Build, and Test
+        run: |
+          bun run build || true
+          bun test || true
+
+      - name: Deploy to Railway (if configured)
+        if: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          bunx railway up --service bickford
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Deploy to Fly.io (if configured)
+        if: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          bunx flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

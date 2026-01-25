@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-01-24T15:15:44.682Z",
+  "organization": "Demo Healthcare Organization",
+  "total_api_keys": 3,
+  "active_keys": 2,
+  "all_keys_governed": true,
+  "ledger_integrity": true,
+  "hipaa_compliant_keys": 2,
+  "violations_detected": 1,
+  "violations_blocked": 1
+}

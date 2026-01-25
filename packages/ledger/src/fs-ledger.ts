@@ -1,17 +1,22 @@
-import * as fs from "fs/promises";
-import * as path from "path";
+// Bun-native file APIs
+const { file: BunFile, write: BunWrite } = Bun;
+import * as path from "node:path";
 
 const LEDGER_ROOT = path.join(process.cwd(), ".ledger");
 
 async function ensureRoot() {
-  await fs.mkdir(LEDGER_ROOT, { recursive: true });
+  await BunWrite(LEDGER_ROOT + "/.bunkeep", ""); // ensure dir exists by writing a dummy file
 }
 
 export async function readThread(threadId: string) {
   await ensureRoot();
   const file = path.join(LEDGER_ROOT, `${threadId}.json`);
   try {
-    const raw = await fs.readFile(file, "utf-8");
+    const bunFile = BunFile(file);
+    if (!(await bunFile.exists())) {
+      return [];
+    }
+    const raw = await bunFile.text();
     return JSON.parse(raw);
   } catch {
     return [];
@@ -26,5 +31,5 @@ export async function appendEvent(threadId: string, event: unknown) {
     ts: Date.now(),
     event,
   });
-  await fs.writeFile(file, JSON.stringify(existing, null, 2));
+  await BunWrite(file, JSON.stringify(existing, null, 2));
 }
