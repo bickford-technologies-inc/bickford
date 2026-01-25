@@ -18,15 +18,17 @@ export function bufferTokensWithProof({
   tokens = [1, 2],
   approved = true,
   timestamp = Date.now(),
+  ledgerState = {},
 } = {}) {
   const proofHash = createHash("sha256")
-    .update(JSON.stringify({ tokens, approved, timestamp }))
+    .update(JSON.stringify({ tokens, approved, timestamp, ledgerState }))
     .digest("hex");
   const entry = {
     type: "token_stream",
     tokens,
     approved,
     timestamp,
+    ledgerState,
     proofHash,
   };
   ledger.push(entry);
@@ -35,6 +37,7 @@ export function bufferTokensWithProof({
     tokens,
     proofHash,
     timestamp,
+    ledgerState,
   };
 }
 
@@ -46,11 +49,21 @@ export function verifyTokenStreamProof(proof, ledgerState) {
   );
   if (!entry) return { valid: false };
   // If ledgerState is provided, check it matches entry
-  if (ledgerState && JSON.stringify(ledgerState) !== JSON.stringify(entry.ledgerState)) {
+  if (
+    ledgerState &&
+    JSON.stringify(ledgerState) !== JSON.stringify(entry.ledgerState)
+  ) {
     return { valid: false };
   }
   const expectedHash = createHash("sha256")
-    .update(JSON.stringify({ tokens: entry.tokens, approved: entry.approved, timestamp: entry.timestamp }))
+    .update(
+      JSON.stringify({
+        tokens: entry.tokens,
+        approved: entry.approved,
+        timestamp: entry.timestamp,
+        ledgerState: entry.ledgerState,
+      }),
+    )
     .digest("hex");
   return { valid: proof.proofHash === expectedHash };
 }

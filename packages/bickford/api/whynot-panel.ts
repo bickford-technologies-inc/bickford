@@ -9,6 +9,7 @@ export function createDeniedDecisionProof(
     actionId: "action_001",
     reasonCodes: ["CANON_VIOLATION"],
     timestamp: Date.now(),
+    message: "Test denial",
   },
 ) {
   const proofHash = createHash("sha256")
@@ -17,6 +18,7 @@ export function createDeniedDecisionProof(
         actionId: trace.actionId,
         reasonCodes: trace.reasonCodes,
         timestamp: trace.timestamp,
+        message: trace.message,
       }),
     )
     .digest("hex");
@@ -25,6 +27,7 @@ export function createDeniedDecisionProof(
     actionId: trace.actionId,
     reasonCodes: trace.reasonCodes,
     timestamp: trace.timestamp,
+    message: trace.message,
     proofHash,
   };
   // Append to ledger
@@ -36,6 +39,7 @@ export function createDeniedDecisionProof(
     proofHash,
     reasonCodes: trace.reasonCodes,
     timestamp: trace.timestamp,
+    message: trace.message,
   };
 }
 
@@ -56,12 +60,23 @@ export function verifyDeniedDecisionProof(proof) {
     (e) => e.type === "denied_decision" && e.proofHash === proof.proofHash,
   );
   if (!entry) return { valid: false };
-  // If proof is tampered, check for mismatched fields
-  if (proof.actionId !== entry.actionId || JSON.stringify(proof.reasonCodes) !== JSON.stringify(entry.reasonCodes)) {
+  // Check for tampering in all fields
+  if (
+    proof.actionId !== entry.actionId ||
+    JSON.stringify(proof.reasonCodes) !== JSON.stringify(entry.reasonCodes) ||
+    proof.message !== entry.message
+  ) {
     return { valid: false };
   }
   const expectedHash = createHash("sha256")
-    .update(JSON.stringify({ actionId: entry.actionId, reasonCodes: entry.reasonCodes, timestamp: entry.timestamp }))
+    .update(
+      JSON.stringify({
+        actionId: entry.actionId,
+        reasonCodes: entry.reasonCodes,
+        timestamp: entry.timestamp,
+        message: entry.message,
+      }),
+    )
     .digest("hex");
   return { valid: proof.proofHash === expectedHash };
 }
