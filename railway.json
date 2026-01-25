@@ -1,4 +1,8 @@
 {
-  "build": "pnpm install && pnpm run build --filter=@bickford/web-ui...",
-  "start": "pnpm run start --filter=@bickford/web-ui"
+  "build": {
+    "command": "pnpm install && pnpm run build --filter=@bickford/web-ui..."
+  },
+  "start": {
+    "command": "pnpm run start --filter=@bickford/web-ui"
+  }
 }
