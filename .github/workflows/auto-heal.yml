@@ -1,0 +1,27 @@
+name: Auto-Heal Deployments
+
+on:
+  schedule:
+    - cron: "*/5 * * * *" # Every 5 minutes
+
+jobs:
+  check-and-heal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Vercel
+        run: |
+          if ! curl -s -I https://bickford-bickford-mobile-ui-neon.vercel.app/ | grep "200 OK"; then
+            echo "Vercel is down, redeploying..."
+            npx vercel --prod --confirm --token ${{ secrets.VERCEL_TOKEN }}
+          else
+            echo "Vercel is up."
+          fi
+
+      - name: Check Railway
+        run: |
+          if ! curl -s -I https://bickfordweb-app-production.up.railway.app | grep "200 OK"; then
+            echo "Railway backend is down, redeploying..."
+            railway up --service backend --token ${{ secrets.RAILWAY_TOKEN }}
+          else
+            echo "Railway backend is up."
+          fi
