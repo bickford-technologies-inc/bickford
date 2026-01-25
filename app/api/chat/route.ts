@@ -10,6 +10,7 @@ import {
   searchConversationMemory,
   buildConversationMemoryContext,
 } from "@bickford/ledger/prismaLedger";
+import { readConversation } from "@bickford/ledger/conversationStore";
 import type {
   Conversation,
   ConversationMessage,
@@ -48,7 +49,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const conversationId = searchParams.get("conversationId");
 
-  const timeline = await getLedgerEntries();
+  const timeline: { id: string }[] = await getLedgerEntries();
   let conversation: Conversation | null = null;
 
   if (conversationId) {
@@ -104,7 +105,7 @@ export async function POST(request: Request) {
   });
 
   // Fetch all messages for the timeline
-  const messages = await getMessages();
+  const messages: { userId?: string; content: string }[] = await getMessages();
 
   // --- Conversation Compression Integration ---
   // Convert messages to ConversationMessage[] if needed
