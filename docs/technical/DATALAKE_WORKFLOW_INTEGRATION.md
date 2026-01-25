@@ -35,6 +35,41 @@ Introduce a predictable workflow data layout in the datalake:
     ...
 ```
 
+### Completed workflow storage (definition + evidence + ledger)
+
+Each completed workflow stores its canonical definition, execution evidence, and artifacts together in a stable per-workflow folder:
+
+```
+/datalake/workflows/<workflow_id>/
+  metadata.json
+  definition.yaml
+  versions/<version_id>/definition.yaml
+  evidence/<decision_id>.json
+  artifacts/...
+```
+
+Specifically:
+- `metadata.json` captures identity, constraints, authority, status, version, hashes, and timestamps.
+- `definition.yaml` captures canonical intent, ordered steps, admissible actions, and guardrails.
+- `versions/` preserves historical definitions.
+- `evidence/` captures one JSON per execution decision.
+- `artifacts/` captures observations and runtime outputs.
+
+Execution evidence is recorded under `evidence/`, while runtime observations or outputs are stored under `artifacts/`. Each completion is also appended to the global ledger at `/datalake/ledger.jsonl` to preserve an append-only audit trail that binds workflow results to the decision continuity record.
+
+For OPTR multi-agent executions, completed workflows also capture agent outputs and the selected optimal result alongside the workflow:
+
+```
+/datalake/workflows/<workflow_id>/
+  workflow-optr.yaml
+  agent-outputs/
+    codex.json
+    claude.json
+    copilot.json
+    mscopilot.json
+  optr-selection.json
+```
+
 **Required fields in `metadata.json`:**
 
 - `workflow_id`, `name`, `keywords`, `intents`, `owners`
