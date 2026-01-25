@@ -7,5 +7,12 @@
   "github.copilot.nextEditSuggestions.extendedRange": true,
   "github.copilot.nextEditSuggestions.fixes": true,
   "github.copilot.renameSuggestions.triggerAutomatically": true,
-  "github.copilot.advanced.selectedCompletionModel": ""
+  "github.copilot.advanced": {
+    "customInstructions": "See .github/copilot-instructions.md and COPILOT-INSTRUCTIONS.md for Bickford development patterns. Key: Use Bun-native APIs, enforce canons with hard failures, append to ledger on every mutation, maintain hash chain integrity."
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
 }
