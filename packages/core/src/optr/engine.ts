@@ -10,6 +10,11 @@ import type {
 
 /**
  * Score a candidate path using OPTR objective function
+ *
+ * Optimization intuition: quantum tunneling provides a useful analogy for OPTR search.
+ * Instead of walking every ridge in a rugged cost landscape, tunneling suggests a
+ * shortcut toward deeper minima, accelerating discovery of better candidate paths
+ * without relaxing constraints or bypassing authority.
  */
 export function scorePath(
   path: CandidatePath,
