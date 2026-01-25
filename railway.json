@@ -1,4 +1,4 @@
 {
-  "build": "bun install",
-  "start": "bun run app/server.ts"
+  "build": "pnpm install && pnpm run build --filter=@bickford/web-ui...",
+  "start": "pnpm run start --filter=@bickford/web-ui"
 }
