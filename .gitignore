@@ -53,3 +53,4 @@ netlify-debug.log
 .env*.local
 
 .state/
+.github-runner/actions-runner-linux-x64-2.321.0.tar.gz
