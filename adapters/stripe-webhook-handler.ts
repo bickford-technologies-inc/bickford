@@ -4,13 +4,14 @@ import { sendEmail } from "../lib/sendEmail";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2023-10-16",
+  apiVersion: "2025-12-15.clover",
 });
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function handleStripeWebhook(req: Request): Promise<Response> {
-  if (req.method !== "POST") return new Response("Method Not Allowed", { status: 405 });
+  if (req.method !== "POST")
+    return new Response("Method Not Allowed", { status: 405 });
 
   const sig = req.headers.get("stripe-signature");
   const body = await req.text();
@@ -19,7 +20,10 @@ export async function handleStripeWebhook(req: Request): Promise<Response> {
   try {
     event = stripe.webhooks.constructEvent(body, sig!, endpointSecret);
   } catch (err) {
-    return new Response(`Webhook Error: ${err instanceof Error ? err.message : "Unknown"}`, { status: 400 });
+    return new Response(
+      `Webhook Error: ${err instanceof Error ? err.message : "Unknown"}`,
+      { status: 400 },
+    );
   }
 
   // Log to ledger
@@ -31,10 +35,16 @@ export async function handleStripeWebhook(req: Request): Promise<Response> {
   });
 
   // Handle payment success
-  if (event.type === "checkout.session.completed" || event.type === "payment_intent.succeeded") {
+  if (
+    event.type === "checkout.session.completed" ||
+    event.type === "payment_intent.succeeded"
+  ) {
     const session = event.data.object as any;
     const email = session.customer_email || session.customer_details?.email;
-    const product = session.metadata?.product || session.display_items?.[0]?.custom?.name || session.line_items?.[0]?.description;
+    const product =
+      session.metadata?.product ||
+      session.display_items?.[0]?.custom?.name ||
+      session.line_items?.[0]?.description;
 
     if (product === "AI Compliance Consulting") {
       await sendEmail({
