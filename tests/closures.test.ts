@@ -27,6 +27,7 @@ import {
 } from "../packages/bickford/api/whynot-panel";
 
 import { DenialReasonCode } from "../packages/bickford/src/canon/types";
+import { _resetLedger } from "../packages/bickford/src/canon";
 
 console.log("\n" + "═".repeat(80));
 console.log("  TIER-1 AND TIER-2 CLOSURES - TESTS");
@@ -46,6 +47,7 @@ function assert(condition: boolean, message: string) {
 }
 
 // Test 1: Execution Context Hash is Deterministic
+_resetLedger();
 console.log("\nTest 1: Execution Context Hash is Deterministic");
 console.log("─".repeat(80));
 
@@ -71,14 +73,15 @@ const context2 = createExecutionContext({
 
 assert(
   context1.contextHash === context2.contextHash,
-  "Same inputs produce same context hash"
+  "Same inputs produce same context hash",
 );
 assert(
   context1.contextHash.length === 64,
-  "Context hash is SHA256 (64 hex chars)"
+  "Context hash is SHA256 (64 hex chars)",
 );
 
 // Test 2: Token Stream Proof Verification
+_resetLedger();
 console.log("\nTest 2: Token Stream Proof Verification");
 console.log("─".repeat(80));
 
@@ -106,6 +109,7 @@ const wrongVerification = verifyTokenStreamProof(proof, wrongState);
 assert(!wrongVerification.valid, "Proof fails with wrong ledger state");
 
 // Test 3: Chat Item Seal and Finalize
+_resetLedger();
 console.log("\nTest 3: Chat Item Seal and Finalize");
 console.log("─".repeat(80));
 
@@ -126,6 +130,7 @@ assert(finalized.finalized, "Finalization succeeds with canon refs");
 assert(finalized.hash.length === 64, "Finalization hash is SHA256");
 
 // Test 4: WhyNot Panel Formatting
+_resetLedger();
 console.log("\nTest 4: WhyNot Panel Formatting");
 console.log("─".repeat(80));
 
@@ -145,11 +150,12 @@ assert(panelData.title === "Action Denied", "Panel has correct title");
 assert(panelData.denialReasons.length === 1, "Panel includes denial reasons");
 assert(
   panelData.missingPrerequisites.length === 1,
-  "Panel includes missing prereqs"
+  "Panel includes missing prereqs",
 );
 assert(panelData.proofHash.length === 64, "Panel includes proof hash");
 
 // Test 5: Denied Decision Proof
+_resetLedger();
 console.log("\nTest 5: Denied Decision Proof");
 console.log("─".repeat(80));
 

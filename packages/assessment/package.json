@@ -8,7 +8,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@bickford/ledger": "*",
-    "@bickford/core": "*"
+    "@bickford/ledger": "workspace:*",
+    "@bickford/core": "workspace:*"
   }
 }

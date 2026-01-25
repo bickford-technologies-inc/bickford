@@ -1,0 +1,5 @@
+{
+  "name": "@bickford/canon",
+  "main": "index.js",
+  "types": "index.d.ts"
+}

@@ -1,3 +1,4 @@
+import { promises as fs } from "fs";
 import * as crypto from "node:crypto";
 // Bun supports most of node:path, but we can use Bun's path if needed
 import * as path from "node:path";
@@ -142,12 +143,12 @@ export async function listConversationSummaries(): Promise<
   ConversationSummary[]
 > {
   const dir = await ensureConversationDir();
-  const files = await readdir(dir);
+  const files = await fs.readdir(dir);
   const conversations = await Promise.all(
     files
-      .filter((file) => file.startsWith(CONVERSATION_PREFIX))
-      .map(async (file) => {
-        const raw = await readFile(path.join(dir, file), "utf8");
+      .filter((file: string) => file.startsWith(CONVERSATION_PREFIX))
+      .map(async (file: string) => {
+        const raw = await Bun.file(path.join(dir, file)).text();
         try {
           return JSON.parse(raw) as Conversation;
         } catch {
@@ -157,10 +158,10 @@ export async function listConversationSummaries(): Promise<
   );
 
   return conversations
-    .filter((conversation): conversation is Conversation =>
+    .filter((conversation: Conversation | null): conversation is Conversation =>
       Boolean(conversation),
     )
-    .map((conversation) => {
+    .map((conversation: Conversation) => {
       const lastMessage = conversation.messages.at(-1);
       return {
         id: conversation.id,
@@ -172,5 +173,8 @@ export async function listConversationSummaries(): Promise<
         trace: conversation.trace ?? null,
       };
     })
-    .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt));
+    .sort(
+      (a: ConversationSummary, b: ConversationSummary) =>
+        Date.parse(b.updatedAt) - Date.parse(a.updatedAt),
+    );
 }

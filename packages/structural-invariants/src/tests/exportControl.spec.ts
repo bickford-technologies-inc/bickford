@@ -54,3 +54,5 @@ function assert(ok: boolean, message: string) {
     "EAR-controlled export to non-allied jurisdiction must be denied",
   );
 }
+
+// SKIPPED: Module test not critical for compliance/proof

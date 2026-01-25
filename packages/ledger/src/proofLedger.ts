@@ -1,6 +1,5 @@
 import * as path from "node:path";
-
-const { file: BunFile, write: BunWrite } = Bun;
+import { promises as fs } from "fs";
 
 export type ProofLedgerEntry = {
   id: string;
@@ -17,25 +16,28 @@ const LEDGER_DIR = path.resolve(process.cwd(), ".bickford-proof-ledger");
 const LEDGER_FILE = path.join(LEDGER_DIR, "ledger.jsonl");
 
 async function ensureLedgerDir() {
-  await BunWrite(LEDGER_DIR + "/.bunkeep", ""); // ensure dir exists by writing a dummy file
+  await fs.writeFile(LEDGER_DIR + "/.bunkeep", ""); // ensure dir exists by writing a dummy file
 }
 
 export async function appendProofLedger(entry: ProofLedgerEntry) {
   await ensureLedgerDir();
   const line = `${JSON.stringify(entry)}\n`;
-  await BunWrite(LEDGER_FILE, line, { append: true });
+  await fs.appendFile(LEDGER_FILE, line);
   return entry;
 }
 
 export async function readProofLedger(
   intentId: string,
 ): Promise<ProofLedgerEntry[]> {
-  const bunFile = BunFile(LEDGER_FILE);
-  if (!(await bunFile.exists())) {
+  try {
+    await fs.access(LEDGER_FILE);
+    const lines = (await fs.readFile(LEDGER_FILE, "utf8"))
+      .split("\n")
+      .filter(Boolean);
+    return lines
+      .map((line) => JSON.parse(line))
+      .filter((entry) => entry.intentId === intentId);
+  } catch {
     return [];
   }
-  const lines = (await bunFile.text()).split("\n").filter(Boolean);
-  return lines
-    .map((line) => JSON.parse(line))
-    .filter((entry) => entry.intentId === intentId);
 }

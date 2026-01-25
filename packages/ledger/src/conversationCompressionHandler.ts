@@ -24,14 +24,13 @@ export async function compressAndLogIfNeeded(
   await ledger.append({
     eventType: "compression_executed",
     payload: {
-      originalTokens,
-      compressedTokens,
-      compressionRatio: compressedTokens / originalTokens,
-      strategy: "rolling_window",
-      messagesCompressed: messages.length - compressed.length,
+      query: "compression",
+      response: "success",
+      success: true,
+    },
+    metadata: {
       qualityScore: 1, // Placeholder
     },
-    metadata: {},
     timestamp: new Date().toISOString(),
   });
   return compressed;

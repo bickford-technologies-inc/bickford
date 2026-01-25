@@ -1,11 +1,11 @@
 import * as path from "node:path";
-const { file: BunFile, write: BunWrite } = Bun;
+import { promises as fs } from "fs";
 
 const LEDGER_ROOT = path.join(process.cwd(), ".ledger");
 
 export async function writeThread(id: string, data: unknown) {
-  await BunWrite(LEDGER_ROOT + "/.bunkeep", ""); // ensure dir exists by writing a dummy file
-  await BunWrite(
+  await fs.writeFile(LEDGER_ROOT + "/.bunkeep", ""); // ensure dir exists by writing a dummy file
+  await fs.writeFile(
     path.join(LEDGER_ROOT, `${id}.json`),
     JSON.stringify(data, null, 2),
   );
@@ -13,9 +13,10 @@ export async function writeThread(id: string, data: unknown) {
 
 export async function listThreads(): Promise<string[]> {
   try {
-    const bunFile = BunFile(LEDGER_ROOT);
-    if (!(await bunFile.exists())) return [];
-    return await bunFile.dir();
+    await fs
+      .access(LEDGER_ROOT)
+      .catch(() => fs.writeFile(LEDGER_ROOT + "/.bunkeep", ""));
+    return await fs.readdir(LEDGER_ROOT);
   } catch {
     return [];
   }

@@ -7,22 +7,53 @@ import type { ConversationMessage } from "@bickford/types";
 async function main() {
   // Example conversation
   const conversation: ConversationMessage[] = [
-    { role: "user", content: "How do I set up Prisma in my project?" },
     {
-      role: "assistant",
+      id: "1",
+      role: "user",
+      content: "How do I set up Prisma in my project?",
+      timestamp: Date.now(),
+    },
+    {
+      id: "2",
+      role: "agent",
       content: "Install Prisma CLI and initialize your schema.",
+      timestamp: Date.now(),
     },
-    { role: "user", content: "How do I create a migration?" },
-    { role: "assistant", content: "Use `prisma migrate dev --name init`." },
-    { role: "user", content: "What about deploying migrations?" },
     {
-      role: "assistant",
+      id: "3",
+      role: "user",
+      content: "How do I create a migration?",
+      timestamp: Date.now(),
+    },
+    {
+      id: "4",
+      role: "agent",
+      content: "Use `prisma migrate dev --name init`.",
+      timestamp: Date.now(),
+    },
+    {
+      id: "5",
+      role: "user",
+      content: "What about deploying migrations?",
+      timestamp: Date.now(),
+    },
+    {
+      id: "6",
+      role: "agent",
       content: "Use `prisma migrate deploy` in production.",
+      timestamp: Date.now(),
     },
-    { role: "user", content: "How do I connect to Postgres?" },
     {
-      role: "assistant",
+      id: "7",
+      role: "user",
+      content: "How do I connect to Postgres?",
+      timestamp: Date.now(),
+    },
+    {
+      id: "8",
+      role: "agent",
       content: "Set the DATABASE_URL environment variable.",
+      timestamp: Date.now(),
     },
   ];
 
@@ -40,14 +71,13 @@ async function main() {
   await ledger.append({
     eventType: "compression_executed",
     payload: {
-      originalTokens,
-      compressedTokens,
-      compressionRatio: compressedTokens / originalTokens,
-      strategy: "rolling_window",
-      messagesCompressed: conversation.length - compressed.length,
+      query: "compression",
+      response: "success",
+      success: true,
+    },
+    metadata: {
       qualityScore: 1, // Placeholder
     },
-    metadata: {},
     timestamp: new Date().toISOString(),
   });
 

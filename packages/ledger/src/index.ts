@@ -1,12 +1,11 @@
 import * as path from "node:path";
 import * as crypto from "node:crypto";
-
-const { file: BunFile, write: BunWrite } = Bun;
+import { promises as fs } from "fs";
 
 const ROOT = path.resolve(process.cwd(), ".bickford-ledger");
 
 // Ensure the directory exists by writing a dummy file
-await BunWrite(ROOT + "/.bunkeep", "");
+await fs.writeFile(ROOT + "/.bunkeep", "");
 
 export interface LedgerEntry {
   id: string;
@@ -24,22 +23,20 @@ export async function persist(entry: Omit<LedgerEntry, "id" | "timestamp">) {
   };
 
   const file = path.join(ROOT, `${record.timestamp}-${id}.json`);
-  await BunWrite(file, JSON.stringify(record, null, 2));
+  await fs.writeFile(file, JSON.stringify(record, null, 2));
   return record;
 }
 
 export async function readAll(): Promise<LedgerEntry[]> {
   try {
-    const bunFile = BunFile(ROOT);
-    if (!(await bunFile.exists())) return [];
-    const files = (await bunFile.dir()).sort();
+    await fs.access(ROOT).catch(() => fs.writeFile(ROOT + "/.bunkeep", ""));
+    const files = (await fs.readdir(ROOT)).sort();
     const entries = [];
     for (const f of files) {
-      const entryFile = BunFile(path.join(ROOT, f));
-      if (await entryFile.exists()) {
-        const content = await entryFile.text();
+      try {
+        const content = await fs.readFile(path.join(ROOT, f), "utf8");
         entries.push(JSON.parse(content));
-      }
+      } catch {}
     }
     return entries;
   } catch {
@@ -52,3 +49,4 @@ export { appendLedger, listThreads, writeThread } from "./ledger.js";
 export * from "./types.js";
 export * from "./conversationStore.js";
 export * from "./conversationMemory.js";
+export * from "./conversationCompressionHandler.js";
