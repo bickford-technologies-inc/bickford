@@ -44,120 +44,155 @@ function buildTranscript(messages: ConversationMessage[]) {
 }
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const conversationId = searchParams.get("conversationId");
+  try {
+    const { searchParams } = new URL(request.url);
+    const conversationId = searchParams.get("conversationId");
 
-  const timeline = await listConversationSummaries();
-  let conversation: Conversation | null = null;
+    const timeline = await listConversationSummaries();
+    let conversation: Conversation | null = null;
 
-  if (conversationId) {
-    conversation = await readConversation(conversationId);
+    if (conversationId) {
+      conversation = await readConversation(conversationId);
+    }
+
+    if (!conversation && timeline.length > 0) {
+      conversation = await readConversation(timeline[0].id);
+    }
+
+    return Response.json({
+      conversation,
+      timeline,
+      transcript: conversation ? buildTranscript(conversation.messages) : "",
+    });
+  } catch (error) {
+    console.error("GET /api/chat failed", error);
+    return Response.json(
+      { error: "Failed to load chat history." },
+      { status: 500 },
+    );
   }
-
-  if (!conversation && timeline.length > 0) {
-    conversation = await readConversation(timeline[0].id);
-  }
-
-  return Response.json({
-    conversation,
-    timeline,
-    transcript: conversation ? buildTranscript(conversation.messages) : "",
-  });
 }
 
 export async function POST(request: Request) {
-  const payload = (await request.json()) as ChatRequest;
+  let payload: ChatRequest;
+  try {
+    payload = (await request.json()) as ChatRequest;
+  } catch (error) {
+    console.error("POST /api/chat invalid JSON", error);
+    return Response.json(
+      { error: "Invalid JSON payload." },
+      { status: 400 },
+    );
+  }
+
   const now = new Date();
   const receivedAt = now.toISOString();
 
-  if (payload.action === "create") {
-    const conversation = await createConversation();
+  try {
+    if (payload.action === "create") {
+      const conversation = await createConversation();
+      const timeline = await listConversationSummaries();
+
+      await appendDailyArchive("chat", {
+        agent: ENVIRONMENT_AGENT,
+        receivedAt,
+        action: "create",
+        conversationId: conversation.id,
+      });
+
+      return Response.json({
+        conversation,
+        timeline,
+        transcript: "",
+      });
+    }
+
+    if (!payload.message?.content?.trim()) {
+      return Response.json(
+        { error: "Message is required.", details: "Missing message content." },
+        { status: 400 },
+      );
+    }
+
+    const message: ConversationMessage = {
+      id: payload.message.id ?? crypto.randomUUID(),
+      role: payload.message.role ?? "user",
+      content: payload.message.content.trim(),
+      timestamp: payload.message.timestamp ?? Date.now(),
+    };
+
+    let conversation = payload.conversationId
+      ? await readConversation(payload.conversationId)
+      : null;
+
+    if (!conversation) {
+      conversation = await createConversation(message);
+      if (payload.trace) {
+        conversation = {
+          ...conversation,
+          trace: payload.trace,
+        };
+        await writeConversation(conversation);
+      }
+    } else {
+      conversation = await appendConversationMessage(
+        conversation.id,
+        message,
+        payload.trace ?? null,
+      );
+    }
+
     const timeline = await listConversationSummaries();
+    const transcript = buildTranscript(conversation.messages);
+    const memoryMatches =
+      message.role === "user"
+        ? await searchConversationMemory(message.content, {
+            excludeConversationId: conversation.id,
+            includeRoles: ["user", "agent"],
+          })
+        : [];
+    const memoryContext = buildConversationMemoryContext(memoryMatches);
 
     await appendDailyArchive("chat", {
       agent: ENVIRONMENT_AGENT,
       receivedAt,
-      action: "create",
-      conversationId: conversation.id,
+      payload: {
+        conversationId: conversation.id,
+        origin: payload.origin,
+        sessionId: payload.sessionId,
+        message,
+        trace: payload.trace ?? null,
+        transcript,
+        memory: {
+          matches: memoryMatches,
+          context: memoryContext,
+        },
+      },
     });
 
     return Response.json({
       conversation,
       timeline,
-      transcript: "",
-    });
-  }
-
-  if (!payload.message?.content?.trim()) {
-    return Response.json(
-      { error: "Message is required.", details: "Missing message content." },
-      { status: 400 },
-    );
-  }
-
-  const message: ConversationMessage = {
-    id: payload.message.id ?? crypto.randomUUID(),
-    role: payload.message.role ?? "user",
-    content: payload.message.content.trim(),
-    timestamp: payload.message.timestamp ?? Date.now(),
-  };
-
-  let conversation = payload.conversationId
-    ? await readConversation(payload.conversationId)
-    : null;
-
-  if (!conversation) {
-    conversation = await createConversation(message);
-    if (payload.trace) {
-      conversation = {
-        ...conversation,
-        trace: payload.trace,
-      };
-      await writeConversation(conversation);
-    }
-  } else {
-    conversation = await appendConversationMessage(
-      conversation.id,
-      message,
-      payload.trace ?? null,
-    );
-  }
-
-  const timeline = await listConversationSummaries();
-  const transcript = buildTranscript(conversation.messages);
-  const memoryMatches =
-    message.role === "user"
-      ? await searchConversationMemory(message.content, {
-          excludeConversationId: conversation.id,
-          includeRoles: ["user", "agent"],
-        })
-      : [];
-  const memoryContext = buildConversationMemoryContext(memoryMatches);
-
-  await appendDailyArchive("chat", {
-    agent: ENVIRONMENT_AGENT,
-    receivedAt,
-    payload: {
-      conversationId: conversation.id,
-      origin: payload.origin,
-      sessionId: payload.sessionId,
-      message,
-      trace: payload.trace ?? null,
       transcript,
       memory: {
         matches: memoryMatches,
         context: memoryContext,
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.error("POST /api/chat failed", error);
+    return Response.json(
+      { error: "Failed to persist chat message." },
+      { status: 500 },
+    );
+  }
+}
 
-  return Response.json({
-    conversation,
-    timeline,
-    transcript,
-    memory: {
-      matches: memoryMatches,
-      context: memoryContext,
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      Allow: "GET, POST, OPTIONS",
     },
   });
 }
