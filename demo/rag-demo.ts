@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
 /**
  * RAG Demo: Compliance + Intelligence in Action
@@ -14,15 +14,15 @@ import { fileURLToPath } from "node:url";
 import { MemoryLedger } from "./memory-ledger";
 import { RAGAnthropicClient } from "./rag-anthropic-client";
 
-const demoDbPath = path.join(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "demo-memory.db",
-);
+// Use __filename for CommonJS compatibility, fallback to import.meta.url for ESM
+if (typeof __filename === "undefined") {
+  throw new Error(
+    "__filename is not defined. This script must be run in a CommonJS or Bun environment.",
+  );
+}
+const demoDbPath = path.join(path.dirname(__filename), "demo-memory.db");
 
-const apiKey =
-  process.env.ANTHROPIC_API_KEY ??
-  (typeof Bun !== "undefined" ? Bun.env.ANTHROPIC_API_KEY : undefined) ??
-  "test-key";
+const apiKey = process.env.ANTHROPIC_API_KEY ?? "test-key";
 
 console.log("═══════════════════════════════════════════════════════════");
 console.log("  RAG Demo: Memory-Augmented AI");
@@ -196,12 +196,18 @@ async function demo() {
   console.log(
     "✓ Intelligence: RAG retrieval improves responses with institutional memory",
   );
-  console.log("✓ Compound: Quality improves over time as knowledge accumulates");
-  console.log("✓ Verifiable: Cryptographic proof of both governance AND learning");
+  console.log(
+    "✓ Compound: Quality improves over time as knowledge accumulates",
+  );
+  console.log(
+    "✓ Verifiable: Cryptographic proof of both governance AND learning",
+  );
   console.log("");
 
   console.log("Next Steps:");
-  console.log("  1. Run with real Anthropic API key (export ANTHROPIC_API_KEY)");
+  console.log(
+    "  1. Run with real Anthropic API key (export ANTHROPIC_API_KEY)",
+  );
   console.log("  2. Test with 50+ queries to see measurable improvement");
   console.log("  3. Compare performance with/without RAG");
   console.log("  4. Export dataset and fine-tune custom model");
