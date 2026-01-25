@@ -9,7 +9,10 @@ crashlog-*.ips
 
 # Dependency directories
 node_modules/
-.vscode/
+
+# Ignore personal VS Code files
+.vscode/launch.json
+.vscode/extensions.json
 
 # Environment variables
 .env
