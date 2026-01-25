@@ -9,7 +9,7 @@ import {
   getLedgerEntries,
   searchConversationMemory,
   buildConversationMemoryContext,
-} from "@bickford/ledger/src/prismaLedger";
+} from "@bickford/ledger/prismaLedger";
 import type {
   Conversation,
   ConversationMessage,

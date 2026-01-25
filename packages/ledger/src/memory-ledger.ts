@@ -1,5 +1,5 @@
 // Memory-Enabled Ledger for Bickford: Compliance + Intelligence
-import Database = require("better-sqlite3");
+import Database from "better-sqlite3";
 import { createHash } from "crypto";
 
 export interface MemoryLedgerEntry {

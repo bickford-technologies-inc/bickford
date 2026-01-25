@@ -30,6 +30,10 @@
         "packages/ledger/dist/index.js",
         "packages/ledger/src/index.ts"
       ],
+      "@bickford/ledger/prismaLedger": [
+        "packages/ledger/dist/prismaLedger.js",
+        "packages/ledger/src/prismaLedger.ts"
+      ],
       "@bickford/types": [
         "packages/types/dist/index.d.ts",
         "packages/types/src/index.ts"
