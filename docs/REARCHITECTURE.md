@@ -213,3 +213,22 @@ This implies strong execution and governance primitives already exist, but **kno
 - **If stability is your priority:** start predictive health checks before expanding performance tuning.
 
 This sequence preserves your preference for understanding what each action enables and ensures every step produces persistent, compounding state.
+
+---
+
+## 7. Decision-Continuity Economics & Strategic Moat (Roadmap Optimization)
+
+### Decision-Continuity Economics (Shift from Decay to Compounding)
+- **Economic premise:** Manual governance decays; decision continuity compounds. Each verified execution becomes reusable proof, shrinking marginal compliance cost and accelerating procurement cycles.
+- **Year 1 impact:** Governance overhead collapses from repeated audits to reusable cryptographic evidence, yielding immediate cost reduction and sales velocity gains.
+- **Years 2–3 compounding:** Reused decision artifacts compress audit time and reduce per-customer compliance cost, producing structurally compounding ROI rather than one-time savings.
+
+### Compounding Value Flywheel (Why the Roadmap Prioritizes the Spine)
+- **Decision reuse → lower marginal cost:** Every ledgered decision shrinks re-validation work.
+- **Faster approvals → faster deployment:** Evidence reuse removes procurement friction.
+- **More deployments → stronger proofs:** Each new deployment strengthens the audit trail, increasing trust and widening adoption.
+
+### Strategic Moat Rationale (Why This Roadmap Matters)
+- **Enforcement vs. documentation:** Bickford’s roadmap prioritizes runtime enforcement, making governance provable rather than aspirational.
+- **Proof accumulates, competitors reset:** The ledger makes each deployment a permanent advantage that compounds; competitors must re-audit from scratch.
+- **Regulated markets unlock first:** The roadmap’s early phases optimize for deterministic compliance to open defense, healthcare, and finance where proof is required.
