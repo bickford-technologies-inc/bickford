@@ -391,6 +391,24 @@ class SessionCompletionCallback(BaseCallback):
 **Q3 2026**: Real-time analytics dashboard, anomaly detection
 **Q4 2026**: Multi-region deployment, edge runtime support
 
+### Decision-Continuity Economics (Roadmap Lens)
+
+**Year 1**: Replace repeat audits with reusable cryptographic proof
+- Convert manual governance cycles into ledgered evidence artifacts.
+- Target $14M annual governance cost elimination through automated verification.
+- Compress security review timelines by 50% via decision continuity reuse.
+
+**Years 2-3**: Compounding efficiency from reuse of prior proofs
+- Reuse audit artifacts across customers to drive marginal audit cost toward zero.
+- Sustain 40%+ annual compounding savings as Decision Continuity Rate (DCR) increases.
+- Expand regulated-market access with reusable evidence packets (FedRAMP, HIPAA, SOC2).
+
+### Strategic Moat Rationale
+
+- **Proof compounding**: Each deployment produces reusable enforcement evidence.
+- **Switching costs**: Institutional memory binds governance to the ledger.
+- **Differentiated trust**: Verifiable enforcement replaces policy claims with proof.
+
 **Future Capabilities**:
 - Predictive session completion (anticipate user intent before session ends)
 - Cross-session analytics (user behavior patterns across multiple sessions)
