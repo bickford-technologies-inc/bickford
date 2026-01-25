@@ -415,3 +415,48 @@ All environment variables for production and preview deploys on Vercel (`bickfor
   1. Go to Railway → `tender-generosity` → Variables.
   2. Edit/add variables as needed.
   3. Redeploy your Railway or Vercel project to propagate changes.
+
+## 🚀 Bickford End-to-End Railway Deployment Workflow
+
+1. **Commit and Push Code**
+
+   ```bash
+   git add -A
+   git commit -m "your message"
+   git push
+   ```
+
+   > This triggers an automatic deploy on Railway.
+
+2. **(Optional) Manual Deploy**
+   - Go to your Railway dashboard.
+   - Click "Deploy" on your project if you want to force a redeploy.
+
+3. **Set/Update Environment Variables**
+   - In the Railway dashboard, go to "Variables".
+   - Add or update secrets (e.g., `DATABASE_URL`, `ANTHROPIC_API_KEY`).
+   - Use the "Shared Variable" feature to sync secrets across services.
+
+4. **Run Migrations (if needed)**
+   - Locally, set your `DATABASE_URL` and run:
+     ```bash
+     bun run packages/ledger/scripts/validate-and-migrate.ts
+     ```
+   - Or use the Railway shell to run migrations in the cloud.
+
+5. **Monitor Deployment**
+   - Watch build and deploy logs in the Railway dashboard.
+   - On success, your app is live at the Railway-provided URL.
+
+6. **Test the Web UI**
+   - Visit `/chat` and verify persistence and functionality.
+
+---
+
+**Summary:**
+
+- Push to main = triggers deploy.
+- Use dashboard/CLI for manual deploys or variable management.
+- Use migration script for DB changes.
+
+For more automation, use the Railway CLI or API for scripting variable sync, health checks, or advanced workflows.

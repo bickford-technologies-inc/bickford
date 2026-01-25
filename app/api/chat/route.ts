@@ -7,12 +7,16 @@ import {
   getMessages,
   saveLedgerEntry,
   getLedgerEntries,
+  searchConversationMemory,
+  buildConversationMemoryContext,
 } from "@bickford/ledger/src/prismaLedger";
 import type {
   Conversation,
   ConversationMessage,
   ConversationTraceSummary,
 } from "@bickford/types";
+import { compressAndLogIfNeeded } from "@bickford/ledger/src/conversationCompressionHandler";
+import Anthropic from "@anthropic-ai/sdk";
 
 import { appendDailyArchive } from "../../lib/archive";
 import { ENVIRONMENT_AGENT } from "../../lib/agent";
@@ -101,17 +105,55 @@ export async function POST(request: Request) {
 
   // Fetch all messages for the timeline
   const messages = await getMessages();
-  const transcript = messages
-    .map((m) => `${m.userId || "User"}: ${m.content}`)
+
+  // --- Conversation Compression Integration ---
+  // Convert messages to ConversationMessage[] if needed
+  const conversationMessages = messages.map((m) => ({
+    role: m.userId ? "user" : "agent",
+    content: m.content,
+    // Add other fields as needed
+  }));
+  const compressedMessages = await compressAndLogIfNeeded(conversationMessages);
+
+  // --- RAG/Memory Integration ---
+  const ragMatches = await searchConversationMemory(
+    payload.message?.content || "",
+    { limit: 5 },
+  );
+  const ragContext = buildConversationMemoryContext(ragMatches);
+  // --- End RAG/Memory Integration ---
+
+  // --- Claude/Anthropic API Call ---
+  const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY!,
+  });
+  const claudeMessages = [
+    ragContext ? { role: "system", content: ragContext } : null,
+    ...compressedMessages,
+  ].filter(Boolean);
+  const claudeResponse = await anthropic.messages.create({
+    model: "claude-sonnet-4-5-20250929",
+    max_tokens: 1024,
+    messages: claudeMessages.map((m) => ({
+      role: m.role,
+      content: m.content,
+    })),
+  });
+  const assistantReply = claudeResponse.content[0]?.text || "[No response]";
+  // --- End Claude/Anthropic API Call ---
+
+  const transcript = compressedMessages
+    .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
     .join("\n");
 
   return Response.json({
     conversation: { id: userMessage.id, messages: [userMessage] },
     timeline: messages,
     transcript,
+    assistantReply,
     memory: {
-      matches: [], // Implement RAG/memory as needed
-      context: "",
+      matches: ragMatches,
+      context: ragContext,
     },
   });
 }
