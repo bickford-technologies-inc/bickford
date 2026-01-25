@@ -6,6 +6,7 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
+    "./prismaLedger": "./dist/prismaLedger.js",
     "./src/prismaLedger": "./src/prismaLedger.ts",
     "./src/conversationCompressionHandler": "./src/conversationCompressionHandler.ts"
   },

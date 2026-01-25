@@ -1,5 +1,5 @@
 // Memory-Enabled Ledger for Bickford: Compliance + Intelligence
-import { Database } from "bun:sqlite";
+import Database = require("better-sqlite3");
 import { createHash } from "crypto";
 
 export interface MemoryLedgerEntry {
@@ -26,7 +26,7 @@ export interface MemoryLedgerEntry {
 }
 
 export class MemoryLedger {
-  private db: Database;
+  private db: Database.Database;
   private embeddingCache = new Map<string, number[]>();
 
   constructor(dbPath: string = "./data/bickford-memory.db") {
