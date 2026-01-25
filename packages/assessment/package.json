@@ -8,7 +8,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@bickford/ledger": "workspace:*",
+    "@bickford/superconductor-ledger": "workspace:*",
     "@bickford/core": "workspace:*"
   }
 }

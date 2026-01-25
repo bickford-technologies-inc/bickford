@@ -17,7 +17,7 @@
     "@bickford/core": "workspace:*",
     "@bickford/db": "workspace:*",
     "@bickford/execution-convergence": "workspace:*",
-    "@bickford/ledger": "workspace:*",
+    "@bickford/superconductor-ledger": "workspace:*",
     "@bickford/optr": "workspace:*",
     "@bickford/types": "workspace:*",
     "@bickford/ui": "workspace:*",
