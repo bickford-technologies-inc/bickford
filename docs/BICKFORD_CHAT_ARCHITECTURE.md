@@ -138,6 +138,11 @@ Used for:
 - feasibility checks across high-dimensional constraint sets
 - generation of _candidate_ action paths
 
+Optimization intuition: quantum tunneling provides a useful analogy for OPTR search.
+Instead of walking every ridge in a rugged cost landscape, tunneling suggests a
+shortcut toward deeper minima, accelerating discovery of better candidate paths
+without relaxing constraints or bypassing authority.
+
 Quantum outputs are **advisory** and **non-executable**:
 
 - no direct state mutation
