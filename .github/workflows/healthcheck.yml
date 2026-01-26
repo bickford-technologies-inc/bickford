@@ -15,6 +15,24 @@ jobs:
           curl -s https://bickford-kypal7bnu-bickford-technologies-inc.vercel.app/chat > chat.html
           grep -q "ChatGPT Panel" chat.html
           grep -q "Bickford Decision Trace Viewer" chat.html
+      - name: Check /platform route for panels
+        run: |
+          curl -s https://bickford-kypal7bnu-bickford-technologies-inc.vercel.app/platform > platform.html
+          grep -q "Execution Envelope Panel" platform.html
+          grep -q "Slowdown Reason Panel" platform.html
+      - name: Check /decision-trace-viewer route for trace viewer
+        run: |
+          curl -s https://bickford-kypal7bnu-bickford-technologies-inc.vercel.app/decision-trace-viewer > trace.html
+          grep -q "Decision Trace Viewer" trace.html
+      - name: Check /canon-dag route for DAG data
+        run: |
+          curl -s https://bickford-kypal7bnu-bickford-technologies-inc.vercel.app/canon-dag > dag.html
+          grep -q "Canon DAG" dag.html
+      - name: Check / (home) route for branding
+        run: |
+          curl -s https://bickford-kypal7bnu-bickford-technologies-inc.vercel.app/ > home.html
+          grep -q "bickford" home.html
+          grep -q "Decision continuity" home.html
       - name: Notify on failure
         if: failure()
         run: echo "Health check failed: /chat route does not contain expected panels."
