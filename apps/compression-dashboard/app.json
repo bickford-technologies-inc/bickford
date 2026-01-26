@@ -1,0 +1,108 @@
+{
+  "id": "compression-dashboard",
+  "name": "Compression Dashboard",
+  "description": "Monitor compression performance and cost savings in real-time",
+  "icon": "compress",
+  "entryScreen": "dashboard",
+  "status": "active",
+  "permissions": ["compression:read", "ledger:read"],
+  
+  "screens": {
+    "dashboard": {
+      "id": "dashboard",
+      "type": "screen",
+      "layout": "grid",
+      "components": [
+        {
+          "id": "compression-stats",
+          "type": "compression-stats",
+          "source": "workflow.metrics",
+          "props": {
+            "showRatio": true,
+            "showSavings": true,
+            "showReduction": true,
+            "refreshInterval": 30000
+          }
+        },
+        {
+          "id": "compression-history",
+          "type": "timeline",
+          "source": "workflow.history",
+          "onSelect": "showCompressionDetail",
+          "props": {
+            "title": "Compression History",
+            "sortBy": "timestamp",
+            "groupBy": "app"
+          }
+        },
+        {
+          "id": "savings-calculator",
+          "type": "metric-card",
+          "source": "workflow.savingsProjection",
+          "props": {
+            "title": "Cost Savings Projection",
+            "metrics": ["annual", "monthly", "perGB"]
+          }
+        }
+      ],
+      "dataBindings": {
+        "metrics": {
+          "type": "workflow",
+          "source": "fetchCompressionMetrics"
+        },
+        "history": {
+          "type": "workflow",
+          "source": "fetchCompressionHistory"
+        },
+        "savingsProjection": {
+          "type": "workflow",
+          "source": "calculateSavings"
+        }
+      },
+      "actions": {
+        "refresh": "fetchCompressionMetrics",
+        "showDetail": "showCompressionDetail",
+        "runCompression": "compressNewData"
+      }
+    }
+  },
+  
+  "workflows": {
+    "fetchCompressionMetrics": {
+      "id": "fetchCompressionMetrics",
+      "name": "Fetch Compression Metrics",
+      "steps": [
+        {
+          "type": "fetch",
+          "resource": "compressionMetrics"
+        },
+        {
+          "type": "transform",
+          "transform": "{ ratio: data.compressionRatio, reduction: data.originalBytes / data.compressedBytes, savings: data.savings }"
+        }
+      ],
+      "output": {
+        "schema": "compressionMetrics",
+        "target": "compression-stats"
+      }
+    },
+    
+    "calculateSavings": {
+      "id": "calculateSavings",
+      "name": "Calculate Cost Savings",
+      "steps": [
+        {
+          "type": "fetch",
+          "resource": "compressionMetrics"
+        },
+        {
+          "type": "transform",
+          "transform": "{ annual: data.savings, monthly: data.savings / 12, perGB: data.savings / (data.originalBytes / 1e9) }"
+        }
+      ],
+      "output": {
+        "schema": "savingsProjection"
+      }
+    }
+  }
+}
