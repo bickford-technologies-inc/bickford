@@ -12,8 +12,7 @@
   ],
   "scripts": {
     "build": "pnpm exec pnpm exec tsc -p tsconfig.build.json",
-    "clean": "rm -rf dist",
-    "prisma:generate": "prisma generate --schema=./prisma/schema.prisma"
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@prisma/client": "6.19.2"

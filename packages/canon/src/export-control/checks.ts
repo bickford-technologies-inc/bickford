@@ -1,5 +1,5 @@
-import { ControlClassification } from "./classifications";
-import { Jurisdiction } from "./jurisdictions";
+import { ControlClassification } from "./classifications.js";
+import { Jurisdiction } from "./jurisdictions.js";
 
 export type ExportContext = {
   classification: ControlClassification;
