@@ -5,6 +5,7 @@
 
 import { promises as fs } from "fs";
 import path from "path";
+import { notFound } from "next/navigation";
 
 interface Props {
   params: { appId: string };
@@ -16,10 +17,15 @@ async function getAppManifest(appId: string) {
   return JSON.parse(content);
 }
 
-export default async function AppPage({ params }: Props) {
+export default async function AppPage({ params, searchParams }: Props) {
   const { appId } = params;
   const manifest = await getAppManifest(appId);
-  const entryScreen = manifest.screens[manifest.entryScreen];
+  const screens = manifest.screens;
+  const screenKeys = Object.keys(screens);
+  // Support Next.js searchParams (for ?screen=screenKey)
+  const selectedScreenKey = searchParams?.screen || manifest.entryScreen;
+  const selectedScreen = screens[selectedScreenKey];
+  if (!selectedScreen) return notFound();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -51,21 +57,39 @@ export default async function AppPage({ params }: Props) {
       </header>
 
       <main className="max-w-7xl mx-auto p-8">
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        {/* Screen navigation tabs */}
+        <nav className="mb-6 flex gap-4 border-b border-gray-200">
+          {screenKeys.map((key) => (
+            <a
+              key={key}
+              href={`?screen=${key}`}
+              className={`pb-2 px-3 text-sm font-medium border-b-2 transition-colors ${
+                key === selectedScreenKey
+                  ? "border-blue-600 text-blue-700"
+                  : "border-transparent text-gray-500 hover:text-blue-600"
+              }`}
+            >
+              {screens[key].id}
+            </a>
+          ))}
+        </nav>
+        {/* Render the selected screen */}
+        <div
+          className={`bg-white rounded-lg shadow-sm p-6 border border-gray-200`}
+        >
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            {entryScreen.id}
+            {selectedScreen.id}
           </h2>
-
           <div
             className={`grid ${
-              entryScreen.layout === "split"
+              selectedScreen.layout === "split"
                 ? "grid-cols-2"
-                : entryScreen.layout === "grid"
+                : selectedScreen.layout === "grid"
                   ? "grid-cols-3"
                   : "grid-cols-1"
             } gap-6`}
           >
-            {entryScreen.components.map((component: any) => (
+            {selectedScreen.components.map((component) => (
               <div
                 key={component.id}
                 className="bg-gray-50 rounded p-4 border border-gray-200"
@@ -84,13 +108,12 @@ export default async function AppPage({ params }: Props) {
               </div>
             ))}
           </div>
-
           <div className="mt-6 pt-6 border-t border-gray-200">
             <h3 className="text-sm font-medium text-gray-700 mb-2">
               Available Actions
             </h3>
             <div className="flex gap-2">
-              {Object.keys(entryScreen.actions || {}).map((action) => (
+              {Object.keys(selectedScreen.actions || {}).map((action) => (
                 <button
                   key={action}
                   className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
@@ -101,13 +124,12 @@ export default async function AppPage({ params }: Props) {
             </div>
           </div>
         </div>
-
         <div className="mt-6 bg-blue-50 rounded-lg p-4 border border-blue-200">
           <h3 className="text-sm font-semibold text-blue-900 mb-2">
             Screen Definition
           </h3>
           <pre className="text-xs text-blue-800 overflow-x-auto">
-            {JSON.stringify(entryScreen, null, 2)}
+            {JSON.stringify(selectedScreen, null, 2)}
           </pre>
         </div>
       </main>
