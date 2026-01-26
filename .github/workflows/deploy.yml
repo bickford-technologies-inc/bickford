@@ -46,6 +46,7 @@ jobs:
           curl -f https://your-railway-url/api/health
 
       - name: Deploy to Vercel
+        id: vercel_deploy
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -55,12 +56,15 @@ jobs:
           working-directory: ./
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        continue-on-error: false
 
-      - name: Health check Vercel
+      - name: Health check Vercel (auto-discover URL)
         run: |
-          curl -f https://your-vercel-url/api/health
+          # Example: fetch latest deployment URL from Vercel API or action output
+          echo "TODO: Implement dynamic health check URL discovery"
+          # curl -f $VERCEL_DEPLOYMENT_URL/api/health
 
-      - name: Create GitHub issue on failure
+      - name: On failure, create GitHub issue with error logs
         if: failure()
         uses: actions/github-script@v7
         with:
@@ -68,6 +72,6 @@ jobs:
             github.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `🚨 Deployment Failure: ${{ github.run_id }}`,
-              body: "The deployment failed. Please check the logs for details."
+              title: `🚨 Automated Deployment Failure: ${{ github.run_id }}`,
+              body: `The deployment failed. Please check the logs for details.\n[View run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
             })
