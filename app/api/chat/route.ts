@@ -123,7 +123,10 @@ export async function POST(request: Request) {
   }));
 
   // --- Validation: Ensure at least one message for model API ---
-  if (!Array.isArray(conversationMessages) || conversationMessages.length === 0) {
+  if (
+    !Array.isArray(conversationMessages) ||
+    conversationMessages.length === 0
+  ) {
     return Response.json(
       { error: "messages: at least one message is required" },
       { status: 400 },
