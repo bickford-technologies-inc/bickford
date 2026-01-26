@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import DecisionTraceViewer from "./DecisionTraceViewer";
 import DecisionTraceComparison from "./DecisionTraceComparison";
+import { appVoice } from "../uiCopy";
 
 // Placeholder: get sessionId from context, router, or props
 const sessionId = "demo-session-1";
@@ -17,7 +18,7 @@ export default function BickfordChatPage() {
 
   return (
     <div>
-      <h1>Bickford Chat</h1>
+      <h1>{appVoice.welcome}</h1>
       {/* ...existing chat UI would go here... */}
       <DecisionTraceViewer sessionId={sessionId} />
       <h2 style={{ marginTop: 40 }}>Decision Trace Comparison</h2>

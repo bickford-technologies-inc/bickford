@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import TraceViewer from "./trace-viewer";
+import { appVoice } from "../uiCopy";
 
 // Placeholder type for a ledger entry. Replace with actual type if available.
 type LedgerEntry = {
@@ -37,10 +38,10 @@ export const DecisionTraceViewer: React.FC<{ sessionId: string }> = ({
       .finally(() => setLoading(false));
   }, [sessionId]);
 
-  if (loading) return <div>Loading decision trace...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div>{appVoice.loading}</div>;
+  if (error) return <div>{appVoice.error}</div>;
   if (!entries.length)
-    return <div>No ledger entries found for this session.</div>;
+    return <div>{appVoice.emptyState}</div>;
 
   return (
     <div
