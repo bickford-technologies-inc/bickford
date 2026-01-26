@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 
 interface Props {
   params: { appId: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 async function getAppManifest(appId: string) {
