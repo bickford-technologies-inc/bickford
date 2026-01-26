@@ -90,7 +90,7 @@ export default async function AppPage({ params, searchParams }: Props) {
                   : "grid-cols-1"
             } gap-6`}
           >
-            {selectedScreen.components.map((component) => (
+            {selectedScreen.components.map((component: any) => (
               <div
                 key={component.id}
                 className="bg-gray-50 rounded p-4 border border-gray-200"
