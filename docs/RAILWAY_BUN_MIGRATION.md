@@ -1,6 +1,7 @@
 # Railway Bun Migration Guide
 
 ## Overview
+
 This guide walks you through migrating your Bickford app to Railway with a full Bun runtime, eliminating Node.js dependencies for optimal performance and cost.
 
 ## Steps
@@ -14,10 +15,10 @@ This guide walks you through migrating your Bickford app to Railway with a full 
    ```js
    /** @type {import('next').NextConfig} */
    const nextConfig = {
-     output: 'standalone',
+     output: "standalone",
      // ... rest of your config
-   }
-   module.exports = nextConfig
+   };
+   module.exports = nextConfig;
    ```
 4. **Set up Railway project:**
    - Install Railway CLI: `npm install -g @railway/cli`
@@ -31,21 +32,25 @@ This guide walks you through migrating your Bickford app to Railway with a full 
    - Or run `railway up`
 
 ## Verification
+
 - Build logs show Bun
 - `/chat` and `/api/health` work
 - Cold start ~500ms, memory ~256MB
 
 ## Troubleshooting
+
 - See logs in Railway dashboard
 - Ensure secrets are set
 - Check Dockerfile and workflow for typos
 
 ## Performance
-| Metric      | Before (Node) | After (Bun) |
-|-------------|---------------|-------------|
-| Build time  | 2-3 min       | 45-90 sec   |
-| Cold start  | 1-2 sec       | ~500ms      |
-| Memory      | ~512MB        | ~256MB      |
+
+| Metric     | Before (Node) | After (Bun) |
+| ---------- | ------------- | ----------- |
+| Build time | 2-3 min       | 45-90 sec   |
+| Cold start | 1-2 sec       | ~500ms      |
+| Memory     | ~512MB        | ~256MB      |
 
 ## Support
+
 - Ask in #support or open an issue
