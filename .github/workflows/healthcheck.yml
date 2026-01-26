@@ -1,0 +1,20 @@
+name: Post-Deploy Health Check
+
+on:
+  workflow_run:
+    workflows: ["Deploy to Vercel and Railway"]
+    types:
+      - completed
+
+jobs:
+  healthcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check /chat route for money screen panels
+        run: |
+          curl -s https://bickford-kypal7bnu-bickford-technologies-inc.vercel.app/chat > chat.html
+          grep -q "ChatGPT Panel" chat.html
+          grep -q "Bickford Decision Trace Viewer" chat.html
+      - name: Notify on failure
+        if: failure()
+        run: echo "Health check failed: /chat route does not contain expected panels."
