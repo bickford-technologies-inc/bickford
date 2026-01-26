@@ -40,8 +40,7 @@ export const DecisionTraceViewer: React.FC<{ sessionId: string }> = ({
 
   if (loading) return <div>{appVoice.loading}</div>;
   if (error) return <div>{appVoice.error}</div>;
-  if (!entries.length)
-    return <div>{appVoice.emptyState}</div>;
+  if (!entries.length) return <div>{appVoice.emptyState}</div>;
 
   return (
     <div

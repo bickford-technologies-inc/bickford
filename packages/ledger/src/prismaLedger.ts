@@ -27,7 +27,13 @@ export class PrismaLedger {
 }
 
 // Real Prisma-backed implementations
-export async function saveMessage({ userId, content }: { userId?: string; content: string }): Promise<any> {
+export async function saveMessage({
+  userId,
+  content,
+}: {
+  userId?: string;
+  content: string;
+}): Promise<any> {
   return prisma.message.create({
     data: {
       userId: userId || null,
