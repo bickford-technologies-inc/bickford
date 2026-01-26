@@ -30,3 +30,5 @@ export abstract class BickfordNativeApp {
 
   abstract execute(input: any, context: AppContext): Promise<AppResult>;
 }
+
+export type { AppManifest, AppContext, AppResult };
