@@ -22,6 +22,23 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
+      - name: Validate required secrets
+        run: |
+          missing=0
+          for var in RAILWAY_TOKEN RAILWAY_PROJECT_ID; do
+            if [ -z "${!var}" ]; then
+              echo "❌ Missing required secret: $var"
+              missing=1
+            fi
+          done
+          if [ $missing -ne 0 ]; then
+            echo "❌ One or more required secrets are missing. Please add them in your GitHub repository settings."
+            exit 1
+          fi
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+
       - name: Link Railway project (optional)
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
@@ -141,3 +158,15 @@ jobs:
           git add .vercel-rebuild
           git commit -m "chore: force Vercel cache clear [ci skip]" || echo "No changes to commit"
           git push origin main || echo "No changes to push"
+
+      - name: Create GitHub issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Deployment Failure: ${{ github.run_id }}`,
+              body: "The deployment failed. Please check the logs for details."
+            })
