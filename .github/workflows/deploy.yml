@@ -129,3 +129,13 @@ jobs:
           fi
           
           echo "✅ Ledger chain verified"
+      
+      # Trivial file change to force cache bust
+      - name: Update build trigger file
+        run: |
+          echo "Build triggered at $(date)" > .vercel-rebuild
+          git config --global user.email "ci@bickford.com"
+          git config --global user.name "Bickford CI"
+          git add .vercel-rebuild
+          git commit -m "chore: force Vercel cache clear [ci skip]" || echo "No changes to commit"
+          git push origin main || echo "No changes to push"
