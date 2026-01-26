@@ -11,11 +11,13 @@ Bickford is an execution authority layer that transforms natural language intent
 **Purpose:** Optimize Time-to-Value across decision paths
 
 **Formula:**
+
 ```
 π* = argmin_{π ∈ Π_adm(S(K_t))} E[TTV(π) + λC·C(π) + λR·R(π) − λP·log p(π)]
 ```
 
 Where:
+
 - `TTV(π)` = Time-to-Value under policy π
 - `C(π)` = Expected cost
 - `R(π)` = Expected risk
@@ -23,6 +25,7 @@ Where:
 - `Π_adm` = Admissible policy set (satisfies invariants)
 
 **Features:**
+
 - Decision optimization with provable guarantees
 - Cached feature extraction (deterministic)
 - Non-interference checking
@@ -32,12 +35,14 @@ Where:
 **Purpose:** SHA-256 gated execution enforcement
 
 **Enforcement Mechanisms:**
+
 - `requireCanonRefs()` - Mechanical gate (hard fail on mismatch)
 - Timestamp-based authority validation
 - Promotion gate (4-test filter for structural changes)
 - Stable denial reason taxonomy
 
 **Invariants:**
+
 1. Timestamps mandatory for authority
 2. Canon-only execution (authority boundary)
 3. Promotion requires 4 tests
@@ -49,12 +54,14 @@ Where:
 **Purpose:** Append-only Postgres log for immutable audit trail
 
 **Storage:**
+
 - Every intent-decision pair recorded
 - SHA-256 hash of payload
 - Timestamp of execution
 - Queryable history
 
 **Implementation:**
+
 - Prisma ORM for type-safe queries
 - PostgreSQL for durable persistence
 - Automatic hash generation
@@ -64,6 +71,7 @@ Where:
 **Purpose:** Event capture with <5ms p99 latency
 
 **Features:**
+
 - Capture: <5ms p99 latency event ingestion
 - Buffering: Configurable flush (100 events or 5s)
 - Routing: Multi-destination (database, webhook, log, analytics)
@@ -143,6 +151,7 @@ Native apps are the delivery surface for the platform: each app ships the same e
 **Mission:** Provide cryptographic execution authority for AI systems across all native surfaces.
 
 **Core services delivered to every app:**
+
 1. **Canon enforcement:** Make policy violations architecturally impossible.
 2. **Tamper-evident ledger:** Immutable audit trail with hash-chain integrity.
 3. **Proof generation:** Cryptographic certificates for external verification.
@@ -160,31 +169,39 @@ Native apps are the delivery surface for the platform: each app ships the same e
 ### Native App Catalog (Current + Planned)
 
 **Governance Log Compression (Native App)**
+
 - 99.98% compression target via structural deduplication.
 - Hash-chain preservation and canonical ledger export.
 - Designed for air-gapped and regulated deployments.
 
 **AI Data Compression (Native App)**
+
 - 85–95% compression target for AI datasets and outputs.
 - Embedding-aware compression to preserve retrieval quality.
 - Optimized for on-device storage and bandwidth-constrained sync.
 
 **Constitutional AI Enforcer**
+
 - Runtime enforcement with hard-fail guarantees and proofs.
 
 **Audit Certificate Generator**
+
 - SOC 2 / HIPAA / ISO evidence bundles with verifiable certificates.
 
 **Real-Time Compliance Monitor**
+
 - Live ledger surveillance with automated violation alerts.
 
 **Multi-Agent Conflict Resolver**
+
 - Canon-based arbitration for competing agent actions.
 
 **Cost Optimization Dashboard**
+
 - Ledger-derived cost analytics and optimization recommendations.
 
 **Additional native surfaces**
+
 - OPTR optimization workbench (scenario modeling).
 - Canon authority validator (hardware-backed signing + attestation).
 - Ledger viewer + integrity auditor (offline verification).
@@ -225,14 +242,17 @@ Native apps are the delivery surface for the platform: each app ships the same e
 ## Competitive Differentiation
 
 **vs AWS/Kafka:**
+
 - Bickford: Intent-aware (semantic understanding)
 - AWS/Kafka: Blind transport (no decision layer)
 
 **vs Traditional CI/CD:**
+
 - Bickford: <5 seconds (zero approval gates)
 - CI/CD: Minutes to hours (approval + manual steps)
 
 **vs GitHub Actions:**
+
 - Bickford: Canon-enforced (mechanical gates)
 - Actions: YAML-based (manual guardrails)
 
