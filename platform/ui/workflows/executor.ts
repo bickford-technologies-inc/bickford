@@ -138,6 +138,11 @@ export class WorkflowExecutor {
 
   private async executeEnforce(step: WorkflowStep, input: any): Promise<any> {
     const { params } = step;
+    if (!params) {
+      throw new Error(
+        "Workflow step of type 'enforce' is missing required 'params'.",
+      );
+    }
     return await this.platform.enforcementEngine.enforce(
       params.canon,
       params.action,

@@ -3,8 +3,8 @@
  * 85-95% compression on AI datasets
  */
 
-import {
-  BickfordNativeApp,
+import { BickfordNativeApp } from "../../platform/sdk/app";
+import type {
   AppManifest,
   AppContext,
   AppResult,
