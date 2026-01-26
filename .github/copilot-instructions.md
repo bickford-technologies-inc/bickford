@@ -281,6 +281,27 @@ test("ledger maintains hash chain integrity", async () => {
 
 ---
 
+## Compression Superconductor Test
+
+import { test, expect } from "bun:test";
+import { appendToLedger, getContentStore } from "@bickford/ledger";
+
+test("ledger deduplicates and references by hash", async () => {
+  const ledger = new MemoryLedger(":memory:");
+  const contentStore = getContentStore();
+  const entryA = { eventType: "test", payload: { foo: "bar" } };
+  const entryB = { eventType: "test", payload: { foo: "bar" } };
+  await ledger.append(entryA);
+  await ledger.append(entryB);
+  // Only one unique content stored
+  expect(contentStore.size()).toBe(1);
+  // Both ledger entries reference the same hash
+  const hashes = ledger.getAll().map(e => e.payload);
+  expect(hashes[0]).toBe(hashes[1]);
+});
+
+---
+
 ## Workspace Structure
 
 ```typescript
