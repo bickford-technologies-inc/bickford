@@ -27,6 +27,5 @@ else
 fi
 corepack enable
 corepack prepare pnpm@10.28.0 --activate
-pnpm approve-builds @prisma/client @prisma/engines prisma sharp esbuild
 pnpm install --frozen-lockfile
 pnpm exec prisma generate --schema=packages/ledger/prisma/schema.prisma
