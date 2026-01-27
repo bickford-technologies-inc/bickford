@@ -45,14 +45,21 @@ async function run() {
   output +=
     "╚═══════════════════════════════════════════════════════════════════════╝\n\n";
 
+  const enforcer = new ClaudeConstitutionalEnforcer();
   for (const { prompt, expected } of prompts) {
     total++;
-    const result = await ClaudeConstitutionalEnforcer.enforce(prompt);
-    if (result.status === "ALLOWED") allowed++;
-    if (result.status === "DENIED") denied++;
-    output += `Prompt: "${prompt}"\nExpected: ${expected}\nStatus: ${result.status}\nProof Chain: ${result.proofChain?.join(" → ") || "None"}\nPerformance: ${result.performanceMs || "-"}ms\n`;
+    const request = {
+      model: "claude-3-sonnet-20250514",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 512,
+    };
+    const result = await enforcer.enforceClaudeRequest(request);
+    const status = result.enforcement.allowed ? "ALLOWED" : "DENIED";
+    if (status === "ALLOWED") allowed++;
+    if (status === "DENIED") denied++;
+    output += `Prompt: "${prompt}"\nExpected: ${expected}\nStatus: ${status}\nProof Chain: ${result.proof_chain?.join(" → ") || "None"}\nPerformance: ${result.latency_overhead_ms?.toFixed(2) || "-"}ms\n`;
     output +=
-      result.status === expected
+      status === expected
         ? "✅ Result matches expectation\n"
         : "❌ Result differs from expectation\n";
     output +=

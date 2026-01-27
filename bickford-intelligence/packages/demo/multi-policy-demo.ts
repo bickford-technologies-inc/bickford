@@ -35,18 +35,27 @@ async function run() {
   output +=
     "╚═══════════════════════════════════════════════════════════════════════╝\n\n";
 
+  const enforcer = new ClaudeConstitutionalEnforcer();
   for (const { prompt, expected, expectConstraints } of prompts) {
     output += `📝 Prompt: "${prompt}"
 Expected: ${expected}\n`;
-    const result = await ClaudeConstitutionalEnforcer.enforce(prompt);
-    output += `Status: ${result.status}\n`;
-    output += `Violated Constraints: ${result.violatedConstraints?.join(", ") || "None"}\n`;
+    const request = {
+      model: "claude-3-sonnet-20250514",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 512,
+    };
+    const result = await enforcer.enforceClaudeRequest(request);
+    const status = result.enforcement.allowed ? "ALLOWED" : "DENIED";
+    output += `Status: ${status}\n`;
+    output += `Violated Constraints: ${result.enforcement.violated_constraints?.join(", ") || "None"}\n`;
     output += `Expected Constraints: ${expectConstraints.join(", ")}\n`;
-    output += `Proof Chain: ${result.proofChain?.join(" → ") || "None"}\n`;
-    output += `Rationale: ${result.reasoning || "-"}\n`;
+    output += `Proof Chain: ${result.proof_chain?.join(" → ") || "None"}\n`;
+    output += `Rationale: ${result.enforcement.reasoning || "-"}\n`;
     output +=
-      result.status === expected &&
-      expectConstraints.every((c) => result.violatedConstraints?.includes(c))
+      status === expected &&
+      expectConstraints.every((c) =>
+        result.enforcement.violated_constraints?.includes(c),
+      )
         ? "✅ Result matches expectation\n"
         : "❌ Result differs from expectation\n";
     output +=

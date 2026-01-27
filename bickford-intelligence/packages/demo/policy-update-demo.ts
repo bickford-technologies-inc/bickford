@@ -21,15 +21,28 @@ async function run() {
   output +=
     "╚═══════════════════════════════════════════════════════════════════════╝\n\n";
 
+  const enforcer = new ClaudeConstitutionalEnforcer();
   // Run under policy v1
-  const resultV1 = await ClaudeConstitutionalEnforcer.enforce(prompt, policyV1);
-  output += `Prompt: "${prompt}"\nPolicy Version: ${policyV1.version}\nStatus: ${resultV1.status}\nViolated Constraints: ${resultV1.violatedConstraints?.join(", ") || "None"}\nProof Chain: ${resultV1.proofChain?.join(" → ") || "None"}\n`;
+  const requestV1 = {
+    model: "claude-3-sonnet-20250514",
+    messages: [{ role: "user", content: prompt }],
+    max_tokens: 512,
+    system: `Policy Version: ${policyV1.version}`,
+  };
+  const resultV1 = await enforcer.enforceClaudeRequest(requestV1);
+  output += `Prompt: "${prompt}"\nPolicy Version: ${policyV1.version}\nStatus: ${resultV1.enforcement.allowed ? "ALLOWED" : "DENIED"}\nViolated Constraints: ${resultV1.enforcement.violated_constraints?.join(", ") || "None"}\nProof Chain: ${resultV1.proof_chain?.join(" → ") || "None"}\n`;
   output +=
     "───────────────────────────────────────────────────────────────────────\n\n";
 
   // Run under policy v2
-  const resultV2 = await ClaudeConstitutionalEnforcer.enforce(prompt, policyV2);
-  output += `Prompt: "${prompt}"\nPolicy Version: ${policyV2.version}\nStatus: ${resultV2.status}\nViolated Constraints: ${resultV2.violatedConstraints?.join(", ") || "None"}\nProof Chain: ${resultV2.proofChain?.join(" → ") || "None"}\n`;
+  const requestV2 = {
+    model: "claude-3-sonnet-20250514",
+    messages: [{ role: "user", content: prompt }],
+    max_tokens: 512,
+    system: `Policy Version: ${policyV2.version}`,
+  };
+  const resultV2 = await enforcer.enforceClaudeRequest(requestV2);
+  output += `Prompt: "${prompt}"\nPolicy Version: ${policyV2.version}\nStatus: ${resultV2.enforcement.allowed ? "ALLOWED" : "DENIED"}\nViolated Constraints: ${resultV2.enforcement.violated_constraints?.join(", ") || "None"}\nProof Chain: ${resultV2.proof_chain?.join(" → ") || "None"}\n`;
   output +=
     "───────────────────────────────────────────────────────────────────────\n\n";
 

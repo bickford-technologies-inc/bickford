@@ -147,6 +147,39 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       return this.mockClaudeResponse(request);
     }
 
+    // Anthropic Claude API expects:
+    // {
+    //   model: string,
+    //   max_tokens: number,
+    //   messages: [ { role: "user"|"assistant"|"system", content: string } ],
+    //   system?: string,
+    //   temperature?: number
+    // }
+    // Remove any undefined fields and ensure correct types
+    const apiPayload: Record<string, any> = {
+      model: request.model,
+      max_tokens: request.max_tokens || 1024,
+      messages: request.messages,
+    };
+    if (typeof request.system === "string" && request.system.length > 0) {
+      apiPayload.system = request.system;
+    }
+    if (typeof request.temperature === "number") {
+      apiPayload.temperature = request.temperature;
+    }
+
+    // Log the outgoing request for debugging
+    console.log("[Claude API] Request URL:", this.apiEndpoint);
+    console.log("[Claude API] Request Headers:", {
+      "Content-Type": "application/json",
+      "x-api-key": this.apiKey ? "[REDACTED]" : undefined,
+      "anthropic-version": "2023-06-01",
+    });
+    console.log(
+      "[Claude API] Request Body:",
+      JSON.stringify(apiPayload, null, 2),
+    );
+
     const response = await fetch(this.apiEndpoint, {
       method: "POST",
       headers: {
@@ -154,17 +187,25 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
         "x-api-key": this.apiKey,
         "anthropic-version": "2023-06-01",
       },
-      body: JSON.stringify({
-        ...request,
-        max_tokens: request.max_tokens || 1024,
-      }),
+      body: JSON.stringify(apiPayload),
     });
 
+    // Log the response status and body for debugging
+    console.log(
+      "[Claude API] Response Status:",
+      response.status,
+      response.statusText,
+    );
+    const responseText = await response.text();
+    console.log("[Claude API] Response Body:", responseText);
+
     if (!response.ok) {
-      throw new Error(`Claude API error: ${response.statusText}`);
+      throw new Error(
+        `Claude API error: ${response.statusText}\nBody: ${responseText}`,
+      );
     }
 
-    return await response.json();
+    return JSON.parse(responseText);
   }
 
   /**
