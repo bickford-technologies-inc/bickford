@@ -1,0 +1,15 @@
+// Minimal stub Prisma schema to unblock build
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
+}
+
+model Dummy {
+    id    Int     @id @default(autoincrement())
+    value String?
+}

@@ -18,14 +18,14 @@ import {
   ExecutionAuthority,
   type Intent,
   type Decision,
-} from "./execution-authority";
+} from "./execution-authority.js";
 import {
   ConstitutionalEnforcer,
   type EnforcementResult,
-} from "./constitutional-enforcer";
+} from "./constitutional-enforcer.js";
 import { createHash } from "crypto";
-import { write } from "bun";
 import { readFileSync } from "fs";
+import { appendFile } from "fs/promises";
 
 export interface IntelligenceMetrics {
   total_executions: number;
@@ -315,7 +315,7 @@ export class CompoundingIntelligence {
     // Get previous hash from last ledger entry
     let previousHash = "";
     try {
-      const ledgerContent = Bun.file(ledgerPath).text();
+      const ledgerContent = await Bun.file(ledgerPath).text();
       const lines = ledgerContent.split("\n").filter(Boolean);
       if (lines.length > 0) {
         const lastEntry = JSON.parse(lines[lines.length - 1]);
@@ -338,19 +338,16 @@ export class CompoundingIntelligence {
     };
 
     // Append to ledger
-    await write(ledgerPath, JSON.stringify(entry) + "\n", {
-      create: true,
-      append: true,
-    });
+    await appendFile(ledgerPath, JSON.stringify(entry) + "\n");
 
     // Push to external service if configured
-    await externalPush(entry);
+    await this.externalPush(entry);
   }
 
   /**
    * Push ledger entry to external service (webhook, database, etc)
    */
-  async function externalPush(entry: any) {
+  private async externalPush(entry: any) {
     // Example: HTTP webhook
     const webhookUrl = process.env.EXTERNAL_WEBHOOK_URL;
     if (webhookUrl) {

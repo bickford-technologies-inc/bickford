@@ -1,19 +1,20 @@
-import { CompoundingIntelligence } from "./packages/core/compounding-intelligence";
+import { CompoundingIntelligence } from "./packages/core/compounding-intelligence.js";
 import { serve } from "bun";
 import { ServerWebSocket } from "bun";
+import { watch } from "fs";
 
 const intelligence = new CompoundingIntelligence();
 const ledgerPath = "/workspaces/bickford/execution-ledger.jsonl";
 
-let sseClients: Response[] = [];
+let sseClients: ReadableStreamDefaultController[] = [];
 let wsClients: ServerWebSocket<any>[] = [];
 
 function broadcastLedgerEntry(entry: any) {
   // Broadcast to SSE clients
   const data = `data: ${JSON.stringify(entry)}\n\n`;
-  sseClients.forEach((client) => {
+  sseClients.forEach((controller) => {
     try {
-      client.write(data);
+      controller.enqueue(data);
     } catch {}
   });
   // Broadcast to WebSocket clients
@@ -25,11 +26,11 @@ function broadcastLedgerEntry(entry: any) {
 }
 
 // Watch ledger file for changes and broadcast new entries
-Bun.watch(ledgerPath, {
-  async onChange() {
+watch(ledgerPath, async (eventType) => {
+  if (eventType === "change") {
     const entry = await getLatestLedgerEntry();
     if (entry) broadcastLedgerEntry(entry);
-  },
+  }
 });
 
 async function getLatestLedgerEntry() {
@@ -75,23 +76,32 @@ serve({
       );
     }
     if (url.pathname === "/api/ledger/sse") {
-      // SSE endpoint for live ledger updates
+      // SSE endpoint for live ledger updates (Bun-native streaming)
       const headers = {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
         "Access-Control-Allow-Origin": "*",
       };
-      const stream = new Response(null, { headers });
-      sseClients.push(stream);
-      // Send latest entry immediately
-      const entry = await getLatestLedgerEntry();
-      if (entry) stream.write(`data: ${JSON.stringify(entry)}\n\n`);
-      return stream;
+      let controllerRef: ReadableStreamDefaultController;
+      const stream = new ReadableStream({
+        start(controller) {
+          controllerRef = controller;
+          sseClients.push(controller);
+          getLatestLedgerEntry().then((entry) => {
+            if (entry) controller.enqueue(`data: ${JSON.stringify(entry)}\n\n`);
+          });
+        },
+        cancel() {
+          sseClients = sseClients.filter((c) => c !== controllerRef);
+        },
+      });
+      return new Response(stream, { headers });
     }
     // WebSocket upgrade
     if (url.pathname === "/ws/ledger" && server.upgrade) {
-      return server.upgrade(req, { data: {} });
+      server.upgrade(req);
+      return;
     }
     // Health check
     if (url.pathname === "/api/health") {

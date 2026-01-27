@@ -1,15 +1,18 @@
 /*
  * Bickford Claude Constitutional Enforcer
- * 
+ *
  * Wraps Anthropic's Claude API with mechanical Constitutional AI enforcement.
  * Converts aspirational safety principles into cryptographically provable guarantees.
- * 
+ *
  * This is the core value proposition:
  * - Claude alone: Fast, smart, but unverifiable
  * - Claude + Bickford: Fast, smart, AND cryptographically provable
  */
 
-import { ConstitutionalEnforcer, type EnforcementResult } from "./constitutional-enforcer";
+import {
+  ConstitutionalEnforcer,
+  type EnforcementResult,
+} from "./constitutional-enforcer.js";
 import { createHash } from "crypto";
 
 export interface ClaudeRequest {
@@ -68,7 +71,7 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
 
   /**
    * Enforce Constitutional AI constraints on a Claude request
-   * 
+   *
    * Flow:
    * 1. Pre-enforcement check (before calling Claude)
    * 2. If allowed, call Claude with Constitutional AI system prompt
@@ -76,7 +79,9 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
    * 4. Generate cryptographic proof chain
    * 5. Return enforceable response with proof
    */
-  async enforceClaudeRequest(request: ClaudeRequest): Promise<EnforcedClaudeResponse> {
+  async enforceClaudeRequest(
+    request: ClaudeRequest,
+  ): Promise<EnforcedClaudeResponse> {
     const startTime = performance.now();
 
     // Step 1: Pre-enforcement check
@@ -97,8 +102,8 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
         latency_overhead_ms: latencyOverhead,
         cost_analysis: {
           tokens_saved: estimatedTokens,
-          cost_saved_usd: costSaved
-        }
+          cost_saved_usd: costSaved,
+        },
       };
     }
 
@@ -107,10 +112,17 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     const claudeResponse = await this.callClaude(enforcedRequest);
 
     // Step 3: Post-enforcement check (verify response)
-    const postEnforcement = await this.verifyClaudeResponse(claudeResponse, preEnforcement);
+    const postEnforcement = await this.verifyClaudeResponse(
+      claudeResponse,
+      preEnforcement,
+    );
 
     // Step 4: Generate proof chain
-    const proofChain = this.generateProofChain(request, claudeResponse, postEnforcement);
+    const proofChain = this.generateProofChain(
+      request,
+      claudeResponse,
+      postEnforcement,
+    );
 
     const latencyOverhead = performance.now() - startTime;
 
@@ -121,8 +133,8 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       latency_overhead_ms: latencyOverhead,
       cost_analysis: {
         tokens_saved: 0, // Didn't save tokens (request allowed)
-        cost_saved_usd: 0
-      }
+        cost_saved_usd: 0,
+      },
     };
   }
 
@@ -140,12 +152,12 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       headers: {
         "Content-Type": "application/json",
         "x-api-key": this.apiKey,
-        "anthropic-version": "2023-06-01"
+        "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
         ...request,
-        max_tokens: request.max_tokens || 1024
-      })
+        max_tokens: request.max_tokens || 1024,
+      }),
     });
 
     if (!response.ok) {
@@ -160,14 +172,17 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
    */
   private mockClaudeResponse(request: ClaudeRequest): ClaudeResponse {
     const userPrompt = this.extractUserPrompt(request);
-    
+
     // Generate appropriate mock response
     let mockText = "I'd be happy to help with that request.";
-    
-    if (userPrompt.toLowerCase().includes("phishing") || 
-        userPrompt.toLowerCase().includes("malware") ||
-        userPrompt.toLowerCase().includes("hack")) {
-      mockText = "I can't assist with that request as it would violate my ethical guidelines around harm prevention.";
+
+    if (
+      userPrompt.toLowerCase().includes("phishing") ||
+      userPrompt.toLowerCase().includes("malware") ||
+      userPrompt.toLowerCase().includes("hack")
+    ) {
+      mockText =
+        "I can't assist with that request as it would violate my ethical guidelines around harm prevention.";
     }
 
     return {
@@ -179,8 +194,8 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       stop_reason: "end_turn",
       usage: {
         input_tokens: this.estimateTokens(userPrompt),
-        output_tokens: this.estimateTokens(mockText)
-      }
+        output_tokens: this.estimateTokens(mockText),
+      },
     };
   }
 
@@ -190,9 +205,9 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
   private injectConstitutionalPrompt(request: ClaudeRequest): ClaudeRequest {
     return {
       ...request,
-      system: request.system 
+      system: request.system
         ? `${CONSTITUTIONAL_AI_SYSTEM_PROMPT}\n\n${request.system}`
-        : CONSTITUTIONAL_AI_SYSTEM_PROMPT
+        : CONSTITUTIONAL_AI_SYSTEM_PROMPT,
     };
   }
 
@@ -201,12 +216,12 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
    */
   private async verifyClaudeResponse(
     response: ClaudeResponse,
-    preEnforcement: EnforcementResult
+    preEnforcement: EnforcementResult,
   ): Promise<EnforcementResult> {
     // Extract response text
     const responseText = response.content
-      .filter(c => c.type === "text")
-      .map(c => c.text)
+      .filter((c) => c.type === "text")
+      .map((c) => c.text)
       .join("\n");
 
     // Check if response contains harmful content
@@ -217,7 +232,7 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     if (preEnforcement.allowed && !postCheck.allowed) {
       return {
         ...postCheck,
-        reasoning: `WARNING: Claude generated content that violates constraints despite Constitutional AI system prompt. Violations: ${postCheck.violated_constraints.join(", ")}`
+        reasoning: `WARNING: Claude generated content that violates constraints despite Constitutional AI system prompt. Violations: ${postCheck.violated_constraints.join(", ")}`,
       };
     }
 
@@ -230,17 +245,19 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
   private generateProofChain(
     request: ClaudeRequest,
     response: ClaudeResponse | null,
-    enforcement: EnforcementResult
+    enforcement: EnforcementResult,
   ): string[] {
     const chain: string[] = [];
 
     // Proof 1: Request hash
     const requestHash = createHash("sha256")
-      .update(JSON.stringify({
-        model: request.model,
-        messages: request.messages,
-        timestamp: Date.now()
-      }))
+      .update(
+        JSON.stringify({
+          model: request.model,
+          messages: request.messages,
+          timestamp: Date.now(),
+        }),
+      )
       .digest("hex");
     chain.push(`REQUEST:${requestHash}`);
 
@@ -250,11 +267,13 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     // Proof 3: Response hash (if request was allowed)
     if (response) {
       const responseHash = createHash("sha256")
-        .update(JSON.stringify({
-          id: response.id,
-          content: response.content,
-          model: response.model
-        }))
+        .update(
+          JSON.stringify({
+            id: response.id,
+            content: response.content,
+            model: response.model,
+          }),
+        )
         .digest("hex");
       chain.push(`RESPONSE:${responseHash}`);
     } else {
@@ -274,8 +293,8 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
    * Extract user prompt from request
    */
   private extractUserPrompt(request: ClaudeRequest): string {
-    const userMessages = request.messages.filter(m => m.role === "user");
-    return userMessages.map(m => m.content).join("\n");
+    const userMessages = request.messages.filter((m) => m.role === "user");
+    return userMessages.map((m) => m.content).join("\n");
   }
 
   /**
@@ -294,15 +313,15 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     const pricing: Record<string, { input: number; output: number }> = {
       "claude-opus-4": { input: 0.015, output: 0.075 }, // per 1K tokens
       "claude-sonnet-4": { input: 0.003, output: 0.015 },
-      "claude-haiku-4": { input: 0.00025, output: 0.00125 }
+      "claude-haiku-4": { input: 0.00025, output: 0.00125 },
     };
 
     const modelPricing = pricing[model] || pricing["claude-sonnet-4"];
-    
+
     // Estimate 50/50 split for input/output
     const inputCost = (tokens / 2 / 1000) * modelPricing.input;
     const outputCost = (tokens / 2 / 1000) * modelPricing.output;
-    
+
     return inputCost + outputCost;
   }
 
@@ -314,7 +333,7 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       constraints: this.listConstraints(),
       policy_version: this.getPolicyVersion(),
       enforcement_mode: "MECHANICAL", // vs "ASPIRATIONAL"
-      proof_type: "CRYPTOGRAPHIC"
+      proof_type: "CRYPTOGRAPHIC",
     };
   }
 }

@@ -9,7 +9,7 @@
  *   bun run demo.ts [--repetitions=100]
  */
 
-import { CompoundingIntelligence } from "./packages/core/compounding-intelligence";
+import { CompoundingIntelligence } from "./packages/core/compounding-intelligence.js";
 
 async function main() {
   console.log("\n");
