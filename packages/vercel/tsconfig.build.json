@@ -6,7 +6,7 @@
     "outDir": "dist",
     "rootDir": "src",
     "composite": false,
-    "module": "ESNext",
+    "module": "NodeNext",
     "target": "ESNext"
   },
   "include": ["src/deploy.ts", "src/deploy.d.ts"]

@@ -121,7 +121,17 @@ export async function POST(request: Request) {
     content: m.content,
     // Add other fields as needed
   }));
-  // const compressedMessages = await compressAndLogIfNeeded(conversationMessages);
+
+  // --- Validation: Ensure at least one message for model API ---
+  if (
+    !Array.isArray(conversationMessages) ||
+    conversationMessages.length === 0
+  ) {
+    return Response.json(
+      { error: "messages: at least one message is required" },
+      { status: 400 },
+    );
+  }
 
   // --- RAG/Memory Integration ---
   const ragMatches = await searchConversationMemory(

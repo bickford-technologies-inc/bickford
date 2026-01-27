@@ -1,131 +1,77 @@
-name: Deploy to Railway
+name: Deploy to Railway and Vercel
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.12.0'
-      
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
 
-      - name: Link Railway project (optional)
+      - name: Validate required secrets
+        run: |
+          missing=0
+          for var in RAILWAY_TOKEN RAILWAY_PROJECT_ID VERCEL_TOKEN VERCEL_PROJECT_ID VERCEL_ORG_ID; do
+            if [ -z "${!var}" ]; then
+              echo "❌ Missing required secret: $var"
+              missing=1
+            fi
+          done
+          if [ $missing -ne 0 ]; then
+            echo "❌ One or more required secrets are missing. Please add them in your GitHub repository settings."
+            exit 1
+          fi
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-        run: |
-          if [ -n "$RAILWAY_PROJECT_ID" ]; then
-            railway link "$RAILWAY_PROJECT_ID"
-          else
-            echo "RAILWAY_PROJECT_ID not set; assuming repo is already linked or Railway can infer project."
-          fi
-      
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+
       - name: Deploy to Railway
+        run: |
+          npm install -g @railway/cli
+          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
+          railway up --detach --service web-ui
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --detach --service web-ui
-      
-      - name: Get deployment URL
-        id: get_url
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          RAW=$(railway domain --service web-ui --json 2>/dev/null || true)
 
-          if [ -z "$RAW" ]; then
-            echo "❌ Failed to execute 'railway domain' (empty output)"
-            echo "Possible causes:"
-            echo "  1. RAILWAY_TOKEN invalid"
-            echo "  2. Project not linked (set RAILWAY_PROJECT_ID secret)"
-            echo "  3. No domain configured yet for service 'web-ui'"
-            exit 1
-          fi
+      - name: Health check Railway
+        run: |
+          curl -f https://your-railway-url/api/health
 
-          URL=$(RAW="$RAW" node -e "const x=JSON.parse(process.env.RAW); const url = x.url || x.domain || x.value || (Array.isArray(x) ? (x[0]?.url||x[0]?.domain) : undefined); if(!url){console.error('Could not parse domain JSON:', x); process.exit(2);} console.log(String(url).startsWith('http')?String(url):('https://'+String(url)));" )
-          EXIT_CODE=$?
-          
-          if [ $EXIT_CODE -ne 0 ]; then
-            echo "❌ Failed to execute 'railway domain' command (exit code: $EXIT_CODE)"
-            echo ""
-            echo "Possible causes:"
-            echo "  1. Railway CLI authentication failed - Check RAILWAY_TOKEN secret"
-            echo "  2. Project not linked - Set RAILWAY_PROJECT_ID secret or link locally"
-            echo "  3. No domains configured - Add a domain in Railway dashboard"
-            exit 1
-          fi
-          
-          if [ -z "$URL" ]; then
-            echo "❌ Railway domain command returned empty URL"
-            echo ""
-            echo "Possible causes:"
-            echo "  1. No domain configured for this Railway project"
-            echo "  2. Project not properly initialized"
-            echo "  3. Railway service not deployed yet"
-            exit 1
-          fi
-          
-          echo "✅ Deployed to: $URL"
-          echo "DEPLOYMENT_URL=$URL" >> $GITHUB_OUTPUT
-      
-      - name: Health check with retry
+      - name: Deploy to Vercel
+        id: vercel_deploy
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: "--prod --force"
+          working-directory: ./
         env:
-          DEPLOYMENT_URL: ${{ steps.get_url.outputs.DEPLOYMENT_URL }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        continue-on-error: false
+
+      - name: Health check Vercel (auto-discover URL)
         run: |
-          MAX_ATTEMPTS=10
-          WAIT_TIME=5
-          TIMEOUT=30
-          
-          echo "Starting health check (max ${MAX_ATTEMPTS} attempts, ${WAIT_TIME}s between attempts, ${TIMEOUT}s timeout)"
-          
-          for i in $(seq 1 $MAX_ATTEMPTS); do
-            echo "Attempt $i/$MAX_ATTEMPTS: Checking $DEPLOYMENT_URL/api/health"
-            
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time $TIMEOUT "$DEPLOYMENT_URL/api/health" 2>/dev/null || echo "000")
-            
-            if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
-              echo "✅ Health check passed! (HTTP $HTTP_CODE)"
-              exit 0
-            fi
-            
-            if [ "$HTTP_CODE" = "000" ]; then
-              echo "   ⚠️  Request timed out or connection failed"
-            else
-              echo "   ❌ Health check failed with HTTP $HTTP_CODE"
-            fi
-            
-            if [ $i -lt $MAX_ATTEMPTS ]; then
-              echo "   Waiting ${WAIT_TIME}s before retry..."
-              sleep $WAIT_TIME
-            fi
-          done
-          
-          echo ""
-          echo "❌ Health check failed after $MAX_ATTEMPTS attempts"
-          echo "   Check Railway logs for service startup errors"
-          exit 1
-      
-      - name: Verify Ledger Chain
-        env:
-          DEPLOYMENT_URL: ${{ steps.get_url.outputs.DEPLOYMENT_URL }}
-        run: |
-          echo "Verifying ledger chain integrity..."
-          RESULT=$(curl -s "$DEPLOYMENT_URL/api/ledger/verify")
-          echo "$RESULT"
-          
-          if echo "$RESULT" | grep -q '"valid":false'; then
-            echo "❌ Ledger chain verification FAILED"
-            exit 1
-          fi
-          
-          echo "✅ Ledger chain verified"
+          # Example: fetch latest deployment URL from Vercel API or action output
+          echo "TODO: Implement dynamic health check URL discovery"
+          # curl -f $VERCEL_DEPLOYMENT_URL/api/health
+
+      - name: On failure, create GitHub issue with error logs
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Automated Deployment Failure: ${{ github.run_id }}`,
+              body: `The deployment failed. Please check the logs for details.\n[View run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+            })

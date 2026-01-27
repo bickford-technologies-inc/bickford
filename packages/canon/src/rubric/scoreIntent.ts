@@ -1,5 +1,5 @@
 import { NationStateRubric, RubricEvaluation } from "@bickford/types";
-import { REQUIRED_NATION_STATE_RUBRIC } from "./nationStateRubric";
+import { REQUIRED_NATION_STATE_RUBRIC } from "./nationStateRubric.js";
 
 export function scoreIntent(
   rubric: NationStateRubric,

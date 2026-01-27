@@ -1,4 +1,4 @@
-// Node.js-compatible stub implementation for compliance and demo
+import { prisma } from "./prisma.js";
 
 export class PrismaLedger {
   private decisions: any[] = [];
@@ -26,16 +26,51 @@ export class PrismaLedger {
   }
 }
 
-// Legacy stubs for compatibility
-export async function saveMessage(...args: any[]): Promise<any> {
-  return { id: "stub-message", ...args };
+// Real Prisma-backed implementations
+export async function saveMessage({
+  userId,
+  content,
+}: {
+  userId?: string;
+  content: string;
+}): Promise<any> {
+  return prisma.message.create({
+    data: {
+      userId: userId || null,
+      content,
+    },
+  });
 }
-export async function getMessages(...args: any[]): Promise<any[]> {
-  return [];
+
+export async function getMessages(): Promise<any[]> {
+  return prisma.message.findMany({
+    orderBy: { createdAt: "asc" },
+  });
 }
-export async function saveLedgerEntry(...args: any[]): Promise<any> {
-  return { id: "stub-ledger-entry", ...args };
+
+export async function saveLedgerEntry({
+  eventType,
+  payload,
+  previousHash,
+  currentHash,
+}: {
+  eventType: string;
+  payload: any;
+  previousHash: string;
+  currentHash: string;
+}): Promise<any> {
+  return prisma.ledgerEntry.create({
+    data: {
+      eventType,
+      payload,
+      previousHash,
+      currentHash,
+    },
+  });
 }
-export async function getLedgerEntries(...args: any[]): Promise<any[]> {
-  return [];
+
+export async function getLedgerEntries(): Promise<any[]> {
+  return prisma.ledgerEntry.findMany({
+    orderBy: { timestamp: "asc" },
+  });
 }
