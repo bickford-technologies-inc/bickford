@@ -5,7 +5,7 @@
 
 import type { DenialReasonCode, ISO8601 } from "@bickford/types";
 import type { WhyNotTrace, AuthorityContext } from "@bickford/authority";
-import type { DeniedDecisionPayload } from "../types/denied";
+import type { DeniedDecisionPayload } from "../types/denied.js";
 
 export function deny(params: {
   actionId: string;
