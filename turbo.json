@@ -15,6 +15,9 @@
         "packages/core/dist/**",
         "packages/ui/dist/**",
         "packages/demo-dashboard/dist/**"
+      ],
+      "dependsOn": [
+        "^build"
       ]
     },
     "clean": {
@@ -43,7 +46,12 @@
         "CI"
       ]
     },
-    "prisma:generate": {},
+    "typecheck": {
+      "outputs": []
+    },
+    "prisma:generate": {
+      "outputs": ["packages/ledger/node_modules/@prisma/client/**"]
+    },
     "prebuild": {
       "outputs": []
     }
@@ -60,16 +68,5 @@
     "BICKFORD_API_TOKEN",
     "GITHUB_TOKEN",
     "PG_SSL"
-  ],
-  "pipeline": {
-    "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**",
-        ".next/**"
-      ]
-    }
-  }
+  ]
 }

@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "platform": {
+    "name": "Bickford Platform",
+    "description": "Execution Authority Platform for AI Systems"
+  },
+  "apps": [
+    {
+      "id": "decision-trace-viewer",
+      "path": "apps/decision-trace-viewer/app.json"
+    },
+    {
+      "id": "compression-dashboard",
+      "path": "apps/compression-dashboard/app.json"
+    },
+    {
+      "id": "constitutional-ai-enforcer",
+      "name": "Constitutional AI Enforcer",
+      "description": "Runtime policy enforcement with cryptographic proof",
+      "icon": "shield",
+      "entryScreen": "enforcement",
+      "status": "active"
+    },
+    {
+      "id": "audit-certificate-generator",
+      "name": "Audit Certificate Generator",
+      "description": "Generate compliance certificates for SOC-2, HIPAA, ISO",
+      "icon": "certificate",
+      "entryScreen": "generator",
+      "status": "beta"
+    },
+    {
+      "id": "cost-optimization",
+      "name": "Cost Optimization Dashboard",
+      "description": "Analyze and optimize AI infrastructure costs",
+      "icon": "chart",
+      "entryScreen": "dashboard",
+      "status": "active"
+    }
+  ],
+  "sharedWorkflows": {
+    "verifyLedgerIntegrity": {
+      "id": "verifyLedgerIntegrity",
+      "name": "Verify Ledger Integrity",
+      "steps": [
+        {
+          "type": "fetch",
+          "resource": "decisionLedger",
+          "params": {
+            "limit": 100000
+          }
+        },
+        {
+          "type": "verify",
+          "params": {
+            "checkHashChain": true
+          }
+        }
+      ],
+      "output": {
+        "schema": "integrityReport"
+      }
+    }
+  }
+}
