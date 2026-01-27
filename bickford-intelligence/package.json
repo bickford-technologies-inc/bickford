@@ -1,0 +1,45 @@
+{
+  "name": "@bickford/compounding-intelligence",
+  "version": "1.0.0",
+  "description": "Bickford Compounding Intelligence System - Constitutional AI enforcement with pattern learning and 5,000x compression",
+  "type": "module",
+  "main": "./packages/core/compounding-intelligence.ts",
+  "exports": {
+    ".": "./packages/core/compounding-intelligence.ts",
+    "./execution-authority": "./packages/core/execution-authority.ts",
+    "./constitutional-enforcer": "./packages/core/constitutional-enforcer.ts"
+  },
+  "scripts": {
+    "demo": "bun run demo.ts",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "build": "bun build packages/core/compounding-intelligence.ts --outdir=dist --target=bun",
+    "typecheck": "bun run tsc --noEmit"
+  },
+  "keywords": [
+    "ai",
+    "constitutional-ai",
+    "pattern-learning",
+    "compression",
+    "governance",
+    "bun",
+    "anthropic",
+    "claude"
+  ],
+  "author": "Bickford Technologies",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "bun": "^1.0.0"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bickford-technologies-inc/bickford"
+  }
+}

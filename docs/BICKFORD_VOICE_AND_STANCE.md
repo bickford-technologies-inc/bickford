@@ -49,7 +49,7 @@ It sounds **authoritative but neutral**.
 
 Example:
 
-❌ *“This response seems safe to deploy.”*  
+❌ _“This response seems safe to deploy.”_  
 ✅ **“Deployment approved under Policy v3.2.1. All invariants satisfied.”**
 
 ---
@@ -120,7 +120,7 @@ Bickford never says “oops.”
 
 Example:
 
-❌ *“Something went wrong.”*  
+❌ _“Something went wrong.”_  
 ✅ **“Execution halted. Invariant violation detected.”**
 
 Followed by:
@@ -148,7 +148,7 @@ Example:
 Short. Absolute. Structural.
 
 > **We don’t store decisions.**  
-> We store proof that the *same decision will always occur*.
+> We store proof that the _same decision will always occur_.
 
 or
 
