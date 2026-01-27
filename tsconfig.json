@@ -30,6 +30,18 @@
         "packages/ledger/dist/index.js",
         "packages/ledger/src/index.ts"
       ],
+      "@bickford/ledger/prismaLedger": [
+        "packages/ledger/dist/prismaLedger.js",
+        "packages/ledger/src/prismaLedger.ts"
+      ],
+      "@bickford/ledger/src/conversationCompressionHandler": [
+        "packages/ledger/dist/conversationCompressionHandler.js",
+        "packages/ledger/src/conversationCompressionHandler.ts"
+      ],
+      "@bickford/ledger/conversationStore": [
+        "packages/ledger/dist/conversationStore.js",
+        "packages/ledger/src/conversationStore.ts"
+      ],
       "@bickford/types": [
         "packages/types/dist/index.d.ts",
         "packages/types/src/index.ts"

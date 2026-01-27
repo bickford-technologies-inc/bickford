@@ -1,8 +1,23 @@
 {
+  "$schema": "https://railway.com/railway.schema.json",
   "build": {
-    "command": "pnpm install && pnpm run build --filter=@bickford/web-ui..."
+    "buildCommand": "pnpm --filter @bickford/web-app build",
+    "watchPatterns": [
+      "/apps/web/**"
+    ]
   },
-  "start": {
-    "command": "pnpm run start --filter=@bickford/web-ui"
+  "deploy": {
+    "runtime": "V2",
+    "numReplicas": 1,
+    "startCommand": "pnpm --filter @bickford/web-app start",
+    "sleepApplication": false,
+    "useLegacyStacker": false,
+    "multiRegionConfig": {
+      "europe-west4-drams3a": {
+        "numReplicas": 1
+      }
+    },
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
   }
 }

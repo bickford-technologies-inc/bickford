@@ -1,11 +1,11 @@
 // prisma.config.ts for Prisma 5+ datasource config
-import { defineConfig } from "@prisma/internals";
+// No import needed; export plain config object
 
-export default defineConfig({
+export default {
   datasource: {
     provider: "postgresql",
     url: {
       fromEnvVar: "DATABASE_URL",
     },
   },
-});
+};

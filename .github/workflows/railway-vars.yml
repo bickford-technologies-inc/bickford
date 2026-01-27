@@ -1,0 +1,26 @@
+# Railway Variable Sync CI
+# Runs on every push to main or env manifest change
+
+name: Railway Variable Sync
+
+on:
+  push:
+    paths:
+      - "env.manifest.json"
+      - "scripts/sync-railway-vars.ts"
+      - ".github/workflows/railway-vars.yml"
+  workflow_dispatch:
+
+jobs:
+  sync-railway-vars:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+      - name: Install Railway CLI
+        run: npm install -g railway
+      - name: Railway Auth (set RAILWAY_TOKEN secret in repo settings)
+        run: railway login --token ${{ secrets.RAILWAY_TOKEN }}
+      - name: Sync Railway Variables
+        run: bun scripts/sync-railway-vars.ts

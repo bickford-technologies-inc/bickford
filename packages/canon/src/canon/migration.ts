@@ -9,7 +9,7 @@
  * INVARIANT: Regressive migrations (backward incompatible) must be denied.
  */
 
-import type { DeniedDecisionPayload } from "../types/denied";
+import type { DeniedDecisionPayload } from "../types/denied.js";
 import { DenialReasonCode } from "@bickford/types";
 
 export interface MigrationAnalysis {

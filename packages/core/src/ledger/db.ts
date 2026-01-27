@@ -1,10 +1,12 @@
 import "server-only";
-import { PrismaClient } from "@prisma/client";
 
-let prisma: PrismaClient | null = null;
+let prisma: any = null;
 
-export function getPrismaClient(): PrismaClient {
+export function getPrismaClient(): any {
   if (!prisma) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const PrismaClient =
+      require("@prisma/client").PrismaClient || require("@prisma/client");
     prisma = new PrismaClient();
   }
   return prisma;

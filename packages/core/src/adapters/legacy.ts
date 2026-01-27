@@ -1,15 +1,22 @@
-import { Prisma } from "@prisma/client";
+type JsonValue =
+  | string
+  | number
+  | boolean
+  | { [x: string]: JsonValue }
+  | Array<JsonValue>
+  | null;
+type JsonObject = { [Key in string]?: JsonValue };
 import { Intent, Decision } from "@bickford/types";
 
-export function toLegacyIntent(i: Intent): Prisma.JsonObject {
+export function toLegacyIntent(i: Intent): JsonObject {
   return {
     ...i,
     action: i.action ?? "UNKNOWN",
     id: i.id ?? "UNKNOWN",
-  } as Prisma.JsonObject;
+  } as JsonObject;
 }
 
-export function toLegacyDecision(d: Decision): Prisma.JsonObject {
+export function toLegacyDecision(d: Decision): JsonObject {
   const decision = d as Decision & { outcome?: string; timestamp?: string };
   return {
     ...decision,
@@ -20,5 +27,5 @@ export function toLegacyDecision(d: Decision): Prisma.JsonObject {
     id: decision.id ?? "UNKNOWN",
     outcome: decision.outcome ?? "UNKNOWN",
     timestamp: decision.timestamp ?? new Date().toISOString(),
-  } as Prisma.JsonObject;
+  } as JsonObject;
 }

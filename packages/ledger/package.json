@@ -1,24 +1,29 @@
 {
-  "name": "@bickford/ledger",
-  "version": "0.0.0",
+  "name": "@bickford/superconductor-ledger",
+  "version": "1.0.0",
+  "description": "99.999%+ compression for Constitutional AI enforcement - constant 80-byte root for infinite decisions",
+  "main": "src/superconductor-ledger.ts",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": "./dist/index.js",
-    "./prismaLedger": "./dist/prismaLedger.js",
-    "./src/prismaLedger": "./src/prismaLedger.ts",
-    "./src/conversationCompressionHandler": "./src/conversationCompressionHandler.ts"
-  },
-  "files": [
-    "src",
-    "dist"
-  ],
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "demo": "tsx src/demo.ts",
+    "test": "tsx src/test.ts",
+    "build": "tsc"
   },
+  "keywords": [
+    "constitutional-ai",
+    "merkle-tree",
+    "compliance",
+    "cryptographic-proof",
+    "audit-trail"
+  ],
+  "author": "Bickford Technologies",
+  "license": "UNLICENSED",
   "dependencies": {
-    "@bickford/types": "workspace:*",
-    "pg": "^8.17.2"
+    "@bickford/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
   }
 }

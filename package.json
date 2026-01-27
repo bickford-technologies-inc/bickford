@@ -53,26 +53,33 @@
     "capture:ui": "node scripts/capture-ui.mjs",
     "assert:vercel-binding": "tsx scripts/assert-vercel-binding.ts",
     "bickford:realize": "node scripts/bickford-realize.mjs",
-    "benchmark:gaps": "node scripts/benchmark-gaps.mjs"
+    "benchmark:gaps": "node scripts/benchmark-gaps.mjs",
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "prisma:generate": "prisma generate --schema=packages/ledger/prisma/schema.prisma --config=prisma.config.js"
   },
   "bin": {
     "bickford": "./scripts/bickford-realize.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
     "@playwright/test": "^1.58.0",
     "@prisma/client": "6.19.2",
+    "@sendgrid/mail": "^8.1.6",
     "ai": "^6.0.44",
     "ajv": "^8.17.1",
-    "better-sqlite3": "^12.6.2",
     "glob": "^13.0.0",
     "pdf-lib": "^1.17.1",
-    "prisma": "6.19.2"
+    "prisma": "6.19.2",
+    "stripe": "^20.2.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.28.6",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
     "@types/babel__traverse": "^7.28.0",
-    "@types/better-sqlite3": "^7.6.13",
     "@types/bun": "^1.3.6",
     "@types/node": "25.0.9",
+    "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
     "next": "14.2.35",
     "react": "18.3.1",
@@ -81,6 +88,7 @@
     "typescript": "^5.9.3"
   },
   "engines": {
-    "node": "20.x"
-  }
+    "node": ">=20"
+  },
+  "postinstall": "pnpm exec prisma generate --schema=packages/ledger/prisma/schema.prisma"
 }

@@ -7,15 +7,19 @@ import {
   getMessages,
   saveLedgerEntry,
   getLedgerEntries,
+} from "../../../packages/ledger/src/prismaLedger";
+import {
   searchConversationMemory,
   buildConversationMemoryContext,
-} from "@bickford/ledger/src/prismaLedger";
+} from "../../../packages/ledger/src/prismaConversationMemory";
+// Node.js: Do not import from @bickford/ledger/conversationStore or Bun-native modules
+// import { readConversation } from "@bickford/ledger/conversationStore";
 import type {
   Conversation,
   ConversationMessage,
   ConversationTraceSummary,
 } from "@bickford/types";
-import { compressAndLogIfNeeded } from "@bickford/ledger/src/conversationCompressionHandler";
+// import { compressAndLogIfNeeded } from "@bickford/ledger/src/conversationCompressionHandler";
 import Anthropic from "@anthropic-ai/sdk";
 
 import { appendDailyArchive } from "../../lib/archive";
@@ -48,21 +52,25 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const conversationId = searchParams.get("conversationId");
 
-  const timeline = await getLedgerEntries();
+  const timeline: { id: string }[] = await getLedgerEntries();
   let conversation: Conversation | null = null;
 
-  if (conversationId) {
-    conversation = await readConversation(conversationId);
-  }
+  // Node.js stub: no conversation loading
+  // if (conversationId) {
+  //   conversation = await readConversation(conversationId);
+  // }
 
-  if (!conversation && timeline.length > 0) {
-    conversation = await readConversation(timeline[0].id);
-  }
+  // if (!conversation && timeline.length > 0) {
+  //   conversation = await readConversation(timeline[0].id);
+  // }
+
+  // Always return null for conversation in stub
+  conversation = null;
 
   return Response.json({
     conversation,
     timeline,
-    transcript: conversation ? buildTranscript(conversation.messages) : "",
+    transcript: "", // Always empty in Node.js stub
   });
 }
 
@@ -104,7 +112,7 @@ export async function POST(request: Request) {
   });
 
   // Fetch all messages for the timeline
-  const messages = await getMessages();
+  const messages: { userId?: string; content: string }[] = await getMessages();
 
   // --- Conversation Compression Integration ---
   // Convert messages to ConversationMessage[] if needed
@@ -113,7 +121,17 @@ export async function POST(request: Request) {
     content: m.content,
     // Add other fields as needed
   }));
-  const compressedMessages = await compressAndLogIfNeeded(conversationMessages);
+
+  // --- Validation: Ensure at least one message for model API ---
+  if (
+    !Array.isArray(conversationMessages) ||
+    conversationMessages.length === 0
+  ) {
+    return Response.json(
+      { error: "messages: at least one message is required" },
+      { status: 400 },
+    );
+  }
 
   // --- RAG/Memory Integration ---
   const ragMatches = await searchConversationMemory(
@@ -129,21 +147,40 @@ export async function POST(request: Request) {
   });
   const claudeMessages = [
     ragContext ? { role: "system", content: ragContext } : null,
-    ...compressedMessages,
+    ...conversationMessages,
   ].filter(Boolean);
   const claudeResponse = await anthropic.messages.create({
     model: "claude-sonnet-4-5-20250929",
     max_tokens: 1024,
-    messages: claudeMessages.map((m) => ({
-      role: m.role,
-      content: m.content,
-    })),
+    messages: claudeMessages
+      .filter((m): m is { role: string; content: string } => m !== null)
+      .map((m) => ({
+        role: m.role === "user" ? "user" : "assistant",
+        content: m.content,
+      })),
   });
-  const assistantReply = claudeResponse.content[0]?.text || "[No response]";
+  // Find the first text block
+  const firstTextBlock = Array.isArray(claudeResponse.content)
+    ? claudeResponse.content.find(
+        (block) =>
+          typeof block === "object" &&
+          block !== null &&
+          "type" in block &&
+          (block as any).type === "text" &&
+          typeof (block as any).text === "string",
+      )
+    : undefined;
+  const assistantReply =
+    firstTextBlock && typeof (firstTextBlock as any).text === "string"
+      ? (firstTextBlock as any).text
+      : "[No response]";
   // --- End Claude/Anthropic API Call ---
 
-  const transcript = compressedMessages
-    .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
+  const transcript = conversationMessages
+    .map(
+      (m: { role: string; content: string }) =>
+        `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`,
+    )
     .join("\n");
 
   return Response.json({

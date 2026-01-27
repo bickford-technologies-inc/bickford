@@ -1,4 +1,4 @@
-import { isExportAllowed, ExportContext } from "../export-control/checks";
+import { isExportAllowed, ExportContext } from "../export-control/checks.js";
 
 export const EXPORT_CONTROL_INVARIANT = {
   id: "EXPORT_CONTROL_ENFORCED",

@@ -1,5 +1,5 @@
-import { ControlClassification } from "../export-control/classifications";
-import { Jurisdiction } from "../export-control/jurisdictions";
+import { ControlClassification } from "../export-control/classifications.js";
+import { Jurisdiction } from "../export-control/jurisdictions.js";
 
 export type ExportDecisionArtifact = {
   decisionId: string;
