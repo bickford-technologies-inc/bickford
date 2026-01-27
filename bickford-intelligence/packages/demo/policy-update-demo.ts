@@ -24,7 +24,7 @@ async function run() {
   const enforcer = new ClaudeConstitutionalEnforcer();
   // Run under policy v1
   const requestV1 = {
-    model: "claude-3-sonnet-20250514",
+    model: "claude-sonnet-4-5-20250929",
     messages: [{ role: "user", content: prompt }],
     max_tokens: 512,
     system: `Policy Version: ${policyV1.version}`,
@@ -36,7 +36,7 @@ async function run() {
 
   // Run under policy v2
   const requestV2 = {
-    model: "claude-3-sonnet-20250514",
+    model: "claude-sonnet-4-5-20250929",
     messages: [{ role: "user", content: prompt }],
     max_tokens: 512,
     system: `Policy Version: ${policyV2.version}`,

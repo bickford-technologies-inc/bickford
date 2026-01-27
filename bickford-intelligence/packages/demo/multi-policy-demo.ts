@@ -40,7 +40,7 @@ async function run() {
     output += `📝 Prompt: "${prompt}"
 Expected: ${expected}\n`;
     const request = {
-      model: "claude-3-sonnet-20250514",
+      model: "claude-sonnet-4-5-20250929",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 512,
     };

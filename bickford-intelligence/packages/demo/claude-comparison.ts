@@ -92,7 +92,7 @@ async function runComparison() {
 
     // Create Claude request
     const request: ClaudeRequest = {
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-5-20250929",
       messages: [{ role: "user", content: scenario.prompt }],
       max_tokens: 1024,
     };
