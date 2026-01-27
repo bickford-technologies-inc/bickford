@@ -14,6 +14,17 @@ This file is automatically read by GitHub Copilot when working in this repositor
 
 ---
 
+## Enhancement Architecture
+
+This instruction set extends the existing canon by adding a compression-first layer that:
+
+- **Preserves authority** by treating deduplicated payloads as hash-addressed facts, not mutable artifacts.
+- **Strengthens verification** by keeping proof chains stable while reducing storage volatility.
+- **Amplifies compounding value** through durable, reusable artifacts that lower audit and replay cost.
+- **Keeps determinism intact** by enforcing the same inputs produce the same content hash.
+
+---
+
 ## Code Generation Rules
 
 ### 1. Always Use Bun-Native APIs
@@ -94,7 +105,7 @@ async function appendToLedger(entry: LedgerEntry) {
   const lastEntry = await db
     .query(
       `
-    SELECT current_hash FROM ledger 
+    SELECT current_hash FROM ledger
     ORDER BY created_at DESC LIMIT 1
   `,
     )
@@ -313,9 +324,9 @@ db.run(`CREATE INDEX IF NOT EXISTS idx_timestamp ON ledger(timestamp)`);
 const recent = db
   .query(
     `
-  SELECT * FROM ledger 
+  SELECT * FROM ledger
   WHERE event_type = ?
-  ORDER BY created_at DESC 
+  ORDER BY created_at DESC
   LIMIT 100
 `,
   )

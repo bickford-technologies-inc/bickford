@@ -18,7 +18,9 @@
   ],
   "author": "Bickford Technologies",
   "license": "UNLICENSED",
-  "dependencies": {},
+  "dependencies": {
+    "@bickford/types": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "tsx": "^4.7.0",

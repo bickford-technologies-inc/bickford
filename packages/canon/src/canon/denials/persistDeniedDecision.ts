@@ -6,7 +6,7 @@
  * Guarantees: No silent denials, every denial is persisted and replayable.
  */
 
-import type { DeniedDecisionPayload } from "../../types/denied";
+import type { DeniedDecisionPayload } from "../../types/denied.js";
 import { getPrisma } from "../../db/prisma.js";
 
 /**
