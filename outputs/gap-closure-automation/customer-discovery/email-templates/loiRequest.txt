@@ -1,0 +1,1 @@
+[EMAIL_TEMPLATES.loiRequest from user prompt]

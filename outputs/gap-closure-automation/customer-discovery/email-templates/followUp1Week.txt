@@ -1,0 +1,1 @@
+[EMAIL_TEMPLATES.followUp1Week from user prompt]
