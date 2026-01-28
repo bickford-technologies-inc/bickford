@@ -19,7 +19,8 @@
   "author": "Bickford Technologies",
   "license": "UNLICENSED",
   "dependencies": {
-    "@bickford/types": "workspace:*"
+    "@bickford/types": "workspace:*",
+    "@bickford/chat": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

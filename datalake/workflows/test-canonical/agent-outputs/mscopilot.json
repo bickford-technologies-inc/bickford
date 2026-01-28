@@ -1,0 +1,12 @@
+{
+  "agent": "mscopilot",
+  "output": {
+    "error": "No runner configured. Provide integration-specific runners."
+  },
+  "admissible": false,
+  "ttvEstimate": null,
+  "invariants": [],
+  "executionTime": 0,
+  "hash": "b3c3382ed18409912d8740c28dc61b0eaf8ac6beb18ae89aea765c990902b9e3",
+  "timestamp": 1769563102656
+}

@@ -29,5 +29,8 @@
     "typescript": "^5.9.3"
   },
   "type": "module",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@bickford/chat": "workspace:*"
+  }
 }

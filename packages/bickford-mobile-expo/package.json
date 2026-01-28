@@ -16,7 +16,8 @@
     "lint": "pnpm exec pnpm exec tsc -p tsconfig.json"
   },
   "dependencies": {
-    "expo": "~54.0.30"
+    "expo": "~54.0.30",
+    "@bickford/chat": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.0.0"

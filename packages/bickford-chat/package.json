@@ -1,0 +1,33 @@
+{
+  "name": "@bickford/chat",
+  "version": "0.0.0",
+  "description": "Bickford Chat: canonical chat session types and helpers",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm exec pnpm exec tsc -p tsconfig.build.json",
+    "typecheck": "pnpm exec pnpm exec tsc --noEmit",
+    "lint": "npm run typecheck",
+    "test": "echo 'No tests yet'",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "bickford",
+    "chat",
+    "session",
+    "ledger"
+  ],
+  "author": "Bickford",
+  "license": "PROPRIETARY",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "type": "module",
+  "private": true
+}

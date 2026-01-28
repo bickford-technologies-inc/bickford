@@ -13,6 +13,7 @@
   "types": "dist/index.d.ts",
   "dependencies": {
     "@bickford/canon": "workspace:*",
-    "@bickford/types": "workspace:*"
+    "@bickford/types": "workspace:*",
+    "@bickford/chat": "workspace:*"
   }
 }

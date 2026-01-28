@@ -1,0 +1,12 @@
+{
+  "agent": "copilot",
+  "output": {
+    "error": "No runner configured. Provide integration-specific runners."
+  },
+  "admissible": false,
+  "ttvEstimate": null,
+  "invariants": [],
+  "executionTime": 0,
+  "hash": "3ea125d0bff386e6754b3782b300016fc79a9cf8f8669c0a5c3db64467ddb681",
+  "timestamp": 1769563102656
+}

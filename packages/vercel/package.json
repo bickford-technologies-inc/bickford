@@ -15,8 +15,13 @@
       "types": "./dist/deploy.d.ts"
     }
   },
-  "files": ["dist", "src"],
-  "dependencies": {},
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "@bickford/chat": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "^5.9.3"
   },

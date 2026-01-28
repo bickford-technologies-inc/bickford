@@ -13,7 +13,8 @@
     "dist"
   ],
   "dependencies": {
-    "@vercel/sdk": "^1.7.0"
+    "@vercel/sdk": "^1.7.0",
+    "@bickford/chat": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.9.3"

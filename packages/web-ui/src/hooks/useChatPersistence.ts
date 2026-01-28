@@ -2,19 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-export interface ChatMessage {
-  id: string;
-  role: "user" | "system";
-  content: string;
-  timestamp: number;
-}
-
-export interface ChatThread {
-  id: string;
-  title: string;
-  messages: ChatMessage[];
-  updatedAt: number;
-}
+import type { ChatThread, ChatMessage } from "@bickford/chat";
+import {
+  toCanonicalThread,
+  fromCanonicalThread,
+} from "../bickford-chat-adapter";
 
 const STORAGE_KEY = "bickford.chat.threads";
 
@@ -26,8 +18,14 @@ export function useChatPersistence() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      setThreads(parsed);
-      setActiveThreadId(parsed[0]?.id ?? null);
+      // Convert legacy threads if needed
+      const canonicalThreads = parsed.map((t: any) =>
+        t.messages && typeof t.messages[0]?.createdAt === "string"
+          ? t // already canonical
+          : toCanonicalThread(t),
+      );
+      setThreads(canonicalThreads);
+      setActiveThreadId(canonicalThreads[0]?.id ?? null);
     }
   }, []);
 
@@ -41,15 +39,19 @@ export function useChatPersistence() {
       id,
       title: "New Thread",
       messages: [],
-      updatedAt: Date.now()
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
-    setThreads(t => [thread, ...t]);
+    setThreads((t) => [thread, ...t]);
     setActiveThreadId(id);
   }
 
-  function addMessage(role: "user" | "system", content: string) {
-    setThreads(ts =>
-      ts.map(t =>
+  function addMessage(
+    role: "user" | "assistant" | "system" | "tool",
+    content: string,
+  ) {
+    setThreads((ts) =>
+      ts.map((t) =>
         t.id === activeThreadId
           ? {
               ...t,
@@ -59,25 +61,25 @@ export function useChatPersistence() {
                   id: crypto.randomUUID(),
                   role,
                   content,
-                  timestamp: Date.now()
-                }
+                  createdAt: new Date().toISOString(),
+                } as ChatMessage,
               ],
-              updatedAt: Date.now(),
+              updatedAt: new Date().toISOString(),
               title:
                 t.title === "New Thread" && role === "user"
                   ? content.slice(0, 40)
-                  : t.title
+                  : t.title,
             }
-          : t
-      )
+          : t,
+      ),
     );
   }
 
   return {
     threads,
-    activeThread: threads.find(t => t.id === activeThreadId) ?? null,
+    activeThread: threads.find((t) => t.id === activeThreadId) ?? null,
     setActiveThreadId,
     newThread,
-    addMessage
+    addMessage,
   };
 }

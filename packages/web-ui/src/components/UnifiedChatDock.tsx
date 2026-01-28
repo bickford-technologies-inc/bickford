@@ -2,6 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import type { ChatThread, ChatMessage } from "@bickford/chat";
+import {
+  toCanonicalMessage,
+  fromCanonicalMessage,
+} from "../bickford-chat-adapter";
+
 type ChatRole = "user" | "agent";
 
 type ChatMessage = {

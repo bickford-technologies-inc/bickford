@@ -1,0 +1,12 @@
+{
+  "agent": "claude",
+  "output": {
+    "error": "No runner configured. Provide integration-specific runners."
+  },
+  "admissible": false,
+  "ttvEstimate": null,
+  "invariants": [],
+  "executionTime": 0,
+  "hash": "c857d09db23e6822e3600bc06ad8d58f92ed62bc8efd81c753f77048662cb97d",
+  "timestamp": 1769563102656
+}

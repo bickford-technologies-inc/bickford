@@ -1,0 +1,12 @@
+{
+  "agent": "codex",
+  "output": {
+    "error": "No runner configured. Provide integration-specific runners."
+  },
+  "admissible": false,
+  "ttvEstimate": null,
+  "invariants": [],
+  "executionTime": 0,
+  "hash": "57de4cf40144bdf7d00010f2f5557a7d642c2b9705309bfade167dd313e2ca93",
+  "timestamp": 1769563102656
+}

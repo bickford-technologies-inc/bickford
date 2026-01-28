@@ -22,7 +22,8 @@
   "dependencies": {
     "@bickford/types": "workspace:*",
     "@bickford/superconductor-ledger": "workspace:*",
-    "next": "*"
+    "next": "*",
+    "@bickford/chat": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "*"

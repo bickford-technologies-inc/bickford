@@ -41,7 +41,8 @@
     "@bickford/types": "workspace:*",
     "@bickford/db": "workspace:*",
     "express-rate-limit": "^7.5.1",
-    "rate-limit-redis": "^4.2.1"
+    "rate-limit-redis": "^4.2.1",
+    "@bickford/chat": "workspace:*"
   },
   "type": "module"
 }

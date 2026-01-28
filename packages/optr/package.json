@@ -33,7 +33,8 @@
     "@anthropic-ai/sdk": "^0.71.2",
     "@bickford/types": "workspace:*",
     "@octokit/rest": "^22.0.1",
-    "openai": "^6.16.0"
+    "openai": "^6.16.0",
+    "@bickford/chat": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.0.10",

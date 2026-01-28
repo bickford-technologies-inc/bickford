@@ -15,7 +15,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@prisma/client": "6.19.2"
+    "@prisma/client": "6.19.2",
+    "@bickford/chat": "workspace:*"
   },
   "devDependencies": {
     "prisma": "6.19.2",

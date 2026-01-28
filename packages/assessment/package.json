@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@bickford/superconductor-ledger": "workspace:*",
-    "@bickford/core": "workspace:*"
+    "@bickford/core": "workspace:*",
+    "@bickford/chat": "workspace:*"
   }
 }
