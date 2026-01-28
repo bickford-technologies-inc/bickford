@@ -9,6 +9,9 @@ import * as path from "path";
 import { createClient } from "redis";
 import { v4 as uuidv4 } from "uuid";
 
+// Add a module declaration for 'uuid' to silence the missing types error
+declare module "uuid";
+
 import { Customer } from "./models/Customer";
 import { Interview } from "./models/Interview";
 import { Interviewer } from "./models/Interviewer";

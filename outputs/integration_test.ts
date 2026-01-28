@@ -9,10 +9,13 @@
  * dependencies: logger.ts
  */
 import { log, logError } from "./logger";
+import { readdirSync, statSync, existsSync, readFileSync } from "fs";
+import { join } from "path";
 // Bun environment check
 if (typeof Bun === "undefined") {
   logError(
     "[integration_test.ts] ERROR: This script must be run with Bun. See outputs/DEVELOPER_ONBOARDING.md.",
+    undefined,
   );
   process.exit(1);
 }
@@ -45,7 +48,7 @@ for (const script of scripts) {
     log(`Integration: Script found at ${script}`);
     console.log(`✅ Script found at ${script}`);
   } else {
-    logError(`Integration: Script missing at ${script}`);
+    logError(`Integration: Script missing at ${script}`, undefined);
     console.log(`❌ Script missing at ${script}`);
     allPass = false;
   }
@@ -58,7 +61,7 @@ if (allPass) {
   );
   updateStatus("integration_test.ts", "success");
 } else {
-  logError("Integration test FAILED: Some scripts are missing.");
+  logError("Integration test FAILED: Some scripts are missing.", undefined);
   console.log("\n⚠️ Integration test FAILED: Some scripts are missing.");
   updateStatus("integration_test.ts", "error", "Some scripts are missing.");
   process.exit(1);

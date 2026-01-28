@@ -13,6 +13,7 @@ import { log, logError } from "./logger";
 if (typeof Bun === "undefined") {
   logError(
     "[list_scripts.ts] ERROR: This script must be run with Bun. See outputs/DEVELOPER_ONBOARDING.md.",
+    undefined,
   );
   process.exit(1);
 }
@@ -25,7 +26,8 @@ if (process.argv.includes("--help")) {
   process.exit(0);
 }
 
-import { readdirSync, statSync, existsSync, spawnSync } from "fs";
+import { readdirSync, statSync, existsSync } from "fs";
+import { spawnSync } from "child_process";
 import { join } from "path";
 
 function findScripts(dir: string): string[] {

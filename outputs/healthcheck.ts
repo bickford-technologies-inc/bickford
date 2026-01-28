@@ -9,10 +9,13 @@
  * dependencies: logger.ts
  */
 import { log, logError } from "./logger";
+import { readdirSync, statSync, existsSync, readFileSync } from "fs";
+import { join } from "path";
 // Bun environment check
 if (typeof Bun === "undefined") {
   logError(
     "[healthcheck.ts] ERROR: This script must be run with Bun. See outputs/DEVELOPER_ONBOARDING.md.",
+    undefined,
   );
   process.exit(1);
 }
@@ -45,7 +48,7 @@ for (const script of scripts) {
     log(`Healthcheck: Script found at ${script}`);
     console.log(`✅ Script found at ${script}`);
   } else {
-    logError(`Healthcheck: Script missing at ${script}`);
+    logError(`Healthcheck: Script missing at ${script}`, undefined);
     console.log(`❌ Script missing at ${script}`);
     allPass = false;
   }
@@ -71,7 +74,7 @@ if (allPass) {
   log("Healthcheck PASSED: All scripts present in outputs/ tree.");
   console.log("\n🎉 Healthcheck PASSED: All scripts present in outputs/ tree.");
 } else {
-  logError("Healthcheck FAILED: Some scripts are missing.");
+  logError("Healthcheck FAILED: Some scripts are missing.", undefined);
   console.log("\n⚠️ Healthcheck FAILED: Some scripts are missing.");
   process.exit(1);
 }

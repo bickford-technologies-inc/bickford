@@ -26,7 +26,7 @@ if (existsSync(LOG_PATH)) {
  * Log a message to console and automation.log
  * @param {string} message
  */
-export function log(message) {
+export function log(message: string) {
   const timestamp = new Date().toISOString();
   const line = `[${timestamp}] ${message}`;
   console.log(line);
@@ -40,7 +40,7 @@ export function log(message) {
  * @param {string} message
  * @param {unknown} [err]
  */
-export function logError(message, err) {
+export function logError(message: string, err?: unknown) {
   const timestamp = new Date().toISOString();
   const errorMsg =
     `[${timestamp}] ERROR: ${message}` +
