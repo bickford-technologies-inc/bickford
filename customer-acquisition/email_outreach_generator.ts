@@ -1,5 +1,4 @@
 // Bun-native TypeScript script for generating personalized emails
-import { readFile } from "bun";
 
 interface Lead {
   company: string;
@@ -9,7 +8,7 @@ interface Lead {
 }
 
 const leads: Lead[] = JSON.parse(
-  await readFile("./customer-acquisition/qualified_leads.json").text(),
+  await Bun.file("./customer-acquisition/qualified_leads.json").text(),
 );
 
 const emails = leads.map((lead, i) => {
