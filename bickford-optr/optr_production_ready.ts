@@ -36,8 +36,10 @@ for (const entry of entries) {
   previousHash = currentHash;
 }
 
-await Bun.write(
-  "./bickford-optr/production_ledger.jsonl",
-  ledger.map((e) => JSON.stringify(e)).join("\n"),
-);
-console.log("OPTR production ledger written and hash chain verified.");
+(async () => {
+  await Bun.write(
+    "./bickford-optr/production_ledger.jsonl",
+    ledger.map((e) => JSON.stringify(e)).join("\n"),
+  );
+  console.log("OPTR production ledger written and hash chain verified.");
+})();
