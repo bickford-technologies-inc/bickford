@@ -1,5 +1,4 @@
 // Bun-native TypeScript script for generating personalized emails
-import { writeFile } from "bun";
 import { readFile } from "bun";
 
 interface Lead {
@@ -30,5 +29,5 @@ const csv = [
   ),
 ].join("\n");
 
-await writeFile("./customer-acquisition/emails_to_send.csv", csv);
+await Bun.write("./customer-acquisition/emails_to_send.csv", csv);
 console.log("Personalized emails generated and saved to emails_to_send.csv");
