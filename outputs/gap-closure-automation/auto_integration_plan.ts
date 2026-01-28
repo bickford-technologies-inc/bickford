@@ -10,10 +10,15 @@ const plan = `# GAP-008: Integration Plan
 - Week 2: Organizational integration planning (Owner: Alex)
 - Week 3: Customer migration planning (Owner: Sam)
 - Week 4: Review and refinement (Owner: Derek)
-\nRisks: Integration complexity, customer migration delays\nMitigations: Weekly review, dedicated migration lead\n`;
 
-await write(
-  "outputs/gap-closure-automation/evidence/GAP-008/integration_plan.md",
-  plan,
-);
-console.log("GAP-008 integration plan generated.");
+Risks: Integration complexity, customer migration delays
+Mitigations: Weekly review, dedicated migration lead
+`;
+
+(async () => {
+  await write(
+    "outputs/gap-closure-automation/evidence/GAP-008/integration_plan.md",
+    plan,
+  );
+  console.log("GAP-008 integration plan generated.");
+})();
