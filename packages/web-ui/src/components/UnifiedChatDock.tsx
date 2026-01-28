@@ -14,7 +14,7 @@ type ChatMessage = {
   id: string;
   role: ChatRole;
   content: string;
-  timestamp: number;
+  createdAt: number;
 };
 
 type ChatArchive = {
@@ -98,6 +98,7 @@ function normalizeMessages(
     text?: string;
     author?: string;
     timestamp?: number | string;
+    createdAt?: string | number;
   }>,
 ): ChatMessage[] {
   return messages
@@ -105,16 +106,26 @@ function normalizeMessages(
     .map((message) => {
       const role = message.role ?? message.author ?? "agent";
       const normalizedRole: ChatRole = role === "user" ? "user" : "agent";
+      let createdAt: string;
+      if (typeof message.createdAt === "string") {
+        createdAt = message.createdAt;
+      } else if (typeof message.createdAt === "number") {
+        createdAt = new Date(message.createdAt).toISOString();
+      } else if (typeof message.timestamp === "number") {
+        createdAt = new Date(message.timestamp).toISOString();
+      } else if (message.timestamp) {
+        const parsed = Date.parse(String(message.timestamp));
+        createdAt = Number.isFinite(parsed)
+          ? new Date(parsed).toISOString()
+          : new Date().toISOString();
+      } else {
+        createdAt = new Date().toISOString();
+      }
       return {
         id: message.id ?? crypto.randomUUID(),
         role: normalizedRole,
         content: message.content ?? message.text ?? "",
-        timestamp:
-          typeof message.timestamp === "number"
-            ? message.timestamp
-            : Number.isFinite(Date.parse(String(message.timestamp)))
-              ? Date.parse(String(message.timestamp))
-              : Date.now(),
+        createdAt,
       };
     })
     .filter((message) => message.content.trim().length > 0);
@@ -298,7 +309,7 @@ export default function UnifiedChatDock() {
       id: crypto.randomUUID(),
       role,
       content,
-      timestamp: Date.now(),
+      createdAt: new Date().toISOString(),
     };
 
     setState((prev) => {

@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-import { readProofLedger } from "@bickford/ledger";
+import { readProofLedger } from "@bickford/superconductor-ledger";
 
 const UI_FILES = [
   "app/layout.tsx",
@@ -85,9 +85,7 @@ export function getLatestUiBinding(): UiBindingEntry | null {
   return entries.at(-1) ?? null;
 }
 
-export async function assertUiLedgerBinding(options?: {
-  required?: boolean;
-}) {
+export async function assertUiLedgerBinding(options?: { required?: boolean }) {
   if (options?.required === false) {
     return;
   }

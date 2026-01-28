@@ -2,7 +2,7 @@
   "name": "@bickford/superconductor-ledger",
   "version": "1.0.0",
   "description": "99.999%+ compression for Constitutional AI enforcement - constant 80-byte root for infinite decisions",
-  "main": "src/superconductor-ledger.ts",
+  "main": "src/index.ts",
   "type": "module",
   "scripts": {
     "demo": "tsx src/demo.ts",

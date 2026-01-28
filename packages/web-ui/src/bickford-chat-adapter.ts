@@ -1,5 +1,4 @@
-// NOTE: This file now uses canonical types from @bickford/chat via bickford-chat-adapter
-import { toCanonicalMessage, fromCanonicalMessage } from "../bickford-chat-adapter";
+// NOTE: This file now uses canonical types from @bickford/chat
 // Adapter to use @bickford/chat canonical types in web-ui
 import type {
   ChatThread as CanonicalChatThread,
@@ -7,8 +6,20 @@ import type {
   ChatRole as CanonicalChatRole,
 } from "@bickford/chat";
 
-// Legacy types in web-ui
-import type { Thread, Message, Role } from "./chat-types";
+type Message = {
+  id: string;
+  role: string;
+  content: string;
+};
+
+type Thread = {
+  id: string;
+  title?: string;
+  createdAt: string;
+  messages: Message[];
+};
+
+type Role = string;
 
 // Convert legacy Message to CanonicalChatMessage
 export function toCanonicalMessage(msg: Message): CanonicalChatMessage {
@@ -37,15 +48,5 @@ export function fromCanonicalMessage(msg: CanonicalChatMessage): Message {
     id: msg.id,
     role: msg.role as Role,
     content: msg.content,
-  };
-}
-
-// Convert CanonicalChatThread to legacy Thread
-export function fromCanonicalThread(thread: CanonicalChatThread): Thread {
-  return {
-    id: thread.id,
-    title: thread.title ?? "",
-    createdAt: thread.createdAt,
-    messages: thread.messages.map(fromCanonicalMessage),
   };
 }

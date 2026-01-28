@@ -1,4 +1,4 @@
-import { appendLedger } from "@bickford/ledger";
+import { appendLedger } from "@bickford/superconductor-ledger";
 import type { LedgerEntry } from "@bickford/types";
 
 export type SoraVideoStatus = "queued" | "in_progress" | "completed" | "failed";
@@ -72,13 +72,16 @@ export type SoraPerformanceMetrics = {
 };
 
 function buildBaseUrl(baseUrl?: string) {
-  return (baseUrl || process.env.OPENAI_BASE_URL || "https://api.openai.com/v1")
-    .replace(/\/+$/, "");
+  return (
+    baseUrl ||
+    process.env.OPENAI_BASE_URL ||
+    "https://api.openai.com/v1"
+  ).replace(/\/+$/, "");
 }
 
 export async function createSoraVideoJob(
   request: SoraVideoRequest,
-  options: { apiKey?: string; baseUrl?: string } = {}
+  options: { apiKey?: string; baseUrl?: string } = {},
 ): Promise<SoraVideoJob> {
   const apiKey = options.apiKey || process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -93,10 +96,13 @@ export async function createSoraVideoJob(
   if (request.remixVideoId) form.append("remix_video_id", request.remixVideoId);
 
   if (request.inputReference) {
-    const data = request.inputReference.data instanceof Uint8Array
-      ? request.inputReference.data
-      : new Uint8Array(request.inputReference.data);
-    const blob = new Blob([data as BlobPart], { type: request.inputReference.mimeType });
+    const data =
+      request.inputReference.data instanceof Uint8Array
+        ? request.inputReference.data
+        : new Uint8Array(request.inputReference.data);
+    const blob = new Blob([data as BlobPart], {
+      type: request.inputReference.mimeType,
+    });
     form.append("input_reference", blob, request.inputReference.fileName);
   }
 
@@ -127,18 +133,21 @@ export async function createSoraVideoJob(
 
 export async function retrieveSoraVideoJob(
   videoId: string,
-  options: { apiKey?: string; baseUrl?: string } = {}
+  options: { apiKey?: string; baseUrl?: string } = {},
 ): Promise<SoraVideoJob> {
   const apiKey = options.apiKey || process.env.OPENAI_API_KEY;
   if (!apiKey) {
     throw new Error("OPENAI_API_KEY is required to retrieve a Sora video job.");
   }
 
-  const response = await fetch(`${buildBaseUrl(options.baseUrl)}/videos/${videoId}`, {
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
+  const response = await fetch(
+    `${buildBaseUrl(options.baseUrl)}/videos/${videoId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
     },
-  });
+  );
 
   if (!response.ok) {
     const body = await response.text();
@@ -164,7 +173,7 @@ export async function createSoraVideoJobAndPoll(
     baseUrl?: string;
     pollIntervalMs?: number;
     maxAttempts?: number;
-  } = {}
+  } = {},
 ): Promise<SoraVideoJob> {
   const job = await createSoraVideoJob(request, options);
   const pollInterval = options.pollIntervalMs ?? 5000;
@@ -186,7 +195,11 @@ export async function createSoraVideoJobAndPoll(
 
 export async function downloadSoraContent(
   videoId: string,
-  options: { apiKey?: string; baseUrl?: string; variant?: SoraContentVariant } = {}
+  options: {
+    apiKey?: string;
+    baseUrl?: string;
+    variant?: SoraContentVariant;
+  } = {},
 ): Promise<ArrayBuffer> {
   const apiKey = options.apiKey || process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -216,7 +229,7 @@ export async function downloadSoraContent(
 
 export async function listSoraVideos(
   params: SoraListParams = {},
-  options: { apiKey?: string; baseUrl?: string } = {}
+  options: { apiKey?: string; baseUrl?: string } = {},
 ): Promise<SoraListResponse> {
   const apiKey = options.apiKey || process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -228,11 +241,14 @@ export async function listSoraVideos(
   if (params.after) query.set("after", params.after);
   if (params.order) query.set("order", params.order);
 
-  const response = await fetch(`${buildBaseUrl(options.baseUrl)}/videos?${query.toString()}`, {
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
+  const response = await fetch(
+    `${buildBaseUrl(options.baseUrl)}/videos?${query.toString()}`,
+    {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
     },
-  });
+  );
 
   if (!response.ok) {
     const body = await response.text();
@@ -257,19 +273,22 @@ export async function listSoraVideos(
 
 export async function deleteSoraVideo(
   videoId: string,
-  options: { apiKey?: string; baseUrl?: string } = {}
+  options: { apiKey?: string; baseUrl?: string } = {},
 ): Promise<void> {
   const apiKey = options.apiKey || process.env.OPENAI_API_KEY;
   if (!apiKey) {
     throw new Error("OPENAI_API_KEY is required to delete a Sora video.");
   }
 
-  const response = await fetch(`${buildBaseUrl(options.baseUrl)}/videos/${videoId}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
+  const response = await fetch(
+    `${buildBaseUrl(options.baseUrl)}/videos/${videoId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
     },
-  });
+  );
 
   if (!response.ok) {
     const body = await response.text();
@@ -297,7 +316,7 @@ export function scoreSoraPerformance(metrics: SoraPerformanceMetrics): number {
 
 export function attachPerformanceMetrics(
   payload: SoraLedgerPayload,
-  metrics: SoraPerformanceMetrics
+  metrics: SoraPerformanceMetrics,
 ): SoraLedgerPayload {
   return {
     ...payload,
@@ -306,7 +325,9 @@ export function attachPerformanceMetrics(
   };
 }
 
-export function buildSoraLedgerEntry(payload: SoraLedgerPayload): SoraLedgerEntry {
+export function buildSoraLedgerEntry(
+  payload: SoraLedgerPayload,
+): SoraLedgerEntry {
   const ts = new Date().toISOString();
   return {
     id: `sora_${payload.videoId}_${Date.now()}`,
@@ -319,7 +340,10 @@ export function buildSoraLedgerEntry(payload: SoraLedgerPayload): SoraLedgerEntr
   };
 }
 
-export function recordSoraVideoEvent(threadId: string, payload: SoraLedgerPayload): SoraLedgerEntry {
+export function recordSoraVideoEvent(
+  threadId: string,
+  payload: SoraLedgerPayload,
+): SoraLedgerEntry {
   const entry = buildSoraLedgerEntry(payload);
   appendLedger(threadId, entry as LedgerEntry);
   return entry;

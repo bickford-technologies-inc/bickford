@@ -24,6 +24,7 @@
     "@bickford/vercel": "workspace:*",
     "@bickford/vercel-integration": "workspace:*",
     "@bickford/web": "workspace:*",
+    "@bickford/bickford-ui": "workspace:*",
     "next": "16.1.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",

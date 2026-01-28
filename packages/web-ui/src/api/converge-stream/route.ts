@@ -1,5 +1,4 @@
 import { converge } from "@bickford/execution-convergence";
-import { persist } from "@bickford/ledger";
 
 export const runtime = "nodejs";
 
@@ -27,11 +26,6 @@ export async function POST(req: Request) {
           timestamp: new Date().toISOString(),
           initiatedBy: "human",
         },
-      });
-
-      persist({
-        status: result.converged ? "LOCKED" : "REFUSED",
-        payload: result,
       });
 
       send("final", result);

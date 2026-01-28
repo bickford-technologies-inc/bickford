@@ -1,4 +1,4 @@
-import { readProofLedger } from "@bickford/ledger";
+import { readProofLedger } from "@bickford/superconductor-ledger";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

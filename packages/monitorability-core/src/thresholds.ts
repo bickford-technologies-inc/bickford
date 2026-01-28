@@ -1,4 +1,4 @@
-import type { MonitorabilityThreshold } from "./types";
+import type { MonitorabilityThreshold } from "./types.js";
 
 export const MONITORABILITY_THRESHOLDS: MonitorabilityThreshold[] = [
   {

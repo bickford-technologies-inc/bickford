@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 
 import { canonicalHash, signHash } from "@bickford/authority";
-import { appendProofLedger } from "@bickford/ledger";
+import { appendProofLedger } from "@bickford/superconductor-ledger";
 
 import {
   computeUiSurfaceHashes,

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import './App.css'
-import UnifiedChatDock from './UnifiedChatDock'
+import UnifiedChatDock from './UnifiedChatDock.js'
 
 type LedgerEvent = {
   id: string

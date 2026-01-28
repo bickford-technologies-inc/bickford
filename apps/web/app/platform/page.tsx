@@ -1,20 +1,4 @@
-import dynamic from "next/dynamic";
-
-// Dynamically import platform panels from bickford-ui
-const ExecutionEnvelopePanel = dynamic(
-  () =>
-    import("@bickford/bickford-ui/panels/ExecutionEnvelopePanel").then(
-      (m) => m.ExecutionEnvelopePanel,
-    ),
-  { ssr: false },
-);
-const SlowdownReasonPanel = dynamic(
-  () =>
-    import("@bickford/bickford-ui/panels/SlowdownReasonPanel").then(
-      (m) => m.SlowdownReasonPanel,
-    ),
-  { ssr: false },
-);
+import { PlatformPanels } from "./PlatformPanels.client";
 
 // Example envelope data for demonstration
 const exampleEnvelope = {
@@ -37,14 +21,7 @@ export default function PlatformPage() {
         </a>
         <a href="/canon-dag">Canon DAG</a>
       </nav>
-      <section style={{ marginBottom: 32 }}>
-        <h2>Execution Envelope Panel</h2>
-        <ExecutionEnvelopePanel envelope={exampleEnvelope} />
-      </section>
-      <section>
-        <h2>Slowdown Reason Panel</h2>
-        <SlowdownReasonPanel envelope={exampleEnvelope} />
-      </section>
+      <PlatformPanels envelope={exampleEnvelope} />
     </main>
   );
 }

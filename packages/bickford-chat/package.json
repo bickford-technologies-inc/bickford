@@ -26,6 +26,7 @@
   "author": "Bickford",
   "license": "PROPRIETARY",
   "devDependencies": {
+    "@types/node": "^25.0.10",
     "typescript": "^5.9.3"
   },
   "type": "module",

@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { listThreads } from "@bickford/ledger";
+import { listThreads } from "@bickford/superconductor-ledger";
 
 export async function GET() {
   const threads = await listThreads();

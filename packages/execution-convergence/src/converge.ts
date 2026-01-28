@@ -17,8 +17,6 @@ export function converge(input: ConvergenceInput): ConvergenceResult {
   if (input.mode !== "EXECUTION") {
     return {
       converged: false,
-      status: "REFUSED",
-      refusalReason: { code: "INVALID_MODE" },
       reason: "invalid_mode",
     };
   }
@@ -31,8 +29,6 @@ export function converge(input: ConvergenceInput): ConvergenceResult {
   if (auditors.length === 0) {
     return {
       converged: false,
-      status: "REFUSED",
-      refusalReason: { code: "NO_AUDITOR" },
       reason: "no_auditor",
     };
   }
@@ -47,12 +43,6 @@ export function converge(input: ConvergenceInput): ConvergenceResult {
     if (!authorityOutput || !Array.isArray(authorityOutput.content)) {
       return {
         converged: false,
-        status: "REFUSED",
-        refusalReason: {
-          code: "REFUSAL",
-          message:
-            "Authority did not provide a non-empty array as executable plan",
-        },
         reason: "no_executable_plan",
       };
     }
@@ -65,8 +55,6 @@ export function converge(input: ConvergenceInput): ConvergenceResult {
     } catch (err) {
       return {
         converged: false,
-        status: "REFUSED",
-        refusalReason: { code: "REFUSAL", message: "invalid step structure" },
         reason: "refusal",
       };
     }
@@ -87,7 +75,6 @@ export function converge(input: ConvergenceInput): ConvergenceResult {
 
     return {
       converged: true,
-      status: "LOCKED",
       artifact: { executablePlan },
       score,
       trace,
@@ -96,8 +83,6 @@ export function converge(input: ConvergenceInput): ConvergenceResult {
     if (err instanceof RefusalError) {
       return {
         converged: false,
-        status: "REFUSED",
-        refusalReason: { code: "REFUSAL", message: err.message },
         reason: "refusal",
       };
     }

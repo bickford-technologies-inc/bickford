@@ -6,7 +6,8 @@
     "rootDir": "src",
     "outDir": "dist",
     "jsx": "react-jsx",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "lib": ["DOM", "DOM.Iterable", "ES2020"]
   },
   "include": ["src"]

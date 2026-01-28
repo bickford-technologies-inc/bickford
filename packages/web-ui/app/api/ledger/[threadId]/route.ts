@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import { writeThread } from "@bickford/ledger";
+import { writeThread } from "@bickford/superconductor-ledger";
 import { LedgerEntry } from "@bickford/types";
 import crypto from "node:crypto";
 

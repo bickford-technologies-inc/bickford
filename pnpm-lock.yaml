@@ -86,6 +86,9 @@ importers:
       '@bickford/authority':
         specifier: workspace:*
         version: link:../../packages/authority
+      '@bickford/bickford-ui':
+        specifier: workspace:*
+        version: link:../../packages/bickford-ui
       '@bickford/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -178,6 +181,9 @@ importers:
 
   packages/bickford-chat:
     devDependencies:
+      '@types/node':
+        specifier: ^25.0.10
+        version: 25.0.10
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -258,6 +264,15 @@ importers:
       '@bickford/chat':
         specifier: workspace:*
         version: link:../bickford-chat
+
+  packages/bickford-ui:
+    dependencies:
+      react:
+        specifier: ^16.13.1
+        version: 16.14.0
+      react-dom:
+        specifier: ^16.13.1
+        version: 16.14.0(react@16.14.0)
 
   packages/canon:
     dependencies:
@@ -425,6 +440,9 @@ importers:
       '@types/node':
         specifier: '*'
         version: 25.0.10
+      bun-types:
+        specifier: ^1.3.7
+        version: 1.3.7
 
   packages/executor:
     dependencies:
@@ -547,6 +565,9 @@ importers:
         version: 7.28.6
       '@babel/traverse':
         specifier: ^7.28.0
+        version: 7.28.6
+      '@babel/types':
+        specifier: ^7.28.6
         version: 7.28.6
       '@bickford/chat':
         specifier: workspace:*
@@ -3279,6 +3300,9 @@ packages:
   bun-types@1.3.6:
     resolution: {integrity: sha512-OlFwHcnNV99r//9v5IIOgQ9Uk37gZqrNMCcqEaExdkVq3Avwqok1bJFmvGMCkCE0FqzdY8VMOZpfpR3lwI+CsQ==}
 
+  bun-types@1.3.7:
+    resolution: {integrity: sha512-qyschsA03Qz+gou+apt6HNl6HnI+sJJLL4wLDke4iugsE6584CMupOtTY1n+2YC9nGVrEKUlTs99jjRLKgWnjQ==}
+
   busboy@1.6.0:
     resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
     engines: {node: '>=10.16.0'}
@@ -5640,6 +5664,11 @@ packages:
   react-devtools-core@6.1.5:
     resolution: {integrity: sha512-ePrwPfxAnB+7hgnEr8vpKxL9cmnp7F322t8oqcPshbIQQhDKgFDW4tjhF2wjVbdXF9O/nyuy3sQWd9JGpiLPvA==}
 
+  react-dom@16.14.0:
+    resolution: {integrity: sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw==}
+    peerDependencies:
+      react: ^16.14.0
+
   react-dom@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -5693,6 +5722,10 @@ packages:
     peerDependencies:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
+
+  react@16.14.0:
+    resolution: {integrity: sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g==}
+    engines: {node: '>=0.10.0'}
 
   react@18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
@@ -5844,6 +5877,9 @@ packages:
   sax@1.4.4:
     resolution: {integrity: sha512-1n3r/tGXO6b6VXMdFT54SHzT9ytu9yr7TaELowdYpMqY/Ao7EnlQGmAQ1+RatX7Tkkdm6hONI2owqNx2aZj5Sw==}
     engines: {node: '>=11.0.0'}
+
+  scheduler@0.19.1:
+    resolution: {integrity: sha512-n/zwRWRYSUj0/3g/otKDRPMh6qv2SYMWNq85IEa8iZyAv8od9zDYpGSnpBEjNgcMNq6Scbu5KfIPxNF72R/2EA==}
 
   scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
@@ -9819,6 +9855,10 @@ snapshots:
     dependencies:
       '@types/node': 25.0.10
 
+  bun-types@1.3.7:
+    dependencies:
+      '@types/node': 25.0.10
+
   busboy@1.6.0:
     dependencies:
       streamsearch: 1.1.0
@@ -12740,6 +12780,14 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
+  react-dom@16.14.0(react@16.14.0):
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+      prop-types: 15.8.1
+      react: 16.14.0
+      scheduler: 0.19.1
+
   react-dom@18.2.0(react@18.2.0):
     dependencies:
       loose-envify: 1.4.0
@@ -12838,6 +12886,12 @@ snapshots:
       prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
+
+  react@16.14.0:
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+      prop-types: 15.8.1
 
   react@18.2.0:
     dependencies:
@@ -13050,6 +13104,11 @@ snapshots:
   safer-buffer@2.1.2: {}
 
   sax@1.4.4: {}
+
+  scheduler@0.19.1:
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
 
   scheduler@0.23.2:
     dependencies:

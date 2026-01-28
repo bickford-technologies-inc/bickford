@@ -1,4 +1,4 @@
-import { readProofLedger } from "@bickford/ledger";
+import { readProofLedger } from "@bickford/superconductor-ledger";
 
 type DecisionTraceViewerProps = {
   searchParams?: { intent?: string };

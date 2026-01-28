@@ -1,5 +1,5 @@
-import type { MonitorabilityInvariantInput } from "./types";
-import { MONITORABILITY_THRESHOLDS } from "./thresholds";
+import type { MonitorabilityInvariantInput } from "./types.js";
+import { MONITORABILITY_THRESHOLDS } from "./thresholds.js";
 
 export interface InvariantResult {
   ok: boolean;

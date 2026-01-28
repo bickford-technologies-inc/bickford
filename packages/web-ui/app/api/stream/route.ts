@@ -1,4 +1,4 @@
-import { appendLedger } from "@bickford/ledger";
+import { appendLedger } from "@bickford/superconductor-ledger";
 import { LedgerEntry } from "@bickford/types";
 import crypto from "node:crypto";
 

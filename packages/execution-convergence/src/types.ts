@@ -70,4 +70,7 @@ export type ConvergenceResult = {
 
   /** optional execution trace */
   trace?: unknown;
+
+  /** optional artifact payload */
+  artifact?: { executablePlan: ExecutableStep[] };
 };

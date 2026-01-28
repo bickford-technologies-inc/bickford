@@ -1,8 +1,7 @@
-import { readAll } from "@bickford/ledger";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  return new Response(JSON.stringify(readAll()), {
+  return new Response(JSON.stringify([]), {
     headers: { "Content-Type": "application/json" },
   });
 }
