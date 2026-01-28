@@ -21,4 +21,6 @@ async function listModels() {
   console.log("Available Anthropic models:", data);
 }
 
-await listModels();
+(async () => {
+  await listModels();
+})();

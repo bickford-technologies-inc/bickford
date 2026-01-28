@@ -8,7 +8,10 @@
  * last_updated: 2026-01-28
  * dependencies: logger.ts, crypto, fs
  */
-import { log, logError } from "../../logger";
+import { log, logError } from "../logger";
+import { file } from "bun";
+import { appendFileSync, writeFileSync } from "fs";
+import { createHash } from "crypto";
 // Bun environment check
 if (typeof Bun === "undefined") {
   logError(
@@ -145,4 +148,6 @@ async function runBatchExecutions(n: number) {
   log(`${n} OPTR Anthropic executions completed.`);
 }
 
-await runBatchExecutions(1000);
+(async () => {
+  await runBatchExecutions(1000);
+})();

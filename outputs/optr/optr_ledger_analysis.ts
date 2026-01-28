@@ -39,4 +39,7 @@ async function analyzeLedger() {
     console.log(`First hash chain violation at entry #${firstViolation}`);
 }
 
-await analyzeLedger();
+// Top-level await is not allowed in CommonJS; use async IIFE for compatibility
+(async () => {
+  await analyzeLedger();
+})();

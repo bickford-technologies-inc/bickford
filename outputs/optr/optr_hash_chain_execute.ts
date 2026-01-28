@@ -24,7 +24,14 @@ async function appendOptrRecord(record: any) {
     .update(previousHash + JSON.stringify(recordWithPrev))
     .digest("hex");
   const entry = { ...recordWithPrev, currentHash };
-  await write(ledgerPath, JSON.stringify(entry) + "\n", { append: true });
+  // Read current content
+  let current = "";
+  try {
+    current = await file(ledgerPath).text();
+  } catch {}
+  // Append new line in memory
+  const updated = current + JSON.stringify(entry) + "\n";
+  await write(ledgerPath, updated);
   console.log("OPTR record appended with hash chain:", entry);
 }
 
@@ -42,4 +49,6 @@ const optrEvent = {
   },
 };
 
-await appendOptrRecord(optrEvent);
+(async () => {
+  await appendOptrRecord(optrEvent);
+})();

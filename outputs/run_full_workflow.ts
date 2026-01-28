@@ -9,6 +9,8 @@
  * dependencies: logger.ts, child_process, fs
  */
 import { log, logError } from "./logger";
+import { spawnSync } from "child_process";
+import { existsSync, writeFileSync } from "fs";
 // Bun environment check
 if (typeof Bun === "undefined") {
   logError(

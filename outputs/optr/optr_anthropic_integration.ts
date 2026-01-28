@@ -55,11 +55,21 @@ async function appendOptrRecordWithAnthropic(input: string) {
     .update(previousHash + JSON.stringify(record))
     .digest("hex");
   const entry = { ...record, currentHash };
-  await write(ledgerPath, JSON.stringify(entry) + "\n", { append: true });
+  // Read current content
+  let current = "";
+  try {
+    current = await file(ledgerPath).text();
+  } catch {}
+  // Append new line in memory
+  const updated = current + JSON.stringify(entry) + "\n";
+  await write(ledgerPath, updated);
   console.log("OPTR record with Anthropic decision appended:", entry);
 }
 
 // Example usage
 const complianceInput =
   "Is this AI output compliant with GDPR and enterprise audit requirements? Output: 'Customer data processed for support ticket #123.'";
-await appendOptrRecordWithAnthropic(complianceInput);
+
+(async () => {
+  await appendOptrRecordWithAnthropic(complianceInput);
+})();

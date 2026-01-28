@@ -7,7 +7,14 @@ const testPath = "outputs/optr/append_test.log";
   await write(testPath, "");
 
   for (let i = 1; i <= 10; i++) {
-    await write(testPath, `Line ${i}\n`, { append: true });
+    // Read current content
+    let current = "";
+    try {
+      current = await file(testPath).text();
+    } catch {}
+    // Append new line in memory
+    const updated = current + `Line ${i}\n`;
+    await write(testPath, updated);
   }
 
   const lines = (await file(testPath).text()).trim().split("\n");

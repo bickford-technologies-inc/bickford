@@ -6,7 +6,7 @@ import "./canon";
 // PUBLIC CANONICAL API
 // ======================
 
-export * from "./canon";
+export * from "./canon.js";
 
 // Explicitly allowed stable surfaces
 export type { ExecutionResult } from "./ExecutionResult.js";
@@ -32,8 +32,9 @@ export type ExecutionAdapter = {
 };
 
 // Canonical intent / decision
-export * from "./intent";
-export * from "./decision";
+export * from "./intent.js";
+export * from "./decision.js";
+export type { Decision } from "./decision.js";
 
 /**
  * Compat MUST be last to avoid shadowing
@@ -53,24 +54,39 @@ export type InterferenceResult = {
   reason?: string;
 };
 
-export type { AgentResult, IntentContext, OptrResult } from "./optr";
+export type { AgentResult, IntentContext, OptrResult } from "./optr.js";
 
-export * from "./deniedDecision";
-export type { DeniedDecisionPayload } from "./deniedDecision";
-export * from "./rubric";
+export * from "./deniedDecision.js";
+export type { DeniedDecisionPayload } from "./deniedDecision.js";
+export * from "./rubric.js";
 
-export * from "./intent";
-export * from "./canon";
+export * from "./intent.js";
+export * from "./canon.js";
 
-export type { Intent } from "./intent";
-export type { WhyNotTrace } from "./canon";
+export type { Action } from "./canon.js";
+export type { Intent } from "./intent.js";
+export { DenialReasonCode } from "./canon.js";
+export type { WhyNotTrace } from "./canon.js";
+export type { OPTRScore } from "./canon.js";
+export type { CandidatePath } from "./canon.js";
+export type { CandidateFeatures } from "./canon.js";
+export type { OPTRRun } from "./canon.js";
+export type { OPTRWeights } from "./canon.js";
+export type { AuthorityCheckResult } from "./canon.js";
+export type { PathConstraint } from "./canon.js";
+export type { ConfidenceEnvelope } from "./canon.js";
+export type { PromotionDecision } from "./canon.js";
+export type { PromotionTests } from "./canon.js";
+export type { ExecutionContext } from "./canon.js";
+export type { TokenStreamProof } from "./canon.js";
+export type { ISO8601 } from "./canon.js";
 
 export type {
   Conversation,
   ConversationMessage,
+  ConversationTraceSummary,
+} from "./conversation.js";
+export type {
   ConversationMemoryMatch,
   ConversationMemoryOptions,
-  ConversationRole,
-  ConversationSummary,
-  ConversationTraceSummary,
 } from "./conversation.js";

@@ -30,4 +30,6 @@ async function verifyLedger() {
   }
 }
 
-await verifyLedger();
+(async () => {
+  await verifyLedger();
+})();
