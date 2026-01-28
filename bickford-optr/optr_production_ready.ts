@@ -1,5 +1,4 @@
 // Bun-native OPTR Compliance Ledger - Production Ready
-import { writeFile, readFile } from "bun";
 import { createHash } from "crypto";
 
 interface LedgerEntry {
@@ -37,7 +36,7 @@ for (const entry of entries) {
   previousHash = currentHash;
 }
 
-await writeFile(
+await Bun.write(
   "./bickford-optr/production_ledger.jsonl",
   ledger.map((e) => JSON.stringify(e)).join("\n"),
 );
