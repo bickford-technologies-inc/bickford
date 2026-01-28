@@ -56,6 +56,7 @@ export type InterferenceResult = {
 export type { AgentResult, IntentContext, OptrResult } from "./optr";
 
 export * from "./deniedDecision";
+export type { DeniedDecisionPayload } from "./deniedDecision";
 export * from "./rubric";
 
 export * from "./intent";
