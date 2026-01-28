@@ -12,8 +12,10 @@ const intelReport = `# GAP-007: Competitive Intelligence Report
 - Bickford is uniquely positioned for acquisition.
 `;
 
-await write(
-  "outputs/gap-closure-automation/evidence/GAP-007/competitive_intel_report.md",
-  intelReport,
-);
-console.log("GAP-007 competitive intelligence report generated.");
+(async () => {
+  await write(
+    "outputs/gap-closure-automation/evidence/GAP-007/competitive_intel_report.md",
+    intelReport,
+  );
+  console.log("GAP-007 competitive intelligence report generated.");
+})();
