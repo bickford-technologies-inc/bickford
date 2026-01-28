@@ -12,8 +12,10 @@ const roiReport = `# GAP-002: Financial Validation Report
 - Testimonial: "Bickford delivered real, audited savings for our compliance operations."
 `;
 
-await write(
-  "outputs/gap-closure-automation/evidence/GAP-002/financial_validation_report.md",
-  roiReport,
-);
-console.log("GAP-002 financial validation report generated.");
+(async () => {
+  await write(
+    "outputs/gap-closure-automation/evidence/GAP-002/financial_validation_report.md",
+    roiReport,
+  );
+  console.log("GAP-002 financial validation report generated.");
+})();
