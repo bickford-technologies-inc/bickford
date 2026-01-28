@@ -14,6 +14,12 @@ async function main() {
   if (!project) throw new Error("Project not found");
   console.log(`✓ Found project: ${project.node.name}`);
 
+  // Debug: print latest deployment ID
+  const { getLatestDeploymentId } =
+    await import("../packages/ledger/scripts/railway-client.ts");
+  const deploymentId = await getLatestDeploymentId(project.node.id);
+  console.log(`Latest deployment ID: ${deploymentId}`);
+
   await triggerDeploy(project.node.id);
   console.log(
     "✅ Deployment triggered! Monitor progress at https://railway.app/project/" +
@@ -23,5 +29,10 @@ async function main() {
 
 main().catch((err) => {
   console.error("❌ Deployment failed:", err);
+  if (String(err).includes("GRAPHQL_VALIDATION_FAILED")) {
+    console.error(
+      "The deployment mutation may be outdated. Please update the mutation in railway-client.ts to match the current Railway API schema.",
+    );
+  }
   process.exit(1);
 });

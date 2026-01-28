@@ -1,0 +1,19 @@
+name: Post-Deploy Health Check
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  healthcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Vercel Production Homepage
+        run: |
+          curl -sSf https://bickford-e14m41pe2-bickford-technologies-inc.vercel.app/ > /dev/null
+      - name: Check Vercel /api/health Endpoint
+        run: |
+          curl -sSf https://bickford-e14m41pe2-bickford-technologies-inc.vercel.app/api/health > /dev/null
+      - name: Report Success
+        run: echo "All health checks passed!"

@@ -1,9 +1,9 @@
 [build]
 builder = "nixpacks"
-buildCommand = "pnpm install && pnpm build"
+buildCommand = "bun install"
 
 [deploy]
-startCommand = "pnpm start"
-healthcheckPath = "/"
+startCommand = "bun run bickford-intelligence/server.ts"
+healthcheckPath = "/api/health"
 healthcheckTimeout = 100
 restartPolicyType = "always"

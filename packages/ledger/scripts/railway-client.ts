@@ -45,10 +45,31 @@ export async function setEnvVar(envId: string, name: string, value: string) {
   });
 }
 
-// Example: Trigger a deploy
+// Fetch latest deployment for a project
+export async function getLatestDeploymentId(projectId: string) {
+  const query = `query($projectId: String!) {
+    project(id: $projectId) {
+      deployments(first: 1) {
+        edges {
+          node {
+            id
+            status
+            createdAt
+          }
+        }
+      }
+    }
+  }`;
+  const data = await railwayGraphQL(query, { projectId });
+  return data?.project?.deployments?.edges?.[0]?.node?.id || null;
+}
+
+// Trigger a redeploy by restarting the latest deployment
 export async function triggerDeploy(projectId: string) {
-  const mutation = `mutation($id: String!) { deployProject(id: $id) { id status } }`;
-  return railwayGraphQL(mutation, { id: projectId });
+  const deploymentId = await getLatestDeploymentId(projectId);
+  if (!deploymentId) throw new Error("No deployments found for project");
+  const mutation = `mutation($id: String!) { deploymentRestart(id: $id) }`;
+  return railwayGraphQL(mutation, { id: deploymentId });
 }
 
 // Fetch plugins for a project (to find Postgres and env vars)

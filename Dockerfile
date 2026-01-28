@@ -11,4 +11,4 @@ COPY . .
 # RUN bun run build
 
 EXPOSE 3000
-CMD ["bun", "run", "app/server.ts"]
+CMD ["bun", "run", "bickford-intelligence/server.ts"]
