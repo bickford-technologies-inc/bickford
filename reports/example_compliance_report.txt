@@ -1,0 +1,6 @@
+Compliance Report Example
+========================
+Date: 2026-01-28
+Customer: acme_corp
+Status: PASS
+Details: All controls met. No exceptions found.

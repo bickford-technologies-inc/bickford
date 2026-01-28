@@ -1,0 +1,6 @@
+Value Review Example
+===================
+Date: 2026-01-28
+Customer: acme_corp
+Highlights: Significant cost savings and risk reduction achieved this quarter.
+Recommendations: Continue current controls and expand automation coverage.

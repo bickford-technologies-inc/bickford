@@ -10,13 +10,6 @@ import {
 
 type ChatRole = "user" | "agent";
 
-type ChatMessage = {
-  id: string;
-  role: ChatRole;
-  content: string;
-  createdAt: number;
-};
-
 type ChatArchive = {
   date: string;
   messages: ChatMessage[];
@@ -90,6 +83,7 @@ function safeParse<T>(raw: string | null): T | null {
   }
 }
 
+// Map 'agent' to 'assistant' for canonical ChatRole compatibility
 function normalizeMessages(
   messages: Array<{
     id?: string;
@@ -104,8 +98,9 @@ function normalizeMessages(
   return messages
     .filter((message) => message)
     .map((message) => {
-      const role = message.role ?? message.author ?? "agent";
-      const normalizedRole: ChatRole = role === "user" ? "user" : "agent";
+      let role = message.role ?? message.author ?? "assistant";
+      if (role === "agent") role = "assistant";
+      const normalizedRole = role as ChatMessage["role"];
       let createdAt: string;
       if (typeof message.createdAt === "string") {
         createdAt = message.createdAt;
@@ -305,9 +300,10 @@ export default function UnifiedChatDock() {
   const archivedCount = useMemo(() => state.archives.length, [state.archives]);
 
   function appendMessage(role: ChatRole, content: string) {
+    const canonicalRole = role === "agent" ? "assistant" : role;
     const nextMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      role,
+      role: canonicalRole as ChatMessage["role"],
       content,
       createdAt: new Date().toISOString(),
     };

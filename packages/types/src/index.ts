@@ -6,7 +6,7 @@ import "./canon";
 // PUBLIC CANONICAL API
 // ======================
 
-export * from "./canon.js";
+export * from "./canon";
 
 // Explicitly allowed stable surfaces
 export type { ExecutionResult } from "./ExecutionResult.js";
@@ -32,8 +32,8 @@ export type ExecutionAdapter = {
 };
 
 // Canonical intent / decision
-export * from "./intent.js";
-export * from "./decision.js";
+export * from "./intent";
+export * from "./decision";
 
 /**
  * Compat MUST be last to avoid shadowing
@@ -53,14 +53,16 @@ export type InterferenceResult = {
   reason?: string;
 };
 
-export type { AgentResult, IntentContext, OptrResult } from "./optr.js";
+export type { AgentResult, IntentContext, OptrResult } from "./optr";
 
-export * from "./deniedDecision.js";
-export * from "./rubric.js";
+export * from "./deniedDecision";
+export * from "./rubric";
 
-export type { Intent } from "./intent.js";
+export * from "./intent";
+export * from "./canon";
 
-export type { Action, WhyNotTrace } from "./canon.js";
+export type { Intent } from "./intent";
+export type { WhyNotTrace } from "./canon";
 
 export type {
   Conversation,

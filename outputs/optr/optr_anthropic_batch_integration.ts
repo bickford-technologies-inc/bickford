@@ -1,6 +1,29 @@
-import { file } from "bun";
-import { createHash } from "crypto";
-import { appendFileSync, writeFileSync } from "fs";
+#!/usr/bin/env bun
+/**
+ * @meta
+ * name: OPTR Anthropic Batch Integration
+ * description: Runs a batch of OPTR compliance decisions using Anthropic API, logs to hash-chained ledger
+ * category: compliance
+ * author: Bickford Automation
+ * last_updated: 2026-01-28
+ * dependencies: logger.ts, crypto, fs
+ */
+import { log, logError } from "../../logger";
+// Bun environment check
+if (typeof Bun === "undefined") {
+  logError(
+    "[optr_anthropic_batch_integration.ts] ERROR: This script must be run with Bun. See outputs/DEVELOPER_ONBOARDING.md.",
+  );
+  process.exit(1);
+}
+
+// Usage/help
+if (process.argv.includes("--help")) {
+  console.log(
+    `Usage: bun run outputs/optr/optr_anthropic_batch_integration.ts [N]\nRuns N (default 1000) OPTR compliance decisions using Anthropic API, logs to hash-chained ledger.\n`,
+  );
+  process.exit(0);
+}
 
 const ANTHROPIC_API_KEY =
   process.env.ANTHROPIC_API_KEY || "YOUR_ANTHROPIC_API_KEY";
@@ -42,9 +65,7 @@ async function getAnthropicDecision(
         simulated: true,
       };
     }
-    console.error(
-      `Anthropic API error: ${response.status}\nBody: ${errorBody}`,
-    );
+    logError(`Anthropic API error: ${response.status}\nBody: ${errorBody}`);
     throw new Error(`Anthropic API error: ${response.status}`);
   }
   const data = await response.json();
@@ -109,7 +130,7 @@ async function runBatchExecutions(n: number) {
           true,
         );
       }
-      console.log(`Execution ${i} complete.`);
+      log(`Execution ${i} complete.`);
     } catch (e) {
       // On any other error, switch to simulation for remaining executions
       simulated = true;
@@ -118,10 +139,10 @@ async function runBatchExecutions(n: number) {
         previousHash,
         true,
       );
-      console.log(`Execution ${i} (simulated) complete.`);
+      log(`Execution ${i} (simulated) complete.`);
     }
   }
-  console.log(`${n} OPTR Anthropic executions completed.`);
+  log(`${n} OPTR Anthropic executions completed.`);
 }
 
 await runBatchExecutions(1000);

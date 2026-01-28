@@ -1,0 +1,156 @@
+[
+  {
+    "path": "outputs/scripts_registry_gen.ts",
+    "name": "Scripts Registry Generator",
+    "description": "Generates a registry of all scripts and their metadata in outputs/scripts_registry.json",
+    "category": "utility",
+    "author": "Bickford Automation",
+    "last_updated": "2026-01-28",
+    "dependencies": "none"
+  },
+  {
+    "path": "outputs/bickford-optr/optr_production_ready.ts",
+    "name": "OPTR Compliance Ledger",
+    "description": "OPTR compliance ledger actions (stub/demo)",
+    "category": "compliance",
+    "author": "Bickford Automation",
+    "last_updated": "2026-01-28",
+    "dependencies": "logger.ts"
+  },
+  {
+    "path": "outputs/bickford-optr/bootstrap_optr_ledger.ts"
+  },
+  {
+    "path": "outputs/validate_outputs.ts",
+    "name": "Validate Outputs",
+    "description": "Ensures all required outputs/ subdirectories and files exist",
+    "category": "validation",
+    "author": "Bickford Automation",
+    "last_updated": "2026-01-28",
+    "dependencies": "logger.ts"
+  },
+  {
+    "path": "outputs/run_full_workflow.ts"
+  },
+  {
+    "path": "outputs/list_scripts.ts",
+    "name": "Script Index",
+    "description": "Lists all runnable scripts in outputs/ and subdirectories, printing their --help output if available",
+    "category": "utility",
+    "author": "Bickford Automation",
+    "last_updated": "2026-01-28",
+    "dependencies": "none"
+  },
+  {
+    "path": "outputs/customer_value_summaries/generate_all_customer_summaries.ts"
+  },
+  {
+    "path": "outputs/logger.ts"
+  },
+  {
+    "path": "outputs/integration_test.ts",
+    "name": "Integration Test",
+    "description": "Recursively checks all .ts scripts in outputs/ and subdirectories",
+    "category": "integration",
+    "author": "Bickford Automation",
+    "last_updated": "2026-01-28",
+    "dependencies": "logger.ts"
+  },
+  {
+    "path": "outputs/optr/optr_anthropic_batch_integration.ts",
+    "name": "OPTR Anthropic Batch Integration",
+    "description": "Runs a batch of OPTR compliance decisions using Anthropic API, logs to hash-chained ledger",
+    "category": "compliance",
+    "author": "Bickford Automation",
+    "last_updated": "2026-01-28",
+    "dependencies": "logger.ts, crypto, fs"
+  },
+  {
+    "path": "outputs/optr/optr_ledger_analysis.ts"
+  },
+  {
+    "path": "outputs/optr/optr_anthropic_integration.ts"
+  },
+  {
+    "path": "outputs/optr/optr_anthropic_list_models.ts"
+  },
+  {
+    "path": "outputs/optr/append_test.ts"
+  },
+  {
+    "path": "outputs/optr/optr_hash_chain_execute.ts"
+  },
+  {
+    "path": "outputs/customer-acquisition/email_outreach_generator.ts",
+    "name": "Email Outreach Generator",
+    "description": "Generates personalized outreach emails (stub/demo)",
+    "category": "customer-acquisition",
+    "author": "Bickford Automation",
+    "last_updated": "2026-01-28",
+    "dependencies": "logger.ts"
+  },
+  {
+    "path": "outputs/customer-acquisition/lead_generation.ts",
+    "name": "Lead Generation",
+    "description": "Generates qualified leads (stub/demo)",
+    "category": "customer-acquisition",
+    "author": "Bickford Automation",
+    "last_updated": "2026-01-28",
+    "dependencies": "logger.ts"
+  },
+  {
+    "path": "outputs/healthcheck.ts",
+    "name": "Healthcheck",
+    "description": "Recursively checks all .ts scripts in outputs/ and subdirectories",
+    "category": "healthcheck",
+    "author": "Bickford Automation",
+    "last_updated": "2026-01-28",
+    "dependencies": "logger.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/auto_loi_outreach.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/weekly-report-generator.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/gap-tracker.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/customer-discovery-automation.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/auto_integration_plan.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/auto_competitive_intel.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/auto_security_audit.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/auto_patent_filing.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/auto_advisor_outreach.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/auto_gap_evidence.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/auto_interview_simulator.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/scripts/weekly-report-generator.ts",
+    "Output": "WEEKLY_REPORT_<date>.md in reports folder."
+  },
+  {
+    "path": "outputs/gap-closure-automation/scripts/gap-tracker.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/scripts/customer-discovery-automation.ts"
+  },
+  {
+    "path": "outputs/gap-closure-automation/auto_financial_validation.ts"
+  }
+]

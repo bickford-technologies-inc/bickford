@@ -1,0 +1,21 @@
+# Example cron jobs for Anthropic Compliance & Value Automation
+# Place this in your crontab (crontab -e) for full automation
+
+# 1. Archive compliance/value reports every hour
+0 * * * * /workspaces/bickford/outputs/anthropic_compliance_report_archive.sh
+
+# 2. Generate quarterly executive summary (runs at midnight on the first day of each quarter)
+0 0 1 1,4,7,10 * /workspaces/bickford/outputs/generate_quarterly_executive_summary.sh
+
+# 3. Submit reports to regulators/partners daily at 2am
+0 2 * * * /workspaces/bickford/outputs/submit_reports_to_regulators.sh
+
+# 4. Monitor SLA and alert every 6 hours
+0 */6 * * * /workspaces/bickford/outputs/monitor_sla_and_alert.sh
+
+# 5. Request and aggregate feedback after report delivery (runs daily at 3am)
+0 3 * * * /workspaces/bickford/outputs/request_and_aggregate_feedback.sh
+
+# ---
+# Adjust times as needed for your operational requirements.
+# Ensure all scripts are executable and paths are correct for your environment.

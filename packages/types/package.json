@@ -4,14 +4,6 @@
   "private": true,
   "type": "module",
   "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts"
-    },
-    "./conversation": {
-      "types": "./dist/conversation.d.ts"
-    }
-  },
   "files": [
     "src",
     "dist"
@@ -21,5 +13,6 @@
   },
   "dependencies": {
     "@bickford/chat": "workspace:*"
-  }
+  },
+  "main": "./dist/index.js"
 }

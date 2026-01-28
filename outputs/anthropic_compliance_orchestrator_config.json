@@ -1,0 +1,15 @@
+{
+  "channels": [
+    { "name": "email", "enabled": true },
+    { "name": "slack", "enabled": true },
+    { "name": "teams", "enabled": true },
+    { "name": "dashboard", "enabled": true },
+    { "name": "s3", "enabled": true },
+    { "name": "gdrive", "enabled": true },
+    { "name": "box", "enabled": true },
+    { "name": "onedrive", "enabled": true },
+    { "name": "dropbox", "enabled": true },
+    { "name": "sftp", "enabled": true },
+    { "name": "webhook", "enabled": true }
+  ]
+}
