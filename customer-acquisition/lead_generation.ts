@@ -1,5 +1,4 @@
 // Bun-native TypeScript script for lead generation
-import { writeFile } from "bun";
 
 interface Lead {
   company: string;
@@ -72,8 +71,10 @@ const leads: Lead[] = [
   // ...add more as needed
 ];
 
-await writeFile(
-  "./customer-acquisition/qualified_leads.json",
-  JSON.stringify(leads, null, 2),
-);
-console.log("Leads generated and saved to qualified_leads.json");
+(async () => {
+  await Bun.write(
+    "./customer-acquisition/qualified_leads.json",
+    JSON.stringify(leads, null, 2),
+  );
+  console.log("Leads generated and saved to qualified_leads.json");
+})();
