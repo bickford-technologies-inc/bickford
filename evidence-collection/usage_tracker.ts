@@ -1,5 +1,4 @@
 // Bun-native TypeScript: Usage Tracker for Bickford
-import { writeFile } from "bun";
 
 interface UsageEvent {
   timestamp: string;
@@ -29,8 +28,10 @@ const events: UsageEvent[] = [
   },
 ];
 
-await writeFile(
-  "./evidence-collection/production_usage.jsonl",
-  events.map((e) => JSON.stringify(e)).join("\n"),
-);
-console.log("Demo usage events written to production_usage.jsonl");
+(async () => {
+  await Bun.write(
+    "./evidence-collection/production_usage.jsonl",
+    events.map((e) => JSON.stringify(e)).join("\n"),
+  );
+  console.log("Demo usage events written to production_usage.jsonl");
+})();
