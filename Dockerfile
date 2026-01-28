@@ -1,11 +1,14 @@
-# Bun Dockerfile for Railway or Fly.io
+# Bun Dockerfile for Railway
 FROM oven/bun:latest
 WORKDIR /app
 
-# Install pnpm globally
-RUN bun add -g pnpm
+COPY package.json bun.lockb ./
+RUN bun install
 
 COPY . .
-RUN bun install
+
+# If you have a build step (e.g., TypeScript), uncomment:
+# RUN bun run build
+
 EXPOSE 3000
 CMD ["bun", "run", "app/server.ts"]

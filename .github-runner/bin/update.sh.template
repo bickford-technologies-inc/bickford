@@ -135,17 +135,10 @@ if [[ "$currentplatform" == 'darwin'  && restartinteractiverunner -eq 0 ]]; then
     then
         # inspect the open file handles to find the node process
         # we can't actually inspect the process using ps because it uses relative paths and doesn't follow symlinks
-        nodever="node20"
-        path=$(lsof -a -g "$procgroup" -F n | grep $nodever/bin/node | grep externals | tail -1 | cut -c2-)
-        if [[ $? -ne 0 || -z "$path" ]] # Fallback if RunnerService.js was started with node16
-        then
-            nodever="node16"
-            path=$(lsof -a -g "$procgroup" -F n | grep $nodever/bin/node | grep externals | tail -1 | cut -c2-)
-            if [[ $? -ne 0 || -z "$path" ]] # Fallback if RunnerService.js was started with node12
-            then
-                nodever="node12"
-                path=$(lsof -a -g "$procgroup" -F n | grep $nodever/bin/node | grep externals | tail -1 | cut -c2-)
-            fi
+        NODE_BIN=$(which node)
+        if [ -z "$NODE_BIN" ]; then
+          echo "Node.js not found in PATH. Aborting."
+          exit 1
         fi
         if [[ $? -eq 0 && -n "$path" ]]
         then
@@ -159,7 +152,7 @@ if [[ "$currentplatform" == 'darwin'  && restartinteractiverunner -eq 0 ]]; then
                 then
                     date "+[%F %T-%4N] Creating fallback node at path $path" >> "$logfile" 2>&1
                     mkdir -p "$trimmedpath"
-                    cp "$rootfolder/externals/$nodever/bin/node" "$path"
+                    cp "$rootfolder/externals/$NODE_BIN" "$path"
                 else
                     date "+[%F %T-%4N] Path for fallback node exists, skipping creating $path" >> "$logfile" 2>&1
                 fi

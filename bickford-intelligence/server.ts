@@ -49,6 +49,20 @@ async function getAllMetrics() {
   return intelligence.getMetrics();
 }
 
+// Environment variable validation (fail fast)
+const requiredEnv = [
+  "DATABASE_URL",
+  "ANTHROPIC_API_KEY",
+  "RAILWAY_TOKEN",
+  "RAILWAY_PROJECT_ID",
+];
+for (const key of requiredEnv) {
+  if (!process.env[key]) {
+    console.error(`[ERROR] Missing required environment variable: ${key}`);
+    process.exit(1);
+  }
+}
+
 serve({
   port: 3000,
   fetch: async (req, server) => {

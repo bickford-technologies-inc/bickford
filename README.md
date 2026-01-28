@@ -582,3 +582,7 @@ console.log(`Annual savings: $${savings.toLocaleString()}`);
 ---
 
 > **99.98% compression = $18M+/yr savings at Anthropic scale**
+
+## Node.js Version Requirement
+
+Bickford requires Node.js **20.x** for all builds and deployments (including Vercel). Ensure your local and CI environments use Node 20.x. See `.nvmrc` for quick setup.
