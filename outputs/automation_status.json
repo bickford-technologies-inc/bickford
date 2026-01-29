@@ -1,10 +1,5 @@
 [
   {
-    "script": "integration_test.ts",
-    "status": "success",
-    "time": "2026-01-28T04:14:22.602Z"
-  },
-  {
     "script": "validate_outputs.ts",
     "status": "success",
     "time": "2026-01-28T04:14:22.649Z"
@@ -13,5 +8,10 @@
     "script": "run_full_workflow.ts",
     "status": "success",
     "time": "2026-01-28T04:14:34.670Z"
+  },
+  {
+    "script": "integration_test.ts",
+    "status": "success",
+    "time": "2026-01-29T02:20:13.967Z"
   }
 ]
