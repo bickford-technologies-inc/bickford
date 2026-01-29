@@ -1,13 +1,37 @@
 import React, { useState } from "react";
-// For hashing in-browser (SHA-256)
+import JSZip from "jszip";
+
+// SHA-256 hashing for content addressing
 const hashBuffer = async (buf: ArrayBuffer): Promise<string> => {
   const hashBuffer = await crypto.subtle.digest("SHA-256", buf);
   return Array.from(new Uint8Array(hashBuffer))
-    .map(b => b.toString(16).padStart(2, "0"))
+    .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 };
 
-async function deduplicateFiles(files: Array<{ name: string; data: ArrayBuffer }>) {
+// Extract files from FileList, recursively unpacking ZIPs
+async function extractFiles(fileList: FileList) {
+  let files: Array<{ name: string; data: ArrayBuffer }> = [];
+  for (let i = 0; i < fileList.length; ++i) {
+    const file = fileList[i];
+    if (file.name.endsWith(".zip")) {
+      const zip = await JSZip.loadAsync(file);
+      const entries = Object.values(zip.files).filter((f) => !f.dir);
+      for (const entry of entries) {
+        const data = await entry.async("arraybuffer");
+        files.push({ name: entry.name, data });
+      }
+    } else {
+      files.push({ name: file.name, data: await file.arrayBuffer() });
+    }
+  }
+  return files;
+}
+
+// Deduplicate by content hash
+async function deduplicateFiles(
+  files: Array<{ name: string; data: ArrayBuffer }>,
+) {
   const seen = new Set<string>();
   let originalBytes = 0;
   let uniqueBytes = 0;
@@ -19,34 +43,39 @@ async function deduplicateFiles(files: Array<{ name: string; data: ArrayBuffer }
       uniqueBytes += data.byteLength;
     }
   }
-  // Storage is uniqueBytes + 64*seen.size (pointer references)
   const pointerBytes = seen.size * 64;
   const compressedBytes = uniqueBytes + pointerBytes;
-  return { originalBytes, compressedBytes, ratio: 1 - compressedBytes / originalBytes };
+  return {
+    originalBytes,
+    compressedBytes,
+    ratio: originalBytes > 0 ? 1 - compressedBytes / originalBytes : 0,
+  };
 }
 
 export default function CompressionDemo() {
-  const [files, setFiles] = useState<Array<{ name: string; data: ArrayBuffer }>>([]);
-  const [metrics, setMetrics] = useState<{originalBytes: number, compressedBytes: number, ratio: number} | null>(null);
+  const [metrics, setMetrics] = useState<{
+    originalBytes: number;
+    compressedBytes: number;
+    ratio: number;
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleFiles = async (fileList: FileList) => {
-    const arr: Array<{ name: string; data: ArrayBuffer }> = [];
-    for (let i = 0; i < fileList.length; ++i) {
-      arr.push({ name: fileList[i].name, data: await fileList[i].arrayBuffer() });
+    setLoading(true);
+    try {
+      const arr = await extractFiles(fileList);
+      setMetrics(await deduplicateFiles(arr));
+    } finally {
+      setLoading(false);
     }
-    setFiles(arr);
-    const res = await deduplicateFiles(arr);
-    setMetrics(res);
   };
 
-  // Allow text paste as well (for demo)  
   const handleText = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value;
     if (text.length > 0) {
       const enc = new TextEncoder();
-      setFiles([{ name: "input.txt", data: enc.encode(text).buffer }]);
-      const res = await deduplicateFiles([{ name: "input.txt", data: enc.encode(text).buffer }]);
-      setMetrics(res);
+      const arr = [{ name: "input.txt", data: enc.encode(text).buffer }];
+      setMetrics(await deduplicateFiles(arr));
     }
   };
 
@@ -54,25 +83,43 @@ export default function CompressionDemo() {
     <div style={{ fontFamily: "monospace", padding: 24, maxWidth: 600 }}>
       <h2>Compression Proof Demo</h2>
       <p>
-        <b>Import files</b>: Drag & drop or select redundant files below.<br/>
+        <b>Import files</b>: Drag & drop or select redundant files (.zip
+        supported)
+        <br />
         <b>Paste text</b>: Directly to see single-sample compression.
       </p>
-
       <input
         type="file"
         multiple
-        onChange={e => e.target.files && handleFiles(e.target.files)}
+        onChange={(e) => e.target.files && handleFiles(e.target.files)}
         style={{ marginBottom: 16 }}
+        accept=".zip,*"
       />
-
       <div>Or paste redundant text:</div>
-      <textarea rows={4} style={{ width: "100%", margin: "8px 0" }} onChange={handleText} />
-
-      {metrics && (
-        <div style={{ background: "#eef", marginTop: 24, padding: 16, borderRadius: 8 }}>
+      <textarea
+        rows={4}
+        style={{ width: "100%", margin: "8px 0" }}
+        onChange={handleText}
+      />
+      {loading && <div>Processing...</div>}
+      {metrics && !loading && (
+        <div
+          style={{
+            background: "#eef",
+            marginTop: 24,
+            padding: 16,
+            borderRadius: 8,
+          }}
+        >
           <b>Compression Results:</b>
-          <div>Original: <b>{(metrics.originalBytes / (1024 * 1024)).toFixed(2)} MB</b></div>
-          <div>Compressed: <b>{(metrics.compressedBytes / (1024 * 1024)).toFixed(2)} MB</b></div>
+          <div>
+            Original:{" "}
+            <b>{(metrics.originalBytes / (1024 * 1024)).toFixed(2)} MB</b>
+          </div>
+          <div>
+            Compressed:{" "}
+            <b>{(metrics.compressedBytes / (1024 * 1024)).toFixed(2)} MB</b>
+          </div>
           <div>
             Compression Ratio: <b>{(metrics.ratio * 100).toFixed(4)}%</b>
           </div>
