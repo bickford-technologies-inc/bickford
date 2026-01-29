@@ -7,15 +7,43 @@ export interface EnforcementResult {
 }
 
 export class ConstitutionalEnforcer {
-  constraints: { id: string; priority: number; check: (prompt: string, context: any) => boolean }[];
+  constraints: {
+    id: string;
+    priority: number;
+    check: (prompt: string, context: any) => boolean;
+  }[];
   constructor() {
     this.constraints = [
-      { id: "HARM_PREVENTION", priority: 1, check: (p, c) => !/harm|kill|attack/i.test(p) },
-      { id: "PRIVACY_PROTECTION", priority: 1, check: (p, c) => !/ssn|credit card|password/i.test(p) },
-      { id: "CHILD_SAFETY", priority: 1, check: (p, c) => !/child.*abuse|minor.*harm/i.test(p) },
-      { id: "LEGAL_COMPLIANCE", priority: 1, check: (p, c) => !/illegal|piracy|drugs/i.test(p) },
-      { id: "TRUTHFULNESS", priority: 2, check: (p, c) => !/fake|lie|hoax/i.test(p) },
-      { id: "HELPFUL_ONLY", priority: 3, check: (p, c) => !/spam|scam|useless/i.test(p) },
+      {
+        id: "HARM_PREVENTION",
+        priority: 1,
+        check: (p, c) => !/harm|kill|attack/i.test(p),
+      },
+      {
+        id: "PRIVACY_PROTECTION",
+        priority: 1,
+        check: (p, c) => !/ssn|credit card|password/i.test(p),
+      },
+      {
+        id: "CHILD_SAFETY",
+        priority: 1,
+        check: (p, c) => !/child.*abuse|minor.*harm/i.test(p),
+      },
+      {
+        id: "LEGAL_COMPLIANCE",
+        priority: 1,
+        check: (p, c) => !/illegal|piracy|drugs/i.test(p),
+      },
+      {
+        id: "TRUTHFULNESS",
+        priority: 2,
+        check: (p, c) => !/fake|lie|hoax/i.test(p),
+      },
+      {
+        id: "HELPFUL_ONLY",
+        priority: 3,
+        check: (p, c) => !/spam|scam|useless/i.test(p),
+      },
     ];
   }
 
@@ -29,9 +57,15 @@ export class ConstitutionalEnforcer {
     }
     // Proof chain: intent hash, enforcement hash, decision hash, merkle root
     const intentHash = this.sha256(prompt + JSON.stringify(context || ""));
-    const enforcementHash = this.sha256(this.constraints.map(c => c.id).join(",") + violated.join(","));
-    const decisionHash = this.sha256(prompt + (violated.length ? "DENY" : "ALLOW"));
-    const merkle = this.sha256([intentHash, enforcementHash, decisionHash].join(":"));
+    const enforcementHash = this.sha256(
+      this.constraints.map((c) => c.id).join(",") + violated.join(","),
+    );
+    const decisionHash = this.sha256(
+      prompt + (violated.length ? "DENY" : "ALLOW"),
+    );
+    const merkle = this.sha256(
+      [intentHash, enforcementHash, decisionHash].join(":"),
+    );
     return {
       allowed: violated.length === 0,
       violated_constraints: violated,

@@ -29,7 +29,7 @@ Bun.serve({
           proofChain: decision.proofChain,
           metrics: authority.getMetrics(),
         }),
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       );
     }
     if (req.method === "GET" && new URL(req.url).pathname === "/api/metrics") {

@@ -5,7 +5,7 @@ const ledgerPath = join(__dirname, "../ledger/decisions.jsonl");
 
 export function replayLedger() {
   const lines = readFileSync(ledgerPath, "utf-8").split("\n").filter(Boolean);
-  return lines.map(line => JSON.parse(line));
+  return lines.map((line) => JSON.parse(line));
 }
 
 if (require.main === module) {

@@ -43,28 +43,80 @@ export const BickfordCommandDock: React.FC = () => {
   };
 
   return (
-    <div style={{ position: "fixed", bottom: 24, right: 24, width: 400, zIndex: 1000, background: "#fff", border: "1px solid #ccc", borderRadius: 8, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", padding: 16 }}>
-      <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8, textTransform: "lowercase", letterSpacing: 1 }}>bickford</div>
-      <div style={{ marginBottom: 8, fontSize: 12, color: "#888" }}>Decision Continuity Command Dock</div>
+    <div
+      style={{
+        position: "fixed",
+        bottom: 24,
+        right: 24,
+        width: 400,
+        zIndex: 1000,
+        background: "#fff",
+        border: "1px solid #ccc",
+        borderRadius: 8,
+        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+        padding: 16,
+      }}
+    >
+      <div
+        style={{
+          fontWeight: 700,
+          fontSize: 18,
+          marginBottom: 8,
+          textTransform: "lowercase",
+          letterSpacing: 1,
+        }}
+      >
+        bickford
+      </div>
+      <div style={{ marginBottom: 8, fontSize: 12, color: "#888" }}>
+        Decision Continuity Command Dock
+      </div>
       <div style={{ display: "flex", gap: 4, marginBottom: 8 }}>
         <input
           type="text"
           value={input}
-          onChange={e => setInput(e.target.value)}
+          onChange={(e) => setInput(e.target.value)}
           placeholder="Ask bickford"
-          style={{ flex: 1, border: "1px solid #ccc", borderRadius: 4, padding: 6 }}
-          onKeyDown={e => { if (e.key === "Enter") handleSubmit(); }}
+          style={{
+            flex: 1,
+            border: "1px solid #ccc",
+            borderRadius: 4,
+            padding: 6,
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSubmit();
+          }}
           disabled={loading}
         />
-        <button onClick={handleSubmit} style={{ padding: "6px 16px", borderRadius: 4, background: "#222", color: "#fff", border: "none" }} disabled={loading}>Send</button>
+        <button
+          onClick={handleSubmit}
+          style={{
+            padding: "6px 16px",
+            borderRadius: 4,
+            background: "#222",
+            color: "#fff",
+            border: "none",
+          }}
+          disabled={loading}
+        >
+          Send
+        </button>
       </div>
       <div style={{ maxHeight: 180, overflowY: "auto" }}>
-        {intents.length === 0 && <div style={{ color: "#bbb" }}>No intents submitted yet.</div>}
+        {intents.length === 0 && (
+          <div style={{ color: "#bbb" }}>No intents submitted yet.</div>
+        )}
         {intents.map((intent) => (
           <div key={intent.id} style={{ marginBottom: 8, fontSize: 13 }}>
-            <div><b>Intent:</b> {intent.text}</div>
-            <div style={{ color: "#888" }}><b>Authority:</b> {intent.authoritySignature}</div>
-            <div style={{ color: "#bbb", fontSize: 11 }}>{new Date(intent.timestamp).toLocaleTimeString()}</div>
+            <div>
+              <b>Intent:</b> {intent.text}
+            </div>
+            <div style={{ color: "#888" }}>
+              <b>Authority:</b> {intent.authoritySignature}
+            </div>
+            <div style={{ color: "#bbb", fontSize: 11 }}>
+              {new Date(intent.timestamp).toLocaleTimeString()}
+            </div>
           </div>
         ))}
       </div>

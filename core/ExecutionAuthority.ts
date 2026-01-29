@@ -56,7 +56,10 @@ export class ExecutionAuthority {
       return decision;
     }
     // 3. Full policy evaluation
-    const enforcement = await this.enforcer.enforce(intent.prompt, intent.context);
+    const enforcement = await this.enforcer.enforce(
+      intent.prompt,
+      intent.context,
+    );
     const allowed = enforcement.allowed;
     const violatedConstraints = enforcement.violated_constraints || [];
     // 4. Build decision
@@ -80,10 +83,15 @@ export class ExecutionAuthority {
 
   private hashIntent(intent: Intent): string {
     return createHash("sha256")
-      .update(intent.prompt + JSON.stringify(intent.context || "")).digest("hex");
+      .update(intent.prompt + JSON.stringify(intent.context || ""))
+      .digest("hex");
   }
 
-  private async learnPattern(patternHash: string, decision: Decision, execTime: number) {
+  private async learnPattern(
+    patternHash: string,
+    decision: Decision,
+    execTime: number,
+  ) {
     let pattern = this.patterns.get(patternHash);
     if (!pattern) {
       pattern = {
@@ -97,7 +105,8 @@ export class ExecutionAuthority {
       pattern.occurrence += 1;
       pattern.confidence = Math.min(0.99, pattern.confidence + 0.01);
       pattern.averageExecutionTime =
-        (pattern.averageExecutionTime * (pattern.occurrence - 1) + execTime) / pattern.occurrence;
+        (pattern.averageExecutionTime * (pattern.occurrence - 1) + execTime) /
+        pattern.occurrence;
       pattern.lastDecision = decision;
     }
     this.patterns.set(patternHash, pattern);
@@ -142,8 +151,10 @@ export class ExecutionAuthority {
     const compressionRatio = total > 0 ? total / patterns : 1;
     const avgExecTime =
       patterns > 0
-        ? Array.from(this.patterns.values()).reduce((a, b) => a + b.averageExecutionTime, 0) /
-          patterns
+        ? Array.from(this.patterns.values()).reduce(
+            (a, b) => a + b.averageExecutionTime,
+            0,
+          ) / patterns
         : 0;
     return {
       total_executions: total,

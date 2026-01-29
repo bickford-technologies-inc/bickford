@@ -37,7 +37,14 @@ export class Ledger {
     let violations = 0;
     for (const e of this.entries) {
       const expected = createHash("sha256")
-        .update(prev + JSON.stringify({ ...e, previousHash: undefined, currentHash: undefined }))
+        .update(
+          prev +
+            JSON.stringify({
+              ...e,
+              previousHash: undefined,
+              currentHash: undefined,
+            }),
+        )
         .digest("hex");
       if (e.previousHash !== prev || e.currentHash !== expected) {
         violations++;
