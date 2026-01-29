@@ -200,7 +200,7 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     console.log("[Claude API] Response Body:", responseText);
 
     if (!response.ok) {
-      throw new Error(
+      throw new CanonViolationError(
         `Claude API error: ${response.statusText}\nBody: ${responseText}`,
       );
     }
@@ -376,5 +376,12 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       enforcement_mode: "MECHANICAL", // vs "ASPIRATIONAL"
       proof_type: "CRYPTOGRAPHIC",
     };
+  }
+}
+
+export class CanonViolationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CanonViolationError";
   }
 }

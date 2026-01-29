@@ -358,7 +358,10 @@ export class CompoundingIntelligence {
           body: JSON.stringify(entry),
         });
       } catch (err) {
-        console.error("External webhook push failed:", err);
+        throw new Error(
+          "External webhook push failed: " +
+            (err instanceof Error ? err.message : String(err)),
+        );
       }
     }
 
@@ -383,7 +386,10 @@ export class CompoundingIntelligence {
         );
         await client.end();
       } catch (err) {
-        console.error("External PostgreSQL push failed:", err);
+        throw new Error(
+          "External PostgreSQL push failed: " +
+            (err instanceof Error ? err.message : String(err)),
+        );
       }
     }
 

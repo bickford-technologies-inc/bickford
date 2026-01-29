@@ -360,4 +360,6 @@ async function main() {
   console.log("✅ Regulator verification demo complete!\n");
 }
 
-main().catch(console.error);
+main().catch((err) => {
+  throw err;
+});

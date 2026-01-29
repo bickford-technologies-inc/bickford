@@ -30,8 +30,8 @@ export const BickfordCommandDock: React.FC = () => {
       id: uuidv4(),
       text: input,
       timestamp: now,
-      actor: "user", // TODO: replace with real user identity
-      environment: "prod", // TODO: dynamic env
+      actor: process.env.BICKFORD_USER_ID || "user", // Use real user identity from env or fallback
+      environment: process.env.NODE_ENV || "prod", // Use dynamic environment
       constraints: [],
     };
     const authoritySignature = signIntent(baseIntent);

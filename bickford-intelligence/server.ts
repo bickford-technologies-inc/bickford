@@ -15,13 +15,19 @@ function broadcastLedgerEntry(entry: any) {
   sseClients.forEach((controller) => {
     try {
       controller.enqueue(data);
-    } catch {}
+    } catch (err) {
+      console.error("[ERROR] Failed to enqueue SSE data:", err);
+      process.exit(1);
+    }
   });
   // Broadcast to WebSocket clients
   wsClients.forEach((ws) => {
     try {
       ws.send(JSON.stringify(entry));
-    } catch {}
+    } catch (err) {
+      console.error("[ERROR] Failed to send WebSocket data:", err);
+      process.exit(1);
+    }
   });
 }
 
@@ -41,7 +47,8 @@ async function getLatestLedgerEntry() {
     if (lines.length === 0) return null;
     return JSON.parse(lines[lines.length - 1]);
   } catch (err) {
-    return null;
+    console.error("[ERROR] Failed to load config:", err);
+    process.exit(1);
   }
 }
 

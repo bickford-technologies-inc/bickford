@@ -41,7 +41,7 @@ async function run() {
   output += `\nVerification:\n  Original Merkle Root:   ${merkleRoot}\n  Tampered Merkle Root:   ${tamperedMerkleRoot}\n`;
   output +=
     merkleRoot === tamperedMerkleRoot
-      ? "❌ Tampering NOT detected (error)\n"
+      ? "❌ Tampering NOT detected (compliance error)\n"
       : "✅ Tampering detected (Merkle root mismatch)\n";
 
   await writeFile("demo-outputs/tamper-demo.txt", output);

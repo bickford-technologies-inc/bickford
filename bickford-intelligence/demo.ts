@@ -92,8 +92,10 @@ async function main() {
 
 // Handle errors gracefully
 process.on("unhandledRejection", (error) => {
-  console.error("\n❌ Error:", error);
-  process.exit(1);
+  throw new Error(
+    "❌ Unhandled Rejection: " +
+      (error instanceof Error ? error.message : String(error)),
+  );
 });
 
 // Run

@@ -270,4 +270,6 @@ async function runComparison() {
 }
 
 // Run
-runComparison().catch(console.error);
+runComparison().catch((err) => {
+  throw err;
+});

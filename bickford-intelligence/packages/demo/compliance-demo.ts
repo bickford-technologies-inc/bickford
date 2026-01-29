@@ -2,13 +2,13 @@
 
 /**
  * Bickford Compliance Artifact Generator
- * 
+ *
  * Auto-generates compliance artifacts from ledger entries:
  * - SOC-2 Type II control evidence
  * - ISO 27001 control matrices
  * - FedRAMP authorization boundary
  * - HIPAA/PCI DSS audit trails
- * 
+ *
  * This demonstrates the $14M/year cost avoidance value proposition.
  */
 
@@ -65,8 +65,8 @@ class ComplianceArtifactGenerator {
     const content = readFileSync(path, "utf-8");
     return content
       .split("\n")
-      .filter(line => line.trim())
-      .map(line => JSON.parse(line));
+      .filter((line) => line.trim())
+      .map((line) => JSON.parse(line));
   }
 
   /**
@@ -78,40 +78,44 @@ class ComplianceArtifactGenerator {
       {
         control_id: "CC6.1",
         control_name: "Logical Access Controls",
-        description: "System implements logical access controls to prevent unauthorized access",
+        description:
+          "System implements logical access controls to prevent unauthorized access",
         evidence_count: this.countEnforcementActions(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 12000 // Manual review: ~$100/hour × 120 hours/year
+        cost_avoidance_usd: 12000, // Manual review: ~$100/hour × 120 hours/year
       },
       {
         control_id: "CC6.2",
         control_name: "Authentication and Authorization",
-        description: "System authenticates and authorizes users before granting access",
+        description:
+          "System authenticates and authorizes users before granting access",
         evidence_count: this.countDecisions(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 8000
+        cost_avoidance_usd: 8000,
       },
       {
         control_id: "CC6.3",
         control_name: "Network Segmentation",
-        description: "System enforces network segmentation to prevent unauthorized access",
+        description:
+          "System enforces network segmentation to prevent unauthorized access",
         evidence_count: this.countConstraintEnforcement(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 10000
+        cost_avoidance_usd: 10000,
       },
 
       // CC7: System Operations
       {
         control_id: "CC7.1",
         control_name: "System Monitoring",
-        description: "System monitoring detects and responds to security incidents",
+        description:
+          "System monitoring detects and responds to security incidents",
         evidence_count: this.ledger.length,
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 15000
+        cost_avoidance_usd: 15000,
       },
       {
         control_id: "CC7.2",
@@ -120,16 +124,17 @@ class ComplianceArtifactGenerator {
         evidence_count: this.countPolicyVersions(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 20000
+        cost_avoidance_usd: 20000,
       },
       {
         control_id: "CC7.3",
         control_name: "Data Backup and Recovery",
-        description: "Data backup and recovery procedures are implemented and tested",
+        description:
+          "Data backup and recovery procedures are implemented and tested",
         evidence_count: this.ledger.length, // Every entry is immutable backup
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 5000
+        cost_avoidance_usd: 5000,
       },
 
       // CC8: Change Management
@@ -140,7 +145,7 @@ class ComplianceArtifactGenerator {
         evidence_count: this.countPolicyVersions(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 18000
+        cost_avoidance_usd: 18000,
       },
 
       // A1: Confidentiality
@@ -151,7 +156,7 @@ class ComplianceArtifactGenerator {
         evidence_count: this.countPrivacyEnforcement(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 25000
+        cost_avoidance_usd: 25000,
       },
       {
         control_id: "A1.2",
@@ -160,7 +165,7 @@ class ComplianceArtifactGenerator {
         evidence_count: this.countDecisions(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 15000
+        cost_avoidance_usd: 15000,
       },
 
       // P1: Privacy
@@ -171,32 +176,37 @@ class ComplianceArtifactGenerator {
         evidence_count: this.countPrivacyEnforcement(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 8000
+        cost_avoidance_usd: 8000,
       },
 
       // Additional controls (sampling)
       {
         control_id: "CC9.1",
         control_name: "Risk Assessment",
-        description: "Risks to achieving objectives are identified and assessed",
+        description:
+          "Risks to achieving objectives are identified and assessed",
         evidence_count: this.countDecisions(),
         automated: true,
         manual_review_required: true, // Some manual oversight needed
-        cost_avoidance_usd: 30000
+        cost_avoidance_usd: 30000,
       },
       {
         control_id: "CC5.1",
         control_name: "Control Activities",
-        description: "Control activities help ensure management directives are carried out",
+        description:
+          "Control activities help ensure management directives are carried out",
         evidence_count: this.countEnforcementActions(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 22000
-      }
+        cost_avoidance_usd: 22000,
+      },
     ];
 
-    const totalCostAvoidance = controls.reduce((sum, c) => sum + c.cost_avoidance_usd, 0);
-    const automatedControls = controls.filter(c => c.automated).length;
+    const totalCostAvoidance = controls.reduce(
+      (sum, c) => sum + c.cost_avoidance_usd,
+      0,
+    );
+    const automatedControls = controls.filter((c) => c.automated).length;
 
     return {
       framework: "SOC-2 Type II",
@@ -207,7 +217,7 @@ class ComplianceArtifactGenerator {
       automation_percentage: (automatedControls / controls.length) * 100,
       annual_cost_avoidance_usd: totalCostAvoidance,
       controls,
-      audit_trail_summary: this.generateAuditTrailSummary()
+      audit_trail_summary: this.generateAuditTrailSummary(),
     };
   }
 
@@ -223,7 +233,7 @@ class ComplianceArtifactGenerator {
         evidence_count: this.countDecisions(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 10000
+        cost_avoidance_usd: 10000,
       },
       {
         control_id: "A.9.2.2",
@@ -232,7 +242,7 @@ class ComplianceArtifactGenerator {
         evidence_count: this.countEnforcementActions(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 15000
+        cost_avoidance_usd: 15000,
       },
       {
         control_id: "A.9.4.1",
@@ -241,7 +251,7 @@ class ComplianceArtifactGenerator {
         evidence_count: this.countConstraintEnforcement(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 20000
+        cost_avoidance_usd: 20000,
       },
       {
         control_id: "A.12.1.1",
@@ -250,7 +260,7 @@ class ComplianceArtifactGenerator {
         evidence_count: this.ledger.length,
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 12000
+        cost_avoidance_usd: 12000,
       },
       {
         control_id: "A.12.4.1",
@@ -259,7 +269,7 @@ class ComplianceArtifactGenerator {
         evidence_count: this.ledger.length,
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 18000
+        cost_avoidance_usd: 18000,
       },
       {
         control_id: "A.12.4.3",
@@ -268,30 +278,35 @@ class ComplianceArtifactGenerator {
         evidence_count: this.ledger.length,
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 15000
+        cost_avoidance_usd: 15000,
       },
       {
         control_id: "A.18.1.1",
         control_name: "Identification of Applicable Legislation",
-        description: "Legal, statutory, regulatory, and contractual requirements",
+        description:
+          "Legal, statutory, regulatory, and contractual requirements",
         evidence_count: this.countConstraintEnforcement(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 25000
+        cost_avoidance_usd: 25000,
       },
       {
         control_id: "A.18.1.5",
         control_name: "Regulation of Cryptographic Controls",
-        description: "Cryptographic controls used in compliance with agreements",
+        description:
+          "Cryptographic controls used in compliance with agreements",
         evidence_count: this.countCryptographicProofs(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 20000
-      }
+        cost_avoidance_usd: 20000,
+      },
     ];
 
-    const totalCostAvoidance = controls.reduce((sum, c) => sum + c.cost_avoidance_usd, 0);
-    const automatedControls = controls.filter(c => c.automated).length;
+    const totalCostAvoidance = controls.reduce(
+      (sum, c) => sum + c.cost_avoidance_usd,
+      0,
+    );
+    const automatedControls = controls.filter((c) => c.automated).length;
 
     return {
       framework: "ISO 27001:2022",
@@ -302,7 +317,7 @@ class ComplianceArtifactGenerator {
       automation_percentage: (automatedControls / controls.length) * 100,
       annual_cost_avoidance_usd: totalCostAvoidance,
       controls,
-      audit_trail_summary: this.generateAuditTrailSummary()
+      audit_trail_summary: this.generateAuditTrailSummary(),
     };
   }
 
@@ -314,54 +329,67 @@ class ComplianceArtifactGenerator {
   }
 
   private countEnforcementActions(): number {
-    return this.ledger.filter(entry => 
-      entry.enforcement && entry.enforcement.allowed !== undefined
+    return this.ledger.filter(
+      (entry) => entry.enforcement && entry.enforcement.allowed !== undefined,
     ).length;
   }
 
   private countConstraintEnforcement(): number {
-    return this.ledger.filter(entry => 
-      entry.enforcement && 
-      (entry.enforcement.violated_constraints?.length > 0 || 
-       entry.enforcement.satisfied_constraints?.length > 0)
+    return this.ledger.filter(
+      (entry) =>
+        entry.enforcement &&
+        (entry.enforcement.violated_constraints?.length > 0 ||
+          entry.enforcement.satisfied_constraints?.length > 0),
     ).length;
   }
 
   private countPrivacyEnforcement(): number {
-    return this.ledger.filter(entry => 
-      entry.enforcement?.satisfied_constraints?.includes("PRIVACY_PROTECTION") ||
-      entry.enforcement?.violated_constraints?.includes("PRIVACY_PROTECTION")
+    return this.ledger.filter(
+      (entry) =>
+        entry.enforcement?.satisfied_constraints?.includes(
+          "PRIVACY_PROTECTION",
+        ) ||
+        entry.enforcement?.violated_constraints?.includes("PRIVACY_PROTECTION"),
     ).length;
   }
 
   private countCryptographicProofs(): number {
-    return this.ledger.filter(entry => entry.proof_chain?.length > 0).length;
+    return this.ledger.filter((entry) => entry.proof_chain?.length > 0).length;
   }
 
   private countPolicyVersions(): number {
     const versions = new Set(
       this.ledger
-        .map(entry => entry.enforcement?.policy_version)
-        .filter(Boolean)
+        .map((entry) => entry.enforcement?.policy_version)
+        .filter(Boolean),
     );
     return versions.size;
   }
 
   private getMostRecentPolicyVersion(): string {
     if (this.ledger.length === 0) return "unknown";
-    return this.ledger[this.ledger.length - 1].enforcement?.policy_version || "unknown";
+    return (
+      this.ledger[this.ledger.length - 1].enforcement?.policy_version ||
+      "unknown"
+    );
   }
 
   private generateAuditTrailSummary() {
-    const allowed = this.ledger.filter(e => e.decision?.status === "ALLOWED").length;
-    const denied = this.ledger.filter(e => e.decision?.status === "DENIED").length;
-    const withProofs = this.ledger.filter(e => e.proof_chain?.length > 0).length;
+    const allowed = this.ledger.filter(
+      (e) => e.decision?.status === "ALLOWED",
+    ).length;
+    const denied = this.ledger.filter(
+      (e) => e.decision?.status === "DENIED",
+    ).length;
+    const withProofs = this.ledger.filter(
+      (e) => e.proof_chain?.length > 0,
+    ).length;
 
     return {
       total_decisions: this.ledger.length,
       allowed,
       denied,
-      cryptographic_proofs: withProofs
+      cryptographic_proofs: withProofs,
     };
   }
 
@@ -382,7 +410,7 @@ class ComplianceArtifactGenerator {
 
     output += "🎯 Control Evidence Summary:\n\n";
 
-    report.controls.forEach(control => {
+    report.controls.forEach((control) => {
       output += `  ${control.control_id}: ${control.control_name}\n`;
       output += `    Evidence Count: ${control.evidence_count}\n`;
       output += `    Automated: ${control.automated ? "✅ Yes" : "❌ No"}\n`;
@@ -406,14 +434,30 @@ class ComplianceArtifactGenerator {
 // Main execution
 async function main() {
   console.log("\n");
-  console.log("╔═══════════════════════════════════════════════════════════════════════╗");
-  console.log("║                                                                       ║");
-  console.log("║        📋 Bickford Compliance Artifact Generator                      ║");
-  console.log("║                                                                       ║");
-  console.log("║  Auto-generating compliance artifacts from execution ledger          ║");
-  console.log("║  Demonstrating $14M+/year cost avoidance for enterprises             ║");
-  console.log("║                                                                       ║");
-  console.log("╚═══════════════════════════════════════════════════════════════════════╝");
+  console.log(
+    "╔═══════════════════════════════════════════════════════════════════════╗",
+  );
+  console.log(
+    "║                                                                       ║",
+  );
+  console.log(
+    "║        📋 Bickford Compliance Artifact Generator                      ║",
+  );
+  console.log(
+    "║                                                                       ║",
+  );
+  console.log(
+    "║  Auto-generating compliance artifacts from execution ledger          ║",
+  );
+  console.log(
+    "║  Demonstrating $14M+/year cost avoidance for enterprises             ║",
+  );
+  console.log(
+    "║                                                                       ║",
+  );
+  console.log(
+    "╚═══════════════════════════════════════════════════════════════════════╝",
+  );
   console.log("\n");
 
   const ledgerPath = "/workspaces/bickford/execution-ledger.jsonl";
@@ -431,18 +475,33 @@ async function main() {
 
   // Summary
   console.log("\n");
-  console.log("╔═══════════════════════════════════════════════════════════════════════╗");
-  console.log("║                     💰 COST AVOIDANCE SUMMARY                         ║");
-  console.log("╚═══════════════════════════════════════════════════════════════════════╝");
+  console.log(
+    "╔═══════════════════════════════════════════════════════════════════════╗",
+  );
+  console.log(
+    "║                     💰 COST AVOIDANCE SUMMARY                         ║",
+  );
+  console.log(
+    "╚═══════════════════════════════════════════════════════════════════════╝",
+  );
   console.log("\n");
 
-  const totalAnnualSavings = soc2Report.annual_cost_avoidance_usd + isoReport.annual_cost_avoidance_usd;
+  const totalAnnualSavings =
+    soc2Report.annual_cost_avoidance_usd + isoReport.annual_cost_avoidance_usd;
 
-  console.log(`SOC-2 Type II Annual Savings: $${soc2Report.annual_cost_avoidance_usd.toLocaleString()}`);
-  console.log(`ISO 27001 Annual Savings: $${isoReport.annual_cost_avoidance_usd.toLocaleString()}`);
-  console.log(`\nTotal Annual Cost Avoidance: $${totalAnnualSavings.toLocaleString()}`);
+  console.log(
+    `SOC-2 Type II Annual Savings: $${soc2Report.annual_cost_avoidance_usd.toLocaleString()}`,
+  );
+  console.log(
+    `ISO 27001 Annual Savings: $${isoReport.annual_cost_avoidance_usd.toLocaleString()}`,
+  );
+  console.log(
+    `\nTotal Annual Cost Avoidance: $${totalAnnualSavings.toLocaleString()}`,
+  );
   console.log(`\n3-Year Value: $${(totalAnnualSavings * 3).toLocaleString()}`);
-  console.log(`\nPer Enterprise Customer: $${(totalAnnualSavings / 500).toLocaleString()}/year`);
+  console.log(
+    `\nPer Enterprise Customer: $${(totalAnnualSavings / 500).toLocaleString()}/year`,
+  );
   console.log(`(Assuming 500 enterprise customers)\n`);
 
   console.log("═".repeat(75));
@@ -454,8 +513,12 @@ async function main() {
   console.log("  2. Zero manual compliance reviews required");
   console.log("  3. Audit-ready artifacts generated in real-time");
   console.log("  4. Regulator-verifiable cryptographic proofs");
-  console.log("  5. Multi-framework support (SOC-2, ISO, FedRAMP, HIPAA, PCI DSS)");
+  console.log(
+    "  5. Multi-framework support (SOC-2, ISO, FedRAMP, HIPAA, PCI DSS)",
+  );
   console.log("\n");
 }
 
-main().catch(console.error);
+main().catch((err) => {
+  throw err;
+});
