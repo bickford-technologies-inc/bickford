@@ -18,23 +18,22 @@ const TRACE_PATHS = [
 
 let violations = 0;
 
-const files = await globby(TRACE_PATHS);
+(async () => {
+  const files = await globby(TRACE_PATHS);
 
-for (const file of files) {
-  const content = readFileSync(file, "utf8");
-
-  for (const forbidden of FORBIDDEN) {
-    if (content.includes(forbidden)) {
-      console.error(`❌ RANDOM ID VIOLATION in ${file}`);
-      console.error(`   Found forbidden token: ${forbidden}`);
-      violations++;
+  for (const file of files) {
+    const content = readFileSync(file, "utf8");
+    for (const forbidden of FORBIDDEN) {
+      if (content.includes(forbidden)) {
+        console.error(`[FORBIDDEN] ${forbidden} found in ${file}`);
+        violations++;
+      }
     }
   }
-}
 
-if (violations > 0) {
-  console.error(`\n🚫 ${violations} DecisionTrace ID violations found.`);
-  process.exit(1);
-}
-
-console.log("✅ NO_RANDOM_TRACE_IDS guard passed");
+  if (violations > 0) {
+    process.exit(1);
+  } else {
+    console.log("NO_RANDOM_TRACE_IDS: PASS");
+  }
+})();

@@ -12,15 +12,16 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
     "@playwright/test": "^1.58.0",
-    "@prisma/client": "6.19.2",
+    "@prisma/client": "7.3.0",
     "@sendgrid/mail": "^8.1.6",
     "@types/redis": "^4.0.11",
     "ai": "^6.0.44",
     "ajv": "^8.17.1",
     "glob": "^13.0.0",
+    "globby": "^16.1.0",
     "jszip": "^3.10.1",
     "pdf-lib": "^1.17.1",
-    "prisma": "6.19.2",
+    "prisma": "7.3.0",
     "redis": "^5.10.0",
     "stripe": "^20.2.0",
     "uuid": "^13.0.0"

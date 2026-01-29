@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
 const BickfordChat = dynamic(
-  () => import("../components/BickfordChat").then((m) => m.BickfordChat),
+  () => import("../components/BickfordChat.tsx").then((m) => m.BickfordChat),
   { ssr: false },
 );
 
