@@ -13,9 +13,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!/^((scripts\/)?[a-zA-Z0-9_.-]+\.(sh|js|ts))$/.test(file)) {
     return res.status(400).json({ error: "Invalid or unauthorized file" });
   }
-  const cmd = file.endsWith('.sh') ? `bash ${file} ${args.join(" ")}` :
-              file.endsWith('.js') ? `node ${file} ${args.join(" ")}` :
-              file.endsWith('.ts') ? `tsx ${file} ${args.join(" ")}` : '';
+  const cmd = file.endsWith(".sh")
+    ? `bash ${file} ${args.join(" ")}`
+    : file.endsWith(".js")
+      ? `node ${file} ${args.join(" ")}`
+      : file.endsWith(".ts")
+        ? `tsx ${file} ${args.join(" ")}`
+        : "";
   if (!cmd) return res.status(400).json({ error: "Unsupported file type" });
   exec(cmd, { cwd: process.cwd(), timeout: 30000 }, (err, stdout, stderr) => {
     if (err) {

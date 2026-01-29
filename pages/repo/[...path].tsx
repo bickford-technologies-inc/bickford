@@ -59,8 +59,9 @@ export default function RepoFilePage() {
     );
   }
 
-  const isExecutable =
-    data.file.match(/^((scripts\/)?[a-zA-Z0-9_.-]+\.(sh|js|ts))$/);
+  const isExecutable = data.file.match(
+    /^((scripts\/)?[a-zA-Z0-9_.-]+\.(sh|js|ts))$/,
+  );
 
   return (
     <div style={{ maxWidth: 800, margin: "0 auto", padding: 32 }}>
@@ -97,7 +98,14 @@ export default function RepoFilePage() {
           {execResult && (
             <div style={{ marginTop: 16 }}>
               <b>Execution Result:</b>
-              <pre style={{ background: "#222", color: "#fff", padding: 12, borderRadius: 6 }}>
+              <pre
+                style={{
+                  background: "#222",
+                  color: "#fff",
+                  padding: 12,
+                  borderRadius: 6,
+                }}
+              >
                 {execResult.stdout || ""}
                 {execResult.stderr ? `\n[stderr]\n${execResult.stderr}` : ""}
                 {execResult.error ? `\n[error]\n${execResult.error}` : ""}
