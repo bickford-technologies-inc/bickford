@@ -31,6 +31,12 @@ export default function Home() {
           <Link href="/customer-workflows">Customer Workflows Package</Link>
         </li>
       </ul>
+      <h2>Compression Demo</h2>
+      <ul>
+        <li>
+          <Link href="/compression/result">Compression Result Example</Link>
+        </li>
+      </ul>
     </div>
   );
 }
