@@ -9,20 +9,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "references": [
-    { "path": "packages/types" },
-    { "path": "packages/optr" },
-    { "path": "packages/authority" },
-    { "path": "packages/core" },
-    { "path": "packages/canon" },
-    { "path": "packages/ledger" },
-    { "path": "packages/session-completion" },
-    { "path": "packages/ui" },
-    { "path": "packages/web-ui" },
-    { "path": "packages/claude-integration" },
-    { "path": "packages/bickford-mobile-expo" },
-    { "path": "packages/execution-convergence" }
-  ],
+  // references removed: no packages present, only root app
   "exclude": [
     "prisma-test.ts",
     "tests"

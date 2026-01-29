@@ -2,62 +2,12 @@
   "name": "bickford",
   "private": true,
   "packageManager": "pnpm@10.28.0",
-  "workspaces": [
-    "packages/web-ui",
-    "packages/execution-convergence",
-    "packages/ledger",
-    "packages/types"
-  ],
+  
   "scripts": {
-    "setup": "node scripts/setup.mjs",
-    "install:all": "npm install",
-    "dev": "node scripts/dev-stack.mjs",
-    "dev:api": "pnpm --filter bickford-backend dev",
-    "dev:web": "pnpm --filter @bickford/web-ui dev",
-    "dev:mobile": "pnpm --filter bickford-mobile-ui dev",
-    "detect:promotions": "node scripts/detect-promotions.mjs",
-    "promote": "node scripts/promote-package.mjs",
-    "preflight": "node scripts/assert-declared-deps.mjs && node scripts/require-optr-exports.mjs",
-    "canon:enforce": "node scripts/enforce-deprecation-windows.mjs",
-    "canon:viz": "node scripts/render-canon-drift.mjs",
-    "preinstall": "node scripts/assert-lockfile.mjs",
-    "prebuild": "",
-    "build:types": "pnpm --filter @bickford/types build",
-    "build:ledger": "pnpm --filter @bickford/ledger build",
+    "dev": "next dev",
     "build": "next build",
-    "start": "bun run app/server.ts",
-    "check:resolution": "node scripts/check-workspace-resolution.mjs",
-    "build:all": "node scripts/build-all.mjs",
-    "canon:bump": "node scripts/bump-canon-version.mjs",
-    "canon:confidence": "node scripts/invariant-confidence.mjs",
-    "canon:propagate": "node scripts/ci-propagate-canon.mjs",
-    "canon": "node scripts/canonctl.mjs",
-    "canon:migrate": "node scripts/canonctl.mjs migrate",
-    "canon:deprecations": "node scripts/canonctl.mjs enforce-deprecations",
-    "canon:dag": "node scripts/canonctl.mjs render-dag",
-    "canon:blast": "node scripts/invariants/blast-radius-score.mjs",
-    "canon:gate": "node scripts/promote-with-gate.mjs",
-    "canon:pressure": "node scripts/render-invariant-pressure.mjs",
-    "canon:remediate": "node scripts/auto-remediation-pr.mjs",
-    "canon:ml:extract": "node scripts/ml/extract-features.mjs",
-    "canon:ml:train": "node scripts/ml/train-online.mjs",
-    "canon:ml:predict": "node scripts/ml/predict-failure.mjs",
-    "canon:patch:generate": "node scripts/generate-auto-patch.mjs",
-    "canon:patch:pr": "node scripts/open-auto-patch-pr.mjs",
-    "canon:maintain": "node scripts/canon-predictive-maintenance.mjs",
-    "canon:pressure:emit": "node scripts/emit-invariant-pressure.mjs",
-    "canon:remediate:queue": "node scripts/build-remediation-queue.mjs",
-    "canon:exec:report": "node scripts/generate-exec-ttv-report.mjs",
-    "canon:compare:tenant": "node scripts/compare-tenant-baseline.mjs",
-    "capture:ui": "node scripts/capture-ui.mjs",
-    "assert:vercel-binding": "tsx scripts/assert-vercel-binding.ts",
-    "bickford:realize": "node scripts/bickford-realize.mjs",
-    "benchmark:gaps": "node scripts/benchmark-gaps.mjs",
-    "typecheck": "tsc --noEmit --project tsconfig.json",
-    "prisma:generate": "prisma generate --schema=packages/ledger/prisma/schema.prisma --config=prisma.config.js"
-  },
-  "bin": {
-    "bickford": "./scripts/bickford-realize.mjs"
+    "start": "next start",
+    "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
@@ -91,6 +41,5 @@
   },
   "engines": {
     "node": "20.x"
-  },
-  "postinstall": "pnpm exec prisma generate --schema=packages/ledger/prisma/schema.prisma"
+  }
 }

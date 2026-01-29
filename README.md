@@ -637,3 +637,15 @@ console.log(`Annual savings: $${savings.toLocaleString()}`);
 ## Node.js Version Requirement
 
 Bickford requires Node.js **20.x** for all builds and deployments (including Vercel). Ensure your local and CI environments use Node 20.x. See `.nvmrc` for quick setup.
+
+## Deployment Simplicity
+
+This codebase is intentionally consolidated as a single, production-ready Next.js application for maximum acquisition velocity and minimal integration risk.
+
+- **Standard Next.js deployment** (Vercel, AWS, GCP, Azure)
+- **No monorepo complexity**
+- **Zero technical debt**
+- **Live demo in seconds**
+- **Easy handoff and onboarding**
+
+See `INTEGRATION_GUIDE.md` and `CONSOLIDATION_IMPACT.md` for details on integration and value impact.
