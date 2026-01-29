@@ -53,14 +53,6 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules",
-    "app",
-    "adapters/cli",
-    "adapters/docker",
-    "app/api",
-    "apps/demo",
-    "apps/web",
-    "ci",
-    "packages"
+    "node_modules"
   ]
 }
