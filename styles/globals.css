@@ -1,0 +1,25 @@
+body {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  background: #f7f8fa;
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5 {
+  font-weight: 600;
+}
+
+table {
+  font-size: 15px;
+}
+
+input[type="number"] {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+button {
+  font-size: 15px;
+}

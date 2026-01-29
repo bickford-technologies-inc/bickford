@@ -29,9 +29,18 @@ case "$SYSTEM" in
     fi
     ;;
   railway)
-    # Placeholder: Add Railway token validation logic here
-    echo "[WARN] Railway token validation not implemented. Skipping."
-    exit 0
+    # Validate Railway token by calling the Railway API (whoami endpoint)
+    RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $TOKEN" \
+      "https://backboard.railway.app/graphql" \
+      --data '{"query":"{ viewer { id name } }"}' \
+      -H "Content-Type: application/json")
+    if [[ "$RESPONSE" == "200" ]]; then
+      echo "[PASS] Railway token is valid."
+      exit 0
+    else
+      echo "[FAIL] Railway token is INVALID or expired (HTTP $RESPONSE)."
+      exit 2
+    fi
     ;;
   vercel)
     # Placeholder: Add Vercel token validation logic here

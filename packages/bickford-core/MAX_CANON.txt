@@ -1,8 +1,0 @@
-BICKFORD — MAX SAFELY (GLOBAL)
-
-• MAX is computed for every intent
-• Invariants are formal tests
-• Reduction is explained, persisted, visible
-• MAX computation produces a verifiable artifact
-• OPTR never bypasses invariants
-• Silence is a violation

@@ -1,9 +1,0 @@
-{
-  "requiredWeight": 3,
-  "agents": {
-    "builder": 1,
-    "validator": 1,
-    "authority": 2
-  },
-  "votesFile": ".agent-votes.json"
-}

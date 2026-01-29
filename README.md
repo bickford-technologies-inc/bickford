@@ -1,3 +1,54 @@
+# Minimal Production Deployment
+
+This repository is currently in a minimal, production-grade state for Vercel deployment:
+
+- Only the /pages, /components, and /styles directories are present in the project root.
+- All non-essential directories (app, packages, adapters, apps, agents, demo, demos, scripts, tests, etc.) have been moved out for a clean build and review.
+- The `/ledger` route provides a dual-narrative ledger viewer (Anthropic/Commercial) with compression stats and ROI calculator.
+- For future development, restore archived directories from /tmp as needed.
+
+---
+
+# Bickford Ledger Viewer
+
+This is a Vercel-ready Next.js app for viewing the Bickford execution ledger with two narrative modes:
+
+- **Anthropic (AI Safety)**: Emphasizes Constitutional AI enforcement, cryptographic audit, and storage efficiency.
+- **Commercial (Economic)**: Emphasizes cost savings, ROI, and compression.
+
+## Features
+
+- Reads from execution-ledger.jsonl
+- Toggle between Anthropic and Commercial narratives
+- Compression stats and ROI calculator
+- Clean, production-ready UI
+
+## Local Development
+
+```bash
+pnpm install
+pnpm run dev
+```
+
+## Deployment
+
+Deploy to Vercel (auto-detects Next.js):
+
+```bash
+vercel --prod
+```
+
+## File Structure
+
+- `/pages/ledger.tsx` — Ledger viewer UI
+- `/pages/api/ledger.ts` — API route to serve ledger entries
+- `/components/` — UI components
+- `/execution-ledger.jsonl` — Ledger data (must exist in project root)
+
+---
+
+For questions, see the code or contact the Bickford team.
+
 # Bickford AI Execution Authority Platform
 
 ![99.98% Compression](https://img.shields.io/badge/🚀_99.98%25_Compression-brightgreen)

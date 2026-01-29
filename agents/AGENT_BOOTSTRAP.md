@@ -1,5 +1,0 @@
-- Canon is semantic-versioned
-- Canon syncs cross-repo automatically
-- Invariants weighted by confidence
-- Agents propose invariants, not patches
-- Enforcement escalates by confidence score

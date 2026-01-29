@@ -38,13 +38,11 @@
         "packages/ledger/dist/conversationCompressionHandler.js",
         "packages/ledger/src/conversationCompressionHandler.ts"
       ],
-      "@bickford/ledger/conversationStore": [
-        "packages/ledger/dist/conversationStore.js",
-        "packages/ledger/src/conversationStore.ts"
+      "@components/*": [
+        "components/*"
       ],
-      "@bickford/types": [
-        "packages/types/dist/index.d.ts",
-        "packages/types/src/index.ts"
+      "@lib/*": [
+        "lib/*"
       ]
     }
   },
@@ -56,11 +54,13 @@
   ],
   "exclude": [
     "node_modules",
-    "adapters/**",
-    "apps/**",
-    "packages/**",
-    "scripts/**",
-    "ci/**",
-    "tests/**"
+    "app",
+    "adapters/cli",
+    "adapters/docker",
+    "app/api",
+    "apps/demo",
+    "apps/web",
+    "ci",
+    "packages"
   ]
 }
