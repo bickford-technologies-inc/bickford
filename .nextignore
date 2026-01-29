@@ -2,3 +2,17 @@ packages/**
 adapters/**
 ci/**
 scripts/**
+!docs/technical/**
+node_modules/**
+.git/**
+.next/**
+.turbo/**
+.vscode/**
+out/**
+dist/**
+coverage/**
+.nyc_output/**
+.env
+.env.local
+.env.example
+.env.*.example

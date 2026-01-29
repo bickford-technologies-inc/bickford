@@ -1,4 +1,13 @@
-!ci/
-!ci/guards/
-!ci/guards/ENVIRONMENT_PRECONDITION.sh
-!ci/guards/check-guards.sh
+node_modules/**
+.git/**
+.next/**
+.turbo/**
+.vscode/**
+out/**
+dist/**
+coverage/**
+.nyc_output/**
+.env
+.env.local
+.env.example
+.env.*.example
