@@ -38,7 +38,12 @@ export const BickfordCommandDock: React.FC = () => {
     const intent: Intent = { ...baseIntent, authoritySignature };
     setIntents((prev) => [intent, ...prev]);
     setInput("");
-    // TODO: Persist to datalake/bronze/messages and ledger
+    // Persist intent to datalake/silver/intents
+    await fetch("/api/intents", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ intent: input, timestamp: now, actor: "user" }),
+    });
     setLoading(false);
   };
 

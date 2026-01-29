@@ -42,18 +42,28 @@ export const BickfordChat: React.FC = () => {
     setMessages((prev) => [...prev, newMessage]);
     setInput("");
     setLoading(true);
+    // Persist to datalake/bronze/messages
+    await fetch("/api/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newMessage),
+    });
     // Simulate async Bickford AI response
     const response = await getBickfordResponse(input);
-    setMessages((prev) => [
-      ...prev,
-      {
-        author: "bickford",
-        content: response,
-        timestamp: new Date().toISOString(),
-      },
-    ]);
+    const aiMessage: Message = {
+      author: "bickford",
+      content: response,
+      timestamp: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, aiMessage]);
+    // Persist AI response as well
+    await fetch("/api/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(aiMessage),
+    });
     setLoading(false);
-    // TODO: Persist to datalake/bronze/messages and trigger intent extraction
+    // TODO: Trigger intent extraction pipeline
   };
 
   return (

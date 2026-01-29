@@ -10,7 +10,8 @@ const scenarios = [
       proof: "❌ None",
       audit: "❌ None",
       compliance: "❌ Not provable",
-      response: "# How Photosynthesis Works\n\nPhotosynthesis is the process by which plants, algae, and some bacteria convert light energy into chemical energy stored in glucose. ...",
+      response:
+        "# How Photosynthesis Works\n\nPhotosynthesis is the process by which plants, algae, and some bacteria convert light energy into chemical energy stored in glucose. ...",
     },
     bickford: {
       status: "✅ ALLOWED",
@@ -22,7 +23,8 @@ const scenarios = [
         "PRIVACY_PROTECTION",
         "TRUTHFULNESS",
       ],
-      response: "# How Photosynthesis Works\n\nPhotosynthesis is the process by which plants, algae, and some bacteria convert light energy into chemical energy stored in glucose. ...",
+      response:
+        "# How Photosynthesis Works\n\nPhotosynthesis is the process by which plants, algae, and some bacteria convert light energy into chemical energy stored in glucose. ...",
       tokens: 549,
       proofChain: true,
       enforcementOverhead: "6639.82ms",
@@ -44,7 +46,8 @@ const scenarios = [
     bickford: {
       status: "❌ DENIED",
       constraints: ["HARM_PREVENTION"],
-      response: "Execution denied. Violated constraints: Harm Prevention. Policy version: v4.1.0.",
+      response:
+        "Execution denied. Violated constraints: Harm Prevention. Policy version: v4.1.0.",
       tokens: 13,
       costSaved: "$0.0001",
       proofChain: true,
@@ -116,28 +119,60 @@ export default function ClaudeComparisonDemo() {
     <div style={{ fontFamily: "monospace", padding: 24 }}>
       <h1>Bickford Value Demo: Claude vs Claude+Bickford</h1>
       <h2>Proving Constitutional AI enforcement with cryptographic proofs</h2>
-      <div style={{ margin: "16px 0", background: "#f8f8f8", padding: 16, borderRadius: 8 }}>
+      <div
+        style={{
+          margin: "16px 0",
+          background: "#f8f8f8",
+          padding: 16,
+          borderRadius: 8,
+        }}
+      >
         <b>System Configuration:</b>
         <ul>
-          <li>Enforcement Mode: <b>MECHANICAL</b></li>
-          <li>Proof Type: <b>CRYPTOGRAPHIC</b></li>
-          <li>Policy Version: <b>v4.1.0</b></li>
-          <li>Active Constraints: <b>6</b></li>
+          <li>
+            Enforcement Mode: <b>MECHANICAL</b>
+          </li>
+          <li>
+            Proof Type: <b>CRYPTOGRAPHIC</b>
+          </li>
+          <li>
+            Policy Version: <b>v4.1.0</b>
+          </li>
+          <li>
+            Active Constraints: <b>6</b>
+          </li>
         </ul>
       </div>
       <div style={{ margin: "24px 0" }}>
         <b>Scenario:</b>
-        <select value={scenarioIdx} onChange={e => setScenarioIdx(Number(e.target.value))}>
+        <select
+          value={scenarioIdx}
+          onChange={(e) => setScenarioIdx(Number(e.target.value))}
+        >
           {scenarios.map((s, i) => (
-            <option value={i} key={s.label}>{s.label}</option>
+            <option value={i} key={s.label}>
+              {s.label}
+            </option>
           ))}
         </select>
         <div style={{ marginTop: 12 }}>
-          <div><b>Prompt:</b> <span style={{ color: '#005' }}>{scenario.prompt}</span></div>
-          <div><b>Expected:</b> {scenario.expected}</div>
+          <div>
+            <b>Prompt:</b>{" "}
+            <span style={{ color: "#005" }}>{scenario.prompt}</span>
+          </div>
+          <div>
+            <b>Expected:</b> {scenario.expected}
+          </div>
         </div>
         <div style={{ display: "flex", gap: 32, marginTop: 24 }}>
-          <div style={{ flex: 1, background: "#f0f0f0", padding: 16, borderRadius: 8 }}>
+          <div
+            style={{
+              flex: 1,
+              background: "#f0f0f0",
+              padding: 16,
+              borderRadius: 8,
+            }}
+          >
             <h3>Claude API (No Enforcement)</h3>
             <ul>
               <li>Status: {scenario.claude.status}</li>
@@ -147,25 +182,48 @@ export default function ClaudeComparisonDemo() {
             </ul>
             <div style={{ marginTop: 8 }}>
               <b>Response Preview:</b>
-              <pre style={{ background: "#fff", padding: 8, borderRadius: 4 }}>{scenario.claude.response}</pre>
+              <pre style={{ background: "#fff", padding: 8, borderRadius: 4 }}>
+                {scenario.claude.response}
+              </pre>
             </div>
           </div>
-          <div style={{ flex: 1, background: "#e0ffe0", padding: 16, borderRadius: 8 }}>
+          <div
+            style={{
+              flex: 1,
+              background: "#e0ffe0",
+              padding: 16,
+              borderRadius: 8,
+            }}
+          >
             <h3>Claude + Bickford (Provable)</h3>
             <ul>
               <li>Status: {scenario.bickford.status}</li>
-              <li>Satisfied Constraints: {scenario.bickford.constraints?.join(", ")}</li>
+              <li>
+                Satisfied Constraints:{" "}
+                {scenario.bickford.constraints?.join(", ")}
+              </li>
               <li>Tokens Used/Saved: {scenario.bickford.tokens}</li>
-              {scenario.bickford.costSaved && <li>Cost Saved: {scenario.bickford.costSaved}</li>}
-              <li>Cryptographic Proof Chain: {scenario.bickford.proofChain ? "✅" : "❌"}</li>
-              <li>Enforcement Overhead: {scenario.bickford.enforcementOverhead}</li>
+              {scenario.bickford.costSaved && (
+                <li>Cost Saved: {scenario.bickford.costSaved}</li>
+              )}
+              <li>
+                Cryptographic Proof Chain:{" "}
+                {scenario.bickford.proofChain ? "✅" : "❌"}
+              </li>
+              <li>
+                Enforcement Overhead: {scenario.bickford.enforcementOverhead}
+              </li>
               <li>Total Execution Time: {scenario.bickford.totalTime}</li>
             </ul>
             <div style={{ marginTop: 8 }}>
               <b>Response:</b>
-              <pre style={{ background: "#fff", padding: 8, borderRadius: 4 }}>{scenario.bickford.response}</pre>
+              <pre style={{ background: "#fff", padding: 8, borderRadius: 4 }}>
+                {scenario.bickford.response}
+              </pre>
             </div>
-            <div style={{ marginTop: 8, color: "#080" }}>{scenario.bickford.result}</div>
+            <div style={{ marginTop: 8, color: "#080" }}>
+              {scenario.bickford.result}
+            </div>
           </div>
         </div>
       </div>
@@ -190,10 +248,12 @@ export default function ClaudeComparisonDemo() {
           <li key={i}>{line}</li>
         ))}
       </ul>
-      <div style={{ marginTop: 32, fontWeight: 600, color: '#080' }}>
-        Demonstration complete!<br />
-        <span style={{ fontWeight: 400, color: '#333' }}>
-          Next steps: Run compliance artifact generator, regulator verification demo, review acquisition deck.
+      <div style={{ marginTop: 32, fontWeight: 600, color: "#080" }}>
+        Demonstration complete!
+        <br />
+        <span style={{ fontWeight: 400, color: "#333" }}>
+          Next steps: Run compliance artifact generator, regulator verification
+          demo, review acquisition deck.
         </span>
       </div>
     </div>
