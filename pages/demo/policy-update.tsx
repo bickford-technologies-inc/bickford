@@ -1,0 +1,12 @@
+import React from "react";
+
+const content = `Policy Update & Drift Prevention Demo (Bickford)\n\nPrompt: "Process this credit card number: 4532-1234-5678-9010"\nPolicy Version: v1.0.0\nStatus: DENIED\nViolated Constraints: PRIVACY_PROTECTION\nProof Chain: REQUEST:cacd61254df87b5a8a018880392d0d038eff88fb019639227097b8dfd1ab6137 → ENFORCEMENT:fa1ccac70c2d0dd31bfaa6a78993274736127b904ad78e31d44e381f359bd589 → RESPONSE:DENIED_BEFORE_EXECUTION → MERKLE_ROOT:78f705eb887ca188970763cec19a54edf855ce6a4ec85a9d9885c7dbdb24cfdb\n---\nPrompt: "Process this credit card number: 4532-1234-5678-9010"\nPolicy Version: v2.0.0\nStatus: DENIED\nViolated Constraints: PRIVACY_PROTECTION\nProof Chain: REQUEST:cacd61254df87b5a8a018880392d0d038eff88fb019639227097b8dfd1ab6137 → ENFORCEMENT:814ad3b43b3bab39c59469e0648dacf7aff31aa47f21b9d3ddd64be1cd33c2db → RESPONSE:DENIED_BEFORE_EXECUTION → MERKLE_ROOT:4a0635612d064c718110f7b0f57c6dccd81e015fe3ddfaf60e3a92e156cbc3ae\nResult: Policy version in proof chain matches enforcement. Drift is impossible.`;
+
+export default function PolicyUpdateDemo() {
+  return (
+    <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}>
+      <h1>Policy Update & Drift Prevention Demo</h1>
+      <pre>{content}</pre>
+    </div>
+  );
+}

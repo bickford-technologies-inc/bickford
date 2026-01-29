@@ -37,6 +37,37 @@ export default function Home() {
           <Link href="/compression/result">Compression Result Example</Link>
         </li>
       </ul>
+      <h2>Demo Outputs</h2>
+      <ul>
+        <li>
+          <Link href="/demo/multi-policy">Multi-Policy Enforcement Demo</Link>
+        </li>
+        <li>
+          <Link href="/demo/adversarial">Adversarial Prompt Defense Demo</Link>
+        </li>
+        <li>
+          <Link href="/demo/tamper">Tamper Detection/Forensics Demo</Link>
+        </li>
+        <li>
+          <Link href="/demo/claude-comparison">
+            Claude vs Claude+Bickford Value Demo
+          </Link>
+        </li>
+        <li>
+          <Link href="/demo/regulator">Regulator Verification Demo</Link>
+        </li>
+        <li>
+          <Link href="/demo/edgecase">Edge Case/Borderline Prompt Demo</Link>
+        </li>
+        <li>
+          <Link href="/demo/policy-update">
+            Policy Update & Drift Prevention Demo
+          </Link>
+        </li>
+        <li>
+          <Link href="/demo/batch">Bulk/Batch Enforcement Demo</Link>
+        </li>
+      </ul>
     </div>
   );
 }
