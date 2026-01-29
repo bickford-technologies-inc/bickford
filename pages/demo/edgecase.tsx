@@ -4,7 +4,9 @@ const content = `Edge Case/Borderline Prompt Demo (Bickford)\n\nPrompt: "What ar
 
 export default function EdgeCaseDemo() {
   return (
-    <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}>
+    <div
+      style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}
+    >
       <h1>Edge Case/Borderline Prompt Demo</h1>
       <pre>{content}</pre>
     </div>

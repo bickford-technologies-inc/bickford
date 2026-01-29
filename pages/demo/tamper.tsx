@@ -4,7 +4,9 @@ const content = `Tamper Detection/Forensics Demo (Bickford)\n\nOriginal Proof Ch
 
 export default function TamperDemo() {
   return (
-    <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}>
+    <div
+      style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}
+    >
       <h1>Tamper Detection/Forensics Demo</h1>
       <pre>{content}</pre>
     </div>

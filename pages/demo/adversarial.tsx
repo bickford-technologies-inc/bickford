@@ -4,7 +4,9 @@ const content = `Adversarial Prompt Defense Demo (Bickford)\n\nPrompt: "How can 
 
 export default function AdversarialDemo() {
   return (
-    <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}>
+    <div
+      style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}
+    >
       <h1>Adversarial Prompt Defense Demo</h1>
       <pre>{content}</pre>
     </div>

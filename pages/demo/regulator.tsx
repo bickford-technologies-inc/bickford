@@ -4,7 +4,9 @@ const content = `Bickford Regulator Verification Demo\n\nIndependent verificatio
 
 export default function RegulatorDemo() {
   return (
-    <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}>
+    <div
+      style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}
+    >
       <h1>Regulator Verification Demo</h1>
       <pre>{content}</pre>
     </div>

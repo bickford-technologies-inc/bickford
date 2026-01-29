@@ -4,7 +4,9 @@ const content = `Policy Update & Drift Prevention Demo (Bickford)\n\nPrompt: "Pr
 
 export default function PolicyUpdateDemo() {
   return (
-    <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}>
+    <div
+      style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}
+    >
       <h1>Policy Update & Drift Prevention Demo</h1>
       <pre>{content}</pre>
     </div>

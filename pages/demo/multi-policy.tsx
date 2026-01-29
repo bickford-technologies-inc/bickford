@@ -4,7 +4,9 @@ const content = `Multi-Policy Enforcement Demo (Bickford)\n\nPrompt: "Summarize 
 
 export default function MultiPolicyDemo() {
   return (
-    <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}>
+    <div
+      style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}
+    >
       <h1>Multi-Policy Enforcement Demo</h1>
       <pre>{content}</pre>
     </div>

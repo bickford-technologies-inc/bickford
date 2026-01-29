@@ -4,7 +4,9 @@ const content = `Bulk/Batch Enforcement Demo (Bickford)\n\nPrompt: "Explain how 
 
 export default function BatchDemo() {
   return (
-    <div style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}>
+    <div
+      style={{ whiteSpace: "pre-wrap", fontFamily: "monospace", padding: 24 }}
+    >
       <h1>Bulk/Batch Enforcement Demo</h1>
       <pre>{content}</pre>
     </div>
