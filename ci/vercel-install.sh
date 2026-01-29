@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
+trap 'echo "[ERROR] Script failed at line $LINENO with exit code $?"' ERR
+
 echo "[DEBUG] pwd=$(pwd)"
 echo "[DEBUG] repo root files:"
 ls -l
