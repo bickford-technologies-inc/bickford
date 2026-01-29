@@ -28,4 +28,8 @@ fi
 corepack enable
 corepack prepare pnpm@10.28.0 --activate
 pnpm install --frozen-lockfile
-pnpm exec prisma generate --schema=packages/ledger/prisma/schema.prisma
+if [[ -f "packages/ledger/prisma/schema.prisma" ]]; then
+  pnpm exec prisma generate --schema=packages/ledger/prisma/schema.prisma
+else
+  echo "[INFO] Skipping prisma generate: schema.prisma not found."
+fi
