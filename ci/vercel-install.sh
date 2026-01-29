@@ -28,6 +28,9 @@ fi
 corepack enable
 corepack prepare pnpm@10.28.0 --activate
 pnpm install --frozen-lockfile
+
+# Ensure DATABASE_URL is set for Prisma (Vercel build)
+export DATABASE_URL=${DATABASE_URL:-"file:./dev.db"}
 if [[ -f "packages/ledger/prisma/schema.prisma" ]]; then
   pnpm exec prisma generate --schema=packages/ledger/prisma/schema.prisma
 else
