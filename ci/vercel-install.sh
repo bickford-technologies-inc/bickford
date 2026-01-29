@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -euxo pipefail
 
 echo "[DEBUG] pwd=$(pwd)"
 echo "[DEBUG] repo root files:"
