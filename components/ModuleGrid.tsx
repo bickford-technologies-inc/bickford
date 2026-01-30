@@ -64,7 +64,7 @@ export function ModuleGrid({
                   className="module-metric"
                   style={{
                     fontSize: 13,
-                    color: "#001F3F",
+                    color: "#fff", // changed to white
                     fontWeight: 600,
                     display: "flex",
                     flexDirection: "column",
@@ -76,8 +76,12 @@ export function ModuleGrid({
                     overflowWrap: "anywhere",
                   }}
                 >
-                  <span style={{ fontWeight: 700 }}>{m.value}</span>
-                  <span style={{ color: "#9ca3af", fontWeight: 400 }}>{m.label}</span>
+                  <span style={{ fontWeight: 700, color: "#fff" }}>
+                    {m.value}
+                  </span>
+                  <span style={{ color: "#9ca3af", fontWeight: 400 }}>
+                    {m.label}
+                  </span>
                 </span>
               ))}
             </div>
