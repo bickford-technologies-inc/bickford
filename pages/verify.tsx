@@ -70,12 +70,25 @@ function ValueDashboard({ result }: { result: any }) {
   entries.forEach((e: any) => {
     if (e.payload?.success === true) valueCreated++;
     // Simulate realization: if metadata.realized === true or compression ratio > 0.95
-    if (e.metadata?.realized === true || (e.metadata?.compressionRatio ?? 1) > 0.95) valueRealized++;
-    if (e.metadata?.storageSavedMB) totalStorageSaved += e.metadata.storageSavedMB;
+    if (
+      e.metadata?.realized === true ||
+      (e.metadata?.compressionRatio ?? 1) > 0.95
+    )
+      valueRealized++;
+    if (e.metadata?.storageSavedMB)
+      totalStorageSaved += e.metadata.storageSavedMB;
   });
-  const realizationRate = valueCreated ? (valueRealized / valueCreated) : 1;
+  const realizationRate = valueCreated ? valueRealized / valueCreated : 1;
   return (
-    <div style={{ margin: "16px 0", background: "#fffbe6", padding: 12, borderRadius: 8, border: "1px solid #ffe58f" }}>
+    <div
+      style={{
+        margin: "16px 0",
+        background: "#fffbe6",
+        padding: 12,
+        borderRadius: 8,
+        border: "1px solid #ffe58f",
+      }}
+    >
       <b>Value Dashboard</b>
       <div style={{ marginTop: 8 }}>
         Value Created: <b>{valueCreated}</b> events
@@ -89,17 +102,39 @@ function ValueDashboard({ result }: { result: any }) {
       <div style={{ marginTop: 4 }}>
         Total Storage Saved: <b>{totalStorageSaved.toFixed(2)} MB</b>
       </div>
-      <div style={{ marginTop: 8, width: 200, background: "#f0f0f0", borderRadius: 4, height: 12, position: "relative" }}>
+      <div
+        style={{
+          marginTop: 8,
+          width: 200,
+          background: "#f0f0f0",
+          borderRadius: 4,
+          height: 12,
+          position: "relative",
+        }}
+      >
         <div
           style={{
             width: `${Math.round(realizationRate * 100)}%`,
-            background: realizationRate > 0.8 ? "#52c41a" : realizationRate > 0.5 ? "#faad14" : "#f5222d",
+            background:
+              realizationRate > 0.8
+                ? "#52c41a"
+                : realizationRate > 0.5
+                  ? "#faad14"
+                  : "#f5222d",
             height: "100%",
             borderRadius: 4,
             transition: "width 0.3s",
           }}
         />
-        <span style={{ position: "absolute", left: 8, top: -2, fontSize: 10, color: "#888" }}>
+        <span
+          style={{
+            position: "absolute",
+            left: 8,
+            top: -2,
+            fontSize: 10,
+            color: "#888",
+          }}
+        >
           Realized
         </span>
       </div>

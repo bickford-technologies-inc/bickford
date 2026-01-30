@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { verifyHashChain } from "../../ledger/ledger";
+import { verifyHashChain, Ledger } from "../../ledger/ledger";
 
 function calculateCompression(entries: any[]) {
   let original = 0,
@@ -57,7 +57,10 @@ export default async function handler(
     const queryPayload = entries[0]?.payload;
     let similar: any[] = [];
     if (queryPayload) {
-      similar = ledgerObj.findSimilarEntries(queryPayload, { limit: 3, minSimilarity: 0.5 });
+      similar = ledgerObj.findSimilarEntries(queryPayload, {
+        limit: 3,
+        minSimilarity: 0.5,
+      });
     }
 
     // Hash chain validation

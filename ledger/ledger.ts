@@ -16,11 +16,13 @@ function simpleEmbedding(text: string): number[] {
   for (let i = 0; i < text.length; ++i) {
     arr[i % 8] += text.charCodeAt(i);
   }
-  return arr.map(x => x / text.length);
+  return arr.map((x) => x / text.length);
 }
 
 function cosineSimilarity(a: number[], b: number[]): number {
-  let dot = 0, normA = 0, normB = 0;
+  let dot = 0,
+    normA = 0,
+    normB = 0;
   for (let i = 0; i < a.length; ++i) {
     dot += a[i] * b[i];
     normA += a[i] * a[i];
@@ -33,7 +35,7 @@ export class Ledger {
   private entries: LedgerEntry[] = [];
 
   async append(
-    entry: Omit<LedgerEntry, "previousHash" | "currentHash" | "embedding">
+    entry: Omit<LedgerEntry, "previousHash" | "currentHash" | "embedding">,
   ) {
     const previousHash = this.entries.length
       ? this.entries[this.entries.length - 1].currentHash
@@ -60,7 +62,7 @@ export class Ledger {
   // Intelligence: find similar entries by payload embedding
   findSimilarEntries(
     payload: any,
-    opts?: { limit?: number; minSimilarity?: number }
+    opts?: { limit?: number; minSimilarity?: number },
   ): LedgerEntry[] {
     const embedding = simpleEmbedding(JSON.stringify(payload));
     const scored = this.entries.map((e) => ({
@@ -70,7 +72,10 @@ export class Ledger {
     scored.sort((a, b) => b.sim - a.sim);
     const minSim = opts?.minSimilarity ?? 0.7;
     const limit = opts?.limit ?? 5;
-    return scored.filter((s) => s.sim >= minSim).slice(0, limit).map((s) => s.entry);
+    return scored
+      .filter((s) => s.sim >= minSim)
+      .slice(0, limit)
+      .map((s) => s.entry);
   }
 
   verifyIntegrity(): { valid: boolean; violations: number } {
