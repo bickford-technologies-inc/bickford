@@ -1,0 +1,15 @@
+{
+  "name": "repo-orchestrator",
+  "version": "1.0.0",
+  "description": "Decision continuity for codebases - archive, clean, and restore with full audit trails",
+  "type": "module",
+  "scripts": {
+    "scan": "bun orchestrate.ts scan",
+    "archive": "bun orchestrate.ts archive", 
+    "clean": "bun orchestrate.ts clean",
+    "restore": "bun orchestrate.ts restore"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}
