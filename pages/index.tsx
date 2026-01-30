@@ -302,6 +302,16 @@ export default function CanonConsole() {
   }
   function showModal(type, title, body) {
     setModal({ type, title, body });
+    // Scroll to top and focus modal for accessibility
+    setTimeout(() => {
+      const modal = document.querySelector(
+        ".documentation-modal, .coming-soon-modal",
+      );
+      if (modal) {
+        modal.scrollIntoView({ behavior: "smooth", block: "center" });
+        (modal as HTMLElement).focus();
+      }
+    }, 100);
   }
   function closeModal() {
     setModal(null);

@@ -47,16 +47,37 @@ export function ModuleGrid({
           <div className="module-info">
             <h3>{mod.title}</h3>
             <p>{mod.description}</p>
-            <div style={{ display: "flex", gap: 16, marginTop: 10 }}>
+            <div
+              className="module-metrics"
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 12,
+                marginTop: 10,
+                alignItems: "flex-end",
+                justifyContent: "flex-start",
+              }}
+            >
               {mod.metrics.map((m, i) => (
                 <span
                   key={i}
-                  style={{ fontSize: 13, color: "#001F3F", fontWeight: 600 }}
+                  className="module-metric"
+                  style={{
+                    fontSize: 13,
+                    color: "#001F3F",
+                    fontWeight: 600,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    minWidth: 70,
+                    maxWidth: 90,
+                    wordBreak: "break-word",
+                    whiteSpace: "normal",
+                    overflowWrap: "anywhere",
+                  }}
                 >
-                  {m.value}{" "}
-                  <span style={{ color: "#9ca3af", fontWeight: 400 }}>
-                    {m.label}
-                  </span>
+                  <span style={{ fontWeight: 700 }}>{m.value}</span>
+                  <span style={{ color: "#9ca3af", fontWeight: 400 }}>{m.label}</span>
                 </span>
               ))}
             </div>

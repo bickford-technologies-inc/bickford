@@ -18,13 +18,16 @@ export function ToastStack({ toasts, removeToast }: ToastStackProps) {
       aria-atomic="true"
       style={{
         position: "fixed",
-        top: 24,
-        right: 24,
+        bottom: 32,
+        left: "50%",
+        transform: "translateX(-50%)",
         zIndex: 9999,
         display: "flex",
         flexDirection: "column",
-        alignItems: "flex-end",
+        alignItems: "center",
         pointerEvents: "none",
+        width: "100%",
+        maxWidth: 420,
       }}
     >
       {toasts.map((t, idx) => (
