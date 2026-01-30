@@ -63,31 +63,38 @@ document.addEventListener("keydown", (e) => {
   /* ...from prompt... */
 });
 
-// Import mock API (for now, use dynamic import for browser compatibility)
-async function fetchModules() {
-  const api = await import("./api/index.js");
-  return api.getModules();
+// Backend API base URL (adjust for production as needed)
+const API_BASE = "http://localhost:3000/api";
+
+async function fetchMetrics() {
+  const res = await fetch(`${API_BASE}/metrics`);
+  if (!res.ok) throw new Error("Failed to fetch metrics");
+  return res.json();
 }
-async function fetchAuditLogs() {
-  const api = await import("./api/index.js");
-  return api.getAuditLogs();
+async function fetchLedgerLatest() {
+  const res = await fetch(`${API_BASE}/ledger/latest`);
+  if (!res.ok) throw new Error("Failed to fetch latest ledger entry");
+  return res.json();
 }
-async function fetchAlerts() {
-  const api = await import("./api/index.js");
-  return api.getAlerts();
+async function fetchLedgerStream() {
+  const res = await fetch(`${API_BASE}/ledger/stream`);
+  if (!res.ok) throw new Error("Failed to fetch ledger stream");
+  return res.json();
 }
-async function fetchDeployments() {
-  const api = await import("./api/index.js");
-  return api.getDeployments();
+async function fetchHealth() {
+  const res = await fetch(`${API_BASE}/health`);
+  if (!res.ok) throw new Error("Health check failed");
+  return res.json();
 }
-async function fetchVerification() {
-  const api = await import("./api/index.js");
-  return api.getVerification();
-}
-// On page load, fetch and render data
+// On page load, fetch and render data from real backend
 window.addEventListener("DOMContentLoaded", async () => {
-  // Example: fetch modules and render dashboard
-  const modules = await fetchModules();
-  // TODO: Render modules dynamically in the dashboard
-  // Repeat for audit logs, alerts, deployments, verification, etc.
+  try {
+    const metrics = await fetchMetrics();
+    const ledger = await fetchLedgerStream();
+    const health = await fetchHealth();
+    // TODO: Render metrics, ledger, and health in the UI
+    // Example: renderStats(metrics), renderAuditLogs(ledger), renderHealth(health)
+  } catch (err) {
+    showToast("Backend fetch failed: " + err.message, "error");
+  }
 });
