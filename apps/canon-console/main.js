@@ -62,3 +62,32 @@ function showToast(message, type = "info") {
 document.addEventListener("keydown", (e) => {
   /* ...from prompt... */
 });
+
+// Import mock API (for now, use dynamic import for browser compatibility)
+async function fetchModules() {
+  const api = await import('./api/index.js');
+  return api.getModules();
+}
+async function fetchAuditLogs() {
+  const api = await import('./api/index.js');
+  return api.getAuditLogs();
+}
+async function fetchAlerts() {
+  const api = await import('./api/index.js');
+  return api.getAlerts();
+}
+async function fetchDeployments() {
+  const api = await import('./api/index.js');
+  return api.getDeployments();
+}
+async function fetchVerification() {
+  const api = await import('./api/index.js');
+  return api.getVerification();
+}
+// On page load, fetch and render data
+window.addEventListener('DOMContentLoaded', async () => {
+  // Example: fetch modules and render dashboard
+  const modules = await fetchModules();
+  // TODO: Render modules dynamically in the dashboard
+  // Repeat for audit logs, alerts, deployments, verification, etc.
+});
