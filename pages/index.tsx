@@ -5,6 +5,9 @@ import { ModuleGrid } from "../components/ModuleGrid";
 import { DetailPanel } from "../components/DetailPanel";
 import { ToastStack } from "../components/ToastStack";
 import { LogsModal } from "../components/LogsModal";
+import { MarkdownModal } from "../components/MarkdownModal";
+import { financialDocs } from "../financial/index";
+import { promises as fs } from "fs";
 
 const moduleData = {
   "canon-runtime": {
@@ -197,6 +200,32 @@ const moduleData = {
       "View Audits",
     ],
   },
+  "financial-intelligence": {
+    title: "Financial Intelligence",
+    icon: "navy",
+    status: "active",
+    description:
+      "Access all banker-grade financial, acquisition, and valuation documents. Instantly open, read, and analyze every strategic asset in the Bickford data room.",
+    metrics: [
+      { value: "11", label: "Documents" },
+      { value: "100%", label: "Coverage" },
+      { value: "Banker", label: "Grade" },
+      { value: "Live", label: "Data Room" },
+    ],
+    actions: [
+      "View Anthropic One Pager",
+      "View Slide Deck",
+      "View Pain Points Benchmark",
+      "View Sale Positioning",
+      "View Acquisition Memo",
+      "View Enforcement Deck",
+      "View Enforcement Infra",
+      "View Valuation Defense",
+      "View Acquisition Analysis",
+      "View Strategic Proposal",
+      "View Value Per Hour",
+    ],
+  },
 };
 
 const searchableItems = [
@@ -300,6 +329,11 @@ export default function CanonConsole() {
   const [editingDescription, setEditingDescription] = useState(false);
   const [editedDescription, setEditedDescription] = useState("");
   const [logsModal, setLogsModal] = useState(null);
+  const [markdownModal, setMarkdownModal] = useState({
+    open: false,
+    title: "",
+    content: "",
+  });
   const moduleGridRef = useRef(null);
   const [focusedModuleIdx, setFocusedModuleIdx] = useState(-1);
 
@@ -366,7 +400,11 @@ export default function CanonConsole() {
   }, []);
 
   // Enhanced: handle module action execution
-  async function handleModuleAction(action, moduleId) {
+  async function handleModuleAction(action: string, moduleId: string) {
+    if (moduleId === "financial-intelligence") {
+      handleFinancialDocAction(action);
+      return;
+    }
     showToast(`Executing: ${action}...`, "info");
     if (action === "View Configuration") {
       showModal(
@@ -395,6 +433,29 @@ export default function CanonConsole() {
       openLogsModal(moduleId);
     } else {
       showToast(`${action} - Coming soon!`, "info");
+    }
+  }
+
+  async function handleFinancialDocAction(action: string) {
+    const docMap = {
+      "View Anthropic One Pager": "anthropic-constitutional-ai-one-pager",
+      "View Slide Deck": "anthropic-constitutional-ai-slide-deck",
+      "View Pain Points Benchmark": "anthropic-pain-points-benchmark",
+      "View Sale Positioning": "anthropic-sale-positioning",
+      "View Acquisition Memo": "banker-grade-acquisition-memo",
+      "View Enforcement Deck": "constitutional-ai-enforcement-deck",
+      "View Enforcement Infra": "constitutional-ai-enforcement-infra",
+      "View Valuation Defense": "deal-valuation-defense",
+      "View Acquisition Analysis": "optr-anthropic-acquisition-analysis",
+      "View Strategic Proposal": "strategic-acquisition-proposal",
+      "View Value Per Hour": "value-per-hour",
+    };
+    const docId = docMap[action];
+    const doc = financialDocs.find((d) => d.id === docId);
+    if (doc) {
+      const res = await fetch(`/financial/${doc.file}`);
+      const text = await res.text();
+      setMarkdownModal({ open: true, title: doc.label, content: text });
     }
   }
 
@@ -899,6 +960,14 @@ export default function CanonConsole() {
       </div>
       {/* Toasts */}
       <ToastStack toasts={toasts} removeToast={removeToast} />
+      <MarkdownModal
+        open={markdownModal.open}
+        title={markdownModal.title}
+        content={markdownModal.content}
+        onClose={() =>
+          setMarkdownModal({ open: false, title: "", content: "" })
+        }
+      />
     </>
   );
 }
