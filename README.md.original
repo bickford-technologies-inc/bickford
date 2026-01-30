@@ -11,10 +11,6 @@
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/bickford?referralCode=bickford)
 
 Automatically provisions:
-- ✅ PostgreSQL database
-- ✅ Environment variables
-- ✅ Production deployment
-- ✅ Public domain
 
 ### Option 2: Automated Script
 
@@ -24,27 +20,19 @@ git clone https://github.com/bickfordd-bit/bickford.git
 cd bickford
 
 # Run automated setup
-./scripts/setup-railway.sh
 ```
 
 This script:
-1. Authenticates with Railway
-2. Creates project
-3. Links repository
-4. Adds PostgreSQL
-5. Deploys and generates domain
 
 ### Option 3: Manual Setup
 
 If automation fails, follow [Manual Railway Setup Guide](./docs/railway-manual-setup.md).
 
----
 
 ## 🎯 Live Demo
 
 **Bickford Execution Runtime**: https://session-completion-runtime.vercel.app
 
----
 
 ## 🏗️ Prime Architecture Initiative
 
@@ -55,12 +43,7 @@ This repo is being architected as the "prime infinite Bickford" – a single sou
 **Trigger next step**: Run the "Architect Prime" workflow in Actions tab
 
 **What this enables**:
-- Single source of truth for all Bickford code
-- Preserved git history across all projects
-- Unified dependency management and CI/CD
-- Automated consolidation with coaching checkpoints
 
----
 
 ## 🚀 Quick Start (Zero Configuration)
 
@@ -70,31 +53,14 @@ npm start
 ```
 
 That's it! The script will:
-- ✅ Auto-create `.env` if missing
-- ✅ Auto-detect `OPENAI_API_KEY` from environment
-- ✅ Install dependencies if needed
-- ✅ Start both backend and frontend with auto-recovery
-- ✅ Monitor health and auto-restart on failures
-- ✅ Open browser automatically
 
 ### 🔧 Self-Healing Automation
 
 The system includes complete automation for zero-manual-intervention operation:
 
 **New Commands:**
-- `npm run diagnose` - Show system health and identify issues
-- `npm run health` - Quick health check of all services
-- `npm run recover` - Manually trigger auto-recovery
-- `npm run monitor` - Start health monitoring daemon
-- `npm run fix-all` - Fix all auto-fixable issues
 
 **Auto-Recovery Features:**
-- ✅ Service crashes → Auto-restarted (30s monitoring)
-- ✅ Bad configuration → Auto-corrected
-- ✅ Missing dependencies → Auto-installed
-- ✅ Build cache issues → Auto-cleared
-- ✅ Syntax errors → Prevented by pre-commit hooks
-- ✅ Failed deployments → Auto-rolled back via GitHub Actions
 
 See [QUICKSTART.md](./QUICKSTART.md) for detailed troubleshooting guide.
 
@@ -135,18 +101,10 @@ npm run demo:a
 ```
 
 **Output**: 7-screen formatted presentation showing:
-- Problem: Every AI system faces decision decay
-- Input boundary: Metadata-only (timestamps, states, refs)
-- Ledger → Canon: Immutable to mechanically enforceable
-- OPTR enumeration: 2 candidate paths with TTV estimates
-- **Deny trace**: "Holy shit" moment (path inadmissible due to canonical constraint)
-- Outcome + metrics: DCR=0.92, 16-minute TTV, 1 inadmissible attempt prevented
-- Pilot next steps: 4-8 weeks shadow mode
 
 **Data**: `demo/events.jsonl` (10 RFC lifecycle events, 100% dummy/metadata)  
 **Script**: `demo/DEMO_A_SCREENS.md` (exact words to say per screen, 5-7 minutes)
 
----
 
 ## 📦 What's In This Repository
 
@@ -156,11 +114,6 @@ Mathematical decision framework minimizing Expected Time-to-Value:
 **Core Formula**: π* = argmin E[TTV + λ_C·Cost + λ_R·Risk − λ_P·log(p)]
 
 **Features**:
-- **OPTR engine**: Decision optimization with provable guarantees
-- **Promotion gates**: 4-test filter prevents false structural changes
-- **Non-interference**: Multi-agent safety (∀i≠j: ΔE[TTV_j | π_i] ≤ 0)
-- **Authority enforcement**: Mechanical `requireCanonRefs()` gate
-- **790 lines TypeScript**, compiles cleanly, built to `dist/`
 
 **Examples**:
 ```bash
@@ -171,11 +124,6 @@ npm run example:optr  # OPTR decision engine demo
 Event capture, validation, and routing infrastructure:
 
 **Features**:
-- **Capture**: <5ms p99 latency event ingestion
-- **Buffering**: Configurable flush (100 events or 5s)
-- **Routing**: Multi-destination (database, webhook, log, analytics)
-- **Metrics**: Real-time performance tracking
-- **480 lines TypeScript**, compiles cleanly, built to `dist/`
 
 **Examples**:
 ```bash
@@ -186,13 +134,9 @@ npm run example:capture  # Event capture demo
 7-screen presentation with dummy data (runnable today):
 
 **Files**:
-- `events.jsonl`: 10 RFC lifecycle events (RFC_CREATED → DEPLOY_EXECUTED)
-- `demo-a.ts`: Executable TypeScript displaying 7 formatted screens
-- `DEMO_A_SCREENS.md`: Complete presentation script with exact words
 
 **Strategic Value**: Proves Bickford operates on workflow metadata (no model data access required), demonstrates canonical enforcement + deny traces create audit trail
 
----
 
 ## 🔒 Authorization Configuration
 
@@ -206,28 +150,16 @@ Set `AUTH_DECISION_MODE` in `packages/bickford/.env`:
 ```bash
 AUTH_DECISION_MODE=permissive
 ```
-- Always allows requests
-- OpenAI provides helpful conversational summaries
-- No blocking behavior
-- Best for: Development, personal use, exploratory workflows
 
 #### **Audit** 🔍 Recommended for testing auth rules
 ```bash
 AUTH_DECISION_MODE=audit
 ```
-- Always allows requests (never blocks)
-- Logs would-be DENY decisions as warnings
-- Helps tune authorization rules without disrupting users
-- Best for: Staging environments, testing authorization logic
 
 #### **Enforce** 🔒 Recommended for production with strict access control
 ```bash
 AUTH_DECISION_MODE=enforce
 ```
-- Enforces OpenAI's ALLOW/DENY decisions
-- Blocks requests that would violate security policies
-- Requires well-tuned system prompt
-- Best for: Production environments with sensitive data
 
 ### Example Configuration
 
@@ -242,7 +174,6 @@ OPENAI_MODEL=gpt-4o-mini
 
 The system prompt in `packages/bickford/api/server.min.ts` defines what gets ALLOWED vs DENIED. You can customize it for your specific use case.
 
----
 
 ## 💼 Deal Documentation
 
@@ -250,14 +181,12 @@ The system prompt in `packages/bickford/api/server.min.ts` defines what gets ALL
 **Strategic Rationale**: Defensive acquisition to prevent AWS competitive lock-in  
 **Value Proposition**: 57% discount to $58M internal build cost + patentable IP moat
 
----
 
 ## 📦 Package Contents
 
 ### 💰 Financial & Strategic Documents
 **Location**: [`docs/financial/`](docs/financial/)
 
-- **[Deal Valuation Defense](docs/financial/DEAL_VALUATION_DEFENSE.md)** - Comprehensive $25M justification
   - Build cost analysis ($17-68M range)
   - AWS competitive threat valuation ($180-450M revenue at risk)
   - ROI projections (8x return over 3 years)
@@ -266,13 +195,11 @@ The system prompt in `packages/bickford/api/server.min.ts` defines what gets ALL
 ### ⚖️ Legal & Participation Structures
 **Location**: [`docs/legal/`](docs/legal/)
 
-- **[Economic Participation Exhibit](docs/legal/ECONOMIC_PARTICIPATION_EXHIBIT.md)** - 0.30% participation mechanics
   - Cash-settled structure (not a security)
   - Valuation event triggers (IPO, M&A, secondary, periodic)
   - Payment calculations with examples
   - Break-even at $10B valuation
 
-- **[IPO-Independent Equity Clause](docs/legal/IPO_INDEPENDENT_EQUITY_CLAUSE.md)** - Alternative liquidity mechanisms
   - Multiple valuation event paths (not IPO-dependent)
   - Periodic settlement options (every 5 years)
   - Put right provisions (seller-triggered after year 7)
@@ -281,26 +208,22 @@ The system prompt in `packages/bickford/api/server.min.ts` defines what gets ALL
 ### 🔧 Technical Documentation
 **Location**: [`docs/technical/`](docs/technical/)
 
-- **[Architecture](docs/technical/ARCHITECTURE.md)** - System design deep-dive
   - Session completion event flows
   - Deployment models (OpenAI-hosted, hybrid, edge)
   - Performance: 100K events/sec, <5ms latency
   - Security: SOC 2, GDPR, HIPAA-ready
   - Competitive differentiation vs AWS/Kafka
 
-- **[Demo Guide](docs/technical/DEMO_GUIDE.md)** - Proof of concept demonstrations
   - Demo 1: Live capture (dogfooding proof)
   - Demo 2: AWS competitive threat simulation
   - Demo 3: Integration speed (10-minute live demo)
   - Sample data generation scripts
 
-- **[Integration Guide](docs/technical/INTEGRATION_GUIDE.md)** - Implementation instructions
   - OpenAI API integration (3 lines of code)
   - ChatGPT web integration
   - Agent frameworks (LangChain, CrewAI)
   - Configuration, monitoring, troubleshooting
 
----
 
 ## Deal Positioning
 
@@ -322,40 +245,18 @@ The system prompt in `packages/bickford/api/server.min.ts` defines what gets ALL
 ### Target Acceptance Criteria
 
 OpenAI accepts when:
-- ✅ **Price is defensible**: $25M < build cost
-- ✅ **Strategic threat is real**: AWS competitive lock-in validated
-- ✅ **Structure is precedent-safe**: 0.30% cash-settled, no governance rights
-- ✅ **Timeline is urgent**: 30-day exclusivity with multi-buyer competition
-- ✅ **Integration is proven**: Dogfooding + working demos
 
----
 
 ## Outreach Strategy (Staged Execution)
 
 ### Stage 0: Public Credibility ✅
-- ✅ GitHub repository with technical documentation
-- ✅ Architecture validation (demonstrates technical competence)
-- ✅ Demo scripts (proves technology exists)
 
 ### Stage 1: Legal Validation (Next)
-- [ ] External counsel review of participation structure
-- [ ] Security classification confirmation (cash-settled avoids SEC triggers)
-- [ ] Precedent analysis (comparable transactions)
 
 ### Stage 2: Initial Outreach
-- [ ] Warm intro to OpenAI corp dev (via investor/advisor)
-- [ ] Executive summary (1-pager)
-- [ ] Technical overview deck
 
 ### Stage 3-8: Progressive Commitment
-- [ ] Technical due diligence
-- [ ] Financial validation
-- [ ] LOI (Letter of Intent)
-- [ ] Term sheet negotiation
-- [ ] Legal documentation
-- [ ] Closing
 
----
 
 ## Multi-Buyer Competition Model
 
@@ -369,7 +270,6 @@ OpenAI accepts when:
 
 **Timing**: 30-day exclusivity window (forces decision, prevents endless due diligence)
 
----
 
 ## Key Financial Metrics
 
@@ -386,21 +286,11 @@ OpenAI accepts when:
 ### ROI Projections (3-Year Horizon)
 
 **Conservative Scenario** ($20B valuation):
-- Investment: $25M
-- Return: $60M (participation value)
-- ROI: **2.4x** ($35M profit)
 
 **Expected Scenario** ($40B valuation):
-- Investment: $25M
-- Return: $120M
-- ROI: **4.8x** ($95M profit)
 
 **Optimistic Scenario** ($80B valuation):
-- Investment: $25M
-- Return: $240M
-- ROI: **9.6x** ($215M profit)
 
----
 
 ## 🧭 Quick Navigation
 
@@ -420,7 +310,6 @@ OpenAI accepts when:
 ### For AI Agents
 See [.github/copilot-instructions.md](.github/copilot-instructions.md) for repository conventions and user preferences
 
----
 
 ## 📊 Key Metrics at a Glance
 
@@ -434,7 +323,6 @@ See [.github/copilot-instructions.md](.github/copilot-instructions.md) for repos
 | **Time-to-Market Savings** | 12-24 months |
 | **Integration Complexity** | 3 lines of code |
 
----
 
 ## Contact & Next Steps
 
@@ -444,7 +332,6 @@ See [.github/copilot-instructions.md](.github/copilot-instructions.md) for repos
 
 **Confidentiality**: This repository contains sensitive strategic and financial information. Do not share without explicit permission.
 
----
 
 ## License
 

@@ -57,12 +57,7 @@ async function getAllMetrics() {
 }
 
 // Environment variable validation (fail fast)
-const requiredEnv = [
-  "DATABASE_URL",
-  "ANTHROPIC_API_KEY",
-  "RAILWAY_TOKEN",
-  "RAILWAY_PROJECT_ID",
-];
+const requiredEnv = ["DATABASE_URL", "ANTHROPIC_API_KEY"];
 for (const key of requiredEnv) {
   if (!process.env[key]) {
     console.error(`[ERROR] Missing required environment variable: ${key}`);

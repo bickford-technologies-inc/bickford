@@ -53,7 +53,8 @@ A complete, production-ready implementation of Bickford's compounding intelligen
 
 ## Next Steps
 
-- Deploy to Railway or Vercel
+Deploy to Vercel
+
 - Integrate with Anthropic Claude API
 - Add distributed pattern sync
 - Build dashboards for metrics and proofs

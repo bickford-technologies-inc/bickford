@@ -1,5 +1,5 @@
 #!/bin/bash
-# Automated health check for Bickford Railway deployment
+# Automated health check for Bickford deployment
 
 URL="http://localhost:3000/api/health"
 RETRIES=5

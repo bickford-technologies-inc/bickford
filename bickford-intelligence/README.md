@@ -314,10 +314,6 @@ RUN bun install
 CMD ["bun", "run", "demo.ts"]
 ```
 
-### Railway Deployment
-
-See `RAILWAY_BUN_MIGRATION.md` for full Railway deployment with Bun runtime.
-
 ---
 
 ## Contributing
