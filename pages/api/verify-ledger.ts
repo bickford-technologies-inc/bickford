@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { verifyHashChain } from "../../lib/hashDecisionTrace";
+import { verifyHashChain } from "../../ledger/ledger";
 import { enforceCanon } from "../../lib/ledger";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
