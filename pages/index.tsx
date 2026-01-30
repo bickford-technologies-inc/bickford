@@ -586,9 +586,19 @@ export default function CanonConsole() {
       `}</style>
       {/* Header */}
       <header className="header">
-        <div className="logo" onClick={() => navigate("dashboard")}> {/* clickable */}
+        <div className="logo" onClick={() => navigate("dashboard")}>
+          {" "}
+          {/* clickable */}
           <div className="logo-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="M9 12l2 2 4-4" />
+            </svg>
           </div>
           <span>bickford</span>
         </div>
@@ -598,38 +608,59 @@ export default function CanonConsole() {
             ref={searchInputRef}
             value={search}
             placeholder="Search modules..."
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             onFocus={() => setSearchActive(true)}
             onBlur={() => setTimeout(() => setSearchActive(false), 200)}
           />
-          <div className={`search-results${searchActive && search ? " active" : ""}`}>
+          <div
+            className={`search-results${searchActive && search ? " active" : ""}`}
+          >
             {filteredSearch.length === 0 ? (
               <div className="search-result-item">No results found</div>
             ) : (
-              filteredSearch.map(item => (
+              filteredSearch.map((item) => (
                 <div
                   key={item.id}
                   className="search-result-item"
                   onMouseDown={() => selectSearchResult(item.type, item.id)}
                 >
                   <strong>{item.name}</strong>
-                  <span style={{ color: "#6b7280", fontSize: 12, marginLeft: 8 }}>{item.type}</span>
+                  <span
+                    style={{ color: "#6b7280", fontSize: 12, marginLeft: 8 }}
+                  >
+                    {item.type}
+                  </span>
                 </div>
               ))
             )}
           </div>
         </div>
         <div className="header-actions">
-          <button className="header-btn btn-primary" onClick={() => showToast("Documentation coming soon!", "info")}>Documentation</button>
-          <button className="header-btn btn-secondary" onClick={() => showToast("Contact form coming soon!", "info")}>Contact Us</button>
-          <div className="user-avatar" onClick={() => showToast("Profile settings coming soon!", "info")}>DB</div>
+          <button
+            className="header-btn btn-primary"
+            onClick={() => showToast("Documentation coming soon!", "info")}
+          >
+            Documentation
+          </button>
+          <button
+            className="header-btn btn-secondary"
+            onClick={() => showToast("Contact form coming soon!", "info")}
+          >
+            Contact Us
+          </button>
+          <div
+            className="user-avatar"
+            onClick={() => showToast("Profile settings coming soon!", "info")}
+          >
+            DB
+          </div>
         </div>
       </header>
       {/* Layout */}
       <div className="layout">
         {/* Sidebar */}
         <nav className="sidebar">
-          {navItems.map(item => (
+          {navItems.map((item) => (
             <div
               key={item.label}
               className={`nav-item${activeView === item.view ? " active" : ""}`}
@@ -641,7 +672,7 @@ export default function CanonConsole() {
           ))}
           <div className="nav-section">
             <div className="nav-section-title">Modules</div>
-            {moduleNav.map(item => (
+            {moduleNav.map((item) => (
               <div
                 key={item.id}
                 className="nav-item"
@@ -653,7 +684,7 @@ export default function CanonConsole() {
           </div>
           <div className="nav-section">
             <div className="nav-section-title">Integrations</div>
-            {integrationNav.map(item => (
+            {integrationNav.map((item) => (
               <div
                 key={item.id}
                 className="nav-item"
@@ -664,7 +695,12 @@ export default function CanonConsole() {
             ))}
           </div>
           <div className="user-section">
-            <div className="user-info" onClick={() => showToast("Profile settings coming soon!", "info")}> {/* clickable */}
+            <div
+              className="user-info"
+              onClick={() => showToast("Profile settings coming soon!", "info")}
+            >
+              {" "}
+              {/* clickable */}
               <div className="user-info-avatar">DB</div>
               <div>
                 <div className="user-info-text">Derek Bickford</div>
@@ -704,17 +740,37 @@ export default function CanonConsole() {
           <div className="detail-panel active">
             <div className="detail-panel-header">
               <div className="detail-panel-title">
-                <div className={`module-icon ${moduleData[detailPanel].icon}`}></div>
+                <div
+                  className={`module-icon ${moduleData[detailPanel].icon}`}
+                ></div>
                 <h2>{moduleData[detailPanel].title}</h2>
               </div>
               <button className="detail-panel-close" onClick={closeDetailPanel}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  width="18"
+                  height="18"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
               </button>
             </div>
             <div className="detail-panel-content">
               <div className="detail-section">
                 <h3>Status</h3>
-                <span className={`status-badge ${moduleData[detailPanel].status}`}>{moduleData[detailPanel].status === 'active' ? 'Active' : moduleData[detailPanel].status === 'warning' ? 'Warning' : 'Inactive'}</span>
+                <span
+                  className={`status-badge ${moduleData[detailPanel].status}`}
+                >
+                  {moduleData[detailPanel].status === "active"
+                    ? "Active"
+                    : moduleData[detailPanel].status === "warning"
+                      ? "Warning"
+                      : "Inactive"}
+                </span>
               </div>
               <div className="detail-section">
                 <h3>Description</h3>
@@ -735,8 +791,21 @@ export default function CanonConsole() {
                 <h3>Actions</h3>
                 <div className="action-list">
                   {moduleData[detailPanel].actions.map((action, i) => (
-                    <button className="action-btn" key={i} onClick={() => showToast(`${action} - Coming soon!`, 'info')}>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    <button
+                      className="action-btn"
+                      key={i}
+                      onClick={() =>
+                        showToast(`${action} - Coming soon!`, "info")
+                      }
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
                       {action}
                     </button>
                   ))}
