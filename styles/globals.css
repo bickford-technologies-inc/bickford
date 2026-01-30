@@ -138,3 +138,32 @@ button {
 .detail-panel-close:hover {
   background: #23272f;
 }
+
+/* --- Text Wrapping Fixes for Module Cards and Detail Panel --- */
+.module-card, .detail-panel, .detail-panel-content, .detail-section, .metric-card, .action-list, .action-btn, .status-badge, .metric-label, .metric-value, .detail-panel-title, .detail-panel-header, .detail-panel-close {
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.detail-panel-content p, .detail-panel-content span, .detail-panel-content h2, .detail-panel-content h3, .detail-panel-content h4, .detail-panel-content h5, .detail-panel-content h6 {
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Ensure module card descriptions and metrics wrap properly */
+.module-card p, .module-card span, .module-card h2, .module-card h3, .module-card h4, .module-card h5, .module-card h6 {
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Prevent overflow for long words in buttons */
+button, .action-btn {
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-width: 0;
+  max-width: 100%;
+}
