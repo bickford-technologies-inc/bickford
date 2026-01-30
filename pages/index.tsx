@@ -217,14 +217,36 @@ const integrationNav = [
   { label: "Finance Module", id: "finance", icon: "🟡" },
 ];
 
-function Toast({ message, type, onClose }) {
+function Toast({ message, type, onClose, id }) {
   React.useEffect(() => {
-    const timer = setTimeout(onClose, 3000);
+    const timer = setTimeout(onClose, 4000);
     return () => clearTimeout(timer);
   }, [onClose]);
   return (
-    <div className={`toast ${type}`}>
-      <span className="toast-message">{message}</span>
+    <div
+      className={`toast ${type}`}
+      role="status"
+      aria-live="polite"
+      tabIndex={0}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        minWidth: 220,
+        maxWidth: 340,
+        marginBottom: 8,
+        boxShadow: "0 2px 8px 0 rgba(0,0,0,0.12)",
+        borderLeft: type === "success" ? "4px solid #22c55e" : type === "error" ? "4px solid #ef4444" : "4px solid #f59e0b",
+      }}
+    >
+      <span className="toast-message" style={{ flex: 1 }}>{message}</span>
+      <button
+        aria-label="Dismiss notification"
+        onClick={onClose}
+        style={{ background: "none", border: "none", color: "#fff", fontSize: 18, cursor: "pointer", marginLeft: 4 }}
+      >
+        ×
+      </button>
     </div>
   );
 }
@@ -297,17 +319,28 @@ export default function CanonConsole() {
   async function handleModuleAction(action, moduleId) {
     showToast(`Executing: ${action}...`, "info");
     if (action === "View Configuration") {
-      showModal("info", "Configuration", `Configuration for ${moduleData[moduleId].title} coming soon.`);
+      showModal(
+        "info",
+        "Configuration",
+        `Configuration for ${moduleData[moduleId].title} coming soon.`,
+      );
     } else if (action === "Run Diagnostics") {
       await new Promise((r) => setTimeout(r, 1200));
-      showToast(`Diagnostics complete for ${moduleData[moduleId].title}. No issues found.`, "success");
+      showToast(
+        `Diagnostics complete for ${moduleData[moduleId].title}. No issues found.`,
+        "success",
+      );
     } else if (action === "Export Logs") {
       openLogsModal(moduleId);
     } else if (action === "Update Policy") {
       await new Promise((r) => setTimeout(r, 1000));
       showToast(`Policy updated for ${moduleData[moduleId].title}.`, "success");
     } else if (action === "Edit Policies") {
-      showModal("info", "Edit Policies", `Policy editor for ${moduleData[moduleId].title} coming soon.`);
+      showModal(
+        "info",
+        "Edit Policies",
+        `Policy editor for ${moduleData[moduleId].title} coming soon.`,
+      );
     } else if (action === "View Logs") {
       openLogsModal(moduleId);
     } else {
@@ -833,7 +866,9 @@ export default function CanonConsole() {
           <div className="detail-panel active">
             <div className="detail-panel-header">
               <div className="detail-panel-title">
-                <div className={`module-icon ${moduleData[detailPanel].icon}`}></div>
+                <div
+                  className={`module-icon ${moduleData[detailPanel].icon}`}
+                ></div>
                 <h2>{moduleData[detailPanel].title}</h2>
               </div>
               <button className="detail-panel-close" onClick={closeDetailPanel}>
@@ -853,12 +888,14 @@ export default function CanonConsole() {
             <div className="detail-panel-content">
               <div className="detail-section">
                 <h3>Status</h3>
-                <span className={`status-badge ${moduleData[detailPanel].status}`}>
+                <span
+                  className={`status-badge ${moduleData[detailPanel].status}`}
+                >
                   {moduleData[detailPanel].status === "active"
                     ? "Active"
                     : moduleData[detailPanel].status === "warning"
-                    ? "Warning"
-                    : "Inactive"}
+                      ? "Warning"
+                      : "Inactive"}
                 </span>
               </div>
               <div className="detail-section">
@@ -870,13 +907,25 @@ export default function CanonConsole() {
                       onChange={(e) => setEditedDescription(e.target.value)}
                       style={{ width: "100%", minHeight: 60, marginBottom: 8 }}
                     />
-                    <button className="action-btn" onClick={saveDescription}>Save</button>
-                    <button className="action-btn" onClick={cancelEditDescription} style={{ marginLeft: 8 }}>Cancel</button>
+                    <button className="action-btn" onClick={saveDescription}>
+                      Save
+                    </button>
+                    <button
+                      className="action-btn"
+                      onClick={cancelEditDescription}
+                      style={{ marginLeft: 8 }}
+                    >
+                      Cancel
+                    </button>
                   </>
                 ) : (
                   <>
                     <p>{moduleData[detailPanel].description}</p>
-                    <button className="action-btn" onClick={startEditDescription} style={{ marginTop: 8 }}>
+                    <button
+                      className="action-btn"
+                      onClick={startEditDescription}
+                      style={{ marginTop: 8 }}
+                    >
                       Edit Description
                     </button>
                   </>
@@ -921,7 +970,7 @@ export default function CanonConsole() {
         {/* Logs Modal */}
         {logsModal && (
           <div className="modal-overlay" onClick={closeLogsModal}>
-            <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <h2>Logs for {moduleData[logsModal].title}</h2>
                 <button className="modal-close" onClick={closeLogsModal}>
@@ -929,8 +978,18 @@ export default function CanonConsole() {
                 </button>
               </div>
               <div className="modal-content">
-                <pre style={{ background: "#222", color: "#f59e0b", padding: 16, borderRadius: 8 }}>
-                  [2026-01-30 12:00:00] INFO: Module started\n[2026-01-30 12:01:00] INFO: Operation completed\n[2026-01-30 12:02:00] WARN: No issues detected\n[2026-01-30 12:03:00] INFO: All systems nominal
+                <pre
+                  style={{
+                    background: "#222",
+                    color: "#f59e0b",
+                    padding: 16,
+                    borderRadius: 8,
+                  }}
+                >
+                  [2026-01-30 12:00:00] INFO: Module started\n[2026-01-30
+                  12:01:00] INFO: Operation completed\n[2026-01-30 12:02:00]
+                  WARN: No issues detected\n[2026-01-30 12:03:00] INFO: All
+                  systems nominal
                 </pre>
               </div>
             </div>
@@ -938,15 +997,70 @@ export default function CanonConsole() {
         )}
       </div>
       {/* Toasts */}
-      <div className="toast-container">
-        {toasts.map((t) => (
-          <Toast
+      <div
+        className="toast-container"
+        aria-live="polite"
+        aria-atomic="true"
+        style={{
+          position: "fixed",
+          top: 24,
+          right: 24,
+          zIndex: 9999,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          pointerEvents: "none",
+        }}
+      >
+        {toasts.map((t, idx) => (
+          <div
             key={t.id}
-            message={t.message}
-            type={t.type}
-            onClose={() => removeToast(t.id)}
-          />
+            style={{
+              animation: "toast-in 0.3s cubic-bezier(.4,0,.2,1)",
+              pointerEvents: "auto",
+            }}
+          >
+            <Toast
+              message={t.message}
+              type={t.type}
+              onClose={() => removeToast(t.id)}
+              id={t.id}
+            />
+          </div>
         ))}
+        <style jsx global>{`
+          @keyframes toast-in {
+            from {
+              opacity: 0;
+              transform: translateY(-20px) scale(0.98);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+          .toast {
+            background: rgba(30, 41, 59, 0.98);
+            color: #fff;
+            border-radius: 8px;
+            padding: 14px 18px;
+            font-size: 15px;
+            margin-bottom: 8px;
+            transition: box-shadow 0.2s;
+          }
+          .toast.success {
+            border-left: 4px solid #22c55e;
+          }
+          .toast.error {
+            border-left: 4px solid #ef4444;
+          }
+          .toast.info {
+            border-left: 4px solid #f59e0b;
+          }
+          .toast-message {
+            flex: 1;
+          }
+        `}</style>
       </div>
     </>
   );
