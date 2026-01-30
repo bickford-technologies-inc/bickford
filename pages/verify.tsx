@@ -13,7 +13,14 @@ function AnalyticsSummary({ result }: { result: any }) {
   });
   const total = successCount + failCount;
   return (
-    <div style={{ margin: "16px 0", background: "#f0f5ff", padding: 12, borderRadius: 8 }}>
+    <div
+      style={{
+        margin: "16px 0",
+        background: "#f0f5ff",
+        padding: 12,
+        borderRadius: 8,
+      }}
+    >
       <b>Analytics Summary</b>
       <div style={{ marginTop: 8 }}>
         <span>Event Types: </span>
@@ -24,7 +31,8 @@ function AnalyticsSummary({ result }: { result: any }) {
         ))}
       </div>
       <div style={{ marginTop: 4 }}>
-        Success Rate: <b>{total ? ((successCount / total) * 100).toFixed(1) : "-"}%</b>
+        Success Rate:{" "}
+        <b>{total ? ((successCount / total) * 100).toFixed(1) : "-"}%</b>
       </div>
     </div>
   );
@@ -32,12 +40,75 @@ function AnalyticsSummary({ result }: { result: any }) {
 
 function AnomalyBadge({ result }: { result: any }) {
   if (!result) return null;
-  const hasAnomaly = (result.violations && result.violations.length > 0) || (result.compression && result.compression.ratio < 0.95);
+  const hasAnomaly =
+    (result.violations && result.violations.length > 0) ||
+    (result.compression && result.compression.ratio < 0.95);
   if (!hasAnomaly) return null;
   return (
-    <span style={{ color: "#fff", background: "#fa541c", borderRadius: 4, padding: "2px 8px", marginLeft: 8, fontWeight: 600 }}>
+    <span
+      style={{
+        color: "#fff",
+        background: "#fa541c",
+        borderRadius: 4,
+        padding: "2px 8px",
+        marginLeft: 8,
+        fontWeight: 600,
+      }}
+    >
       Anomalies Detected
     </span>
+  );
+}
+
+function ValueDashboard({ result }: { result: any }) {
+  if (!result) return null;
+  // Example logic: value creation = all successful events, value realization = those with confirmed downstream impact
+  const entries = result.intelligence?.similarEntries || [];
+  let valueCreated = 0;
+  let valueRealized = 0;
+  let totalStorageSaved = 0;
+  entries.forEach((e: any) => {
+    if (e.payload?.success === true) valueCreated++;
+    // Simulate realization: if metadata.realized === true or compression ratio > 0.95
+    if (e.metadata?.realized === true || (e.metadata?.compressionRatio ?? 1) > 0.95) valueRealized++;
+    if (e.metadata?.storageSavedMB) totalStorageSaved += e.metadata.storageSavedMB;
+  });
+  const realizationRate = valueCreated ? (valueRealized / valueCreated) : 1;
+  return (
+    <div style={{ margin: "16px 0", background: "#fffbe6", padding: 12, borderRadius: 8, border: "1px solid #ffe58f" }}>
+      <b>Value Dashboard</b>
+      <div style={{ marginTop: 8 }}>
+        Value Created: <b>{valueCreated}</b> events
+        <span style={{ marginLeft: 16 }}>
+          Value Realized: <b>{valueRealized}</b> events
+        </span>
+        <span style={{ marginLeft: 16 }}>
+          Realization Rate: <b>{(realizationRate * 100).toFixed(1)}%</b>
+        </span>
+      </div>
+      <div style={{ marginTop: 4 }}>
+        Total Storage Saved: <b>{totalStorageSaved.toFixed(2)} MB</b>
+      </div>
+      <div style={{ marginTop: 8, width: 200, background: "#f0f0f0", borderRadius: 4, height: 12, position: "relative" }}>
+        <div
+          style={{
+            width: `${Math.round(realizationRate * 100)}%`,
+            background: realizationRate > 0.8 ? "#52c41a" : realizationRate > 0.5 ? "#faad14" : "#f5222d",
+            height: "100%",
+            borderRadius: 4,
+            transition: "width 0.3s",
+          }}
+        />
+        <span style={{ position: "absolute", left: 8, top: -2, fontSize: 10, color: "#888" }}>
+          Realized
+        </span>
+      </div>
+      {valueCreated > valueRealized && (
+        <div style={{ color: "#fa541c", marginTop: 6, fontSize: 12 }}>
+          Warning: Not all created value has been realized!
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -92,7 +163,9 @@ export default function VerifyLedger() {
 
   function handleDownload() {
     if (!result) return;
-    const blob = new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(result, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -160,6 +233,7 @@ export default function VerifyLedger() {
           ) : (
             <div style={{ color: "red" }}>Ledger is NOT valid or canonical</div>
           )}
+          <ValueDashboard result={result} />
           <AnalyticsSummary result={result} />
           {result.intelligence && result.intelligence.similarEntries && (
             <div style={{ marginTop: 24 }}>
