@@ -236,14 +236,28 @@ function Toast({ message, type, onClose, id }) {
         maxWidth: 340,
         marginBottom: 8,
         boxShadow: "0 2px 8px 0 rgba(0,0,0,0.12)",
-        borderLeft: type === "success" ? "4px solid #22c55e" : type === "error" ? "4px solid #ef4444" : "4px solid #f59e0b",
+        borderLeft:
+          type === "success"
+            ? "4px solid #22c55e"
+            : type === "error"
+              ? "4px solid #ef4444"
+              : "4px solid #f59e0b",
       }}
     >
-      <span className="toast-message" style={{ flex: 1 }}>{message}</span>
+      <span className="toast-message" style={{ flex: 1 }}>
+        {message}
+      </span>
       <button
         aria-label="Dismiss notification"
         onClick={onClose}
-        style={{ background: "none", border: "none", color: "#fff", fontSize: 18, cursor: "pointer", marginLeft: 4 }}
+        style={{
+          background: "none",
+          border: "none",
+          color: "#fff",
+          fontSize: 18,
+          cursor: "pointer",
+          marginLeft: 4,
+        }}
       >
         ×
       </button>
@@ -262,6 +276,8 @@ export default function CanonConsole() {
   const [editingDescription, setEditingDescription] = useState(false);
   const [editedDescription, setEditedDescription] = useState("");
   const [logsModal, setLogsModal] = useState(null);
+  const moduleGridRef = useRef(null);
+  const [focusedModuleIdx, setFocusedModuleIdx] = useState(-1);
 
   function showToast(message, type = "info") {
     setToasts((toasts) => [...toasts, { message, type, id: Math.random() }]);
@@ -366,6 +382,49 @@ export default function CanonConsole() {
   }
   function closeLogsModal() {
     setLogsModal(null);
+  }
+
+  // Add refs for keyboard navigation
+  const navRefs = useRef([]);
+  const moduleNavRefs = useRef([]);
+  const integrationNavRefs = useRef([]);
+
+  // Keyboard navigation for sidebar
+  function handleSidebarKeyDown(e, idx, section) {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (section === "nav") {
+        const next = (idx + 1) % navItems.length;
+        navRefs.current[next]?.focus();
+      } else if (section === "module") {
+        const next = (idx + 1) % moduleNav.length;
+        moduleNavRefs.current[next]?.focus();
+      } else if (section === "integration") {
+        const next = (idx + 1) % integrationNav.length;
+        integrationNavRefs.current[next]?.focus();
+      }
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (section === "nav") {
+        const prev = (idx - 1 + navItems.length) % navItems.length;
+        navRefs.current[prev]?.focus();
+      } else if (section === "module") {
+        const prev = (idx - 1 + moduleNav.length) % moduleNav.length;
+        moduleNavRefs.current[prev]?.focus();
+      } else if (section === "integration") {
+        const prev = (idx - 1 + integrationNav.length) % integrationNav.length;
+        integrationNavRefs.current[prev]?.focus();
+      }
+    } else if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (section === "nav") {
+        navigate(navItems[idx].view);
+      } else if (section === "module") {
+        openModulePanel(moduleNav[idx].id);
+      } else if (section === "integration") {
+        openModulePanel(integrationNav[idx].id);
+      }
+    }
   }
 
   return (
@@ -762,24 +821,39 @@ export default function CanonConsole() {
       {/* Layout */}
       <div className="layout">
         {/* Sidebar */}
-        <nav className="sidebar">
-          {navItems.map((item) => (
+        <nav className="sidebar" aria-label="Main sidebar navigation">
+          {navItems.map((item, i) => (
             <div
               key={item.label}
               className={`nav-item${activeView === item.view ? " active" : ""}`}
               onClick={() => navigate(item.view)}
               data-view={item.view}
+              tabIndex={0}
+              ref={(el) => (navRefs.current[i] = el)}
+              role="button"
+              aria-current={activeView === item.view ? "page" : undefined}
+              aria-label={item.label}
+              onKeyDown={(e) => handleSidebarKeyDown(e, i, "nav")}
+              style={{
+                outline:
+                  activeView === item.view ? "2px solid #f59e0b" : undefined,
+              }}
             >
               {item.icon} {item.label}
             </div>
           ))}
           <div className="nav-section">
             <div className="nav-section-title">Modules</div>
-            {moduleNav.map((item) => (
+            {moduleNav.map((item, i) => (
               <div
                 key={item.id}
                 className="nav-item"
                 onClick={() => openModulePanel(item.id)}
+                tabIndex={0}
+                ref={(el) => (moduleNavRefs.current[i] = el)}
+                role="button"
+                aria-label={item.label}
+                onKeyDown={(e) => handleSidebarKeyDown(e, i, "module")}
               >
                 {item.icon} {item.label}
               </div>
@@ -787,11 +861,16 @@ export default function CanonConsole() {
           </div>
           <div className="nav-section">
             <div className="nav-section-title">Integrations</div>
-            {integrationNav.map((item) => (
+            {integrationNav.map((item, i) => (
               <div
                 key={item.id}
                 className="nav-item"
                 onClick={() => openModulePanel(item.id)}
+                tabIndex={0}
+                ref={(el) => (integrationNavRefs.current[i] = el)}
+                role="button"
+                aria-label={item.label}
+                onKeyDown={(e) => handleSidebarKeyDown(e, i, "integration")}
               >
                 {item.icon} {item.label}
               </div>
@@ -817,18 +896,26 @@ export default function CanonConsole() {
           {activeView === "dashboard" && (
             <>
               <h1 className="page-title">Canon Console</h1>
-              <div className="module-grid">
-                {Object.entries(moduleData).map(([id, mod]) => (
+              <div className="module-grid" ref={moduleGridRef}>
+                {Object.entries(moduleData).map(([id, mod], idx) => (
                   <div
                     key={id}
                     className="module-card"
                     onClick={() => openModulePanel(id)}
                     tabIndex={0}
                     aria-label={`Open ${mod.title} details`}
-                    onKeyDown={(e) =>
-                      (e.key === "Enter" || e.key === " ") &&
-                      openModulePanel(id)
-                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ")
+                        openModulePanel(id);
+                    }}
+                    onFocus={() => setFocusedModuleIdx(idx)}
+                    style={{
+                      outline:
+                        focusedModuleIdx === idx
+                          ? "2px solid #f59e0b"
+                          : undefined,
+                      zIndex: focusedModuleIdx === idx ? 2 : 1,
+                    }}
                   >
                     <div className={`module-icon ${mod.icon}`}>
                       {/* You can add SVGs here as in your design */}
@@ -863,7 +950,33 @@ export default function CanonConsole() {
         </main>
         {/* Detail Panel */}
         {detailPanel && (
-          <div className="detail-panel active">
+          <div
+            className="detail-panel active"
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") closeDetailPanel();
+              // Trap focus inside panel
+              if (e.key === "Tab") {
+                const focusable = Array.from(
+                  document.querySelectorAll(
+                    ".detail-panel.active button, .detail-panel.active textarea",
+                  ),
+                );
+                if (focusable.length === 0) return;
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (!e.shiftKey && document.activeElement === last) {
+                  e.preventDefault();
+                  first.focus();
+                } else if (e.shiftKey && document.activeElement === first) {
+                  e.preventDefault();
+                  last.focus();
+                }
+              }
+            }}
+          >
             <div className="detail-panel-header">
               <div className="detail-panel-title">
                 <div
@@ -950,6 +1063,7 @@ export default function CanonConsole() {
                       className="action-btn"
                       key={i}
                       onClick={() => handleModuleAction(action, detailPanel)}
+                      aria-label={action}
                     >
                       <svg
                         viewBox="0 0 24 24"
@@ -969,7 +1083,31 @@ export default function CanonConsole() {
         )}
         {/* Logs Modal */}
         {logsModal && (
-          <div className="modal-overlay" onClick={closeLogsModal}>
+          <div
+            className="modal-overlay"
+            onClick={closeLogsModal}
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") closeLogsModal();
+              if (e.key === "Tab") {
+                const focusable = Array.from(
+                  document.querySelectorAll(".modal button"),
+                );
+                if (focusable.length === 0) return;
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (!e.shiftKey && document.activeElement === last) {
+                  e.preventDefault();
+                  first.focus();
+                } else if (e.shiftKey && document.activeElement === first) {
+                  e.preventDefault();
+                  last.focus();
+                }
+              }
+            }}
+          >
             <div className="modal" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <h2>Logs for {moduleData[logsModal].title}</h2>
