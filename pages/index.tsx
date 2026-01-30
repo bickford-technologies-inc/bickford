@@ -237,6 +237,9 @@ export default function CanonConsole() {
   const [search, setSearch] = useState("");
   const [searchActive, setSearchActive] = useState(false);
   const searchInputRef = useRef(null);
+  const [editingDescription, setEditingDescription] = useState(false);
+  const [editedDescription, setEditedDescription] = useState("");
+  const [logsModal, setLogsModal] = useState(null);
 
   function showToast(message, type = "info") {
     setToasts((toasts) => [...toasts, { message, type, id: Math.random() }]);
@@ -289,6 +292,48 @@ export default function CanonConsole() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  // Enhanced: handle module action execution
+  async function handleModuleAction(action, moduleId) {
+    showToast(`Executing: ${action}...`, "info");
+    if (action === "View Configuration") {
+      showModal("info", "Configuration", `Configuration for ${moduleData[moduleId].title} coming soon.`);
+    } else if (action === "Run Diagnostics") {
+      await new Promise((r) => setTimeout(r, 1200));
+      showToast(`Diagnostics complete for ${moduleData[moduleId].title}. No issues found.`, "success");
+    } else if (action === "Export Logs") {
+      openLogsModal(moduleId);
+    } else if (action === "Update Policy") {
+      await new Promise((r) => setTimeout(r, 1000));
+      showToast(`Policy updated for ${moduleData[moduleId].title}.`, "success");
+    } else if (action === "Edit Policies") {
+      showModal("info", "Edit Policies", `Policy editor for ${moduleData[moduleId].title} coming soon.`);
+    } else if (action === "View Logs") {
+      openLogsModal(moduleId);
+    } else {
+      showToast(`${action} - Coming soon!`, "info");
+    }
+  }
+
+  function startEditDescription() {
+    setEditedDescription(moduleData[detailPanel].description);
+    setEditingDescription(true);
+  }
+  function saveDescription() {
+    // In a real app, this would persist to backend
+    moduleData[detailPanel].description = editedDescription;
+    setEditingDescription(false);
+    showToast("Description updated!", "success");
+  }
+  function cancelEditDescription() {
+    setEditingDescription(false);
+  }
+  function openLogsModal(moduleId) {
+    setLogsModal(moduleId);
+  }
+  function closeLogsModal() {
+    setLogsModal(null);
+  }
 
   return (
     <>
@@ -524,7 +569,7 @@ export default function CanonConsole() {
         }
         .module-card {
           background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.10);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 16px;
           padding: 28px 24px 24px 24px;
           display: flex;
@@ -540,7 +585,7 @@ export default function CanonConsole() {
         .module-card:hover {
           background: rgba(255, 255, 255, 0.07);
           border-color: #f59e0b;
-          box-shadow: 0 6px 24px 0 rgba(245, 158, 11, 0.10);
+          box-shadow: 0 6px 24px 0 rgba(245, 158, 11, 0.1);
           transform: translateY(-3px) scale(1.015);
         }
         .module-icon {
@@ -747,7 +792,10 @@ export default function CanonConsole() {
                     onClick={() => openModulePanel(id)}
                     tabIndex={0}
                     aria-label={`Open ${mod.title} details`}
-                    onKeyDown={e => (e.key === "Enter" || e.key === " ") && openModulePanel(id)}
+                    onKeyDown={(e) =>
+                      (e.key === "Enter" || e.key === " ") &&
+                      openModulePanel(id)
+                    }
                   >
                     <div className={`module-icon ${mod.icon}`}>
                       {/* You can add SVGs here as in your design */}
@@ -757,8 +805,18 @@ export default function CanonConsole() {
                       <p>{mod.description}</p>
                       <div style={{ display: "flex", gap: 16, marginTop: 10 }}>
                         {mod.metrics.map((m, i) => (
-                          <span key={i} style={{ fontSize: 13, color: "#f59e0b", fontWeight: 600 }}>
-                            {m.value} <span style={{ color: "#9ca3af", fontWeight: 400 }}>{m.label}</span>
+                          <span
+                            key={i}
+                            style={{
+                              fontSize: 13,
+                              color: "#f59e0b",
+                              fontWeight: 600,
+                            }}
+                          >
+                            {m.value}{" "}
+                            <span style={{ color: "#9ca3af", fontWeight: 400 }}>
+                              {m.label}
+                            </span>
                           </span>
                         ))}
                       </div>
@@ -775,9 +833,7 @@ export default function CanonConsole() {
           <div className="detail-panel active">
             <div className="detail-panel-header">
               <div className="detail-panel-title">
-                <div
-                  className={`module-icon ${moduleData[detailPanel].icon}`}
-                ></div>
+                <div className={`module-icon ${moduleData[detailPanel].icon}`}></div>
                 <h2>{moduleData[detailPanel].title}</h2>
               </div>
               <button className="detail-panel-close" onClick={closeDetailPanel}>
@@ -797,19 +853,34 @@ export default function CanonConsole() {
             <div className="detail-panel-content">
               <div className="detail-section">
                 <h3>Status</h3>
-                <span
-                  className={`status-badge ${moduleData[detailPanel].status}`}
-                >
+                <span className={`status-badge ${moduleData[detailPanel].status}`}>
                   {moduleData[detailPanel].status === "active"
                     ? "Active"
                     : moduleData[detailPanel].status === "warning"
-                      ? "Warning"
-                      : "Inactive"}
+                    ? "Warning"
+                    : "Inactive"}
                 </span>
               </div>
               <div className="detail-section">
                 <h3>Description</h3>
-                <p>{moduleData[detailPanel].description}</p>
+                {editingDescription ? (
+                  <>
+                    <textarea
+                      value={editedDescription}
+                      onChange={(e) => setEditedDescription(e.target.value)}
+                      style={{ width: "100%", minHeight: 60, marginBottom: 8 }}
+                    />
+                    <button className="action-btn" onClick={saveDescription}>Save</button>
+                    <button className="action-btn" onClick={cancelEditDescription} style={{ marginLeft: 8 }}>Cancel</button>
+                  </>
+                ) : (
+                  <>
+                    <p>{moduleData[detailPanel].description}</p>
+                    <button className="action-btn" onClick={startEditDescription} style={{ marginTop: 8 }}>
+                      Edit Description
+                    </button>
+                  </>
+                )}
               </div>
               <div className="detail-section">
                 <h3>Metrics</h3>
@@ -829,9 +900,7 @@ export default function CanonConsole() {
                     <button
                       className="action-btn"
                       key={i}
-                      onClick={() =>
-                        showToast(`${action} - Coming soon!`, "info")
-                      }
+                      onClick={() => handleModuleAction(action, detailPanel)}
                     >
                       <svg
                         viewBox="0 0 24 24"
@@ -845,6 +914,24 @@ export default function CanonConsole() {
                     </button>
                   ))}
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {/* Logs Modal */}
+        {logsModal && (
+          <div className="modal-overlay" onClick={closeLogsModal}>
+            <div className="modal" onClick={e => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2>Logs for {moduleData[logsModal].title}</h2>
+                <button className="modal-close" onClick={closeLogsModal}>
+                  ×
+                </button>
+              </div>
+              <div className="modal-content">
+                <pre style={{ background: "#222", color: "#f59e0b", padding: 16, borderRadius: 8 }}>
+                  [2026-01-30 12:00:00] INFO: Module started\n[2026-01-30 12:01:00] INFO: Operation completed\n[2026-01-30 12:02:00] WARN: No issues detected\n[2026-01-30 12:03:00] INFO: All systems nominal
+                </pre>
               </div>
             </div>
           </div>
