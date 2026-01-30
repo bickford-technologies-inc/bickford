@@ -195,6 +195,28 @@ const searchableItems = [
   { name: "SHA-256 Verification", type: "feature", id: "verification" },
 ];
 
+const navItems = [
+  { label: "Dashboard", view: "dashboard", icon: "🏠" },
+  { label: "Alerts", view: "alerts", icon: "🚨" },
+  { label: "Audit Logs", view: "audit", icon: "📜" },
+  { label: "Deployments", view: "deployments", icon: "🚀" },
+];
+
+const moduleNav = [
+  { label: "Canon Runtime", id: "canon-runtime", icon: "🟡" },
+  { label: "Policy Engine", id: "policy-engine", icon: "🟠" },
+  { label: "Audit Ledger", id: "audit-ledger", icon: "🟡" },
+  { label: "Verification", id: "verification", icon: "🔵" },
+  { label: "Drift Detection", id: "drift-detection", icon: "🟡" },
+  { label: "Alert System", id: "alert-system", icon: "🟠" },
+];
+
+const integrationNav = [
+  { label: "Healthcare Module", id: "healthcare", icon: "🟡" },
+  { label: "Defense Module", id: "defense", icon: "🔵" },
+  { label: "Finance Module", id: "finance", icon: "🟡" },
+];
+
 function Toast({ message, type, onClose }) {
   React.useEffect(() => {
     const timer = setTimeout(onClose, 3000);
@@ -495,38 +517,41 @@ export default function CanonConsole() {
         }
         .module-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-          max-width: 1000px;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 24px;
+          max-width: 1200px;
+          margin-bottom: 40px;
         }
         .module-card {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 12px;
-          padding: 24px;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.10);
+          border-radius: 16px;
+          padding: 28px 24px 24px 24px;
           display: flex;
           align-items: flex-start;
-          gap: 16px;
+          gap: 20px;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition:
+            box-shadow 0.25s,
+            transform 0.18s,
+            border-color 0.18s;
+          box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
         }
         .module-card:hover {
-          background: rgba(255, 255, 255, 0.06);
-          border-color: rgba(245, 158, 11, 0.3);
-          transform: translateY(-2px);
+          background: rgba(255, 255, 255, 0.07);
+          border-color: #f59e0b;
+          box-shadow: 0 6px 24px 0 rgba(245, 158, 11, 0.10);
+          transform: translateY(-3px) scale(1.015);
         }
         .module-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: 10px;
+          width: 54px;
+          height: 54px;
+          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-        }
-        .module-icon svg {
-          width: 26px;
-          height: 26px;
+          font-size: 2rem;
         }
         .module-icon.amber {
           background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
@@ -541,15 +566,15 @@ export default function CanonConsole() {
           background: linear-gradient(135deg, #475569 0%, #64748b 100%);
         }
         .module-info h3 {
-          font-size: 16px;
-          font-weight: 600;
+          font-size: 18px;
+          font-weight: 700;
           color: #fff;
-          margin-bottom: 6px;
+          margin-bottom: 8px;
         }
         .module-info p {
-          font-size: 13px;
+          font-size: 14px;
           color: #9ca3af;
-          line-height: 1.4;
+          line-height: 1.5;
         }
         .hex-decoration {
           position: absolute;
@@ -720,13 +745,23 @@ export default function CanonConsole() {
                     key={id}
                     className="module-card"
                     onClick={() => openModulePanel(id)}
+                    tabIndex={0}
+                    aria-label={`Open ${mod.title} details`}
+                    onKeyDown={e => (e.key === "Enter" || e.key === " ") && openModulePanel(id)}
                   >
                     <div className={`module-icon ${mod.icon}`}>
                       {/* You can add SVGs here as in your design */}
                     </div>
                     <div className="module-info">
                       <h3>{mod.title}</h3>
-                      <p>{mod.description.split(".")[0]}</p>
+                      <p>{mod.description}</p>
+                      <div style={{ display: "flex", gap: 16, marginTop: 10 }}>
+                        {mod.metrics.map((m, i) => (
+                          <span key={i} style={{ fontSize: 13, color: "#f59e0b", fontWeight: 600 }}>
+                            {m.value} <span style={{ color: "#9ca3af", fontWeight: 400 }}>{m.label}</span>
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 ))}
