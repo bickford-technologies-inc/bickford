@@ -1,6 +1,24 @@
 import React from "react";
 
-export function LogsModal({ logsModal, moduleData, closeLogsModal }) {
+interface Module {
+  title: string;
+  icon: string;
+  status: string;
+  description: string;
+  metrics: { value: string; label: string }[];
+  actions: string[];
+}
+interface LogsModalProps {
+  logsModal: string | null;
+  moduleData: Record<string, Module>;
+  closeLogsModal: () => void;
+}
+
+export function LogsModal({
+  logsModal,
+  moduleData,
+  closeLogsModal,
+}: LogsModalProps) {
   if (!logsModal) return null;
   return (
     <div
@@ -20,10 +38,10 @@ export function LogsModal({ logsModal, moduleData, closeLogsModal }) {
           const last = focusable[focusable.length - 1];
           if (!e.shiftKey && document.activeElement === last) {
             e.preventDefault();
-            first.focus();
+            (first as HTMLElement).focus();
           } else if (e.shiftKey && document.activeElement === first) {
             e.preventDefault();
-            last.focus();
+            (last as HTMLElement).focus();
           }
         }
       }}
@@ -44,7 +62,9 @@ export function LogsModal({ logsModal, moduleData, closeLogsModal }) {
               borderRadius: 8,
             }}
           >
-            [2026-01-30 12:00:00] INFO: Module started\n[2026-01-30 12:01:00] INFO: Operation completed\n[2026-01-30 12:02:00] WARN: No issues detected\n[2026-01-30 12:03:00] INFO: All systems nominal
+            [2026-01-30 12:00:00] INFO: Module started\n[2026-01-30 12:01:00]
+            INFO: Operation completed\n[2026-01-30 12:02:00] WARN: No issues
+            detected\n[2026-01-30 12:03:00] INFO: All systems nominal
           </pre>
         </div>
       </div>

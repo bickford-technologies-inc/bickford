@@ -1,5 +1,30 @@
 import React from "react";
 
+interface Metric {
+  value: string;
+  label: string;
+}
+interface Module {
+  title: string;
+  icon: string;
+  status: string;
+  description: string;
+  metrics: Metric[];
+  actions: string[];
+}
+interface DetailPanelProps {
+  detailPanel: string | null;
+  moduleData: Record<string, Module>;
+  editingDescription: boolean;
+  editedDescription: string;
+  setEditedDescription: (desc: string) => void;
+  startEditDescription: () => void;
+  saveDescription: () => void;
+  cancelEditDescription: () => void;
+  handleModuleAction: (action: string, moduleId: string) => void;
+  closeDetailPanel: () => void;
+}
+
 export function DetailPanel({
   detailPanel,
   moduleData,
@@ -11,7 +36,7 @@ export function DetailPanel({
   cancelEditDescription,
   handleModuleAction,
   closeDetailPanel,
-}) {
+}: DetailPanelProps) {
   if (!detailPanel) return null;
   return (
     <div
@@ -33,10 +58,10 @@ export function DetailPanel({
           const last = focusable[focusable.length - 1];
           if (!e.shiftKey && document.activeElement === last) {
             e.preventDefault();
-            first.focus();
+            (first as HTMLElement).focus();
           } else if (e.shiftKey && document.activeElement === first) {
             e.preventDefault();
-            last.focus();
+            (last as HTMLElement).focus();
           }
         }
       }}

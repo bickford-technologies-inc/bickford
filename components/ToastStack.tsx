@@ -1,6 +1,16 @@
 import React from "react";
 
-export function ToastStack({ toasts, removeToast }) {
+interface ToastType {
+  message: string;
+  type: string;
+  id: number;
+}
+interface ToastStackProps {
+  toasts: ToastType[];
+  removeToast: (id: number) => void;
+}
+
+export function ToastStack({ toasts, removeToast }: ToastStackProps) {
   return (
     <div
       className="toast-container"
@@ -37,7 +47,14 @@ export function ToastStack({ toasts, removeToast }) {
   );
 }
 
-function Toast({ message, type, onClose, id }) {
+interface ToastProps {
+  message: string;
+  type: string;
+  onClose: () => void;
+  id: number;
+}
+
+function Toast({ message, type, onClose, id }: ToastProps) {
   React.useEffect(() => {
     const timer = setTimeout(onClose, 4000);
     return () => clearTimeout(timer);

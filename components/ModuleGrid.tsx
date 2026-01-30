@@ -1,11 +1,30 @@
 import React from "react";
 
+interface Metric {
+  value: string;
+  label: string;
+}
+interface Module {
+  title: string;
+  icon: string;
+  status: string;
+  description: string;
+  metrics: Metric[];
+  actions: string[];
+}
+interface ModuleGridProps {
+  moduleData: Record<string, Module>;
+  openModulePanel: (id: string) => void;
+  setFocusedModuleIdx: (idx: number) => void;
+  focusedModuleIdx: number;
+}
+
 export function ModuleGrid({
   moduleData,
   openModulePanel,
   setFocusedModuleIdx,
   focusedModuleIdx,
-}) {
+}: ModuleGridProps) {
   return (
     <div className="module-grid">
       {Object.entries(moduleData).map(([id, mod], idx) => (

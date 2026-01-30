@@ -1,5 +1,33 @@
 import React from "react";
 
+interface NavItem {
+  label: string;
+  view: string;
+  icon: string;
+}
+interface ModuleNavItem {
+  label: string;
+  id: string;
+  icon: string;
+}
+interface SidebarProps {
+  navItems: NavItem[];
+  moduleNav: ModuleNavItem[];
+  integrationNav: ModuleNavItem[];
+  activeView: string;
+  navigate: (view: string) => void;
+  openModulePanel: (id: string) => void;
+  navRefs: React.MutableRefObject<any[]>;
+  moduleNavRefs: React.MutableRefObject<any[]>;
+  integrationNavRefs: React.MutableRefObject<any[]>;
+  handleSidebarKeyDown: (
+    e: React.KeyboardEvent,
+    idx: number,
+    section: string,
+  ) => void;
+  showToast: (msg: string, type?: string) => void;
+}
+
 export function Sidebar({
   navItems,
   moduleNav,
@@ -12,7 +40,7 @@ export function Sidebar({
   integrationNavRefs,
   handleSidebarKeyDown,
   showToast,
-}) {
+}: SidebarProps) {
   return (
     <nav className="sidebar" aria-label="Main sidebar navigation">
       {navItems.map((item, i) => (
@@ -22,7 +50,9 @@ export function Sidebar({
           onClick={() => navigate(item.view)}
           data-view={item.view}
           tabIndex={0}
-          ref={(el) => (navRefs.current[i] = el)}
+          ref={(el) => {
+            navRefs.current[i] = el;
+          }}
           role="button"
           aria-current={activeView === item.view ? "page" : undefined}
           aria-label={item.label}
@@ -42,7 +72,9 @@ export function Sidebar({
             className="nav-item"
             onClick={() => openModulePanel(item.id)}
             tabIndex={0}
-            ref={(el) => (moduleNavRefs.current[i] = el)}
+            ref={(el) => {
+              moduleNavRefs.current[i] = el;
+            }}
             role="button"
             aria-label={item.label}
             onKeyDown={(e) => handleSidebarKeyDown(e, i, "module")}
@@ -59,7 +91,9 @@ export function Sidebar({
             className="nav-item"
             onClick={() => openModulePanel(item.id)}
             tabIndex={0}
-            ref={(el) => (integrationNavRefs.current[i] = el)}
+            ref={(el) => {
+              integrationNavRefs.current[i] = el;
+            }}
             role="button"
             aria-label={item.label}
             onKeyDown={(e) => handleSidebarKeyDown(e, i, "integration")}
