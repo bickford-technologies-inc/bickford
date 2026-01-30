@@ -1,5 +1,46 @@
 import React, { useState, useEffect, useRef } from "react";
 
+function AnalyticsSummary({ result }: { result: any }) {
+  if (!result || !result.intelligence) return null;
+  const entries = result.intelligence.similarEntries || [];
+  const eventTypes: Record<string, number> = {};
+  let successCount = 0,
+    failCount = 0;
+  entries.forEach((e: any) => {
+    eventTypes[e.eventType] = (eventTypes[e.eventType] || 0) + 1;
+    if (e.payload?.success === true) successCount++;
+    else if (e.payload?.success === false) failCount++;
+  });
+  const total = successCount + failCount;
+  return (
+    <div style={{ margin: "16px 0", background: "#f0f5ff", padding: 12, borderRadius: 8 }}>
+      <b>Analytics Summary</b>
+      <div style={{ marginTop: 8 }}>
+        <span>Event Types: </span>
+        {Object.entries(eventTypes).map(([type, count]) => (
+          <span key={type} style={{ marginRight: 12 }}>
+            {type}: <b>{count}</b>
+          </span>
+        ))}
+      </div>
+      <div style={{ marginTop: 4 }}>
+        Success Rate: <b>{total ? ((successCount / total) * 100).toFixed(1) : "-"}%</b>
+      </div>
+    </div>
+  );
+}
+
+function AnomalyBadge({ result }: { result: any }) {
+  if (!result) return null;
+  const hasAnomaly = (result.violations && result.violations.length > 0) || (result.compression && result.compression.ratio < 0.95);
+  if (!hasAnomaly) return null;
+  return (
+    <span style={{ color: "#fff", background: "#fa541c", borderRadius: 4, padding: "2px 8px", marginLeft: 8, fontWeight: 600 }}>
+      Anomalies Detected
+    </span>
+  );
+}
+
 export default function VerifyLedger() {
   const [ledger, setLedger] = useState("");
   const [result, setResult] = useState<any>(null);
@@ -33,29 +74,39 @@ export default function VerifyLedger() {
   // Continuous polling effect
   useEffect(() => {
     if (!continuous || !ledger.trim()) return;
-    // Clear any previous interval
     if (intervalRef.current) clearInterval(intervalRef.current);
-    // Immediately verify once
     verifyLedger(ledger);
-    // Set up interval
     intervalRef.current = setInterval(() => {
       verifyLedger(ledger);
-    }, 5000); // 5 seconds
+    }, 5000);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ledger, continuous]);
 
-  // Manual submit fallback
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     await verifyLedger(ledger);
   }
 
+  function handleDownload() {
+    if (!result) return;
+    const blob = new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `ledger-verification-report-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div style={{ maxWidth: 700, margin: "2rem auto", padding: 24 }}>
-      <h1>External Ledger/Hash Chain Verifier</h1>
+      <h1>
+        External Ledger/Hash Chain Verifier
+        <AnomalyBadge result={result} />
+      </h1>
       <form onSubmit={handleSubmit}>
         <textarea
           value={ledger}
@@ -82,6 +133,14 @@ export default function VerifyLedger() {
           >
             {loading ? "Verifying..." : "Manual Verify"}
           </button>
+          <button
+            type="button"
+            onClick={handleDownload}
+            disabled={!result}
+            style={{ marginLeft: 12 }}
+          >
+            Download Report
+          </button>
         </div>
       </form>
       {error && <div style={{ color: "red", marginTop: 16 }}>{error}</div>}
@@ -101,6 +160,7 @@ export default function VerifyLedger() {
           ) : (
             <div style={{ color: "red" }}>Ledger is NOT valid or canonical</div>
           )}
+          <AnalyticsSummary result={result} />
           {result.intelligence && result.intelligence.similarEntries && (
             <div style={{ marginTop: 24 }}>
               <h3>Intelligence: Most Similar Past Entries</h3>
