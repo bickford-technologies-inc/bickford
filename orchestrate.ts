@@ -531,27 +531,29 @@ const repoPath = args[1] || process.cwd();
 
 const orchestrator = new RepoOrchestrator(repoPath);
 
-switch (command) {
-  case "scan":
-    await orchestrator.scan();
-    console.log(orchestrator.generateReport());
-    break;
-  case "archive":
-    await orchestrator.scan();
-    await orchestrator.archive();
-    break;
-  case "clean":
-    await orchestrator.clean();
-    break;
-  case "restore":
-    await orchestrator.restore(args[2]);
-    break;
-  case "duplicates":
-    await orchestrator.scan();
-    // Show detailed duplicates
-    break;
-  default:
-    console.log(
-      "Usage: bun orchestrate.ts [scan|archive|clean|restore|duplicates] [path]",
-    );
-}
+(async () => {
+  switch (command) {
+    case "scan":
+      await orchestrator.scan();
+      console.log(orchestrator.generateReport());
+      break;
+    case "archive":
+      await orchestrator.scan();
+      await orchestrator.archive();
+      break;
+    case "clean":
+      await orchestrator.clean();
+      break;
+    case "restore":
+      await orchestrator.restore(args[2]);
+      break;
+    case "duplicates":
+      await orchestrator.scan();
+      // Show detailed duplicates
+      break;
+    default:
+      console.log(
+        "Usage: bun orchestrate.ts [scan|archive|clean|restore|duplicates] [path]",
+      );
+  }
+})();
