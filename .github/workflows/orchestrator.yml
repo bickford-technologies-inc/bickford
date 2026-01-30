@@ -1,0 +1,34 @@
+name: Repo Orchestrator Automation
+
+on:
+  workflow_dispatch: # Manual trigger
+  schedule:
+    - cron: "0 3 * * 0" # Weekly Sunday at 3am UTC
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Run orchestrator scan, archive, clean
+        run: |
+          bun orchestrate.ts scan
+          bun orchestrate.ts archive
+          bun orchestrate.ts clean
+
+      - name: Configure Git for GitHub Actions
+        run: |
+          git config user.name "bickford-bot"
+          git config user.email "bickford-bot@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.BICKFORD_REPO_TOKEN }}@github.com/${{ github.repository }}.git
+
+      - name: Commit and push orchestrator changes
+        run: |
+          git add .
+          git commit -am "ci(orchestrator): automated repo audit, archive, and clean [skip ci]" || echo "No changes to commit"
+          git push
