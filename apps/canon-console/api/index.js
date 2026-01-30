@@ -1,5 +1,11 @@
 // Simple mock API endpoints for Canon Console (replace with real backend later)
-import { modules, auditLogs, alerts, deployments, verification } from './mockData.js';
+import {
+  modules,
+  auditLogs,
+  alerts,
+  deployments,
+  verification,
+} from "./mockData.js";
 
 export async function getModules() {
   return modules;
