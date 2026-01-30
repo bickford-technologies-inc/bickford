@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 interface NavItem {
   label: string;
@@ -114,6 +115,9 @@ export function Sidebar({
           </div>
         </div>
       </div>
+      <nav>
+        <Link href="/verify">External Verifier</Link>
+      </nav>
     </nav>
   );
 }
