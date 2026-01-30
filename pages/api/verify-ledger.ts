@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { verifyHashChain } from "../../ledger/ledger";
-import { enforceCanon } from "../../lib/ledger";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -19,18 +18,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Hash chain validation
     const hashResult = verifyHashChain(entries);
-    // Canonical constraint validation (optional, can be expanded)
-    let canonResult = { valid: true, violations: [] };
-    try {
-      enforceCanon(entries);
-    } catch (e: any) {
-      canonResult = { valid: false, violations: [e.message] };
-    }
 
     res.status(200).json({
       hashChain: hashResult,
-      canon: canonResult,
-      valid: hashResult.valid && canonResult.valid,
+      valid: hashResult.valid,
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
