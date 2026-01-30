@@ -7,7 +7,6 @@ import { ToastStack } from "../components/ToastStack";
 import { LogsModal } from "../components/LogsModal";
 import { MarkdownModal } from "../components/MarkdownModal";
 import { financialDocs } from "../financial/index";
-import { promises as fs } from "fs";
 
 const moduleData = {
   "canon-runtime": {
