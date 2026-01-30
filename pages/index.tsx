@@ -821,385 +821,56 @@ export default function CanonConsole() {
       {/* Layout */}
       <div className="layout">
         {/* Sidebar */}
-        <nav className="sidebar" aria-label="Main sidebar navigation">
-          {navItems.map((item, i) => (
-            <div
-              key={item.label}
-              className={`nav-item${activeView === item.view ? " active" : ""}`}
-              onClick={() => navigate(item.view)}
-              data-view={item.view}
-              tabIndex={0}
-              ref={(el) => (navRefs.current[i] = el)}
-              role="button"
-              aria-current={activeView === item.view ? "page" : undefined}
-              aria-label={item.label}
-              onKeyDown={(e) => handleSidebarKeyDown(e, i, "nav")}
-              style={{
-                outline:
-                  activeView === item.view ? "2px solid #f59e0b" : undefined,
-              }}
-            >
-              {item.icon} {item.label}
-            </div>
-          ))}
-          <div className="nav-section">
-            <div className="nav-section-title">Modules</div>
-            {moduleNav.map((item, i) => (
-              <div
-                key={item.id}
-                className="nav-item"
-                onClick={() => openModulePanel(item.id)}
-                tabIndex={0}
-                ref={(el) => (moduleNavRefs.current[i] = el)}
-                role="button"
-                aria-label={item.label}
-                onKeyDown={(e) => handleSidebarKeyDown(e, i, "module")}
-              >
-                {item.icon} {item.label}
-              </div>
-            ))}
-          </div>
-          <div className="nav-section">
-            <div className="nav-section-title">Integrations</div>
-            {integrationNav.map((item, i) => (
-              <div
-                key={item.id}
-                className="nav-item"
-                onClick={() => openModulePanel(item.id)}
-                tabIndex={0}
-                ref={(el) => (integrationNavRefs.current[i] = el)}
-                role="button"
-                aria-label={item.label}
-                onKeyDown={(e) => handleSidebarKeyDown(e, i, "integration")}
-              >
-                {item.icon} {item.label}
-              </div>
-            ))}
-          </div>
-          <div className="user-section">
-            <div
-              className="user-info"
-              onClick={() => showToast("Profile settings coming soon!", "info")}
-            >
-              {" "}
-              {/* clickable */}
-              <div className="user-info-avatar">DB</div>
-              <div>
-                <div className="user-info-text">Derek Bickford</div>
-                <div className="user-info-role">Administration</div>
-              </div>
-            </div>
-          </div>
-        </nav>
+        <Sidebar
+          navItems={navItems}
+          moduleNav={moduleNav}
+          integrationNav={integrationNav}
+          activeView={activeView}
+          navigate={navigate}
+          openModulePanel={openModulePanel}
+          navRefs={navRefs}
+          moduleNavRefs={moduleNavRefs}
+          integrationNavRefs={integrationNavRefs}
+          handleSidebarKeyDown={handleSidebarKeyDown}
+          showToast={showToast}
+        />
         {/* Main Content */}
         <main className="main">
           {activeView === "dashboard" && (
             <>
               <h1 className="page-title">Canon Console</h1>
-              <div className="module-grid" ref={moduleGridRef}>
-                {Object.entries(moduleData).map(([id, mod], idx) => (
-                  <div
-                    key={id}
-                    className="module-card"
-                    onClick={() => openModulePanel(id)}
-                    tabIndex={0}
-                    aria-label={`Open ${mod.title} details`}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ")
-                        openModulePanel(id);
-                    }}
-                    onFocus={() => setFocusedModuleIdx(idx)}
-                    style={{
-                      outline:
-                        focusedModuleIdx === idx
-                          ? "2px solid #f59e0b"
-                          : undefined,
-                      zIndex: focusedModuleIdx === idx ? 2 : 1,
-                    }}
-                  >
-                    <div className={`module-icon ${mod.icon}`}>
-                      {/* You can add SVGs here as in your design */}
-                    </div>
-                    <div className="module-info">
-                      <h3>{mod.title}</h3>
-                      <p>{mod.description}</p>
-                      <div style={{ display: "flex", gap: 16, marginTop: 10 }}>
-                        {mod.metrics.map((m, i) => (
-                          <span
-                            key={i}
-                            style={{
-                              fontSize: 13,
-                              color: "#f59e0b",
-                              fontWeight: 600,
-                            }}
-                          >
-                            {m.value}{" "}
-                            <span style={{ color: "#9ca3af", fontWeight: 400 }}>
-                              {m.label}
-                            </span>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <ModuleGrid
+                moduleData={moduleData}
+                openModulePanel={openModulePanel}
+                setFocusedModuleIdx={setFocusedModuleIdx}
+                focusedModuleIdx={focusedModuleIdx}
+              />
             </>
           )}
           {/* Add other views here (alerts, audit, etc.) */}
         </main>
         {/* Detail Panel */}
-        {detailPanel && (
-          <div
-            className="detail-panel active"
-            role="dialog"
-            aria-modal="true"
-            tabIndex={-1}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") closeDetailPanel();
-              // Trap focus inside panel
-              if (e.key === "Tab") {
-                const focusable = Array.from(
-                  document.querySelectorAll(
-                    ".detail-panel.active button, .detail-panel.active textarea",
-                  ),
-                );
-                if (focusable.length === 0) return;
-                const first = focusable[0];
-                const last = focusable[focusable.length - 1];
-                if (!e.shiftKey && document.activeElement === last) {
-                  e.preventDefault();
-                  first.focus();
-                } else if (e.shiftKey && document.activeElement === first) {
-                  e.preventDefault();
-                  last.focus();
-                }
-              }
-            }}
-          >
-            <div className="detail-panel-header">
-              <div className="detail-panel-title">
-                <div
-                  className={`module-icon ${moduleData[detailPanel].icon}`}
-                ></div>
-                <h2>{moduleData[detailPanel].title}</h2>
-              </div>
-              <button className="detail-panel-close" onClick={closeDetailPanel}>
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  width="18"
-                  height="18"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-            </div>
-            <div className="detail-panel-content">
-              <div className="detail-section">
-                <h3>Status</h3>
-                <span
-                  className={`status-badge ${moduleData[detailPanel].status}`}
-                >
-                  {moduleData[detailPanel].status === "active"
-                    ? "Active"
-                    : moduleData[detailPanel].status === "warning"
-                      ? "Warning"
-                      : "Inactive"}
-                </span>
-              </div>
-              <div className="detail-section">
-                <h3>Description</h3>
-                {editingDescription ? (
-                  <>
-                    <textarea
-                      value={editedDescription}
-                      onChange={(e) => setEditedDescription(e.target.value)}
-                      style={{ width: "100%", minHeight: 60, marginBottom: 8 }}
-                    />
-                    <button className="action-btn" onClick={saveDescription}>
-                      Save
-                    </button>
-                    <button
-                      className="action-btn"
-                      onClick={cancelEditDescription}
-                      style={{ marginLeft: 8 }}
-                    >
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <p>{moduleData[detailPanel].description}</p>
-                    <button
-                      className="action-btn"
-                      onClick={startEditDescription}
-                      style={{ marginTop: 8 }}
-                    >
-                      Edit Description
-                    </button>
-                  </>
-                )}
-              </div>
-              <div className="detail-section">
-                <h3>Metrics</h3>
-                <div className="metric-grid">
-                  {moduleData[detailPanel].metrics.map((m, i) => (
-                    <div className="metric-card" key={i}>
-                      <div className="metric-value">{m.value}</div>
-                      <div className="metric-label">{m.label}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="detail-section">
-                <h3>Actions</h3>
-                <div className="action-list">
-                  {moduleData[detailPanel].actions.map((action, i) => (
-                    <button
-                      className="action-btn"
-                      key={i}
-                      onClick={() => handleModuleAction(action, detailPanel)}
-                      aria-label={action}
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <polyline points="9 18 15 12 9 6" />
-                      </svg>
-                      {action}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        <DetailPanel
+          detailPanel={detailPanel}
+          moduleData={moduleData}
+          editingDescription={editingDescription}
+          editedDescription={editedDescription}
+          setEditedDescription={setEditedDescription}
+          startEditDescription={startEditDescription}
+          saveDescription={saveDescription}
+          cancelEditDescription={cancelEditDescription}
+          handleModuleAction={handleModuleAction}
+          closeDetailPanel={closeDetailPanel}
+        />
         {/* Logs Modal */}
-        {logsModal && (
-          <div
-            className="modal-overlay"
-            onClick={closeLogsModal}
-            role="dialog"
-            aria-modal="true"
-            tabIndex={-1}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") closeLogsModal();
-              if (e.key === "Tab") {
-                const focusable = Array.from(
-                  document.querySelectorAll(".modal button"),
-                );
-                if (focusable.length === 0) return;
-                const first = focusable[0];
-                const last = focusable[focusable.length - 1];
-                if (!e.shiftKey && document.activeElement === last) {
-                  e.preventDefault();
-                  first.focus();
-                } else if (e.shiftKey && document.activeElement === first) {
-                  e.preventDefault();
-                  last.focus();
-                }
-              }
-            }}
-          >
-            <div className="modal" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2>Logs for {moduleData[logsModal].title}</h2>
-                <button className="modal-close" onClick={closeLogsModal}>
-                  ×
-                </button>
-              </div>
-              <div className="modal-content">
-                <pre
-                  style={{
-                    background: "#222",
-                    color: "#f59e0b",
-                    padding: 16,
-                    borderRadius: 8,
-                  }}
-                >
-                  [2026-01-30 12:00:00] INFO: Module started\n[2026-01-30
-                  12:01:00] INFO: Operation completed\n[2026-01-30 12:02:00]
-                  WARN: No issues detected\n[2026-01-30 12:03:00] INFO: All
-                  systems nominal
-                </pre>
-              </div>
-            </div>
-          </div>
-        )}
+        <LogsModal
+          logsModal={logsModal}
+          moduleData={moduleData}
+          closeLogsModal={closeLogsModal}
+        />
       </div>
       {/* Toasts */}
-      <div
-        className="toast-container"
-        aria-live="polite"
-        aria-atomic="true"
-        style={{
-          position: "fixed",
-          top: 24,
-          right: 24,
-          zIndex: 9999,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end",
-          pointerEvents: "none",
-        }}
-      >
-        {toasts.map((t, idx) => (
-          <div
-            key={t.id}
-            style={{
-              animation: "toast-in 0.3s cubic-bezier(.4,0,.2,1)",
-              pointerEvents: "auto",
-            }}
-          >
-            <Toast
-              message={t.message}
-              type={t.type}
-              onClose={() => removeToast(t.id)}
-              id={t.id}
-            />
-          </div>
-        ))}
-        <style jsx global>{`
-          @keyframes toast-in {
-            from {
-              opacity: 0;
-              transform: translateY(-20px) scale(0.98);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0) scale(1);
-            }
-          }
-          .toast {
-            background: rgba(30, 41, 59, 0.98);
-            color: #fff;
-            border-radius: 8px;
-            padding: 14px 18px;
-            font-size: 15px;
-            margin-bottom: 8px;
-            transition: box-shadow 0.2s;
-          }
-          .toast.success {
-            border-left: 4px solid #22c55e;
-          }
-          .toast.error {
-            border-left: 4px solid #ef4444;
-          }
-          .toast.info {
-            border-left: 4px solid #f59e0b;
-          }
-          .toast-message {
-            flex: 1;
-          }
-        `}</style>
-      </div>
+      <ToastStack toasts={toasts} removeToast={removeToast} />
     </>
   );
 }
