@@ -1,0 +1,33 @@
+.bickford-chat-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 340px;
+  background: #181c24;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  z-index: 1000;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+  overflow: hidden;
+}
+
+.bickford-chat-header {
+  background: #23283a;
+  padding: 16px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-bottom: 1px solid #23283a;
+  text-align: center;
+}
+
+.bickford-chat-body {
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.bickford-chat-coming-soon {
+  color: #7ecfff;
+  font-size: 1.1rem;
+  font-weight: 500;
+}

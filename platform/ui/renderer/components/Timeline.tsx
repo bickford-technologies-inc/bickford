@@ -6,6 +6,7 @@
  */
 
 import { useState } from "react";
+import ShowBickfordChat from "./ShowBickfordChat";
 
 interface TimelineEvent {
   id: string;
@@ -101,5 +102,14 @@ export function Timeline({ id, data, onSelect, props }: TimelineProps) {
         </div>
       )}
     </div>
+  );
+}
+
+export default function TimelineWithChat(props: TimelineProps) {
+  return (
+    <>
+      <Timeline {...props} />
+      <ShowBickfordChat />
+    </>
   );
 }
