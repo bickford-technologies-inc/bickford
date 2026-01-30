@@ -240,7 +240,7 @@ export default function CanonConsole() {
   }
   const filteredSearch = search
     ? searchableItems.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase())
+        item.name.toLowerCase().includes(search.toLowerCase()),
       )
     : [];
   function selectSearchResult(type, id) {
@@ -586,175 +586,85 @@ export default function CanonConsole() {
       `}</style>
       {/* Header */}
       <header className="header">
-        <div className="logo">
+        <div className="logo" onClick={() => navigate("dashboard")}> {/* clickable */}
           <div className="logo-icon">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <path d="M9 12l2 2 4-4" />
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
           </div>
           <span>bickford</span>
         </div>
         <div className="search-bar">
-          <input type="text" placeholder="Search modules..." />
+          <input
+            type="text"
+            ref={searchInputRef}
+            value={search}
+            placeholder="Search modules..."
+            onChange={e => setSearch(e.target.value)}
+            onFocus={() => setSearchActive(true)}
+            onBlur={() => setTimeout(() => setSearchActive(false), 200)}
+          />
+          <div className={`search-results${searchActive && search ? " active" : ""}`}>
+            {filteredSearch.length === 0 ? (
+              <div className="search-result-item">No results found</div>
+            ) : (
+              filteredSearch.map(item => (
+                <div
+                  key={item.id}
+                  className="search-result-item"
+                  onMouseDown={() => selectSearchResult(item.type, item.id)}
+                >
+                  <strong>{item.name}</strong>
+                  <span style={{ color: "#6b7280", fontSize: 12, marginLeft: 8 }}>{item.type}</span>
+                </div>
+              ))
+            )}
+          </div>
         </div>
         <div className="header-actions">
-          <button className="header-btn btn-primary">Documentation</button>
-          <button className="header-btn btn-secondary">Contact Us</button>
-          <div className="user-avatar">DB</div>
+          <button className="header-btn btn-primary" onClick={() => showToast("Documentation coming soon!", "info")}>Documentation</button>
+          <button className="header-btn btn-secondary" onClick={() => showToast("Contact form coming soon!", "info")}>Contact Us</button>
+          <div className="user-avatar" onClick={() => showToast("Profile settings coming soon!", "info")}>DB</div>
         </div>
       </header>
       {/* Layout */}
       <div className="layout">
         {/* Sidebar */}
         <nav className="sidebar">
-          <div className="nav-item active">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+          {navItems.map(item => (
+            <div
+              key={item.label}
+              className={`nav-item${activeView === item.view ? " active" : ""}`}
+              onClick={() => navigate(item.view)}
+              data-view={item.view}
             >
-              <rect x="3" y="3" width="7" height="7" />
-              <rect x="14" y="3" width="7" height="7" />
-              <rect x="14" y="14" width="7" height="7" />
-              <rect x="3" y="14" width="7" height="7" />
-            </svg>
-            Dashboard
-          </div>
-          <div className="nav-item">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-            </svg>
-            Alerts
-          </div>
-          <div className="nav-item">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-            </svg>
-            Audit Logs
-          </div>
-          <div className="nav-item">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-            </svg>
-            Verification
-          </div>
-          <div className="nav-item">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-            </svg>
-            Deployments
-          </div>
+              {item.icon} {item.label}
+            </div>
+          ))}
           <div className="nav-section">
             <div className="nav-section-title">Modules</div>
-            <div className="nav-item">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+            {moduleNav.map(item => (
+              <div
+                key={item.id}
+                className="nav-item"
+                onClick={() => openModulePanel(item.id)}
               >
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-              Canon Runtime
-            </div>
-            <div className="nav-item">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-              </svg>
-              Policy Engine
-            </div>
-            <div className="nav-item">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M12 20h9" />
-                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-              </svg>
-              Ledger
-            </div>
+                {item.icon} {item.label}
+              </div>
+            ))}
           </div>
           <div className="nav-section">
             <div className="nav-section-title">Integrations</div>
-            <div className="nav-item">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+            {integrationNav.map(item => (
+              <div
+                key={item.id}
+                className="nav-item"
+                onClick={() => openModulePanel(item.id)}
               >
-                <ellipse cx="12" cy="5" rx="9" ry="3" />
-                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-              </svg>
-              Healthcare
-            </div>
-            <div className="nav-item">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-              Defense
-            </div>
-            <div className="nav-item">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <line x1="12" y1="1" x2="12" y2="23" />
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
-              Finance
-            </div>
+                {item.icon} {item.label}
+              </div>
+            ))}
           </div>
           <div className="user-section">
-            <div className="user-info">
+            <div className="user-info" onClick={() => showToast("Profile settings coming soon!", "info")}> {/* clickable */}
               <div className="user-info-avatar">DB</div>
               <div>
                 <div className="user-info-text">Derek Bickford</div>
@@ -765,176 +675,87 @@ export default function CanonConsole() {
         </nav>
         {/* Main Content */}
         <main className="main">
-          <h1 className="page-title">Canon Console</h1>
-          <div className="module-grid">
-            {/* Row 1 */}
-            <div className="module-card">
-              <div className="module-icon amber">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                >
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  <path d="M9 12l2 2 4-4" />
-                </svg>
+          {activeView === "dashboard" && (
+            <>
+              <h1 className="page-title">Canon Console</h1>
+              <div className="module-grid">
+                {Object.entries(moduleData).map(([id, mod]) => (
+                  <div
+                    key={id}
+                    className="module-card"
+                    onClick={() => openModulePanel(id)}
+                  >
+                    <div className={`module-icon ${mod.icon}`}>
+                      {/* You can add SVGs here as in your design */}
+                    </div>
+                    <div className="module-info">
+                      <h3>{mod.title}</h3>
+                      <p>{mod.description.split(".")[0]}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="module-info">
-                <h3>Canon Runtime</h3>
-                <p>
-                  Deterministic governance enforcement with hard-fail guarantees
-                </p>
-              </div>
-            </div>
-            <div className="module-card">
-              <div className="module-icon orange">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                >
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                  <polyline points="7.5 4.21 12 6.81 16.5 4.21" />
-                  <polyline points="7.5 19.79 7.5 14.6 3 12" />
-                  <polyline points="21 12 16.5 14.6 16.5 19.79" />
-                  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                  <line x1="12" y1="22.08" x2="12" y2="12" />
-                </svg>
-              </div>
-              <div className="module-info">
-                <h3>Policy Engine</h3>
-                <p>Convert Constitutional AI principles to runtime rules</p>
-              </div>
-            </div>
-            <div className="module-card">
-              <div className="module-icon yellow">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                >
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                  <line x1="3" y1="9" x2="21" y2="9" />
-                  <line x1="9" y1="21" x2="9" y2="9" />
-                </svg>
-              </div>
-              <div className="module-info">
-                <h3>Audit Ledger</h3>
-                <p>Cryptographic append-only compliance records</p>
-              </div>
-            </div>
-            {/* Row 2 */}
-            <div className="module-card">
-              <div className="module-icon slate">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                >
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                </svg>
-              </div>
-              <div className="module-info">
-                <h3>Verification</h3>
-                <p>SHA-256 hash validation for governance state</p>
-              </div>
-            </div>
-            <div className="module-card">
-              <div className="module-icon amber">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-              </div>
-              <div className="module-info">
-                <h3>Drift Detection</h3>
-                <p>Real-time monitoring of policy enforcement state</p>
-              </div>
-            </div>
-            <div className="module-card">
-              <div className="module-icon orange">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                >
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                </svg>
-              </div>
-              <div className="module-info">
-                <h3>Alert System</h3>
-                <p>Instant notifications on governance violations</p>
-              </div>
-            </div>
-            {/* Row 3 */}
-            <div className="module-card">
-              <div className="module-icon yellow">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                >
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                  <polyline points="22 4 12 14.01 9 11.01" />
-                </svg>
-              </div>
-              <div className="module-info">
-                <h3>Healthcare Module</h3>
-                <p>HIPAA-compliant AI governance for clinical workflows</p>
-              </div>
-            </div>
-            <div className="module-card">
-              <div className="module-icon slate">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                >
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
-              </div>
-              <div className="module-info">
-                <h3>Defense Module</h3>
-                <p>FedRAMP/ITAR governance for sensitive operations</p>
-              </div>
-            </div>
-            <div className="module-card">
-              <div className="module-icon amber">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                >
-                  <line x1="12" y1="1" x2="12" y2="23" />
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                </svg>
-              </div>
-              <div className="module-info">
-                <h3>Finance Module</h3>
-                <p>SOX/SOC2 enforcement for financial AI systems</p>
-              </div>
-            </div>
-          </div>
-          <div className="hex-decoration">
-            <div className="hex"></div>
-          </div>
-          <div className="bottom-decoration"></div>
+            </>
+          )}
+          {/* Add other views here (alerts, audit, etc.) */}
         </main>
+        {/* Detail Panel */}
+        {detailPanel && (
+          <div className="detail-panel active">
+            <div className="detail-panel-header">
+              <div className="detail-panel-title">
+                <div className={`module-icon ${moduleData[detailPanel].icon}`}></div>
+                <h2>{moduleData[detailPanel].title}</h2>
+              </div>
+              <button className="detail-panel-close" onClick={closeDetailPanel}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div className="detail-panel-content">
+              <div className="detail-section">
+                <h3>Status</h3>
+                <span className={`status-badge ${moduleData[detailPanel].status}`}>{moduleData[detailPanel].status === 'active' ? 'Active' : moduleData[detailPanel].status === 'warning' ? 'Warning' : 'Inactive'}</span>
+              </div>
+              <div className="detail-section">
+                <h3>Description</h3>
+                <p>{moduleData[detailPanel].description}</p>
+              </div>
+              <div className="detail-section">
+                <h3>Metrics</h3>
+                <div className="metric-grid">
+                  {moduleData[detailPanel].metrics.map((m, i) => (
+                    <div className="metric-card" key={i}>
+                      <div className="metric-value">{m.value}</div>
+                      <div className="metric-label">{m.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="detail-section">
+                <h3>Actions</h3>
+                <div className="action-list">
+                  {moduleData[detailPanel].actions.map((action, i) => (
+                    <button className="action-btn" key={i} onClick={() => showToast(`${action} - Coming soon!`, 'info')}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+                      {action}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      {/* Toasts */}
+      <div className="toast-container">
+        {toasts.map((t) => (
+          <Toast
+            key={t.id}
+            message={t.message}
+            type={t.type}
+            onClose={() => removeToast(t.id)}
+          />
+        ))}
       </div>
     </>
   );
