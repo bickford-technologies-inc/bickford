@@ -10,11 +10,8 @@
   "ignoreCommand": "node scripts/assert-intent-phase.mjs",
 
   "functions": {
-    "api/technical-docs": {
-      "runtime": "nodejs20.x",
-      "includeFiles": [
-        "docs/technical/**"
-      ]
+    "api/technical-docs.ts": {
+      "includeFiles": "docs/technical/**"
     }
   }
 }
