@@ -47,6 +47,22 @@ vercel --prod
 
 ---
 
+## Vercel Environment Variables
+
+Set all secrets and environment variables in the Vercel dashboard, not just in `.env.local`.
+
+- `DATABASE_URL` — (if using a production database)
+- `ANTHROPIC_API_KEY` — (if using Anthropic API)
+- Any other required secrets
+
+## Production Database Setup
+
+- For preview/demo, SQLite is supported and works out of the box.
+- For production, use a cloud database (e.g., Postgres) and set `DATABASE_URL` in Vercel.
+- Ensure your database is accessible from Vercel’s serverless functions.
+
+---
+
 For questions, see the code or contact the Bickford team.
 
 # Bickford AI Execution Authority Platform

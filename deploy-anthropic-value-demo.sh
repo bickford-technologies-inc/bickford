@@ -28,15 +28,15 @@ echo "[2/4] Running Anthropic-facing demos and compliance artifact generators...
 
 # Claude comparison demo
 echo "\n--- Claude Comparison Demo ---"
-bun run packages/demo/claude-comparison.ts || { echo "Claude comparison demo failed"; exit 1; }
+bun run bickford-intelligence/packages/demo/claude-comparison.ts || { echo "Claude comparison demo failed"; exit 1; }
 
 # Compliance artifact generator
 echo "\n--- Compliance Artifact Generator ---"
-bun run packages/demo/compliance-demo.ts || { echo "Compliance artifact generator failed"; exit 1; }
+bun run bickford-intelligence/packages/demo/compliance-demo.ts || { echo "Compliance artifact generator failed"; exit 1; }
 
 # Regulator verification demo
 echo "\n--- Regulator Verification Demo ---"
-bun run packages/demo/regulator-demo.ts || { echo "Regulator verification demo failed"; exit 1; }
+bun run bickford-intelligence/packages/demo/regulator-demo.ts || { echo "Regulator verification demo failed"; exit 1; }
 
 # (Optional) Comprehensive platform demo
 echo "\n--- Comprehensive Platform Demo (optional) ---"
