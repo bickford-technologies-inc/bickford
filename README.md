@@ -599,3 +599,15 @@ This codebase is intentionally consolidated as a single, production-ready Next.j
 - **Easy handoff and onboarding**
 
 See `INTEGRATION_GUIDE.md` and `CONSOLIDATION_IMPACT.md` for details on integration and value impact.
+
+## Technical Documentation Automation
+
+- All files in `docs/technical` are validated and exposed via `/api/technical-docs`.
+- Automation scripts in `scripts/execute-technical-automation.ts` run validation and dry-run demo/integration flows for compliance and execution authority.
+- See `package.json` scripts: `validate:technical`, `execute:technical-automation`.
+
+## Vercel Build Integration
+
+- Vercel build uses `ci/vercel/build-with-diagnostics.sh` for robust, deterministic builds.
+- All technical docs are included in the build and available to serverless functions.
+- Automation and compliance are enforced at build and runtime.

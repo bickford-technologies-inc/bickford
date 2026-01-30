@@ -5,7 +5,16 @@
 
   "installCommand": "bash ci/vercel-install.sh",
 
-  "buildCommand": "pnpm run build",
+  "buildCommand": "bash ci/vercel/build-with-diagnostics.sh",
 
-  "ignoreCommand": "node scripts/assert-intent-phase.mjs"
+  "ignoreCommand": "node scripts/assert-intent-phase.mjs",
+
+  "functions": {
+    "api/technical-docs": {
+      "runtime": "nodejs20.x",
+      "includeFiles": [
+        "docs/technical/**"
+      ]
+    }
+  }
 }
