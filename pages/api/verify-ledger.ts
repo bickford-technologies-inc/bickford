@@ -43,6 +43,23 @@ export default async function handler(
     const lines = ledger.trim().split(/\r?\n/).filter(Boolean);
     const entries = lines.map((line) => JSON.parse(line));
 
+    // Intelligence: build in-memory ledger and find similar entries
+    const ledgerObj = new Ledger();
+    for (const e of entries) {
+      await ledgerObj.append({
+        eventType: e.eventType,
+        payload: e.payload,
+        metadata: e.metadata,
+        timestamp: e.timestamp,
+      });
+    }
+    // For demo, use first payload as query
+    const queryPayload = entries[0]?.payload;
+    let similar: any[] = [];
+    if (queryPayload) {
+      similar = ledgerObj.findSimilarEntries(queryPayload, { limit: 3, minSimilarity: 0.5 });
+    }
+
     // Hash chain validation
     const hashResult = verifyHashChain(entries);
     // Diagnostics
@@ -67,20 +84,19 @@ export default async function handler(
     }
     // Compression stats
     const compression = calculateCompression(entries);
-    // First/last hash
-    const firstHash = entries[0]?.currentHash || null;
-    const lastHash = entries[entries.length - 1]?.currentHash || null;
-
-    res.status(200).json({
-      hashChain: hashResult,
-      valid: hashResult.valid,
-      violations,
-      entryCount: entries.length,
-      firstHash,
-      lastHash,
+    // Intelligence metadata
+    const intelligence = {
+      queryPayload,
+      similarEntries: similar,
+      similarCount: similar.length,
+    };
+    return res.status(200).json({
+      ...hashResult,
       compression,
+      intelligence,
+      violations,
     });
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 }

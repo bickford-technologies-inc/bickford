@@ -51,9 +51,25 @@ export default function VerifyLedger() {
             {JSON.stringify(result, null, 2)}
           </pre>
           {result.valid ? (
-            <div style={{ color: "green" }}>✔ Ledger is valid and canonical</div>
+            <div style={{ color: "green" }}>
+ Ledger is valid and canonical</div>
           ) : (
-            <div style={{ color: "red" }}>✖ Ledger is NOT valid or canonical</div>
+            <div style={{ color: "red" }}>
+ Ledger is NOT valid or canonical</div>
+          )}
+          {result.intelligence && result.intelligence.similarEntries && (
+            <div style={{ marginTop: 24 }}>
+              <h3>Intelligence: Most Similar Past Entries</h3>
+              <ul>
+                {result.intelligence.similarEntries.map((entry: any, i: number) => (
+                  <li key={i}>
+                    <pre style={{ background: "#fafafa", padding: 8, fontSize: 12 }}>
+                      {JSON.stringify(entry, null, 2)}
+                    </pre>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
       )}
