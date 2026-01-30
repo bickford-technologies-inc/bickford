@@ -1,8 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-let demoState = { testResult: null };
+type PolicyTestResult = { status: string; details: string; timestamp: string };
+let demoState: { testResult: PolicyTestResult | null } = { testResult: null };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method === "POST") {
     const { action } = req.body || {};
     if (action === "test-rules") {

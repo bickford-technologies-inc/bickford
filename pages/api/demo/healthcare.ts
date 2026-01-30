@@ -1,8 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-let demoState = { lastCheck: null };
+type HealthcareResult = { status: string; details: string; timestamp: string };
+let demoState: { lastCheck: HealthcareResult | null } = { lastCheck: null };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method === "POST") {
     const { action } = req.body || {};
     if (action === "run-hipaa-check") {

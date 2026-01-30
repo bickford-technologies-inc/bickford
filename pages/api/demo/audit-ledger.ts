@@ -1,8 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-let demoState = { lastQuery: null };
+type QueryResult = { status: string; entries: any[] };
+let demoState: { lastQuery: QueryResult | null } = { lastQuery: null };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method === "POST") {
     const { action } = req.body || {};
     if (action === "query-ledger") {

@@ -1,8 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-let demoState = { lastAlert: null };
+type AlertResult = { status: string; details: string; timestamp: string };
+let demoState: { lastAlert: AlertResult | null } = { lastAlert: null };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method === "POST") {
     const { action } = req.body || {};
     if (action === "send-alert") {

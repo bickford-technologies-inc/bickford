@@ -1,8 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-let demoState = { lastDefense: null };
+type DefenseResult = { status: string; details: string; timestamp: string };
+let demoState: { lastDefense: DefenseResult | null } = { lastDefense: null };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method === "POST") {
     const { action } = req.body || {};
     if (action === "run-defense-check") {

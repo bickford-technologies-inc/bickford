@@ -1,8 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-let demoState = { lastDrift: null };
+type DriftResult = { status: string; details: string; timestamp: string };
+let demoState: { lastDrift: DriftResult | null } = { lastDrift: null };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method === "POST") {
     const { action } = req.body || {};
     if (action === "test-drift") {
