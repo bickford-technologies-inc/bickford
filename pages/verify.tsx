@@ -1,5 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
 
+// ErrorBoundary for robust error handling
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: any }> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error: any, info: any) {
+    // Optionally log error
+  }
+  render() {
+    if (this.state.hasError) {
+      return <div style={{ color: "red", background: "#fff1f0", padding: 16, borderRadius: 8 }}>
+        <b>UI Error:</b> {this.state.error?.message || String(this.state.error)}
+      </div>;
+    }
+    return this.props.children;
+  }
+}
+
 function AnalyticsSummary({ result }: { result: any }) {
   if (!result || !result.intelligence) return null;
   const entries = result.intelligence.similarEntries || [];
@@ -210,90 +232,92 @@ export default function VerifyLedger() {
   }
 
   return (
-    <div style={{ maxWidth: 700, margin: "2rem auto", padding: 24 }}>
-      <h1>
-        External Ledger/Hash Chain Verifier
-        <AnomalyBadge result={result} />
-      </h1>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          value={ledger}
-          onChange={(e) => setLedger(e.target.value)}
-          rows={10}
-          style={{ width: "100%", fontFamily: "monospace" }}
-          placeholder="Paste JSONL ledger or hash chain here..."
-          required
-        />
-        <div style={{ marginTop: 8, display: "flex", alignItems: "center" }}>
-          <label style={{ marginRight: 12 }}>
-            <input
-              type="checkbox"
-              checked={continuous}
-              onChange={() => setContinuous((v) => !v)}
-              style={{ marginRight: 4 }}
-            />
-            Continuous verification
-          </label>
-          <button
-            type="submit"
-            disabled={loading || continuous}
-            style={{ marginLeft: 12 }}
-          >
-            {loading ? "Verifying..." : "Manual Verify"}
-          </button>
-          <button
-            type="button"
-            onClick={handleDownload}
-            disabled={!result}
-            style={{ marginLeft: 12 }}
-          >
-            Download Report
-          </button>
-        </div>
-      </form>
-      {error && <div style={{ color: "red", marginTop: 16 }}>{error}</div>}
-      {lastChecked && (
-        <div style={{ color: "#888", fontSize: 12, marginTop: 4 }}>
-          Last checked: {lastChecked.toLocaleTimeString()}
-        </div>
-      )}
-      {result && (
-        <div style={{ marginTop: 24 }}>
-          <h2>Verification Result</h2>
-          <pre style={{ background: "#f5f5f5", padding: 12 }}>
-            {JSON.stringify(result, null, 2)}
-          </pre>
-          {result.valid ? (
-            <div style={{ color: "green" }}>Ledger is valid and canonical</div>
-          ) : (
-            <div style={{ color: "red" }}>Ledger is NOT valid or canonical</div>
-          )}
-          <ValueDashboard result={result} />
-          <AnalyticsSummary result={result} />
-          {result.intelligence && result.intelligence.similarEntries && (
-            <div style={{ marginTop: 24 }}>
-              <h3>Intelligence: Most Similar Past Entries</h3>
-              <ul>
-                {result.intelligence.similarEntries.map(
-                  (entry: any, i: number) => (
-                    <li key={i}>
-                      <pre
-                        style={{
-                          background: "#fafafa",
-                          padding: 8,
-                          fontSize: 12,
-                        }}
-                      >
-                        {JSON.stringify(entry, null, 2)}
-                      </pre>
-                    </li>
-                  ),
-                )}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+    <ErrorBoundary>
+      <div style={{ maxWidth: 700, margin: "2rem auto", padding: 24 }}>
+        <h1>
+          External Ledger/Hash Chain Verifier
+          <AnomalyBadge result={result} />
+        </h1>
+        <form onSubmit={handleSubmit}>
+          <textarea
+            value={ledger}
+            onChange={(e) => setLedger(e.target.value)}
+            rows={10}
+            style={{ width: "100%", fontFamily: "monospace" }}
+            placeholder="Paste JSONL ledger or hash chain here..."
+            required
+          />
+          <div style={{ marginTop: 8, display: "flex", alignItems: "center" }}>
+            <label style={{ marginRight: 12 }}>
+              <input
+                type="checkbox"
+                checked={continuous}
+                onChange={() => setContinuous((v) => !v)}
+                style={{ marginRight: 4 }}
+              />
+              Continuous verification
+            </label>
+            <button
+              type="submit"
+              disabled={loading || continuous}
+              style={{ marginLeft: 12 }}
+            >
+              {loading ? "Verifying..." : "Manual Verify"}
+            </button>
+            <button
+              type="button"
+              onClick={handleDownload}
+              disabled={!result}
+              style={{ marginLeft: 12 }}
+            >
+              Download Report
+            </button>
+          </div>
+        </form>
+        {error && <div style={{ color: "red", marginTop: 16 }}>{error}</div>}
+        {lastChecked && (
+          <div style={{ color: "#888", fontSize: 12, marginTop: 4 }}>
+            Last checked: {lastChecked.toLocaleTimeString()}
+          </div>
+        )}
+        {result && (
+          <div style={{ marginTop: 24 }}>
+            <h2>Verification Result</h2>
+            <pre style={{ background: "#f5f5f5", padding: 12 }}>
+              {typeof result === "object" ? JSON.stringify(result, null, 2) : String(result)}
+            </pre>
+            {result.valid ? (
+              <div style={{ color: "green" }}>Ledger is valid and canonical</div>
+            ) : (
+              <div style={{ color: "red" }}>Ledger is NOT valid or canonical</div>
+            )}
+            {ValueDashboard && <ValueDashboard result={result} />}
+            {AnalyticsSummary && <AnalyticsSummary result={result} />}
+            {result.intelligence && Array.isArray(result.intelligence.similarEntries) && (
+              <div style={{ marginTop: 24 }}>
+                <h3>Intelligence: Most Similar Past Entries</h3>
+                <ul>
+                  {result.intelligence.similarEntries.map(
+                    (entry: any, i: number) => (
+                      <li key={i}>
+                        <pre
+                          style={{
+                            background: "#fafafa",
+                            padding: 8,
+                            fontSize: 12,
+                          }}
+                        >
+                          {typeof entry === "object" ? JSON.stringify(entry, null, 2) : String(entry)}
+                        </pre>
+                      </li>
+                    ),
+                  )}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </ErrorBoundary>
   );
 }
