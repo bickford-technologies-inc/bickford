@@ -78,7 +78,7 @@ function Toast({ message, type, onClose, id }: ToastProps) {
             ? "4px solid #22c55e"
             : type === "error"
               ? "4px solid #ef4444"
-              : "4px solid #f59e0b",
+              : "4px solid #001F3F",
       }}
     >
       <span className="toast-message" style={{ flex: 1 }}>

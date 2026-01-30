@@ -39,7 +39,7 @@ export function ModuleGrid({
           }}
           onFocus={() => setFocusedModuleIdx(idx)}
           style={{
-            outline: focusedModuleIdx === idx ? "2px solid #f59e0b" : undefined,
+            outline: focusedModuleIdx === idx ? "2px solid #001F3F" : undefined,
             zIndex: focusedModuleIdx === idx ? 2 : 1,
           }}
         >
@@ -51,7 +51,7 @@ export function ModuleGrid({
               {mod.metrics.map((m, i) => (
                 <span
                   key={i}
-                  style={{ fontSize: 13, color: "#f59e0b", fontWeight: 600 }}
+                  style={{ fontSize: 13, color: "#001F3F", fontWeight: 600 }}
                 >
                   {m.value}{" "}
                   <span style={{ color: "#9ca3af", fontWeight: 400 }}>

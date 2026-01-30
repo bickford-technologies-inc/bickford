@@ -246,7 +246,7 @@ function Toast({ message, type, onClose, id }) {
             ? "4px solid #22c55e"
             : type === "error"
               ? "4px solid #ef4444"
-              : "4px solid #f59e0b",
+              : "4px solid #001F3F",
       }}
     >
       <span className="toast-message" style={{ flex: 1 }}>
@@ -706,6 +706,9 @@ export default function CanonConsole() {
         }
         .module-icon.slate {
           background: linear-gradient(135deg, #475569 0%, #64748b 100%);
+        }
+        .module-icon.navy {
+          background: linear-gradient(135deg, #001f3f 0%, #001f3f 100%);
         }
         .module-info h3 {
           font-size: 18px;

@@ -57,7 +57,7 @@ export function LogsModal({
           <pre
             style={{
               background: "#222",
-              color: "#f59e0b",
+              color: "#001F3F",
               padding: 16,
               borderRadius: 8,
             }}

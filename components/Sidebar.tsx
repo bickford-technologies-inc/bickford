@@ -58,7 +58,7 @@ export function Sidebar({
           aria-label={item.label}
           onKeyDown={(e) => handleSidebarKeyDown(e, i, "nav")}
           style={{
-            outline: activeView === item.view ? "2px solid #f59e0b" : undefined,
+            outline: activeView === item.view ? "2px solid #001F3F" : undefined,
           }}
         >
           {item.icon} {item.label}
