@@ -159,6 +159,25 @@ const moduleData = {
       "Certification Status",
     ],
   },
+  "data-lake-inn": {
+    title: "Data Lake Inn",
+    icon: "navy",
+    status: "active",
+    description:
+      "Unified data lake for all governance, audit, and operational records. Integrates Bickford Chat for natural language data exploration, compliance queries, and instant insights across your entire AI stack.",
+    metrics: [
+      { value: "12PB", label: "Total Data" },
+      { value: "1.2B", label: "Records" },
+      { value: "99.999%", label: "Durability" },
+      { value: "Bickford Chat", label: "AI Assistant" },
+    ],
+    actions: [
+      "Open Bickford Chat",
+      "Query Data Lake",
+      "Export Dataset",
+      "Configure Retention",
+    ],
+  },
   finance: {
     title: "Finance Module",
     icon: "navy",
