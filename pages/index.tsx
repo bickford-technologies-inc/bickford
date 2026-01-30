@@ -9,7 +9,7 @@ import { LogsModal } from "../components/LogsModal";
 const moduleData = {
   "canon-runtime": {
     title: "Canon Runtime",
-    icon: "amber",
+    icon: "navy",
     status: "active",
     description:
       "The Canon Runtime is the core enforcement engine that provides deterministic governance guarantees. It ensures that every AI operation complies with declared policies through cryptographic verification.",
@@ -28,7 +28,7 @@ const moduleData = {
   },
   "policy-engine": {
     title: "Policy Engine",
-    icon: "orange",
+    icon: "navy",
     status: "active",
     description:
       "Converts Constitutional AI principles into mechanically enforceable runtime rules. Supports complex policy compositions and real-time policy updates without service interruption.",
@@ -47,7 +47,7 @@ const moduleData = {
   },
   "audit-ledger": {
     title: "Audit Ledger",
-    icon: "yellow",
+    icon: "navy",
     status: "active",
     description:
       "Cryptographic append-only ledger that maintains tamper-evident records of all governance decisions. Provides complete audit trail for regulatory compliance.",
@@ -66,7 +66,7 @@ const moduleData = {
   },
   verification: {
     title: "Verification",
-    icon: "slate",
+    icon: "navy",
     status: "active",
     description:
       "SHA-256 hash validation system that continuously verifies governance state integrity. Detects any drift from canonical policy configurations.",
@@ -85,7 +85,7 @@ const moduleData = {
   },
   "drift-detection": {
     title: "Drift Detection",
-    icon: "amber",
+    icon: "navy",
     status: "active",
     description:
       "Real-time monitoring system that detects any deviation from declared governance policies. Triggers immediate alerts and can auto-block non-compliant operations.",
@@ -104,7 +104,7 @@ const moduleData = {
   },
   "alert-system": {
     title: "Alert System",
-    icon: "orange",
+    icon: "navy",
     status: "active",
     description:
       "Instant notification system for governance violations. Supports multiple channels including Slack, PagerDuty, email, and webhooks.",
@@ -123,7 +123,7 @@ const moduleData = {
   },
   healthcare: {
     title: "Healthcare Module",
-    icon: "yellow",
+    icon: "navy",
     status: "active",
     description:
       "HIPAA-compliant governance module for clinical AI workflows. Ensures patient data protection, audit logging, and regulatory compliance for healthcare AI deployments.",
@@ -142,7 +142,7 @@ const moduleData = {
   },
   defense: {
     title: "Defense Module",
-    icon: "slate",
+    icon: "navy",
     status: "active",
     description:
       "FedRAMP and ITAR compliant governance for defense and government AI deployments. Provides classified data handling and security clearance verification.",
@@ -161,7 +161,7 @@ const moduleData = {
   },
   finance: {
     title: "Finance Module",
-    icon: "amber",
+    icon: "navy",
     status: "warning",
     description:
       "SOX and SOC2 compliant governance for financial AI systems. Provides audit trails, access controls, and regulatory reporting for fintech deployments.",
@@ -695,20 +695,11 @@ export default function CanonConsole() {
           flex-shrink: 0;
           font-size: 2rem;
         }
-        .module-icon.amber {
-          background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
-        }
-        .module-icon.orange {
-          background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
-        }
-        .module-icon.yellow {
-          background: linear-gradient(135deg, #ca8a04 0%, #eab308 100%);
+        .module-icon.navy {
+          background: linear-gradient(135deg, #001f3f 0%, #001f3f 100%);
         }
         .module-icon.slate {
           background: linear-gradient(135deg, #475569 0%, #64748b 100%);
-        }
-        .module-icon.navy {
-          background: linear-gradient(135deg, #001f3f 0%, #001f3f 100%);
         }
         .module-info h3 {
           font-size: 18px;
