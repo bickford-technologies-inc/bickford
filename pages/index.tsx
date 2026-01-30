@@ -1,5 +1,10 @@
 import React, { useState, useRef } from "react";
 import Head from "next/head";
+import { Sidebar } from "../components/Sidebar";
+import { ModuleGrid } from "../components/ModuleGrid";
+import { DetailPanel } from "../components/DetailPanel";
+import { ToastStack } from "../components/ToastStack";
+import { LogsModal } from "../components/LogsModal";
 
 const moduleData = {
   "canon-runtime": {
