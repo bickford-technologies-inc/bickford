@@ -41,8 +41,8 @@ export default async function handler(
   return res.status(200).json({
     allowed: decision.allowed,
     reasoning: decision.reasoning,
-    violatedConstraints: decision.violatedConstraints,
-    proofChain: decision.proofChain,
+    violatedConstraints: decision.violatedConstraints ?? [],
+    proofChain: decision.proofChain ?? [],
     metrics: authority.getMetrics(),
   });
 }
