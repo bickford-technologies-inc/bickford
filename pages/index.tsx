@@ -317,7 +317,7 @@ function Toast({ message, type, onClose, id }) {
   );
 }
 
-export default function CanonConsole() {
+export default function HomePage() {
   const [activeView, setActiveView] = useState("dashboard");
   const [detailPanel, setDetailPanel] = useState(null);
   const [modal, setModal] = useState(null);
@@ -520,6 +520,11 @@ export default function CanonConsole() {
       }
     }
   }
+
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => { setHasMounted(true); }, []);
+
+  if (!hasMounted) return null;
 
   return (
     <>
