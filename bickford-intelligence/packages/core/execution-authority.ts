@@ -5,7 +5,7 @@
  * Each execution compounds intelligence by learning from past decisions.
  */
 
-import { createHash } from "crypto";
+// import { createHash } from "crypto"; // Remove for Bun-native, replace with Bun.hash if needed
 
 export interface Intent {
   id: string;
@@ -257,10 +257,6 @@ export class ExecutionAuthority {
     }
 
     this.decisionLog = compressed;
-
-    console.log(
-      `Compressed ${grouped.size} decisions → ${compressed.length} (${((compressed.length / grouped.size) * 100).toFixed(2)}%)`,
-    );
   }
 
   /**
@@ -268,7 +264,7 @@ export class ExecutionAuthority {
    */
   private hashIntent(intent: Intent): string {
     const normalized = intent.prompt.toLowerCase().trim();
-    return createHash("sha256").update(normalized).digest("hex").slice(0, 16);
+    return Bun.hash(normalized).slice(0, 16);
   }
 
   /**
@@ -280,7 +276,7 @@ export class ExecutionAuthority {
     policy: string,
   ): string {
     const content = `${intentId}:${status}:${policy}:${Date.now()}`;
-    return createHash("sha256").update(content).digest("hex");
+    return Bun.hash(content).slice(0, 32);
   }
 
   /**

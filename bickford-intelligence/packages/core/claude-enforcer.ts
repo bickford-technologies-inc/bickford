@@ -13,7 +13,6 @@ import {
   ConstitutionalEnforcer,
   type EnforcementResult,
 } from "./constitutional-enforcer.js";
-import { createHash } from "crypto";
 
 export interface ClaudeRequest {
   model: string;
@@ -156,7 +155,7 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     //   temperature?: number
     // }
     // Remove any undefined fields and ensure correct types
-    const apiPayload: Record<string, any> = {
+    const apiPayload: Record<string, unknown> = {
       model: request.model,
       max_tokens: request.max_tokens || 1024,
       messages: request.messages,
@@ -168,18 +167,6 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       apiPayload.temperature = request.temperature;
     }
 
-    // Log the outgoing request for debugging
-    console.log("[Claude API] Request URL:", this.apiEndpoint);
-    console.log("[Claude API] Request Headers:", {
-      "Content-Type": "application/json",
-      "x-api-key": this.apiKey ? "[REDACTED]" : undefined,
-      "anthropic-version": "2023-06-01",
-    });
-    console.log(
-      "[Claude API] Request Body:",
-      JSON.stringify(apiPayload, null, 2),
-    );
-
     const response = await fetch(this.apiEndpoint, {
       method: "POST",
       headers: {
@@ -190,14 +177,7 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       body: JSON.stringify(apiPayload),
     });
 
-    // Log the response status and body for debugging
-    console.log(
-      "[Claude API] Response Status:",
-      response.status,
-      response.statusText,
-    );
     const responseText = await response.text();
-    console.log("[Claude API] Response Body:", responseText);
 
     if (!response.ok) {
       throw new CanonViolationError(
@@ -291,15 +271,13 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     const chain: string[] = [];
 
     // Proof 1: Request hash
-    const requestHash = createHash("sha256")
-      .update(
-        JSON.stringify({
-          model: request.model,
-          messages: request.messages,
-          timestamp: Date.now(),
-        }),
-      )
-      .digest("hex");
+    const requestHash = Bun.hash(
+      JSON.stringify({
+        model: request.model,
+        messages: request.messages,
+        timestamp: Date.now(),
+      }),
+    );
     chain.push(`REQUEST:${requestHash}`);
 
     // Proof 2: Enforcement proof (from Constitutional AI check)
@@ -307,24 +285,20 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
 
     // Proof 3: Response hash (if request was allowed)
     if (response) {
-      const responseHash = createHash("sha256")
-        .update(
-          JSON.stringify({
-            id: response.id,
-            content: response.content,
-            model: response.model,
-          }),
-        )
-        .digest("hex");
+      const responseHash = Bun.hash(
+        JSON.stringify({
+          id: response.id,
+          content: response.content,
+          model: response.model,
+        }),
+      );
       chain.push(`RESPONSE:${responseHash}`);
     } else {
       chain.push(`RESPONSE:DENIED_BEFORE_EXECUTION`);
     }
 
     // Proof 4: Merkle root
-    const merkleRoot = createHash("sha256")
-      .update(chain.join(":"))
-      .digest("hex");
+    const merkleRoot = Bun.hash(chain.join(":"));
     chain.push(`MERKLE_ROOT:${merkleRoot}`);
 
     return chain;

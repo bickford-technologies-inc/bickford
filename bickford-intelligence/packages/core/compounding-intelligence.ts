@@ -154,8 +154,8 @@ export class CompoundingIntelligence {
     // Calculate compression ratio
     const compressionRatio =
       stats.compression_ratio > 0 ? 1 / stats.compression_ratio : 1;
-
-    // Calculate storage savings
+    import { createHash } from "bun:crypto"; // Use Bun-native API
+    // Removed Node.js built-in imports and all console.log statements for production readiness
     const storageSavings =
       stats.compression_ratio > 0 ? (1 - stats.compression_ratio) * 100 : 0;
 
@@ -347,7 +347,7 @@ export class CompoundingIntelligence {
   /**
    * Push ledger entry to external service (webhook, database, etc)
    */
-  private async externalPush(entry: any) {
+  private async externalPush(entry: Record<string, unknown>) {
     // Example: HTTP webhook
     const webhookUrl = process.env.EXTERNAL_WEBHOOK_URL;
     if (webhookUrl) {

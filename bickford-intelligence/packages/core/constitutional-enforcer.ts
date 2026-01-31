@@ -5,7 +5,7 @@
  * Converts aspirational safety into mechanical guarantees.
  */
 
-import { createHash } from "crypto";
+// Removed Node.js built-in imports and all console.log statements for production readiness
 
 export interface ConstitutionalConstraint {
   id: string;

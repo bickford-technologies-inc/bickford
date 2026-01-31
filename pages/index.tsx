@@ -522,7 +522,9 @@ export default function HomePage() {
   }
 
   const [hasMounted, setHasMounted] = useState(false);
-  useEffect(() => { setHasMounted(true); }, []);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   if (!hasMounted) return null;
 

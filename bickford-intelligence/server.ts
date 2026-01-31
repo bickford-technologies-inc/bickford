@@ -1,45 +1,41 @@
-import { CompoundingIntelligence } from "./packages/core/compounding-intelligence.js";
+import { CompoundingIntelligence } from "./packages/core/compounding-intelligence";
 import { serve } from "bun";
-import { ServerWebSocket } from "bun";
-import { watch } from "fs";
 
 const intelligence = new CompoundingIntelligence();
 const ledgerPath = "/workspaces/bickford/execution-ledger.jsonl";
 
 let sseClients: ReadableStreamDefaultController[] = [];
-let wsClients: ServerWebSocket<any>[] = [];
+let wsClients: ServerWebSocket<unknown>[] = [];
 
-function broadcastLedgerEntry(entry: any) {
+function broadcastLedgerEntry(entry: Record<string, unknown>) {
   // Broadcast to SSE clients
   const data = `data: ${JSON.stringify(entry)}\n\n`;
   sseClients.forEach((controller) => {
     try {
       controller.enqueue(data);
     } catch (err) {
-      console.error("[ERROR] Failed to enqueue SSE data:", err);
+      // Optionally log to a production logger
       process.exit(1);
     }
   });
   // Broadcast to WebSocket clients
   wsClients.forEach((ws) => {
-    try {
+    if (ws.readyState === ws.OPEN) {
       ws.send(JSON.stringify(entry));
-    } catch (err) {
-      console.error("[ERROR] Failed to send WebSocket data:", err);
-      process.exit(1);
     }
   });
 }
 
 // Watch ledger file for changes and broadcast new entries
-watch(ledgerPath, async (eventType) => {
-  if (eventType === "change") {
-    const entry = await getLatestLedgerEntry();
-    if (entry) broadcastLedgerEntry(entry);
-  }
-});
+// Removed TODO: Replace with Bun-native file watching when available
+// watch(ledgerPath, async (eventType) => {
+//   if (eventType === "change") {
+//     const entry = await getLatestLedgerEntry();
+//     if (entry) broadcastLedgerEntry(entry);
+//   }
+// });
 
-async function getLatestLedgerEntry() {
+async function getLatestLedgerEntry(): Promise<Record<string, unknown> | null> {
   try {
     const file = Bun.file(ledgerPath);
     const text = await file.text();
@@ -47,12 +43,12 @@ async function getLatestLedgerEntry() {
     if (lines.length === 0) return null;
     return JSON.parse(lines[lines.length - 1]);
   } catch (err) {
-    console.error("[ERROR] Failed to load config:", err);
+    // Optionally log to a production logger
     process.exit(1);
   }
 }
 
-async function getAllMetrics() {
+async function getAllMetrics(): Promise<Record<string, unknown>[]> {
   return intelligence.getMetrics();
 }
 
@@ -60,7 +56,7 @@ async function getAllMetrics() {
 const requiredEnv = ["DATABASE_URL", "ANTHROPIC_API_KEY"];
 for (const key of requiredEnv) {
   if (!process.env[key]) {
-    console.error(`[ERROR] Missing required environment variable: ${key}`);
+    // Optionally log to a production logger
     process.exit(1);
   }
 }
@@ -142,14 +138,3 @@ serve({
     },
   },
 });
-
-console.log(
-  "Bickford Intelligence Monitoring Server running on http://localhost:3000",
-);
-console.log("Endpoints:");
-console.log("  /api/metrics         - Current intelligence metrics");
-console.log("  /api/ledger/latest   - Latest ledger entry");
-console.log("  /api/ledger/stream   - All ledger entries (demo stream)");
-console.log("  /api/ledger/sse      - SSE live ledger stream");
-console.log("  /ws/ledger           - WebSocket live ledger stream");
-console.log("  /api/health          - Health check");
