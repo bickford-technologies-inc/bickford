@@ -1,4 +1,5 @@
 {
   "action": "provision",
-  "target": "example-resource"
+  "target": "example-resource",
+  "phase": "deploy"
 }
