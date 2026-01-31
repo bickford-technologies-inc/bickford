@@ -1,3 +1,4 @@
+// API route with explicit types for Next.js
 import type { NextApiRequest, NextApiResponse } from "next";
 import { promises as fs } from "fs";
 import path from "path";
@@ -19,6 +20,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ error: err.message });
   }
 }
-
-// Force rebuild: 2026-01-31
-// This file is type-correct for Next.js API routes
