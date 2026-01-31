@@ -269,7 +269,7 @@ const integrationNav = [
   { label: "Finance Module", id: "finance", icon: "🟡" },
 ];
 
-function Toast({ message, type, onClose, id }: { message: string; type: string; onClose: () => void; id: string }) {
+function Toast({ message, type, onClose, id }: { message: string; type: string; onClose: () => void; id: number }) {
   React.useEffect(() => {
     const timer = setTimeout(onClose, 4000);
     return () => clearTimeout(timer);
