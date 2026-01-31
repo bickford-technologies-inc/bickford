@@ -1,11 +1,11 @@
-// platform/core/enforcement-engine.ts
 import type { Canon, Action } from "./types";
 
 export class EnforcementEngine {
-  constructor(private ledgerAppend: (entry: any) => Promise<any> | any) {}
+  constructor(
+    private ledgerAppend: (entry: Record<string, unknown>) => Promise<string>,
+  ) {}
 
   async enforce(canon: Canon, action: Action) {
-    // Simulate enforcement: if action.payload.data contains 'SSN', deny
     const containsPII =
       typeof action.payload.data === "string" &&
       action.payload.data.includes("SSN");
@@ -13,7 +13,7 @@ export class EnforcementEngine {
     const decision = allowed ? "ALLOWED" : "DENIED";
     const reason = allowed ? "No PII detected" : "PII detected in data";
     const policyViolations = allowed ? [] : [canon.rules[0]];
-    const processingTime = 5; // ms
+    const processingTime = 5;
     const ledgerHash = await this.ledgerAppend({
       type: "enforcement",
       canonId: canon.id,

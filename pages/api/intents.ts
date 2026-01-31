@@ -1,11 +1,12 @@
-import { promises as fs } from "fs";
-import path from "path";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const INTENTS_PATH = path.join(
-  process.cwd(),
-  "datalake/silver/intents/intents.jsonl",
-);
+const INTENTS_PATH = process.cwd() + "/datalake/silver/intents/intents.jsonl";
+
+interface Intent {
+  intent: string;
+  timestamp: number;
+  actor: string;
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,29 +17,41 @@ export default async function handler(
     if (!intent || !timestamp || !actor) {
       return res.status(400).json({ error: "Missing required fields" });
     }
-    const entry = JSON.stringify({ intent, timestamp, actor }) + "\n";
-    await fs.mkdir(path.dirname(INTENTS_PATH), { recursive: true });
-    await fs.appendFile(INTENTS_PATH, entry, "utf-8");
-    return res.status(200).json({ ok: true });
+
+    const entry: Intent = { intent, timestamp, actor };
+    const line = JSON.stringify(entry) + "\n";
+
+    try {
+      await Bun.write(INTENTS_PATH, line, { createPath: true });
+      return res.status(200).json({ ok: true });
+    } catch (err) {
+      const error = err as Error;
+      console.error("Failed to write intent:", error);
+      return res.status(500).json({ error: "Failed to write intent" });
+    }
   }
+
   if (req.method === "GET") {
     try {
-      const data = await fs.readFile(INTENTS_PATH, "utf-8");
+      const file = Bun.file(INTENTS_PATH);
+      const data = await file.text();
       const intents = data
         .split("\n")
         .filter(Boolean)
         .map((line) => {
           try {
-            return JSON.parse(line);
+            return JSON.parse(line) as Intent;
           } catch {
             return null;
           }
         })
-        .filter(Boolean);
+        .filter((int): int is Intent => int !== null);
+
       return res.status(200).json({ intents });
     } catch {
       return res.status(200).json({ intents: [] });
     }
   }
+
   res.status(405).json({ error: "Method not allowed" });
 }

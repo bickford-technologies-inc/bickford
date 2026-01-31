@@ -2,16 +2,15 @@ import { createHash } from "crypto";
 
 export interface LedgerEntry {
   eventType: string;
-  payload: any;
-  metadata?: any;
+  payload: unknown;
+  metadata?: Record<string, unknown>;
   timestamp: string;
   previousHash?: string;
   currentHash?: string;
-  embedding?: number[]; // Intelligence: vector embedding
+  embedding?: number[];
 }
 
 function simpleEmbedding(text: string): number[] {
-  // Deterministic, simple embedding for demo (sum char codes, length, etc.)
   const arr = new Array(8).fill(0);
   for (let i = 0; i < text.length; ++i) {
     arr[i % 8] += text.charCodeAt(i);
@@ -43,7 +42,6 @@ export class Ledger {
     const currentHash = createHash("sha256")
       .update(previousHash + JSON.stringify(entry))
       .digest("hex");
-    // Intelligence: generate embedding
     const embedding = simpleEmbedding(JSON.stringify(entry.payload));
     const fullEntry: LedgerEntry = {
       ...entry,
@@ -52,16 +50,14 @@ export class Ledger {
       embedding,
     };
     this.entries.push(fullEntry);
-    // Optionally: persist to disk or database
   }
 
   getAll(): LedgerEntry[] {
     return this.entries;
   }
 
-  // Intelligence: find similar entries by payload embedding
   findSimilarEntries(
-    payload: any,
+    payload: unknown,
     opts?: { limit?: number; minSimilarity?: number },
   ): LedgerEntry[] {
     const embedding = simpleEmbedding(JSON.stringify(payload));
@@ -101,7 +97,7 @@ export class Ledger {
   }
 }
 
-export function verifyHashChain(entries: Array<any>): {
+export function verifyHashChain(entries: LedgerEntry[]): {
   valid: boolean;
   violations: number;
 } {
@@ -121,7 +117,7 @@ export function verifyHashChain(entries: Array<any>): {
     if (e.previousHash !== prev || e.currentHash !== expected) {
       violations++;
     }
-    prev = e.currentHash;
+    prev = e.currentHash || "";
   }
   return { valid: violations === 0, violations };
 }

@@ -1,14 +1,5 @@
 #!/usr/bin/env bun
 
-/**
- * Bickford Compounding Intelligence Demo
- *
- * Interactive demonstration of how intelligence compounds over time.
- *
- * Usage:
- *   bun run demo.ts [--repetitions=100]
- */
-
 import { CompoundingIntelligence } from "./packages/core/compounding-intelligence.js";
 
 async function main() {
@@ -90,13 +81,7 @@ async function main() {
   console.log("\n");
 }
 
-// Handle errors gracefully
-process.on("unhandledRejection", (error) => {
-  throw new Error(
-    "❌ Unhandled Rejection: " +
-      (error instanceof Error ? error.message : String(error)),
-  );
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
 });
-
-// Run
-main().catch(console.error);

@@ -1,22 +1,24 @@
-// API route with explicit types for Next.js
 import type { NextApiRequest, NextApiResponse } from "next";
-import { promises as fs } from "fs";
-import path from "path";
 
-const DOCS_DIR = path.join(process.cwd(), "docs/technical");
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
-    const files = await fs.readdir(DOCS_DIR);
-    const mdFiles = files.filter((f) => /^[a-zA-Z0-9_.-]+\.md$/.test(f));
+    const docsDir = `${process.cwd()}/docs/technical`;
+    const glob = new Bun.Glob("*.md");
     const docs: Record<string, string> = {};
-    for (const file of mdFiles) {
-      const filePath = path.join(DOCS_DIR, file);
-      const content = await fs.readFile(filePath, "utf-8");
+    
+    for await (const file of glob.scan({ cwd: docsDir })) {
+      const filePath = `${docsDir}/${file}`;
+      const bunFile = Bun.file(filePath);
+      const content = await bunFile.text();
       docs[file] = content;
     }
+    
     res.status(200).json({ docs });
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    res.status(500).json({ error: message });
   }
 }

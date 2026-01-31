@@ -1,37 +1,42 @@
-// platform/core/ledger.ts
+import { createHash } from "crypto";
 
-import crypto from "crypto";
+export interface LedgerEntry {
+  hash: string;
+  prevHash: string;
+  [key: string]: unknown;
+}
 
 export class TamperEvidentLedger {
-  private entries: any[] = [];
+  private entries: LedgerEntry[] = [];
   private closed = false;
 
   constructor(private dbPath: string) {}
 
-  async append(entry: any) {
+  async append(entry: Record<string, unknown>): Promise<string> {
     if (this.closed) throw new Error("Ledger is closed");
     const prevHash =
       this.entries.length > 0 ? this.entries[this.entries.length - 1].hash : "";
-    const hash = crypto
-      .createHash("sha256")
+    const hash = createHash("sha256")
       .update(JSON.stringify(entry) + prevHash)
       .digest("hex");
     this.entries.push({ ...entry, hash, prevHash });
     return hash;
   }
 
-  async getEntries(limit = 100): Promise<any[]> {
+  async getEntries(limit = 100): Promise<LedgerEntry[]> {
     return this.entries.slice(-limit);
   }
 
-  async verifyIntegrity() {
+  async verifyIntegrity(): Promise<{
+    valid: boolean;
+    violations: { index: number; entry: LedgerEntry }[];
+  }> {
     let valid = true;
-    let violations: any[] = [];
+    const violations: { index: number; entry: LedgerEntry }[] = [];
     for (let i = 1; i < this.entries.length; i++) {
       const prev = this.entries[i - 1];
       const curr = this.entries[i];
-      const expectedHash = crypto
-        .createHash("sha256")
+      const expectedHash = createHash("sha256")
         .update(
           JSON.stringify(curr)
             .replace(/,"hash":"[^"]+"/, "")

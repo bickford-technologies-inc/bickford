@@ -1,11 +1,12 @@
-import { promises as fs } from "fs";
-import path from "path";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const DECISIONS_PATH = path.join(
-  process.cwd(),
-  "datalake/silver/decisions/decisions.jsonl",
-);
+const DECISIONS_PATH = process.cwd() + "/datalake/silver/decisions/decisions.jsonl";
+
+interface Decision {
+  decision: string;
+  timestamp: number;
+  authority: string;
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,29 +17,41 @@ export default async function handler(
     if (!decision || !timestamp || !authority) {
       return res.status(400).json({ error: "Missing required fields" });
     }
-    const entry = JSON.stringify({ decision, timestamp, authority }) + "\n";
-    await fs.mkdir(path.dirname(DECISIONS_PATH), { recursive: true });
-    await fs.appendFile(DECISIONS_PATH, entry, "utf-8");
-    return res.status(200).json({ ok: true });
+
+    const entry: Decision = { decision, timestamp, authority };
+    const line = JSON.stringify(entry) + "\n";
+
+    try {
+      await Bun.write(DECISIONS_PATH, line, { createPath: true });
+      return res.status(200).json({ ok: true });
+    } catch (err) {
+      const error = err as Error;
+      console.error("Failed to write decision:", error);
+      return res.status(500).json({ error: "Failed to write decision" });
+    }
   }
+
   if (req.method === "GET") {
     try {
-      const data = await fs.readFile(DECISIONS_PATH, "utf-8");
+      const file = Bun.file(DECISIONS_PATH);
+      const data = await file.text();
       const decisions = data
         .split("\n")
         .filter(Boolean)
         .map((line) => {
           try {
-            return JSON.parse(line);
+            return JSON.parse(line) as Decision;
           } catch {
             return null;
           }
         })
-        .filter(Boolean);
+        .filter((dec): dec is Decision => dec !== null);
+
       return res.status(200).json({ decisions });
     } catch {
       return res.status(200).json({ decisions: [] });
     }
   }
+
   res.status(405).json({ error: "Method not allowed" });
 }

@@ -5,7 +5,7 @@ import { createHash } from "crypto";
 export interface Intent {
   id: string;
   prompt: string;
-  context?: any;
+  context?: Record<string, unknown>;
   timestamp: number;
 }
 
@@ -41,12 +41,10 @@ export class ExecutionAuthority {
 
   async execute(intent: Intent): Promise<Decision> {
     const t0 = Date.now();
-    // 1. Hash intent for pattern matching
     const patternHash = this.hashIntent(intent);
-    let pattern = this.patterns.get(patternHash);
-    // 2. Try fast path: pattern match
+    const pattern = this.patterns.get(patternHash);
+
     if (pattern && pattern.confidence > 0.85) {
-      // Use cached decision
       const decision = {
         ...pattern.lastDecision,
         timestamp: Date.now(),
@@ -55,14 +53,14 @@ export class ExecutionAuthority {
       await this.appendDecision(decision);
       return decision;
     }
-    // 3. Full policy evaluation
+
     const enforcement = await this.enforcer.enforce(
       intent.prompt,
       intent.context,
     );
     const allowed = enforcement.allowed;
     const violatedConstraints = enforcement.violated_constraints || [];
-    // 4. Build decision
+
     const decision: Decision = {
       intentId: intent.id,
       allowed,
@@ -75,7 +73,7 @@ export class ExecutionAuthority {
       proofChain: enforcement.proof_chain,
       timestamp: Date.now(),
     };
-    // 5. Learn pattern
+
     await this.learnPattern(patternHash, decision, Date.now() - t0);
     await this.appendDecision(decision);
     return decision;
@@ -92,24 +90,23 @@ export class ExecutionAuthority {
     decision: Decision,
     execTime: number,
   ) {
-    let pattern = this.patterns.get(patternHash);
-    if (!pattern) {
-      pattern = {
+    const existing = this.patterns.get(patternHash);
+    if (!existing) {
+      this.patterns.set(patternHash, {
         patternHash,
         confidence: 0.75,
         occurrence: 1,
         averageExecutionTime: execTime,
         lastDecision: decision,
-      };
+      });
     } else {
-      pattern.occurrence += 1;
-      pattern.confidence = Math.min(0.99, pattern.confidence + 0.01);
-      pattern.averageExecutionTime =
-        (pattern.averageExecutionTime * (pattern.occurrence - 1) + execTime) /
-        pattern.occurrence;
-      pattern.lastDecision = decision;
+      existing.occurrence += 1;
+      existing.confidence = Math.min(0.99, existing.confidence + 0.01);
+      existing.averageExecutionTime =
+        (existing.averageExecutionTime * (existing.occurrence - 1) + execTime) /
+        existing.occurrence;
+      existing.lastDecision = decision;
     }
-    this.patterns.set(patternHash, pattern);
   }
 
   private async appendDecision(decision: Decision) {
@@ -122,7 +119,6 @@ export class ExecutionAuthority {
     });
   }
 
-  // Compression: group by pattern, keep canonical + count
   async compressDecisions() {
     const grouped = new Map<string, Decision[]>();
     for (const d of this.decisionLog) {
@@ -144,7 +140,6 @@ export class ExecutionAuthority {
     this.decisionLog = compressed;
   }
 
-  // Metrics for monitoring
   getMetrics() {
     const total = this.decisionLog.length;
     const patterns = this.patterns.size;

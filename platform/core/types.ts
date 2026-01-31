@@ -1,5 +1,3 @@
-// platform/core/types.ts
-
 export interface Canon {
   id: string;
   name: string;
@@ -20,7 +18,7 @@ export interface CanonRule {
 
 export interface Action {
   type: string;
-  payload: any;
+  payload: Record<string, unknown>;
   context: {
     userId: string;
     organizationId: string;
@@ -33,8 +31,12 @@ export interface AppContext {
   userId: string;
   organizationId: string;
   requestId: string;
-  ledger: any;
-  enforcementEngine: any;
+  ledger: {
+    append: (entry: Record<string, unknown>) => Promise<void>;
+  };
+  enforcementEngine: {
+    enforce: (canon: Record<string, unknown>, action: Record<string, unknown>) => Promise<unknown>;
+  };
 }
 
 export interface AppManifest {
@@ -48,7 +50,7 @@ export interface AppManifest {
 
 export interface AppResult {
   success: boolean;
-  output?: any;
+  output?: unknown;
   error?: { code: string; message: string };
   compliance: {
     enforcementEvents: number;

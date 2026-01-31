@@ -1,25 +1,33 @@
 #!/usr/bin/env bun
 
-/**
- * Bickford Compliance Artifact Generator
- *
- * Auto-generates compliance artifacts from ledger entries:
- * - SOC-2 Type II control evidence
- * - ISO 27001 control matrices
- * - FedRAMP authorization boundary
- * - HIPAA/PCI DSS audit trails
- *
- * This demonstrates the $14M/year cost avoidance value proposition.
- */
-
-import { readFileSync } from "fs";
-
 interface LedgerEntry {
   hash: string;
   previous_hash: string;
-  decision: any;
-  enforcement: any;
-  metrics: any;
+  decision: {
+    intent_id: string;
+    status: string;
+    policy: string;
+    reasoning: string;
+    hash: string;
+    timestamp: number;
+    execution_time_ms: number;
+  };
+  enforcement: {
+    allowed: boolean;
+    violated_constraints: string[];
+    satisfied_constraints: string[];
+    proof_hash: string;
+    reasoning: string;
+    policy_version: string;
+  };
+  metrics: {
+    total_executions: number;
+    patterns_learned: number;
+    compression_ratio: number;
+    average_execution_time_ms: number;
+    intelligence_compound_factor: number;
+    storage_savings_percent: number;
+  };
   proof_chain: string[];
   timestamp: number;
 }
@@ -54,36 +62,31 @@ interface ComplianceReport {
 class ComplianceArtifactGenerator {
   private ledger: LedgerEntry[];
 
-  constructor(ledgerPath: string) {
-    this.ledger = this.loadLedger(ledgerPath);
+  private constructor(ledger: LedgerEntry[]) {
+    this.ledger = ledger;
   }
 
-  /**
-   * Load ledger entries
-   */
-  private loadLedger(path: string): LedgerEntry[] {
-    const content = readFileSync(path, "utf-8");
-    return content
+  static async create(ledgerPath: string): Promise<ComplianceArtifactGenerator> {
+    const file = Bun.file(ledgerPath);
+    const content = await file.text();
+    const ledger = content
       .split("\n")
-      .filter((line) => line.trim())
-      .map((line) => JSON.parse(line));
+      .filter((line: string) => line.trim())
+      .map((line: string) => JSON.parse(line) as LedgerEntry);
+    return new ComplianceArtifactGenerator(ledger);
   }
 
-  /**
-   * Generate SOC-2 Type II compliance report
-   */
   generateSOC2Report(): ComplianceReport {
     const controls: SOC2Control[] = [
-      // CC6: Logical and Physical Access Controls
       {
         control_id: "CC6.1",
-        control_name: "Logical Access Controls",
-        description:
-          "System implements logical access controls to prevent unauthorized access",
+      control_name: "Logical Access Controls",
+      description:
+        "System implements logical access controls to prevent unauthorized access",
         evidence_count: this.countEnforcementActions(),
         automated: true,
         manual_review_required: false,
-        cost_avoidance_usd: 12000, // Manual review: ~$100/hour × 120 hours/year
+        cost_avoidance_usd: 12000,
       },
       {
         control_id: "CC6.2",
@@ -105,8 +108,6 @@ class ComplianceArtifactGenerator {
         manual_review_required: false,
         cost_avoidance_usd: 10000,
       },
-
-      // CC7: System Operations
       {
         control_id: "CC7.1",
         control_name: "System Monitoring",
@@ -136,8 +137,6 @@ class ComplianceArtifactGenerator {
         manual_review_required: false,
         cost_avoidance_usd: 5000,
       },
-
-      // CC8: Change Management
       {
         control_id: "CC8.1",
         control_name: "Change Authorization",
@@ -147,8 +146,6 @@ class ComplianceArtifactGenerator {
         manual_review_required: false,
         cost_avoidance_usd: 18000,
       },
-
-      // A1: Confidentiality
       {
         control_id: "A1.1",
         control_name: "Confidentiality Commitments",
@@ -167,8 +164,6 @@ class ComplianceArtifactGenerator {
         manual_review_required: false,
         cost_avoidance_usd: 15000,
       },
-
-      // P1: Privacy
       {
         control_id: "P1.1",
         control_name: "Privacy Notice",
@@ -178,8 +173,6 @@ class ComplianceArtifactGenerator {
         manual_review_required: false,
         cost_avoidance_usd: 8000,
       },
-
-      // Additional controls (sampling)
       {
         control_id: "CC9.1",
         control_name: "Risk Assessment",
@@ -187,7 +180,7 @@ class ComplianceArtifactGenerator {
           "Risks to achieving objectives are identified and assessed",
         evidence_count: this.countDecisions(),
         automated: true,
-        manual_review_required: true, // Some manual oversight needed
+        manual_review_required: true,
         cost_avoidance_usd: 30000,
       },
       {
@@ -221,9 +214,6 @@ class ComplianceArtifactGenerator {
     };
   }
 
-  /**
-   * Generate ISO 27001 compliance report
-   */
   generateISO27001Report(): ComplianceReport {
     const controls: SOC2Control[] = [
       {
@@ -321,9 +311,6 @@ class ComplianceArtifactGenerator {
     };
   }
 
-  /**
-   * Helper methods for counting evidence
-   */
   private countDecisions(): number {
     return this.ledger.length;
   }
@@ -431,7 +418,6 @@ class ComplianceArtifactGenerator {
   }
 }
 
-// Main execution
 async function main() {
   console.log("\n");
   console.log(
@@ -461,19 +447,16 @@ async function main() {
   console.log("\n");
 
   const ledgerPath = "/workspaces/bickford/execution-ledger.jsonl";
-  const generator = new ComplianceArtifactGenerator(ledgerPath);
+  const generator = await ComplianceArtifactGenerator.create(ledgerPath);
 
-  // Generate SOC-2 report
   console.log("🔄 Generating SOC-2 Type II compliance report...\n");
   const soc2Report = generator.generateSOC2Report();
   console.log(generator.formatReport(soc2Report));
 
-  // Generate ISO 27001 report
   console.log("\n🔄 Generating ISO 27001 compliance report...\n");
   const isoReport = generator.generateISO27001Report();
   console.log(generator.formatReport(isoReport));
 
-  // Summary
   console.log("\n");
   console.log(
     "╔═══════════════════════════════════════════════════════════════════════╗",

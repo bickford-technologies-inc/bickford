@@ -10,8 +10,9 @@ export class ConstitutionalEnforcer {
   constraints: {
     id: string;
     priority: number;
-    check: (prompt: string, context: any) => boolean;
+    check: (prompt: string, context: unknown) => boolean;
   }[];
+
   constructor() {
     this.constraints = [
       {
@@ -47,15 +48,15 @@ export class ConstitutionalEnforcer {
     ];
   }
 
-  async enforce(prompt: string, context: any): Promise<EnforcementResult> {
+  async enforce(prompt: string, context: unknown): Promise<EnforcementResult> {
     const violated: string[] = [];
     for (const c of this.constraints) {
       if (!c.check(prompt, context)) {
         violated.push(c.id);
-        if (c.priority === 1) break; // Stop at first critical
+        if (c.priority === 1) break;
       }
     }
-    // Proof chain: intent hash, enforcement hash, decision hash, merkle root
+
     const intentHash = this.sha256(prompt + JSON.stringify(context || ""));
     const enforcementHash = this.sha256(
       this.constraints.map((c) => c.id).join(",") + violated.join(","),
@@ -66,6 +67,7 @@ export class ConstitutionalEnforcer {
     const merkle = this.sha256(
       [intentHash, enforcementHash, decisionHash].join(":"),
     );
+
     return {
       allowed: violated.length === 0,
       violated_constraints: violated,

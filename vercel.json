@@ -10,7 +10,7 @@
   "ignoreCommand": "node scripts/assert-intent-phase.mjs",
 
   "functions": {
-    "api/typed-technical-docs.ts": {
+    "api/technical-docs-api.ts": {
       "includeFiles": "docs/technical/**"
     }
   }

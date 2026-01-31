@@ -1,18 +1,10 @@
-/*
- * Bickford Claude Constitutional Enforcer
- *
- * Wraps Anthropic's Claude API with mechanical Constitutional AI enforcement.
- * Converts aspirational safety principles into cryptographically provable guarantees.
- *
- * This is the core value proposition:
- * - Claude alone: Fast, smart, but unverifiable
- * - Claude + Bickford: Fast, smart, AND cryptographically provable
- */
+
 
 import {
   ConstitutionalEnforcer,
   type EnforcementResult,
 } from "./constitutional-enforcer.js";
+import { createHash } from "crypto";
 
 export interface ClaudeRequest {
   model: string;
@@ -68,30 +60,18 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     this.apiEndpoint = "https://api.anthropic.com/v1/messages";
   }
 
-  /**
-   * Enforce Constitutional AI constraints on a Claude request
-   *
-   * Flow:
-   * 1. Pre-enforcement check (before calling Claude)
-   * 2. If allowed, call Claude with Constitutional AI system prompt
-   * 3. Post-enforcement check (verify Claude's response complies)
-   * 4. Generate cryptographic proof chain
-   * 5. Return enforceable response with proof
-   */
+
   async enforceClaudeRequest(
     request: ClaudeRequest,
   ): Promise<EnforcedClaudeResponse> {
     const startTime = performance.now();
 
-    // Step 1: Pre-enforcement check
     const userPrompt = this.extractUserPrompt(request);
     const preEnforcement = await this.enforce(userPrompt, {});
 
     if (!preEnforcement.allowed) {
-      // Denied before calling Claude - save tokens and cost
       const estimatedTokens = this.estimateTokens(userPrompt);
       const costSaved = this.calculateCost(estimatedTokens, request.model);
-
       const latencyOverhead = performance.now() - startTime;
 
       return {
@@ -106,23 +86,17 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       };
     }
 
-    // Step 2: Call Claude with Constitutional AI system prompt
     const enforcedRequest = this.injectConstitutionalPrompt(request);
     const claudeResponse = await this.callClaude(enforcedRequest);
-
-    // Step 3: Post-enforcement check (verify response)
     const postEnforcement = await this.verifyClaudeResponse(
       claudeResponse,
       preEnforcement,
     );
-
-    // Step 4: Generate proof chain
     const proofChain = this.generateProofChain(
       request,
       claudeResponse,
       postEnforcement,
     );
-
     const latencyOverhead = performance.now() - startTime;
 
     return {
@@ -137,25 +111,18 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     };
   }
 
-  /**
-   * Call Claude API with enforcement
-   */
   private async callClaude(request: ClaudeRequest): Promise<ClaudeResponse> {
     if (!this.apiKey) {
-      // Mock response for demo purposes
       return this.mockClaudeResponse(request);
     }
 
-    // Anthropic Claude API expects:
-    // {
-    //   model: string,
-    //   max_tokens: number,
-    //   messages: [ { role: "user"|"assistant"|"system", content: string } ],
-    //   system?: string,
-    //   temperature?: number
-    // }
-    // Remove any undefined fields and ensure correct types
-    const apiPayload: Record<string, unknown> = {
+    const apiPayload: {
+      model: string;
+      max_tokens: number;
+      messages: Array<{ role: string; content: string }>;
+      system?: string;
+      temperature?: number;
+    } = {
       model: request.model,
       max_tokens: request.max_tokens || 1024,
       messages: request.messages,
@@ -185,12 +152,9 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       );
     }
 
-    return JSON.parse(responseText);
+    return JSON.parse(responseText) as ClaudeResponse;
   }
 
-  /**
-   * Mock Claude response for demo (when no API key)
-   */
   private mockClaudeResponse(request: ClaudeRequest): ClaudeResponse {
     const userPrompt = this.extractUserPrompt(request);
 
@@ -220,9 +184,6 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     };
   }
 
-  /**
-   * Inject Constitutional AI system prompt
-   */
   private injectConstitutionalPrompt(request: ClaudeRequest): ClaudeRequest {
     return {
       ...request,
@@ -232,24 +193,17 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     };
   }
 
-  /**
-   * Verify Claude's response complies with enforcement
-   */
   private async verifyClaudeResponse(
     response: ClaudeResponse,
     preEnforcement: EnforcementResult,
   ): Promise<EnforcementResult> {
-    // Extract response text
     const responseText = response.content
       .filter((c) => c.type === "text")
       .map((c) => c.text)
       .join("\n");
 
-    // Check if response contains harmful content
     const postCheck = await this.enforce(responseText, {});
 
-    // If pre-enforcement passed but post-enforcement failed,
-    // it means Claude generated harmful content despite constraints
     if (preEnforcement.allowed && !postCheck.allowed) {
       return {
         ...postCheck,
@@ -260,9 +214,6 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     return postCheck;
   }
 
-  /**
-   * Generate cryptographic proof chain
-   */
   private generateProofChain(
     request: ClaudeRequest,
     response: ClaudeResponse | null,
@@ -270,79 +221,65 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
   ): string[] {
     const chain: string[] = [];
 
-    // Proof 1: Request hash
-    const requestHash = Bun.hash(
-      JSON.stringify({
-        model: request.model,
-        messages: request.messages,
-        timestamp: Date.now(),
-      }),
-    );
+    const requestHash = createHash("sha256")
+      .update(
+        JSON.stringify({
+          model: request.model,
+          messages: request.messages,
+          timestamp: Date.now(),
+        }),
+      )
+      .digest("hex");
     chain.push(`REQUEST:${requestHash}`);
 
-    // Proof 2: Enforcement proof (from Constitutional AI check)
     chain.push(`ENFORCEMENT:${enforcement.proof_hash}`);
 
-    // Proof 3: Response hash (if request was allowed)
     if (response) {
-      const responseHash = Bun.hash(
-        JSON.stringify({
-          id: response.id,
-          content: response.content,
-          model: response.model,
-        }),
-      );
+      const responseHash = createHash("sha256")
+        .update(
+          JSON.stringify({
+            id: response.id,
+            content: response.content,
+            model: response.model,
+          }),
+        )
+        .digest("hex");
       chain.push(`RESPONSE:${responseHash}`);
     } else {
       chain.push(`RESPONSE:DENIED_BEFORE_EXECUTION`);
     }
 
-    // Proof 4: Merkle root
-    const merkleRoot = Bun.hash(chain.join(":"));
+    const merkleRoot = createHash("sha256")
+      .update(chain.join(":"))
+      .digest("hex");
     chain.push(`MERKLE_ROOT:${merkleRoot}`);
 
     return chain;
   }
 
-  /**
-   * Extract user prompt from request
-   */
   private extractUserPrompt(request: ClaudeRequest): string {
     const userMessages = request.messages.filter((m) => m.role === "user");
     return userMessages.map((m) => m.content).join("\n");
   }
 
-  /**
-   * Estimate tokens for cost calculation
-   */
   private estimateTokens(text: string): number {
-    // Rough estimate: ~4 characters per token
     return Math.ceil(text.length / 4);
   }
 
-  /**
-   * Calculate cost based on model and tokens
-   */
   private calculateCost(tokens: number, model: string): number {
-    // Pricing as of Jan 2025 (approximate)
     const pricing: Record<string, { input: number; output: number }> = {
-      "claude-opus-4": { input: 0.015, output: 0.075 }, // per 1K tokens
+      "claude-opus-4": { input: 0.015, output: 0.075 },
       "claude-sonnet-4": { input: 0.003, output: 0.015 },
       "claude-haiku-4": { input: 0.00025, output: 0.00125 },
     };
 
     const modelPricing = pricing[model] || pricing["claude-sonnet-4"];
 
-    // Estimate 50/50 split for input/output
     const inputCost = (tokens / 2 / 1000) * modelPricing.input;
     const outputCost = (tokens / 2 / 1000) * modelPricing.output;
 
     return inputCost + outputCost;
   }
-
-  /**
-   * Get enforcement statistics
-   */
   getEnforcementStats() {
     return {
       constraints: this.listConstraints(),

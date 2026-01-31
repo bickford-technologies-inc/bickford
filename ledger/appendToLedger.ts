@@ -1,4 +1,3 @@
-// Bun-native, dual-purpose ledger append (compliance + intelligence)
 import { Database } from "bun:sqlite";
 import { createHash } from "crypto";
 
@@ -14,20 +13,17 @@ db.run(`CREATE TABLE IF NOT EXISTS ledger (
   current_hash TEXT NOT NULL
 )`);
 
-export async function appendToLedger(entry: {
+export function appendToLedger(entry: {
   eventType: string;
-  payload: any;
-  metadata?: any;
+  payload: unknown;
+  metadata?: Record<string, unknown>;
   timestamp: string;
-}) {
-  // Get previous hash
+}): void {
   const last = db
     .query("SELECT current_hash FROM ledger ORDER BY id DESC LIMIT 1")
-    .get();
-  const previousHash =
-    (last && (last as { current_hash: string }).current_hash) || "0".repeat(64);
+    .get() as { current_hash: string } | undefined;
 
-  // Compute current hash
+  const previousHash = last?.current_hash || "0".repeat(64);
   const hashInput = previousHash + JSON.stringify(entry);
   const currentHash = createHash("sha256").update(hashInput).digest("hex");
 
@@ -38,8 +34,8 @@ export async function appendToLedger(entry: {
       JSON.stringify(entry.payload),
       entry.metadata ? JSON.stringify(entry.metadata) : null,
       entry.timestamp,
-      String(previousHash),
-      String(currentHash),
+      previousHash,
+      currentHash,
     ],
   );
 }
