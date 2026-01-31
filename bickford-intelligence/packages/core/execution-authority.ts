@@ -1,10 +1,3 @@
-/*
- * Bickford Execution Authority
- *
- * Core engine that enforces Constitutional AI through pattern learning.
- * Each execution compounds intelligence by learning from past decisions.
- */
-
 import { createHash } from "crypto";
 
 export interface Intent {
@@ -47,41 +40,24 @@ export class ExecutionAuthority {
     this.compressionRatio = 5000; // Target: 99.98% compression
   }
 
-  /**
-   * Execute intent with compounding intelligence
-   *
-   * Flow:
-   * 1. Check for learned patterns (fast path)
-   * 2. If no pattern, evaluate with full policy check
-   * 3. Store decision and update patterns
-   * 4. Each execution makes the next one smarter
-   */
   async execute(intent: Intent): Promise<Decision> {
     const startTime = performance.now();
 
-    // Step 1: Check for learned patterns (intelligence compounding)
     const patternMatch = await this.findMatchingPattern(intent);
 
     if (patternMatch && patternMatch.confidence > 0.85) {
-      // Fast path: Use learned pattern (0ms policy evaluation)
       const decision = this.applyLearnedPattern(intent, patternMatch);
-
-      // Update pattern statistics (intelligence compounds)
       this.updatePattern(patternMatch, performance.now() - startTime);
-
       return decision;
     }
 
-    // Step 2: Slow path: Full policy evaluation (first time seeing this pattern)
     const decision = await this.evaluateWithFullPolicy(intent);
 
     decision.execution_time_ms = performance.now() - startTime;
 
-    // Step 3: Store decision and learn pattern
     this.decisionLog.push(decision);
     await this.learnPattern(intent, decision);
 
-    // Step 4: Compress old decisions (maintain 99.98% compression)
     if (this.decisionLog.length > 1000) {
       await this.compressDecisions();
     }
@@ -89,23 +65,16 @@ export class ExecutionAuthority {
     return decision;
   }
 
-  /**
-   * Find matching canonical pattern
-   *
-   * Uses semantic similarity + policy matching
-   */
   private async findMatchingPattern(
     intent: Intent,
   ): Promise<CanonicalPattern | null> {
     const intentHash = this.hashIntent(intent);
 
-    // Exact match (fastest)
     const exactMatch = this.patterns.get(intentHash);
     if (exactMatch) {
       return exactMatch;
     }
 
-    // Semantic similarity match
     for (const [_, pattern] of this.patterns) {
       const similarity = this.calculateSimilarity(intent, pattern);
       if (similarity > 0.85) {
@@ -116,14 +85,6 @@ export class ExecutionAuthority {
     return null;
   }
 
-  /**
-   * Apply learned pattern (intelligence path)
-   *
-   * This is where compounding intelligence creates speed gains:
-   * - No LLM call needed
-   * - No policy evaluation needed
-   * - Instant decision based on learned pattern
-   */
   private applyLearnedPattern(
     intent: Intent,
     pattern: CanonicalPattern,
@@ -135,19 +96,11 @@ export class ExecutionAuthority {
       reasoning: `Matched canonical pattern (${pattern.occurrence_count} prior instances)`,
       hash: this.hashDecision(intent.id, pattern.decision, pattern.policy),
       timestamp: Date.now(),
-      execution_time_ms: 0.5, // ~0.5ms for pattern match vs 200ms for full eval
+      execution_time_ms: 0.5,
     };
   }
 
-  /**
-   * Full policy evaluation (first-time path)
-   *
-   * Called only when we haven't seen this pattern before.
-   * Each call creates a new pattern for future use.
-   */
   private async evaluateWithFullPolicy(intent: Intent): Promise<Decision> {
-    // Simulate Constitutional AI policy check
-    // In production, this would call Claude with Constitutional AI constraints
 
     const isHarmful = this.detectHarmfulIntent(intent);
     const policy = isHarmful
@@ -188,22 +141,20 @@ export class ExecutionAuthority {
     const existing = this.patterns.get(patternHash);
 
     if (existing) {
-      // Pattern exists: Update statistics (intelligence compounds)
       existing.occurrence_count++;
       existing.last_seen = Date.now();
-      existing.confidence = Math.min(0.99, existing.confidence + 0.01); // Cap at 99%
+      existing.confidence = Math.min(0.99, existing.confidence + 0.01);
       existing.average_execution_time_ms =
         (existing.average_execution_time_ms * (existing.occurrence_count - 1) +
           decision.execution_time_ms) /
         existing.occurrence_count;
     } else {
-      // New pattern: Store for future use
       this.patterns.set(patternHash, {
         pattern_hash: patternHash,
         pattern_type: this.classifyPattern(intent),
         policy: decision.policy,
         decision: decision.status,
-        confidence: 0.75, // Start with 75% confidence
+        confidence: 0.75,
         occurrence_count: 1,
         first_seen: Date.now(),
         last_seen: Date.now(),
@@ -212,21 +163,10 @@ export class ExecutionAuthority {
     }
   }
 
-  /**
-   * Compress decisions (5,000x reduction)
-   *
-   * Instead of storing 5,000 individual decisions:
-   * - Store 1 canonical pattern
-   * - Store occurrence count
-   * - Maintain cryptographic proof
-   *
-   * Result: 99.98% storage reduction with 100% intelligence retention
-   */
   private async compressDecisions(): Promise<void> {
     const compressionTarget =
       this.decisionLog.length - this.decisionLog.length / this.compressionRatio;
 
-    // Group decisions by pattern
     const grouped = new Map<string, Decision[]>();
 
     for (const decision of this.decisionLog) {
@@ -240,40 +180,32 @@ export class ExecutionAuthority {
       grouped.set(patternHash, existing);
     }
 
-    // Keep only the canonical pattern + count
     const compressed: Decision[] = [];
 
     for (const [patternHash, decisions] of grouped) {
       if (decisions.length > 10) {
-        // Replace 10+ decisions with 1 canonical entry
         compressed.push({
-          ...decisions[0], // Keep first as canonical
+          ...decisions[0],
           reasoning: `Canonical pattern (${decisions.length} instances compressed)`,
         });
       } else {
-        // Keep individual decisions if < 10
         compressed.push(...decisions);
       }
     }
 
     this.decisionLog = compressed;
-
-    console.log(
-      `Compressed ${grouped.size} decisions → ${compressed.length} (${((compressed.length / grouped.size) * 100).toFixed(2)}%)`,
-    );
   }
 
-  /**
-   * Utility: Hash intent for pattern matching
-   */
   private hashIntent(intent: Intent): string {
-    const normalized = intent.prompt.toLowerCase().trim();
-    return createHash("sha256").update(normalized).digest("hex").slice(0, 16);
+    const content = JSON.stringify({
+      id: intent.id,
+      prompt: intent.prompt,
+      context: intent.context,
+      timestamp: intent.timestamp,
+    });
+    return createHash("sha256").update(content).digest("hex");
   }
 
-  /**
-   * Utility: Hash decision for cryptographic proof
-   */
   private hashDecision(
     intentId: string,
     status: string,
@@ -283,21 +215,14 @@ export class ExecutionAuthority {
     return createHash("sha256").update(content).digest("hex");
   }
 
-  /**
-   * Utility: Calculate semantic similarity
-   */
   private calculateSimilarity(
     intent: Intent,
     pattern: CanonicalPattern,
   ): number {
-    // Simplified similarity (in production: use embeddings)
     const intentHash = this.hashIntent(intent);
     return intentHash === pattern.pattern_hash ? 1.0 : 0.0;
   }
 
-  /**
-   * Utility: Classify pattern type
-   */
   private classifyPattern(intent: Intent): string {
     const prompt = intent.prompt.toLowerCase();
 
@@ -314,9 +239,6 @@ export class ExecutionAuthority {
     return "general_query";
   }
 
-  /**
-   * Utility: Detect harmful intent
-   */
   private detectHarmfulIntent(intent: Intent): boolean {
     const harmful = [
       "phishing",
@@ -334,9 +256,6 @@ export class ExecutionAuthority {
     return harmful.some((word) => prompt.includes(word));
   }
 
-  /**
-   * Get statistics (for monitoring)
-   */
   getStats() {
     return {
       total_patterns: this.patterns.size,
@@ -353,16 +272,13 @@ export class ExecutionAuthority {
     };
   }
 
-  /**
-   * Update pattern statistics after a match (intelligence compounds)
-   */
   private updatePattern(
     pattern: CanonicalPattern,
     executionTime: number,
   ): void {
     pattern.occurrence_count++;
     pattern.last_seen = Date.now();
-    pattern.confidence = Math.min(0.99, pattern.confidence + 0.01); // Cap at 99%
+    pattern.confidence = Math.min(0.99, pattern.confidence + 0.01);
     pattern.average_execution_time_ms =
       (pattern.average_execution_time_ms * (pattern.occurrence_count - 1) +
         executionTime) /

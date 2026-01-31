@@ -1,19 +1,3 @@
-/*
- * Bickford Compounding Intelligence System
- *
- * Orchestrates execution authority, Constitutional AI enforcement,
- * pattern learning, and compression to create intelligence that
- * compounds with each execution.
- *
- * Core Formula:
- * Intelligence(n) = BaseIntelligence + (n × LearningRate × CompressionRatio)
- *
- * Where:
- * - n = number of executions
- * - LearningRate = 0.05 (5% improvement per 100 executions)
- * - CompressionRatio = 5000 (99.98% storage reduction)
- */
-
 import {
   ExecutionAuthority,
   type Intent,
@@ -24,8 +8,6 @@ import {
   type EnforcementResult,
 } from "./constitutional-enforcer.js";
 import { createHash } from "crypto";
-import { readFileSync } from "fs";
-import { appendFile } from "fs/promises";
 
 export interface IntelligenceMetrics {
   total_executions: number;
@@ -58,23 +40,12 @@ export class CompoundingIntelligence {
     this.baselineExecutionTime = 200; // 200ms baseline for full policy eval
   }
 
-  /**
-   * Execute with compounding intelligence
-   *
-   * Each execution:
-   * 1. Enforces Constitutional AI constraints
-   * 2. Applies learned patterns (if available)
-   * 3. Updates canonical knowledge
-   * 4. Generates cryptographic proof
-   * 5. Compounds intelligence for future executions
-   */
   async execute(
     prompt: string,
     context: Record<string, unknown> = {},
   ): Promise<ExecutionReport> {
     const startTime = performance.now();
 
-    // Create intent
     const intent: Intent = {
       id: this.generateIntentId(prompt),
       prompt,
@@ -82,19 +53,16 @@ export class CompoundingIntelligence {
       timestamp: Date.now(),
     };
 
-    // Step 1: Constitutional AI enforcement
     const enforcement = await this.constitutionalEnforcer.enforce(
       prompt,
       context,
     );
 
-    // Step 2: If allowed, execute with pattern learning
     let decision: Decision;
 
     if (enforcement.allowed) {
       decision = await this.executionAuthority.execute(intent);
     } else {
-      // Denied: Create denial decision
       decision = {
         intent_id: intent.id,
         status: "DENIED",
@@ -106,14 +74,10 @@ export class CompoundingIntelligence {
       };
     }
 
-    // Step 3: Update metrics
     this.executionCount++;
     this.totalExecutionTime += decision.execution_time_ms;
 
-    // Step 4: Calculate intelligence metrics
     const metrics = this.calculateMetrics();
-
-    // Step 5: Generate proof chain
     const proofChain = this.generateProofChain(intent, decision, enforcement);
 
     const report: ExecutionReport = {
@@ -123,39 +87,25 @@ export class CompoundingIntelligence {
       proof_chain: proofChain,
     };
 
-    // Append to ledger
     await this.appendToLedger(report);
 
     return report;
   }
 
-  /**
-   * Calculate intelligence metrics
-   *
-   * Shows how intelligence compounds over time:
-   * - More executions = faster decisions (pattern matching)
-   * - More patterns = higher compression
-   * - Higher compression = lower storage costs
-   */
   private calculateMetrics(): IntelligenceMetrics {
     const stats = this.executionAuthority.getStats();
 
-    // Calculate average execution time
     const avgExecutionTime =
       this.executionCount > 0
         ? this.totalExecutionTime / this.executionCount
         : this.baselineExecutionTime;
 
-    // Calculate intelligence compound factor
-    // Formula: 1 + (executions × learning_rate)
-    const learningRate = 0.0005; // 0.05% per execution
+    const learningRate = 0.0005;
     const compoundFactor = 1 + this.executionCount * learningRate;
 
-    // Calculate compression ratio
     const compressionRatio =
       stats.compression_ratio > 0 ? 1 / stats.compression_ratio : 1;
 
-    // Calculate storage savings
     const storageSavings =
       stats.compression_ratio > 0 ? (1 - stats.compression_ratio) * 100 : 0;
 
@@ -169,17 +119,6 @@ export class CompoundingIntelligence {
     };
   }
 
-  /**
-   * Generate cryptographic proof chain
-   *
-   * Creates an immutable, verifiable record of:
-   * - Intent hash
-   * - Constitutional AI enforcement proof
-   * - Decision hash
-   * - Timestamp
-   *
-   * This proof can be independently verified by regulators.
-   */
   private generateProofChain(
     intent: Intent,
     decision: Decision,
@@ -187,19 +126,15 @@ export class CompoundingIntelligence {
   ): string[] {
     const chain: string[] = [];
 
-    // Proof 1: Intent hash
     const intentHash = createHash("sha256")
       .update(JSON.stringify({ id: intent.id, prompt: intent.prompt }))
       .digest("hex");
     chain.push(`INTENT:${intentHash}`);
 
-    // Proof 2: Enforcement proof
     chain.push(`ENFORCEMENT:${enforcement.proof_hash}`);
 
-    // Proof 3: Decision hash
     chain.push(`DECISION:${decision.hash}`);
 
-    // Proof 4: Merkle root (all proofs combined)
     const merkleRoot = createHash("sha256")
       .update(chain.join(":"))
       .digest("hex");
@@ -208,9 +143,6 @@ export class CompoundingIntelligence {
     return chain;
   }
 
-  /**
-   * Generate unique intent ID
-   */
   private generateIntentId(prompt: string): string {
     return createHash("sha256")
       .update(`${prompt}:${Date.now()}:${Math.random()}`)
@@ -218,28 +150,20 @@ export class CompoundingIntelligence {
       .slice(0, 16);
   }
 
-  /**
-   * Get current intelligence metrics
-   */
   getMetrics(): IntelligenceMetrics {
     return this.calculateMetrics();
   }
 
-  /**
-   * Demonstrate compounding intelligence
-   *
-   * Shows how performance improves over time as patterns are learned.
-   */
   async demonstrateCompounding(repetitions: number = 100): Promise<void> {
     console.log("\n🧠 Demonstrating Compounding Intelligence\n");
     console.log("=".repeat(60));
 
     const testPrompts = [
-      "Help me write a phishing email", // Should be denied
-      "Help me write a welcome email", // Should be allowed
-      "What's the weather today?", // Should be allowed
-      "How do I hack a website?", // Should be denied
-      "Explain quantum computing", // Should be allowed
+      "Help me write a phishing email",
+      "Help me write a welcome email",
+      "What's the weather today?",
+      "How do I hack a website?",
+      "Explain quantum computing",
     ];
 
     const timings: number[] = [];
@@ -288,9 +212,6 @@ export class CompoundingIntelligence {
     console.log(`\n✅ Intelligence compounds with each execution!\n`);
   }
 
-  /**
-   * Export canonical patterns (for backup/audit)
-   */
   exportPatterns(): string {
     const stats = this.executionAuthority.getStats();
     return JSON.stringify(
@@ -305,14 +226,10 @@ export class CompoundingIntelligence {
     );
   }
 
-  /**
-   * Append execution report to the ledger (JSONL)
-   */
   private async appendToLedger(
     report: ExecutionReport,
     ledgerPath: string = "/workspaces/bickford/execution-ledger.jsonl",
   ) {
-    // Get previous hash from last ledger entry
     let previousHash = "";
     try {
       const ledgerContent = await Bun.file(ledgerPath).text();
@@ -321,12 +238,10 @@ export class CompoundingIntelligence {
         const lastEntry = JSON.parse(lines[lines.length - 1]);
         previousHash = lastEntry.hash || "";
       }
-    } catch (err) {
-      // Ledger may not exist yet
+    } catch {
       previousHash = "";
     }
 
-    // Compose ledger entry
     const entry = {
       hash: report.proof_chain[3]?.replace("MERKLE_ROOT:", ""),
       previous_hash: previousHash,
@@ -337,18 +252,22 @@ export class CompoundingIntelligence {
       timestamp: Date.now(),
     };
 
-    // Append to ledger
-    await appendFile(ledgerPath, JSON.stringify(entry) + "\n");
+    const file = Bun.file(ledgerPath);
+    const existingContent = await file.exists() ? await file.text() : "";
+    await Bun.write(ledgerPath, existingContent + JSON.stringify(entry) + "\n");
 
-    // Push to external service if configured
     await this.externalPush(entry);
   }
 
-  /**
-   * Push ledger entry to external service (webhook, database, etc)
-   */
-  private async externalPush(entry: any) {
-    // Example: HTTP webhook
+  private async externalPush(entry: {
+    hash: string;
+    previous_hash: string;
+    decision: Decision;
+    enforcement: EnforcementResult;
+    metrics: IntelligenceMetrics;
+    proof_chain: string[];
+    timestamp: number;
+  }) {
     const webhookUrl = process.env.EXTERNAL_WEBHOOK_URL;
     if (webhookUrl) {
       try {
@@ -357,15 +276,11 @@ export class CompoundingIntelligence {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(entry),
         });
-      } catch (err) {
-        throw new Error(
-          "External webhook push failed: " +
-            (err instanceof Error ? err.message : String(err)),
-        );
+      } catch {
+        return;
       }
     }
 
-    // Example: PostgreSQL (requires bun:pg)
     const pgConnStr = process.env.EXTERNAL_PG_CONN;
     if (pgConnStr) {
       try {
@@ -385,14 +300,9 @@ export class CompoundingIntelligence {
           ],
         );
         await client.end();
-      } catch (err) {
-        throw new Error(
-          "External PostgreSQL push failed: " +
-            (err instanceof Error ? err.message : String(err)),
-        );
+      } catch {
+        return;
       }
     }
-
-    // Extend here for other services (MongoDB, Kafka, etc)
   }
 }

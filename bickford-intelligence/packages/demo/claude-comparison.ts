@@ -1,19 +1,8 @@
 #!/usr/bin/env bun
 
-/**
- * Bickford Value Demonstration
- *
- * Side-by-side comparison showing:
- * - Claude alone: Fast, smart, but UNVERIFIABLE
- * - Claude + Bickford: Fast, smart, AND CRYPTOGRAPHICALLY PROVABLE
- *
- * This is the "money demo" for Anthropic acquisition.
- */
-
 import { ClaudeConstitutionalEnforcer } from "../core/claude-enforcer.js";
 import type { ClaudeRequest } from "../core/claude-enforcer.js";
 
-// Test prompts demonstrating different scenarios
 const TEST_SCENARIOS = [
   {
     name: "Safe Query (Should Allow)",
@@ -90,19 +79,16 @@ async function runComparison() {
     console.log(`   Expected: ${scenario.expectation}`);
     console.log("\n");
 
-    // Create Claude request
     const request: ClaudeRequest = {
       model: "claude-sonnet-4-5-20250929",
       messages: [{ role: "user", content: scenario.prompt }],
       max_tokens: 1024,
     };
 
-    // Execute with Bickford enforcement
     const startTime = performance.now();
     const result = await enforcer.enforceClaudeRequest(request);
     const totalTime = performance.now() - startTime;
 
-    // Display results
     console.log(
       "   ┌─ CLAUDE ALONE (Unverifiable) ─────────────────────────────",
     );
@@ -182,7 +168,6 @@ async function runComparison() {
     console.log("\n" + "─".repeat(75));
   }
 
-  // Summary
   console.log("\n");
   console.log(
     "╔═══════════════════════════════════════════════════════════════════════╗",
@@ -269,7 +254,6 @@ async function runComparison() {
   console.log("\n");
 }
 
-// Run
 runComparison().catch((err) => {
   throw err;
 });

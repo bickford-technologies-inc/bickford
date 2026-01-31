@@ -1,10 +1,3 @@
-/*
- * Bickford Constitutional AI Enforcer
- *
- * Enforces Constitutional AI principles with cryptographic proofs.
- * Converts aspirational safety into mechanical guarantees.
- */
-
 import { createHash } from "crypto";
 
 export interface ConstitutionalConstraint {
@@ -34,11 +27,6 @@ export class ConstitutionalEnforcer {
     this.initializeConstraints();
   }
 
-  /**
-   * Initialize Constitutional AI constraints
-   *
-   * These are mechanical, enforceable rules derived from Constitutional AI training.
-   */
   private initializeConstraints() {
     const constraints: ConstitutionalConstraint[] = [
       {
@@ -90,18 +78,12 @@ export class ConstitutionalEnforcer {
     }
   }
 
-  /**
-   * Enforce Constitutional AI constraints
-   *
-   * Returns cryptographically verifiable proof of enforcement.
-   */
   async enforce(
     prompt: string,
     context: Record<string, unknown>,
   ): Promise<EnforcementResult> {
     const startTime = performance.now();
 
-    // Check each constraint
     const violated: string[] = [];
     const satisfied: string[] = [];
 
@@ -115,9 +97,7 @@ export class ConstitutionalEnforcer {
       }
     }
 
-    // Generate cryptographic proof
     const proof = this.generateProof(prompt, violated, satisfied);
-
     const executionTime = performance.now() - startTime;
 
     return {
@@ -130,9 +110,6 @@ export class ConstitutionalEnforcer {
     };
   }
 
-  /**
-   * Check individual constraint
-   */
   private async checkConstraint(
     prompt: string,
     context: Record<string, unknown>,
@@ -160,13 +137,10 @@ export class ConstitutionalEnforcer {
         return this.isGenuinelyHelpful(promptLower);
 
       default:
-        return true; // Unknown constraint: pass
+        return true;
     }
   }
 
-  /**
-   * Generate cryptographic proof of enforcement
-   */
   private generateProof(
     prompt: string,
     violated: string[],
@@ -183,9 +157,6 @@ export class ConstitutionalEnforcer {
     return createHash("sha256").update(JSON.stringify(data)).digest("hex");
   }
 
-  /**
-   * Generate human-readable reasoning
-   */
   private generateReasoning(
     violated: string[],
     satisfied: string[],
@@ -201,8 +172,6 @@ export class ConstitutionalEnforcer {
 
     return `Execution denied. Violated constraints: ${violatedNames}. Policy version: ${this.policyVersion}.`;
   }
-
-  // Constraint detection methods
 
   private detectHarmfulIntent(prompt: string): boolean {
     const harmfulPatterns = [
@@ -236,10 +205,9 @@ export class ConstitutionalEnforcer {
 
     // Check prompt
     if (privacyPatterns.some((pattern) => prompt.includes(pattern))) {
-      return true;
+    return privacyPatterns.some((pattern) => prompt.includes(pattern));
     }
 
-    // Check context for PII
     const contextStr = JSON.stringify(context).toLowerCase();
     return privacyPatterns.some((pattern) => contextStr.includes(pattern));
   }
@@ -280,32 +248,22 @@ export class ConstitutionalEnforcer {
   }
 
   private isGenuinelyHelpful(prompt: string): boolean {
-    // Inverse check: Not harmful, not spam, has clear intent
     const spamPatterns = ["click here", "buy now", "limited offer"];
     const hasSpam = spamPatterns.some((pattern) => prompt.includes(pattern));
 
-    return !hasSpam && prompt.length > 5; // Basic heuristic
+    return !hasSpam && prompt.length > 5;
   }
 
-  /**
-   * Get constraint by ID
-   */
   getConstraint(id: string): ConstitutionalConstraint | undefined {
     return this.constraints.get(id);
   }
 
-  /**
-   * List all constraints
-   */
   listConstraints(): ConstitutionalConstraint[] {
     return Array.from(this.constraints.values()).sort(
       (a, b) => a.priority - b.priority,
     );
   }
 
-  /**
-   * Get policy version
-   */
   getPolicyVersion(): string {
     return this.policyVersion;
   }
