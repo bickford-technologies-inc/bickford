@@ -5,8 +5,8 @@ import path from "path";
 const DOCS_DIR = path.join(process.cwd(), "docs/technical");
 
 export default async function handler(
-  req: any,
-  res: any,
+  req: NextApiRequest,
+  res: NextApiResponse,
 ) {
   try {
     const files = await fs.readdir(DOCS_DIR);
