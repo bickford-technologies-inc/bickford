@@ -1,24 +1,6 @@
 #!/usr/bin/env bun
-/**
- * Repo Orchestrator
- *
- * Applies decision continuity principles to codebase management:
- * - Full audit trail of all changes
- * - Reversible operations (archive before delete)
- * - Intent preservation (document why things exist)
- * - Redundancy detection with confidence scoring
- */
 
-import {
-  existsSync,
-  mkdirSync,
-  writeFileSync,
-  readFileSync,
-  statSync,
-  readdirSync,
-} from "fs";
 import { join, relative, extname, basename, dirname } from "path";
-import { execSync } from "child_process";
 import { createHash } from "crypto";
 
 interface FileRecord {
@@ -94,19 +76,20 @@ class RepoOrchestrator {
     this.loadExistingAudit();
   }
 
-  private loadExistingAudit() {
+  private async loadExistingAudit() {
     const auditPath = join(this.repoPath, CONFIG.auditLog);
-    if (existsSync(auditPath)) {
-      this.audit = JSON.parse(readFileSync(auditPath, "utf-8"));
+    const auditFile = Bun.file(auditPath);
+    if (auditFile.size > 0) {
+      this.audit = JSON.parse(await auditFile.text());
     }
   }
 
-  private saveAudit() {
+  private async saveAudit() {
     const auditPath = join(this.repoPath, CONFIG.auditLog);
-    writeFileSync(auditPath, JSON.stringify(this.audit, null, 2));
+    await Bun.write(auditPath, JSON.stringify(this.audit, null, 2));
   }
 
-  private log(
+  private async log(
     action: string,
     files: string[],
     reason: string,
@@ -120,14 +103,18 @@ class RepoOrchestrator {
       reversible,
     };
     this.audit.push(entry);
-    this.saveAudit();
+    await this.saveAudit();
     console.log(`[AUDIT] ${action}: ${files.length} files - ${reason}`);
   }
 
-  private hashFile(filePath: string): string {
+  private async hashFile(filePath: string): Promise<string> {
     try {
-      const content = readFileSync(filePath);
-      return createHash("sha256").update(content).digest("hex").slice(0, 16);
+      const file = Bun.file(filePath);
+      const buffer = await file.arrayBuffer();
+      return createHash("sha256")
+        .update(new Uint8Array(buffer))
+        .digest("hex")
+        .slice(0, 16);
     } catch {
       return "unreadable";
     }
@@ -138,19 +125,16 @@ class RepoOrchestrator {
     const ext = extname(filePath);
     const name = basename(filePath);
 
-    // Check regenerable directories
     for (const dir of CONFIG.regenerableDirs) {
       if (rel.startsWith(dir + "/") || rel === dir) {
         return "dependency";
       }
     }
 
-    // Check generated patterns
     for (const pattern of CONFIG.generatedPatterns) {
       if (pattern.test(name)) return "generated";
     }
 
-    // Categorize by extension/name
     if ([".ts", ".tsx", ".js", ".jsx", ".py", ".rs"].includes(ext))
       return "source";
     if (
@@ -173,18 +157,13 @@ class RepoOrchestrator {
   private calculateRedundancy(record: FileRecord): number {
     let score = 0;
 
-    // Duplicates get high redundancy
     const duplicates = this.hashIndex.get(record.hash) || [];
-    if (duplicates.length > 1) {
-      score += 50;
-    }
+    if (duplicates.length > 1) score += 50;
 
-    // Build artifacts are regenerable
     if (record.category === "build-artifact") score += 80;
     if (record.category === "dependency") score += 90;
     if (record.category === "generated") score += 70;
 
-    // Old files might be stale
     const ageInDays =
       (Date.now() - record.modified.getTime()) / (1000 * 60 * 60 * 24);
     if (ageInDays > 180) score += 10;
@@ -196,65 +175,49 @@ class RepoOrchestrator {
   async scan(): Promise<Map<string, FileRecord>> {
     console.log("\n📊 Scanning repository...\n");
 
-    const walk = (dir: string) => {
-      let entries: any[] = [];
-      try {
-        entries = readdirSync(dir, { withFileTypes: true });
-      } catch (err: any) {
-        // Directory may have been removed or is a broken symlink, skip
-        if (err.code === "ENOENT" || err.code === "ENOTDIR") return;
-        throw err;
-      }
+    const walk = async (dir: string) => {
+      const glob = new Bun.Glob("**/*");
+      const scanner = glob.scan({ cwd: dir, onlyFiles: false });
 
-      for (const entry of entries) {
-        const fullPath = join(dir, entry.name);
+      for await (const entry of scanner) {
+        const fullPath = join(dir, entry);
         const rel = relative(this.repoPath, fullPath);
 
-        // Skip git internals and archive
         if (rel.startsWith(".git/") || rel.startsWith(CONFIG.archiveDir))
           continue;
 
-        if (entry.isDirectory()) {
-          walk(fullPath);
-        } else {
-          let stat;
-          try {
-            stat = statSync(fullPath);
-          } catch (err: any) {
-            // File may have been removed or is a broken symlink, skip
-            if (err.code === "ENOENT" || err.code === "ENOTDIR") continue;
-            throw err;
-          }
-          const hash = this.hashFile(fullPath);
+        const file = Bun.file(fullPath);
+        if (!(await file.exists())) continue;
 
-          // Track duplicates
-          if (!this.hashIndex.has(hash)) {
-            this.hashIndex.set(hash, []);
-          }
-          this.hashIndex.get(hash)!.push(rel);
+        const stat = await file.stat();
+        if (stat.isDirectory()) continue;
 
-          const record: FileRecord = {
-            path: rel,
-            hash,
-            size: stat.size,
-            modified: stat.mtime,
-            category: this.categorizeFile(fullPath),
-            redundancyScore: 0,
-            recommendation: "keep",
-          };
+        const hash = await this.hashFile(fullPath);
 
-          this.files.set(rel, record);
+        if (!this.hashIndex.has(hash)) {
+          this.hashIndex.set(hash, []);
         }
+        this.hashIndex.get(hash)!.push(rel);
+
+        const record: FileRecord = {
+          path: rel,
+          hash,
+          size: stat.size,
+          modified: new Date(stat.mtime),
+          category: this.categorizeFile(fullPath),
+          redundancyScore: 0,
+          recommendation: "keep",
+        };
+
+        this.files.set(rel, record);
       }
     };
 
-    walk(this.repoPath);
+    await walk(this.repoPath);
 
-    // Calculate redundancy and mark duplicates
     for (const [path, record] of this.files) {
       const duplicates = this.hashIndex.get(record.hash) || [];
       if (duplicates.length > 1) {
-        // Keep the shortest path (likely canonical), mark others as duplicates
         const canonical = duplicates.sort((a, b) => a.length - b.length)[0];
         if (path !== canonical) {
           record.duplicateOf = canonical;
@@ -263,7 +226,6 @@ class RepoOrchestrator {
 
       record.redundancyScore = this.calculateRedundancy(record);
 
-      // Set recommendations
       if (record.redundancyScore >= 80) {
         record.recommendation = "archive";
       } else if (record.redundancyScore >= 40 || record.duplicateOf) {
@@ -381,7 +343,7 @@ class RepoOrchestrator {
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const batchDir = join(archivePath, `batch-${timestamp}`);
 
-    mkdirSync(batchDir, { recursive: true });
+    await Bun.write(join(batchDir, ".keep"), "");
 
     const toArchive = Array.from(this.files.values()).filter(
       (f) => f.recommendation === "archive",
@@ -403,27 +365,32 @@ class RepoOrchestrator {
       const src = join(this.repoPath, file.path);
       const dest = join(batchDir, file.path);
 
-      mkdirSync(dirname(dest), { recursive: true });
+      await Bun.write(join(dirname(dest), ".keep"), "");
 
       try {
-        execSync(`cp "${src}" "${dest}"`);
+        const srcFile = Bun.file(src);
+        await Bun.write(dest, srcFile);
         manifest[file.path] = {
           originalPath: file.path,
           hash: file.hash,
           reason: `category: ${file.category}, redundancy: ${file.redundancyScore}%`,
         };
-      } catch (err) {
+      } catch {
         console.error(`Failed to archive: ${file.path}`);
       }
     }
 
-    // Write manifest
-    writeFileSync(
+    await Bun.write(
       join(batchDir, "MANIFEST.json"),
       JSON.stringify(manifest, null, 2),
     );
 
-    this.log("archive", Object.keys(manifest), `Archived to ${batchDir}`, true);
+    await this.log(
+      "archive",
+      Object.keys(manifest),
+      `Archived to ${batchDir}`,
+      true,
+    );
 
     console.log(
       `\n✅ Archived ${Object.keys(manifest).length} files to ${batchDir}`,
@@ -433,14 +400,14 @@ class RepoOrchestrator {
 
   async clean(): Promise<void> {
     const archivePath = join(this.repoPath, CONFIG.archiveDir);
-    if (!existsSync(archivePath)) {
+    const archiveDir = Bun.file(archivePath);
+    if (!(await archiveDir.exists())) {
       console.log("❌ No archive found. Run archive first.");
       return;
     }
 
-    // Get latest batch
-    const batches = readdirSync(archivePath)
-      .filter((d) => d.startsWith("batch-"))
+    const glob = new Bun.Glob("batch-*");
+    const batches = Array.from(glob.scanSync(archivePath))
       .sort()
       .reverse();
 
@@ -451,13 +418,14 @@ class RepoOrchestrator {
 
     const latestBatch = join(archivePath, batches[0]);
     const manifestPath = join(latestBatch, "MANIFEST.json");
+    const manifestFile = Bun.file(manifestPath);
 
-    if (!existsSync(manifestPath)) {
+    if (!(await manifestFile.exists())) {
       console.log("❌ No manifest found in latest batch.");
       return;
     }
 
-    const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
+    const manifest = JSON.parse(await manifestFile.text());
     const toDelete = Object.keys(manifest);
 
     console.log(`\n🗑️  Cleaning ${toDelete.length} archived files...\n`);
@@ -465,9 +433,10 @@ class RepoOrchestrator {
     let deleted = 0;
     for (const filePath of toDelete) {
       const fullPath = join(this.repoPath, filePath);
-      if (existsSync(fullPath)) {
+      const file = Bun.file(fullPath);
+      if (await file.exists()) {
         try {
-          execSync(`rm "${fullPath}"`);
+          await Bun.$`rm "${fullPath}"`;
           deleted++;
         } catch {
           console.error(`Failed to delete: ${filePath}`);
@@ -475,7 +444,7 @@ class RepoOrchestrator {
       }
     }
 
-    this.log("clean", toDelete, `Removed ${deleted} archived files`, true);
+    await this.log("clean", toDelete, `Removed ${deleted} archived files`, true);
 
     console.log(`\n✅ Removed ${deleted} files`);
     console.log(`   Originals preserved in: ${latestBatch}`);
@@ -484,8 +453,8 @@ class RepoOrchestrator {
   async restore(batchName?: string): Promise<void> {
     const archivePath = join(this.repoPath, CONFIG.archiveDir);
 
-    const batches = readdirSync(archivePath)
-      .filter((d) => d.startsWith("batch-"))
+    const glob = new Bun.Glob("batch-*");
+    const batches = Array.from(glob.scanSync(archivePath))
       .sort()
       .reverse();
 
@@ -494,26 +463,24 @@ class RepoOrchestrator {
       : join(archivePath, batches[0]);
 
     const manifestPath = join(targetBatch, "MANIFEST.json");
-    const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
+    const manifest = JSON.parse(await Bun.file(manifestPath).text());
 
     console.log(`\n♻️  Restoring from ${basename(targetBatch)}...\n`);
 
     let restored = 0;
-    for (const [filePath, meta] of Object.entries(manifest) as [
-      string,
-      any,
-    ][]) {
+    for (const [filePath] of Object.entries(manifest)) {
       const src = join(targetBatch, filePath);
       const dest = join(this.repoPath, filePath);
 
-      if (existsSync(src)) {
-        mkdirSync(dirname(dest), { recursive: true });
-        execSync(`cp "${src}" "${dest}"`);
+      const srcFile = Bun.file(src);
+      if (await srcFile.exists()) {
+        await Bun.write(join(dirname(dest), ".keep"), "");
+        await Bun.write(dest, srcFile);
         restored++;
       }
     }
 
-    this.log(
+    await this.log(
       "restore",
       Object.keys(manifest),
       `Restored from ${targetBatch}`,
@@ -549,7 +516,6 @@ const orchestrator = new RepoOrchestrator(repoPath);
       break;
     case "duplicates":
       await orchestrator.scan();
-      // Show detailed duplicates
       break;
     default:
       console.log(

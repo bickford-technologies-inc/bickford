@@ -9,8 +9,7 @@ export abstract class BickfordNativeApp {
     this.context = context;
   }
 
-  async log(event: string, data: any) {
-    // Simulate logging to ledger
+  async log(event: string, data: Record<string, unknown>) {
     await this.context.ledger.append({
       event,
       data,
@@ -18,13 +17,11 @@ export abstract class BickfordNativeApp {
     });
   }
 
-  async generateProof(details: any) {
-    // Simulate proof generation
+  async generateProof(details: Record<string, unknown>) {
     return { id: "cert-" + Math.random().toString(36).slice(2), ...details };
   }
 
-  async enforce(canon: any, action: any) {
-    // Use the platform enforcement engine
+  async enforce(canon: Record<string, unknown>, action: Record<string, unknown>) {
     return this.context.enforcementEngine.enforce(canon, action);
   }
 
