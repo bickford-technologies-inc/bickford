@@ -4,10 +4,7 @@ import path from "path";
 
 const DOCS_DIR = path.join(process.cwd(), "docs/technical");
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const files = await fs.readdir(DOCS_DIR);
     const mdFiles = files.filter((f) => /^[a-zA-Z0-9_.-]+\.md$/.test(f));
