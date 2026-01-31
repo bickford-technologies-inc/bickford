@@ -269,7 +269,7 @@ const integrationNav = [
   { label: "Finance Module", id: "finance", icon: "🟡" },
 ];
 
-function Toast({ message, type, onClose, id }) {
+function Toast({ message, type, onClose, id }: { message: string; type: string; onClose: () => void; id: string }) {
   React.useEffect(() => {
     const timer = setTimeout(onClose, 4000);
     return () => clearTimeout(timer);
@@ -319,15 +319,15 @@ function Toast({ message, type, onClose, id }) {
 
 export default function HomePage() {
   const [activeView, setActiveView] = useState("dashboard");
-  const [detailPanel, setDetailPanel] = useState(null);
-  const [modal, setModal] = useState(null);
-  const [toasts, setToasts] = useState([]);
+  const [detailPanel, setDetailPanel] = useState<string | null>(null);
+  const [modal, setModal] = useState<{ type: string; title: string; body: string } | null>(null);
+  const [toasts, setToasts] = useState<Array<{ message: string; type: string; id: number }>>([]);
   const [search, setSearch] = useState("");
   const [searchActive, setSearchActive] = useState(false);
-  const searchInputRef = useRef(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [editingDescription, setEditingDescription] = useState(false);
   const [editedDescription, setEditedDescription] = useState("");
-  const [logsModal, setLogsModal] = useState(null);
+  const [logsModal, setLogsModal] = useState<string | null>(null);
   const [markdownModal, setMarkdownModal] = useState({
     open: false,
     title: "",
@@ -336,23 +336,23 @@ export default function HomePage() {
   const moduleGridRef = useRef(null);
   const [focusedModuleIdx, setFocusedModuleIdx] = useState(-1);
 
-  function showToast(message, type = "info") {
+  function showToast(message: string, type = "info") {
     setToasts((toasts) => [...toasts, { message, type, id: Math.random() }]);
   }
-  function removeToast(id) {
+  function removeToast(id: number) {
     setToasts((toasts) => toasts.filter((t) => t.id !== id));
   }
-  function navigate(viewId) {
+  function navigate(viewId: string) {
     setActiveView(viewId);
     setDetailPanel(null);
   }
-  function openModulePanel(moduleId) {
+  function openModulePanel(moduleId: string) {
     setDetailPanel(moduleId);
   }
   function closeDetailPanel() {
     setDetailPanel(null);
   }
-  function showModal(type, title, body) {
+  function showModal(type: string, title: string, body: string) {
     setModal({ type, title, body });
     // Scroll to top and focus modal for accessibility
     setTimeout(() => {
@@ -373,7 +373,7 @@ export default function HomePage() {
         item.name.toLowerCase().includes(search.toLowerCase()),
       )
     : [];
-  function selectSearchResult(type, id) {
+  function selectSearchResult(type: string, id: string) {
     setSearch("");
     setSearchActive(false);
     if (type === "view") {
@@ -384,7 +384,7 @@ export default function HomePage() {
     }
   }
   React.useEffect(() => {
-    function onKeyDown(e) {
+    function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         closeDetailPanel();
         closeModal();
@@ -409,24 +409,24 @@ export default function HomePage() {
       showModal(
         "info",
         "Configuration",
-        `Configuration for ${moduleData[moduleId].title} coming soon.`,
+        `Configuration for ${moduleData[moduleId as keyof typeof moduleData].title} coming soon.`,
       );
     } else if (action === "Run Diagnostics") {
       await new Promise((r) => setTimeout(r, 1200));
       showToast(
-        `Diagnostics complete for ${moduleData[moduleId].title}. No issues found.`,
+        `Diagnostics complete for ${moduleData[moduleId as keyof typeof moduleData].title}. No issues found.`,
         "success",
       );
     } else if (action === "Export Logs") {
       openLogsModal(moduleId);
     } else if (action === "Update Policy") {
       await new Promise((r) => setTimeout(r, 1000));
-      showToast(`Policy updated for ${moduleData[moduleId].title}.`, "success");
+      showToast(`Policy updated for ${moduleData[moduleId as keyof typeof moduleData].title}.`, "success");
     } else if (action === "Edit Policies") {
       showModal(
         "info",
         "Edit Policies",
-        `Policy editor for ${moduleData[moduleId].title} coming soon.`,
+        `Policy editor for ${moduleData[moduleId as keyof typeof moduleData].title} coming soon.`,
       );
     } else if (action === "View Logs") {
       openLogsModal(moduleId);
@@ -449,7 +449,7 @@ export default function HomePage() {
       "View Strategic Proposal": "strategic-acquisition-proposal",
       "View Value Per Hour": "value-per-hour",
     };
-    const docId = docMap[action];
+    const docId = docMap[action as keyof typeof docMap];
     const doc = financialDocs.find((d) => d.id === docId);
     if (doc) {
       const res = await fetch(`/financial/${doc.file}`);
@@ -459,19 +459,23 @@ export default function HomePage() {
   }
 
   function startEditDescription() {
-    setEditedDescription(moduleData[detailPanel].description);
-    setEditingDescription(true);
+    if (detailPanel) {
+      setEditedDescription(moduleData[detailPanel as keyof typeof moduleData].description);
+      setEditingDescription(true);
+    }
   }
   function saveDescription() {
     // In a real app, this would persist to backend
-    moduleData[detailPanel].description = editedDescription;
-    setEditingDescription(false);
-    showToast("Description updated!", "success");
+    if (detailPanel) {
+      moduleData[detailPanel as keyof typeof moduleData].description = editedDescription;
+      setEditingDescription(false);
+      showToast("Description updated!", "success");
+    }
   }
   function cancelEditDescription() {
     setEditingDescription(false);
   }
-  function openLogsModal(moduleId) {
+  function openLogsModal(moduleId: string) {
     setLogsModal(moduleId);
   }
   function closeLogsModal() {
@@ -479,12 +483,12 @@ export default function HomePage() {
   }
 
   // Add refs for keyboard navigation
-  const navRefs = useRef([]);
-  const moduleNavRefs = useRef([]);
-  const integrationNavRefs = useRef([]);
+  const navRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const moduleNavRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const integrationNavRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Keyboard navigation for sidebar
-  function handleSidebarKeyDown(e, idx, section) {
+  function handleSidebarKeyDown(e: React.KeyboardEvent, idx: number, section: string) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       if (section === "nav") {
