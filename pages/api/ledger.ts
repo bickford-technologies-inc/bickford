@@ -1,26 +1,22 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { promises as fs } from "fs";
-import path from "path";
-
-// Import AWS SDK v3 for S3 access
+import type { NextApiRequest, NextApiResponse } from "next";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import type { Readable } from "stream";
 
-const LEDGER_PATH = path.join(process.cwd(), "execution-ledger.jsonl");
-
-// S3 config from environment
+const LEDGER_PATH = process.cwd() + "/execution-ledger.jsonl";
 const S3_BUCKET = process.env.DATA_LAKE_S3_BUCKET;
 const S3_KEY = process.env.DATA_LAKE_S3_KEY || "execution-ledger.jsonl";
 const S3_REGION = process.env.DATA_LAKE_S3_REGION || "us-east-1";
 
-async function readLedgerFromS3() {
+async function readLedgerFromS3(): Promise<string> {
   const s3 = new S3Client({ region: S3_REGION });
   const command = new GetObjectCommand({ Bucket: S3_BUCKET, Key: S3_KEY });
   const response = await s3.send(command);
-  // S3 returns a stream, convert to string
-  const stream = response.Body;
+
+  const stream = response.Body as Readable;
   if (!stream) throw new Error("No data in S3 object");
+
   const chunks: Buffer[] = [];
-  for await (const chunk of stream as any) {
+  for await (const chunk of stream) {
     chunks.push(Buffer.from(chunk));
   }
   return Buffer.concat(chunks).toString("utf-8");
@@ -33,12 +29,12 @@ export default async function handler(
   try {
     let data: string;
     if (process.env.NODE_ENV === "production" && S3_BUCKET) {
-      // Read from S3 data lake in production
       data = await readLedgerFromS3();
     } else {
-      // Fallback to local file for dev/local
-      data = await fs.readFile(LEDGER_PATH, "utf-8");
+      const file = Bun.file(LEDGER_PATH);
+      data = await file.text();
     }
+
     const entries = data
       .split("\n")
       .filter(Boolean)
@@ -50,13 +46,14 @@ export default async function handler(
         }
       })
       .filter(Boolean);
+
     res.status(200).json({ entries });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        error: "Failed to read ledger.",
-        details: (err as Error).message,
-      });
+    const error = err as Error;
+    console.error("Failed to read ledger:", error);
+    res.status(500).json({
+      error: "Failed to read ledger.",
+      details: error.message,
+    });
   }
 }

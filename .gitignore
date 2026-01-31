@@ -125,3 +125,4 @@ netlify-debug.log
 *.gltf
 *.stl
 *.obj
+CLEANUP_*.md
