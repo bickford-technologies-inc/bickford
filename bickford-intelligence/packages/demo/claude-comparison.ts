@@ -85,84 +85,100 @@ async function runComparison() {
       max_tokens: 1024,
     };
 
-    const startTime = performance.now();
-    const result = await enforcer.enforceClaudeRequest(request);
-    const totalTime = performance.now() - startTime;
+    let result;
+    try {
+      const startTime = performance.now();
+      result = await enforcer.enforceClaudeRequest(request);
+      const totalTime = performance.now() - startTime;
 
-    console.log(
-      "   ┌─ CLAUDE ALONE (Unverifiable) ─────────────────────────────",
-    );
-    console.log("   │  Status: ❓ Unknown (no enforcement)");
-    console.log("   │  Proof: ❌ None");
-    console.log("   │  Audit Trail: ❌ None");
-    console.log("   │  Compliance: ❌ Not provable");
-    console.log("   │");
-
-    console.log(
-      "   ├─ CLAUDE + BICKFORD (Cryptographically Provable) ────────",
-    );
-
-    if (result.enforcement.allowed) {
-      console.log("   │  Status: ✅ ALLOWED");
       console.log(
-        `   │  Satisfied Constraints: ${result.enforcement.satisfied_constraints.join(", ")}`,
+        "   ┌─ CLAUDE ALONE (Unverifiable) ─────────────────────────────",
+      );
+      console.log("   │  Status: ❓ Unknown (no enforcement)");
+      console.log("   │  Proof: ❌ None");
+      console.log("   │  Audit Trail: ❌ None");
+      console.log("   │  Compliance: ❌ Not provable");
+      console.log("   │");
+
+      console.log(
+        "   ├─ CLAUDE + BICKFORD (Cryptographically Provable) ────────",
       );
 
-      if (result.claude_response) {
-        const responseText =
-          result.claude_response.content
-            .filter((c) => c.type === "text")
-            .map((c) => c.text)
-            .join("\n")
-            .substring(0, 100) + "...";
-        console.log(`   │  Response Preview: "${responseText}"`);
+      if (result.enforcement.allowed) {
+        console.log("   │  Status: ✅ ALLOWED");
         console.log(
-          `   │  Tokens Used: ${result.claude_response.usage.input_tokens + result.claude_response.usage.output_tokens}`,
+          `   │  Satisfied Constraints: ${result.enforcement.satisfied_constraints.join(", ")}`,
         );
+
+        if (result.claude_response) {
+          const responseText =
+            result.claude_response.content
+              .filter((c) => c.type === "text")
+              .map((c) => c.text)
+              .join("\n")
+              .substring(0, 100) + "...";
+          console.log(`   │  Response Preview: "${responseText}"`);
+          console.log(
+            `   │  Tokens Used: ${result.claude_response.usage.input_tokens + result.claude_response.usage.output_tokens}`,
+          );
+        }
+      } else {
+        console.log("   │  Status: ❌ DENIED");
+        console.log(
+          `   │  Violated Constraints: ${result.enforcement.violated_constraints.join(", ")}`,
+        );
+        console.log(`   │  Reasoning: ${result.enforcement.reasoning}`);
+        console.log(`   │  Tokens Saved: ${result.cost_analysis.tokens_saved}`);
+        console.log(
+          `   │  Cost Saved: $${result.cost_analysis.cost_saved_usd.toFixed(4)}`,
+        );
+
+        totalTokensSaved += result.cost_analysis.tokens_saved;
+        totalCostSaved += result.cost_analysis.cost_saved_usd;
+        deniedBeforeExecution++;
       }
-    } else {
-      console.log("   │  Status: ❌ DENIED");
+
+      console.log("   │");
+      console.log("   │  🔐 Cryptographic Proof Chain:");
+      result.proof_chain.forEach((proof, idx) => {
+        const [type, hash] = proof.split(":");
+        console.log(
+          `   │     ${idx + 1}. ${type}: ${hash.substring(0, 16)}...`,
+        );
+      });
+
+      console.log("   │");
+      console.log(`   │  ⚡ Performance:`);
       console.log(
-        `   │  Violated Constraints: ${result.enforcement.violated_constraints.join(", ")}`,
+        `   │     Enforcement Overhead: ${result.latency_overhead_ms.toFixed(2)}ms`,
       );
-      console.log(`   │  Reasoning: ${result.enforcement.reasoning}`);
-      console.log(`   │  Tokens Saved: ${result.cost_analysis.tokens_saved}`);
+      console.log(`   │     Total Execution Time: ${totalTime.toFixed(2)}ms`);
+      console.log("   │");
       console.log(
-        `   │  Cost Saved: $${result.cost_analysis.cost_saved_usd.toFixed(4)}`,
+        "   └───────────────────────────────────────────────────────────",
       );
 
-      totalTokensSaved += result.cost_analysis.tokens_saved;
-      totalCostSaved += result.cost_analysis.cost_saved_usd;
-      deniedBeforeExecution++;
-    }
+      // Verification check
+      const matchesExpectation = result.enforcement.allowed
+        ? scenario.expectation === "ALLOWED"
+        : scenario.expectation === "DENIED";
 
-    console.log("   │");
-    console.log("   │  🔐 Cryptographic Proof Chain:");
-    result.proof_chain.forEach((proof, idx) => {
-      const [type, hash] = proof.split(":");
-      console.log(`   │     ${idx + 1}. ${type}: ${hash.substring(0, 16)}...`);
-    });
+      if (matchesExpectation) {
+        console.log("   ✅ Result matches expectation");
+      } else {
+        console.log("   ⚠️  Result differs from expectation");
+      }
 
-    console.log("   │");
-    console.log(`   │  ⚡ Performance:`);
-    console.log(
-      `   │     Enforcement Overhead: ${result.latency_overhead_ms.toFixed(2)}ms`,
-    );
-    console.log(`   │     Total Execution Time: ${totalTime.toFixed(2)}ms`);
-    console.log("   │");
-    console.log(
-      "   └───────────────────────────────────────────────────────────",
-    );
-
-    // Verification check
-    const matchesExpectation = result.enforcement.allowed
-      ? scenario.expectation === "ALLOWED"
-      : scenario.expectation === "DENIED";
-
-    if (matchesExpectation) {
-      console.log("   ✅ Result matches expectation");
-    } else {
-      console.log("   ⚠️  Result differs from expectation");
+      console.log("\n" + "─".repeat(75));
+    } catch (err) {
+      console.error(
+        "   │  ERROR: Claude API or enforcement failed:",
+        err.message || err,
+      );
+      console.log(
+        "   └───────────────────────────────────────────────────────────",
+      );
+      continue;
     }
 
     console.log("\n" + "─".repeat(75));

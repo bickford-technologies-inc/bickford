@@ -112,25 +112,7 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     };
   }
 
-  private async callClaude(request: ClaudeRequest): Promise<ClaudeResponse> {
-    const apiPayload: {
-      model: string;
-      max_tokens: number;
-      messages: Array<{ role: string; content: string }>;
-      system?: string;
-      temperature?: number;
-    } = {
-      model: request.model,
-      max_tokens: request.max_tokens || 1024,
-      messages: request.messages,
-    };
-    if (typeof request.system === "string" && request.system.length > 0) {
-      apiPayload.system = request.system;
-    }
-    if (typeof request.temperature === "number") {
-      apiPayload.temperature = request.temperature;
-    }
-
+  private async callClaude(apiPayload: any): Promise<ClaudeResponse> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       "x-api-key": this.apiKey,
