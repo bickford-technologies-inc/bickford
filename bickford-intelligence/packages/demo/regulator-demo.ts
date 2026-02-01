@@ -2,11 +2,32 @@
 
 import { createHash } from "crypto";
 
-interface ProofChain {
-  request_hash: string;
-  enforcement_hash: string;
-  response_hash: string;
-  // Silent execution: all metrics and results are available via getMetrics()
+class IndependentVerifier {
+  verifyProofChain(proofChain: string[]): {
+    valid: boolean;
+    reasoning: string[];
+  } {
+    const reasoning: string[] = [];
+    if (proofChain.length !== 4) {
+      reasoning.push(
+        "❌ Proof chain must have 4 elements (request, enforcement, response, merkle root)",
+      );
+      return { valid: false, reasoning };
+    }
+    const [request, enforcement, response, merkle] = proofChain;
+    const merkleRoot = createHash("sha256")
+      .update([request, enforcement, response].join(":"))
+      .digest("hex");
+    const expectedMerkle = `MERKLE_ROOT:${merkleRoot}`;
+    if (merkle !== expectedMerkle) {
+      reasoning.push("❌ Merkle root does not match computed value");
+      reasoning.push(`   Expected: ${expectedMerkle}`);
+      reasoning.push(`   Actual:   ${merkle}`);
+      return { valid: false, reasoning };
+    }
+    reasoning.push("✅ Merkle root matches computed value");
+    reasoning.push("🎉 Proof chain integrity: INTACT");
+    return { valid: true, reasoning };
   }
 
   async verifyLedgerChain(ledgerPath: string): Promise<{
