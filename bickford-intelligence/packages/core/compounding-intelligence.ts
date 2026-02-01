@@ -195,7 +195,8 @@ export class CompoundingIntelligence {
 
   private async appendToLedger(
     report: ExecutionReport,
-    ledgerPath: string = "/workspaces/bickford/execution-ledger.jsonl",
+    ledgerPath: string = process.env.LEDGER_PATH ||
+      "../execution-ledger.jsonl",
   ) {
     let previousHash = "";
     try {
