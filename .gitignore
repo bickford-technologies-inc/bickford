@@ -10,6 +10,9 @@ crashlog-*.ips
 # Dependency directories
 node_modules/
 
+# Lock files - only pnpm is used
+bun.lock
+
 # Ignore personal VS Code files
 .vscode/launch.json
 .vscode/extensions.json
