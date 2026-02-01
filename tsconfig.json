@@ -53,6 +53,16 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "bickford-intelligence/**",
+    "packages/**",
+    "adapters/**",
+    "ci/**",
+    "scripts/**",
+    "outputs/**",
+    "tests/**",
+    "trace/**",
+    "benchmarks/**",
+    "artifacts/**"
   ]
 }
