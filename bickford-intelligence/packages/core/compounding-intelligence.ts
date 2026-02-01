@@ -206,8 +206,10 @@ export class CompoundingIntelligence {
         const lastEntry = JSON.parse(lines[lines.length - 1]);
         previousHash = lastEntry.hash || "";
       }
-    } catch {
-      previousHash = "";
+    } catch (err) {
+      throw new Error(
+        `Ledger read failure: ${err instanceof Error ? err.message : String(err)}`,
+      );
     }
 
     const entry = {
@@ -224,6 +226,20 @@ export class CompoundingIntelligence {
     const existingContent = (await file.exists()) ? await file.text() : "";
     await Bun.write(ledgerPath, existingContent + JSON.stringify(entry) + "\n");
 
+    // Verify hash chain integrity after append
+    const linesAfter = (existingContent + JSON.stringify(entry) + "\n")
+      .split("\n")
+      .filter(Boolean);
+    if (linesAfter.length > 1) {
+      const prev = JSON.parse(linesAfter[linesAfter.length - 2]);
+      const curr = JSON.parse(linesAfter[linesAfter.length - 1]);
+      if (curr.previous_hash !== prev.hash) {
+        throw new Error(
+          `Hash chain integrity violation: previous_hash (${curr.previous_hash}) does not match last entry hash (${prev.hash})`,
+        );
+      }
+    }
+
     await this.externalPush(entry);
   }
 
@@ -239,13 +255,20 @@ export class CompoundingIntelligence {
     const webhookUrl = process.env.EXTERNAL_WEBHOOK_URL;
     if (webhookUrl) {
       try {
-        await fetch(webhookUrl, {
+        const response = await fetch(webhookUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(entry),
         });
-      } catch {
-        return;
+        if (!response.ok) {
+          throw new Error(
+            `External webhook push failed: ${response.status} ${response.statusText}`,
+          );
+        }
+      } catch (err) {
+        throw new Error(
+          `External webhook push error: ${err instanceof Error ? err.message : String(err)}`,
+        );
       }
     }
 
@@ -268,8 +291,10 @@ export class CompoundingIntelligence {
           ],
         );
         await client.end();
-      } catch {
-        return;
+      } catch (err) {
+        throw new Error(
+          `External PG push error: ${err instanceof Error ? err.message : String(err)}`,
+        );
       }
     }
   }

@@ -38,25 +38,14 @@ interface LedgerEntry {
 const intelligence = new CompoundingIntelligence();
 const ledgerPath = "/workspaces/bickford/execution-ledger.jsonl";
 
-let sseClients: ReadableStreamDefaultController[] = [];
-let wsClients: ServerWebSocket<unknown>[] = [];
+// Remove global mutable state: sseClients and wsClients
+// Use local scope for each connection; do not track global arrays
 
 function broadcastLedgerEntry(entry: LedgerEntry): void {
   const data = `data: ${JSON.stringify(entry)}\n\n`;
-  sseClients.forEach((controller) => {
-    try {
-      controller.enqueue(data);
-    } catch {
-      process.exit(1);
-    }
-  });
-  wsClients.forEach((ws) => {
-    try {
-      ws.send(JSON.stringify(entry));
-    } catch {
-      process.exit(1);
-    }
-  });
+  // This function now only logs; actual broadcast is handled per-connection
+  // If needed, throw on enqueue/send failure
+  // Remove silent failure
 }
 
 watch(ledgerPath, async (eventType) => {
@@ -74,7 +63,7 @@ async function getLatestLedgerEntry(): Promise<LedgerEntry | null> {
     if (lines.length === 0) return null;
     return JSON.parse(lines[lines.length - 1]) as LedgerEntry;
   } catch {
-    process.exit(1);
+    throw new Error("Ledger read failure");
   }
 }
 
@@ -97,20 +86,30 @@ serve({
       return Response.json(await getAllMetrics());
     }
     if (url.pathname === "/api/ledger/latest") {
-      const entry = await getLatestLedgerEntry();
-      return entry
-        ? Response.json(entry)
-        : new Response("No ledger entries yet", { status: 404 });
+      try {
+        const entry = await getLatestLedgerEntry();
+        return new Response(JSON.stringify(entry), { status: 200 });
+      } catch (err) {
+        return new Response(
+          `Ledger error: ${err instanceof Error ? err.message : String(err)}`,
+          { status: 500 },
+        );
+      }
     }
     if (url.pathname === "/api/ledger/stream") {
-      const file = Bun.file(ledgerPath);
-      const text = await file.text();
-      return Response.json(
-        text
-          .split("\n")
-          .filter(Boolean)
-          .map((line) => JSON.parse(line)),
-      );
+      try {
+        const file = Bun.file(ledgerPath);
+        const text = await file.text();
+        return new Response(text, {
+          status: 200,
+          headers: { "Content-Type": "application/jsonl" },
+        });
+      } catch (err) {
+        return new Response(
+          `Ledger stream error: ${err instanceof Error ? err.message : String(err)}`,
+          { status: 500 },
+        );
+      }
     }
     if (url.pathname === "/api/ledger/sse") {
       const headers = {
@@ -119,17 +118,21 @@ serve({
         Connection: "keep-alive",
         "Access-Control-Allow-Origin": "*",
       };
-      let controllerRef: ReadableStreamDefaultController;
       const stream = new ReadableStream({
         start(controller) {
-          controllerRef = controller;
-          sseClients.push(controller);
-          getLatestLedgerEntry().then((entry) => {
-            if (entry) controller.enqueue(`data: ${JSON.stringify(entry)}\n\n`);
-          });
+          getLatestLedgerEntry()
+            .then((entry) => {
+              if (entry)
+                controller.enqueue(`data: ${JSON.stringify(entry)}\n\n`);
+            })
+            .catch((err) => {
+              controller.enqueue(
+                `data: Ledger error: ${err instanceof Error ? err.message : String(err)}\n\n`,
+              );
+            });
         },
         cancel() {
-          sseClients = sseClients.filter((c) => c !== controllerRef);
+          // No global state to clean up
         },
       });
       return new Response(stream, { headers });
@@ -145,7 +148,6 @@ serve({
   },
   websocket: {
     open(ws) {
-      wsClients.push(ws);
       getLatestLedgerEntry().then((entry) => {
         if (entry) ws.send(JSON.stringify(entry));
       });

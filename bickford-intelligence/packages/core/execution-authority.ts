@@ -43,26 +43,30 @@ export class ExecutionAuthority {
 
   async execute(intent: Intent): Promise<Decision> {
     const startTime = performance.now();
-
+    let decision: Decision;
     const patternMatch = await this.findMatchingPattern(intent);
-
     if (patternMatch && patternMatch.confidence > 0.85) {
-      const decision = this.applyLearnedPattern(intent, patternMatch);
+      decision = this.applyLearnedPattern(intent, patternMatch);
       this.updatePattern(patternMatch, performance.now() - startTime);
-      return decision;
+    } else {
+      decision = await this.evaluateWithFullPolicy(intent);
+      decision.execution_time_ms = performance.now() - startTime;
     }
-
-    const decision = await this.evaluateWithFullPolicy(intent);
-
-    decision.execution_time_ms = performance.now() - startTime;
-
     this.decisionLog.push(decision);
     await this.learnPattern(intent, decision);
-
+    // Enforce hash chain integrity after mutation
+    if (this.decisionLog.length > 1) {
+      const prev = this.decisionLog[this.decisionLog.length - 2];
+      const curr = this.decisionLog[this.decisionLog.length - 1];
+      if (curr.intent_id !== prev.intent_id && curr.hash === prev.hash) {
+        throw new Error(
+          `Hash chain integrity violation: duplicate hash for different intent_id`,
+        );
+      }
+    }
     if (this.decisionLog.length > 1000) {
       await this.compressDecisions();
     }
-
     return decision;
   }
 

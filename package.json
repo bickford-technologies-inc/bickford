@@ -1,17 +1,16 @@
 {
   "name": "bickford",
   "private": true,
-  "packageManager": "pnpm@10.28.0",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "typecheck": "tsc --noEmit --project tsconfig.json",
-    "prebuild": "tsx scripts/validate-repo-contents.ts",
+    "dev": "bun run next dev",
+    "build": "bun run next build",
+    "start": "bun run next start",
+    "typecheck": "bun run tsc --noEmit --project tsconfig.json",
+    "prebuild": "bun run tsx scripts/validate-repo-contents.ts",
     "build:canon-console": "bun build ./apps/canon-console --outdir ./dist/canon-console",
     "serve:canon-console": "bun run --cwd ./apps/canon-console index.html",
-    "validate:technical": "tsx scripts/validate-technical-docs.ts",
-    "execute:technical-automation": "tsx scripts/execute-technical-automation.ts"
+    "validate:technical": "bun run tsx scripts/validate-technical-docs.ts",
+    "execute:technical-automation": "bun run tsx scripts/execute-technical-automation.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",

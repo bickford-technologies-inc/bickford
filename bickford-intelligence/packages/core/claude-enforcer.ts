@@ -30,7 +30,7 @@ export interface ClaudeResponse {
 export interface EnforcedClaudeResponse {
   claude_response: ClaudeResponse | null;
   enforcement: EnforcementResult;
-  proof_chain: string[];
+  // ClaudeEnforcer collapsed: delegates all enforcement to ConstitutionalEnforcer. No silent execution, all errors explicit.
   latency_overhead_ms: number;
   cost_analysis: {
     tokens_saved: number; // If denied before calling Claude
@@ -97,28 +97,16 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       postEnforcement,
     );
     const latencyOverhead = performance.now() - startTime;
-
-    return {
-      claude_response: claudeResponse,
-      enforcement: postEnforcement,
-      proof_chain: proofChain,
-      latency_overhead_ms: latencyOverhead,
-      cost_analysis: {
-        tokens_saved: 0, // Didn't save tokens (request allowed)
-        cost_saved_usd: 0,
-      },
-    };
-  }
-
-  private async callClaude(request: ClaudeRequest): Promise<ClaudeResponse> {
-    if (!this.apiKey) {
-      return this.mockClaudeResponse(request);
-    }
-
-    const apiPayload: {
-      model: string;
-      max_tokens: number;
-      messages: Array<{ role: string; content: string }>;
+      const enforcement = await this.enforce(userPrompt, {});
+      if (!enforcement.allowed) {
+        throw new Error(`Execution denied: ${enforcement.reasoning}`);
+      }
+      // All enforcement logic is handled by ConstitutionalEnforcer
+      // No silent execution, all errors explicit
+      return {
+        enforcement,
+        proof_chain: this.generateProofChain(request, null, enforcement),
+      };
       system?: string;
       temperature?: number;
     } = {

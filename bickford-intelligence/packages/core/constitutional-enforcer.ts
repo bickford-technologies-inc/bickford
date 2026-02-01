@@ -87,27 +87,28 @@ export class ConstitutionalEnforcer {
 
     const violated: string[] = [];
     const satisfied: string[] = [];
-
     for (const [id, constraint] of this.constraints) {
       const complies = await this.checkConstraint(prompt, context, constraint);
-
       if (complies) {
         satisfied.push(id);
       } else {
         violated.push(id);
       }
     }
-
     const proof = this.generateProof(prompt, violated, satisfied);
     const executionTime = performance.now() - startTime;
-
+    if (violated.length > 0) {
+      throw new Error(
+        `Execution denied. Violated constraints: ${violated.join(", ")}. Policy version: ${this.policyVersion}.`,
+      );
+    }
     return {
-      allowed: violated.length === 0,
-      violated_constraints: violated,
+      allowed: true,
+      violated_constraints: [],
       satisfied_constraints: satisfied,
+      reasoning: `All ${satisfied.length} Constitutional AI constraints satisfied. Execution allowed. (Verified in ${executionTime.toFixed(2)}ms)`,
       proof_hash: proof,
-      reasoning: this.generateReasoning(violated, satisfied, executionTime),
-      policy_version: this.policyVersion,
+      execution_time_ms: executionTime,
     };
   }
 

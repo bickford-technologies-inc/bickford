@@ -7,6 +7,9 @@ import { ToastStack } from "../components/ToastStack";
 import { LogsModal } from "../components/LogsModal";
 import { MarkdownModal } from "../components/MarkdownModal";
 import { financialDocs } from "../financial/index";
+import useSWR from "swr";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const moduleData = {
   "canon-runtime": {
@@ -16,10 +19,10 @@ const moduleData = {
     description:
       "The Canon Runtime is the core enforcement engine that provides deterministic governance guarantees. It ensures that every AI operation complies with declared policies through cryptographic verification.",
     metrics: [
-      { value: "99.99%", label: "Uptime" },
-      { value: "2.3ms", label: "Avg Latency" },
-      { value: "1.2M", label: "Ops/Day" },
-      { value: "0", label: "Violations" },
+      { value: getMetric("uptime", 0), label: "Uptime" },
+      { value: getMetric("avg_latency", 0), label: "Avg Latency" },
+      { value: getMetric("ops_per_day", 0), label: "Ops/Day" },
+      { value: getMetric("violations", 0), label: "Violations" },
     ],
     actions: [
       "View Configuration",
@@ -35,10 +38,10 @@ const moduleData = {
     description:
       "Converts Constitutional AI principles into mechanically enforceable runtime rules. Supports complex policy compositions and real-time policy updates without service interruption.",
     metrics: [
-      { value: "847", label: "Active Policies" },
-      { value: "12", label: "Policy Groups" },
-      { value: "100%", label: "Coverage" },
-      { value: "34", label: "Custom Rules" },
+      { value: getMetric("active_policies", 0), label: "Active Policies" },
+      { value: getMetric("policy_groups", 0), label: "Policy Groups" },
+      { value: getMetric("policy_coverage", 0), label: "Coverage" },
+      { value: getMetric("custom_rules", 0), label: "Custom Rules" },
     ],
     actions: [
       "Edit Policies",
@@ -54,10 +57,10 @@ const moduleData = {
     description:
       "Cryptographic append-only ledger that maintains tamper-evident records of all governance decisions. Provides complete audit trail for regulatory compliance.",
     metrics: [
-      { value: "2.4M", label: "Total Entries" },
-      { value: "48K", label: "Today" },
-      { value: "0", label: "Tamper Events" },
-      { value: "∞", label: "Retention" },
+      { value: getMetric("total_entries", 0), label: "Total Entries" },
+      { value: getMetric("today", 0), label: "Today" },
+      { value: getMetric("tamper_events", 0), label: "Tamper Events" },
+      { value: getMetric("retention", 0), label: "Retention" },
     ],
     actions: [
       "Query Ledger",
@@ -73,10 +76,10 @@ const moduleData = {
     description:
       "SHA-256 hash validation system that continuously verifies governance state integrity. Detects any drift from canonical policy configurations.",
     metrics: [
-      { value: "48K", label: "Checks/Day" },
-      { value: "100%", label: "Pass Rate" },
-      { value: "<1ms", label: "Check Time" },
-      { value: "0", label: "Drift Events" },
+      { value: getMetric("checks_per_day", 0), label: "Checks/Day" },
+      { value: getMetric("pass_rate", 0), label: "Pass Rate" },
+      { value: getMetric("check_time", 0), label: "Check Time" },
+      { value: getMetric("drift_events", 0), label: "Drift Events" },
     ],
     actions: [
       "Run Verification",
@@ -92,10 +95,10 @@ const moduleData = {
     description:
       "Real-time monitoring system that detects any deviation from declared governance policies. Triggers immediate alerts and can auto-block non-compliant operations.",
     metrics: [
-      { value: "0", label: "Active Drifts" },
-      { value: "24/7", label: "Monitoring" },
-      { value: "50ms", label: "Detection Time" },
-      { value: "100%", label: "Coverage" },
+      { value: getMetric("active_drifts", 0), label: "Active Drifts" },
+      { value: getMetric("monitoring", 0), label: "Monitoring" },
+      { value: getMetric("detection_time", 0), label: "Detection Time" },
+      { value: getMetric("coverage", 0), label: "Coverage" },
     ],
     actions: [
       "View Dashboard",
@@ -111,10 +114,10 @@ const moduleData = {
     description:
       "Instant notification system for governance violations. Supports multiple channels including Slack, PagerDuty, email, and webhooks.",
     metrics: [
-      { value: "3", label: "Active Alerts" },
-      { value: "5", label: "Channels" },
-      { value: "<1s", label: "Delivery Time" },
-      { value: "847", label: "This Month" },
+      { value: getMetric("active_alerts", 0), label: "Active Alerts" },
+      { value: getMetric("channels", 0), label: "Channels" },
+      { value: getMetric("delivery_time", 0), label: "Delivery Time" },
+      { value: getMetric("this_month", 0), label: "This Month" },
     ],
     actions: [
       "View Alerts",
@@ -130,10 +133,10 @@ const moduleData = {
     description:
       "HIPAA-compliant governance module for clinical AI workflows. Ensures patient data protection, audit logging, and regulatory compliance for healthcare AI deployments.",
     metrics: [
-      { value: "100%", label: "HIPAA Compliant" },
-      { value: "12", label: "Hospitals" },
-      { value: "847K", label: "Records/Day" },
-      { value: "0", label: "PHI Violations" },
+      { value: getMetric("hipaa_compliant", 0), label: "HIPAA Compliant" },
+      { value: getMetric("hospitals", 0), label: "Hospitals" },
+      { value: getMetric("records_per_day", 0), label: "Records/Day" },
+      { value: getMetric("phi_violations", 0), label: "PHI Violations" },
     ],
     actions: [
       "View Compliance",
@@ -149,10 +152,10 @@ const moduleData = {
     description:
       "FedRAMP and ITAR compliant governance for defense and government AI deployments. Provides classified data handling and security clearance verification.",
     metrics: [
-      { value: "High", label: "FedRAMP Level" },
-      { value: "ITAR", label: "Certified" },
-      { value: "3", label: "Agencies" },
-      { value: "100%", label: "Cleared Ops" },
+      { value: getMetric("fedramp_level", 0), label: "FedRAMP Level" },
+      { value: getMetric("certified", 0), label: "Certified" },
+      { value: getMetric("agencies", 0), label: "Agencies" },
+      { value: getMetric("cleared_ops", 0), label: "Cleared Ops" },
     ],
     actions: [
       "Security Review",
@@ -168,10 +171,10 @@ const moduleData = {
     description:
       "Unified data lake for all governance, audit, and operational records. Integrates Bickford Chat for natural language data exploration, compliance queries, and instant insights across your entire AI stack.",
     metrics: [
-      { value: "12PB", label: "Total Data" },
-      { value: "1.2B", label: "Records" },
-      { value: "99.999%", label: "Durability" },
-      { value: "Bickford Chat", label: "AI Assistant" },
+      { value: getMetric("total_data", 0), label: "Total Data" },
+      { value: getMetric("records", 0), label: "Records" },
+      { value: getMetric("durability", 0), label: "Durability" },
+      { value: getMetric("ai_assistant", 0), label: "AI Assistant" },
     ],
     actions: [
       "Open Bickford Chat",
@@ -187,10 +190,10 @@ const moduleData = {
     description:
       "SOX and SOC2 compliant governance for financial AI systems. Provides audit trails, access controls, and regulatory reporting for fintech deployments.",
     metrics: [
-      { value: "SOC2", label: "Type II" },
-      { value: "SOX", label: "Compliant" },
-      { value: "8", label: "Banks" },
-      { value: "1", label: "Pending" },
+      { value: getMetric("soc2", 0), label: "SOC2" },
+      { value: getMetric("sox", 0), label: "SOX" },
+      { value: getMetric("banks", 0), label: "Banks" },
+      { value: getMetric("pending", 0), label: "Pending" },
     ],
     actions: [
       "Compliance Dashboard",
@@ -206,10 +209,10 @@ const moduleData = {
     description:
       "Access all banker-grade financial, acquisition, and valuation documents. Instantly open, read, and analyze every strategic asset in the Bickford data room.",
     metrics: [
-      { value: "11", label: "Documents" },
-      { value: "100%", label: "Coverage" },
-      { value: "Banker", label: "Grade" },
-      { value: "Live", label: "Data Room" },
+      { value: getMetric("documents", 0), label: "Documents" },
+      { value: getMetric("coverage", 0), label: "Coverage" },
+      { value: getMetric("grade", 0), label: "Grade" },
+      { value: getMetric("data_room", 0), label: "Data Room" },
     ],
     actions: [
       "View Anthropic One Pager",
@@ -269,7 +272,17 @@ const integrationNav = [
   { label: "Finance Module", id: "finance", icon: "🟡" },
 ];
 
-function Toast({ message, type, onClose, id }: { message: string; type: string; onClose: () => void; id: number }) {
+function Toast({
+  message,
+  type,
+  onClose,
+  id,
+}: {
+  message: string;
+  type: string;
+  onClose: () => void;
+  id: number;
+}) {
   React.useEffect(() => {
     const timer = setTimeout(onClose, 4000);
     return () => clearTimeout(timer);
@@ -320,8 +333,14 @@ function Toast({ message, type, onClose, id }: { message: string; type: string; 
 export default function HomePage() {
   const [activeView, setActiveView] = useState("dashboard");
   const [detailPanel, setDetailPanel] = useState<string | null>(null);
-  const [modal, setModal] = useState<{ type: string; title: string; body: string } | null>(null);
-  const [toasts, setToasts] = useState<Array<{ message: string; type: string; id: number }>>([]);
+  const [modal, setModal] = useState<{
+    type: string;
+    title: string;
+    body: string;
+  } | null>(null);
+  const [toasts, setToasts] = useState<
+    Array<{ message: string; type: string; id: number }>
+  >([]);
   const [search, setSearch] = useState("");
   const [searchActive, setSearchActive] = useState(false);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
@@ -421,7 +440,10 @@ export default function HomePage() {
       openLogsModal(moduleId);
     } else if (action === "Update Policy") {
       await new Promise((r) => setTimeout(r, 1000));
-      showToast(`Policy updated for ${moduleData[moduleId as keyof typeof moduleData].title}.`, "success");
+      showToast(
+        `Policy updated for ${moduleData[moduleId as keyof typeof moduleData].title}.`,
+        "success",
+      );
     } else if (action === "Edit Policies") {
       showModal(
         "info",
@@ -460,14 +482,17 @@ export default function HomePage() {
 
   function startEditDescription() {
     if (detailPanel) {
-      setEditedDescription(moduleData[detailPanel as keyof typeof moduleData].description);
+      setEditedDescription(
+        moduleData[detailPanel as keyof typeof moduleData].description,
+      );
       setEditingDescription(true);
     }
   }
   function saveDescription() {
     // In a real app, this would persist to backend
     if (detailPanel) {
-      moduleData[detailPanel as keyof typeof moduleData].description = editedDescription;
+      moduleData[detailPanel as keyof typeof moduleData].description =
+        editedDescription;
       setEditingDescription(false);
       showToast("Description updated!", "success");
     }
@@ -488,7 +513,11 @@ export default function HomePage() {
   const integrationNavRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Keyboard navigation for sidebar
-  function handleSidebarKeyDown(e: React.KeyboardEvent, idx: number, section: string) {
+  function handleSidebarKeyDown(
+    e: React.KeyboardEvent,
+    idx: number,
+    section: string,
+  ) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       if (section === "nav") {
@@ -526,7 +555,9 @@ export default function HomePage() {
   }
 
   const [hasMounted, setHasMounted] = useState(false);
-  useEffect(() => { setHasMounted(true); }, []);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   if (!hasMounted) return null;
 
