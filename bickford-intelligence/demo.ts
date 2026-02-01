@@ -27,5 +27,9 @@ async function main() {
   );
   console.log(
     "╚══════════════════════════════════════════════════════════════╝",
+  );
   // Silent execution: all metrics and results are available via getMetrics()
   console.log("\n");
+}
+
+main().catch(console.error);
