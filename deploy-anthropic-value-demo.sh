@@ -68,7 +68,7 @@ echo "[3/3] Deployment complete."
 echo "If public endpoints are enabled, share with Anthropic for review."
 
 # Pre-flight runner token validation (multi-system, optional)
-if [[ -n "$RUNNER_TOKEN" && -n "$RUNNER_REPO" && -n "$RUNNER_OWNER" && -n "$RUNNER_SYSTEM" ]]; then
+if [[ -n "${RUNNER_TOKEN:-}" && -n "${RUNNER_REPO:-}" && -n "${RUNNER_OWNER:-}" && -n "${RUNNER_SYSTEM:-}" ]]; then
     echo "[INFO] Running pre-flight runner token validation (multi-system)..."
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     if "$SCRIPT_DIR/../runner-preflight-check-generic.sh" "$RUNNER_SYSTEM" "$RUNNER_OWNER" "$RUNNER_REPO" "$RUNNER_TOKEN"; then
