@@ -53,10 +53,12 @@ If a request violates these principles, you must refuse clearly and explain why.
 export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
   private apiKey: string;
   private apiEndpoint: string;
+  private organizationId: string;
 
-  constructor(apiKey?: string) {
+  constructor(apiKey?: string, organizationId?: string) {
     super();
     this.apiKey = apiKey || process.env.ANTHROPIC_API_KEY || "";
+    this.organizationId = organizationId || process.env.ANTHROPIC_ORG_ID || "";
     this.apiEndpoint = "https://api.anthropic.com/v1/messages";
   }
 
@@ -121,13 +123,18 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       apiPayload.temperature = request.temperature;
     }
 
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      "x-api-key": this.apiKey,
+      "anthropic-version": "2023-06-01",
+    };
+    if (this.organizationId) {
+      headers["anthropic-organization"] = this.organizationId;
+    }
+
     const response = await fetch(this.apiEndpoint, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": this.apiKey,
-        "anthropic-version": "2023-06-01",
-      },
+      headers,
       body: JSON.stringify(apiPayload),
     });
 
