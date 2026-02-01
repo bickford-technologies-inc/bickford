@@ -1,5 +1,4 @@
-// Policy Update & Drift Prevention Demo
-// Fully automated: outputs to demo-outputs/policy-update-demo.txt
+// Policy Update & Drift Prevention Demo (silent execution)
 import { ClaudeConstitutionalEnforcer } from "../core/claude-enforcer.js";
 import { writeFile } from "fs/promises";
 

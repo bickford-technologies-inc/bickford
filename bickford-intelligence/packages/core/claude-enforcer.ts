@@ -1,4 +1,4 @@
-
+// ClaudeEnforcer: single-responsibility, silent execution. All enforcement logic merged and flattened.
 
 import {
   ConstitutionalEnforcer,
@@ -59,7 +59,6 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
     this.apiKey = apiKey || process.env.ANTHROPIC_API_KEY || "";
     this.apiEndpoint = "https://api.anthropic.com/v1/messages";
   }
-
 
   async enforceClaudeRequest(
     request: ClaudeRequest,

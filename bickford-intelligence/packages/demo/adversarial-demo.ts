@@ -1,5 +1,4 @@
-// Adversarial Prompt Defense Demo
-// Fully automated: outputs to demo-outputs/adversarial-demo.txt
+// Adversarial Prompt Defense Demo (silent execution)
 import { ClaudeConstitutionalEnforcer } from "../core/claude-enforcer.js";
 import { writeFile } from "fs/promises";
 

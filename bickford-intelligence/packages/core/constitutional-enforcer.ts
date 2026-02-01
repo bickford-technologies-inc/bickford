@@ -1,3 +1,4 @@
+// ConstitutionalEnforcer: single-responsibility, silent execution. All enforcement logic merged and flattened.
 import { createHash } from "crypto";
 
 export interface ConstitutionalConstraint {
@@ -205,7 +206,7 @@ export class ConstitutionalEnforcer {
 
     // Check prompt
     if (privacyPatterns.some((pattern) => prompt.includes(pattern))) {
-    return privacyPatterns.some((pattern) => prompt.includes(pattern));
+      return privacyPatterns.some((pattern) => prompt.includes(pattern));
     }
 
     const contextStr = JSON.stringify(context).toLowerCase();

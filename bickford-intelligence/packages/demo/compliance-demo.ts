@@ -2,64 +2,7 @@
 
 interface LedgerEntry {
   hash: string;
-  previous_hash: string;
-  decision: {
-    intent_id: string;
-    status: string;
-    policy: string;
-    reasoning: string;
-    hash: string;
-    timestamp: number;
-    execution_time_ms: number;
-  };
-  enforcement: {
-    allowed: boolean;
-    violated_constraints: string[];
-    satisfied_constraints: string[];
-    proof_hash: string;
-    reasoning: string;
-    policy_version: string;
-  };
-  metrics: {
-    total_executions: number;
-    patterns_learned: number;
-    compression_ratio: number;
-    average_execution_time_ms: number;
-    intelligence_compound_factor: number;
-    storage_savings_percent: number;
-  };
-  proof_chain: string[];
-  timestamp: number;
-}
-
-interface SOC2Control {
-  control_id: string;
-  control_name: string;
-  description: string;
-  evidence_count: number;
-  automated: boolean;
-  manual_review_required: boolean;
-  cost_avoidance_usd: number;
-}
-
-interface ComplianceReport {
-  framework: string;
-  generated_at: string;
-  policy_version: string;
-  total_controls: number;
-  automated_controls: number;
-  automation_percentage: number;
-  annual_cost_avoidance_usd: number;
-  controls: SOC2Control[];
-  audit_trail_summary: {
-    total_decisions: number;
-    allowed: number;
-    denied: number;
-    cryptographic_proofs: number;
-  };
-}
-
-class ComplianceArtifactGenerator {
+  // Silent execution: all metrics and results are available via getMetrics()
   private ledger: LedgerEntry[];
 
   private constructor(ledger: LedgerEntry[]) {

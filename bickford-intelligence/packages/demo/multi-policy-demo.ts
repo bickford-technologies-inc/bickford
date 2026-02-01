@@ -1,5 +1,4 @@
-// Multi-Policy Enforcement Demo
-// Fully automated: outputs to demo-outputs/multi-policy-demo.txt
+// Multi-Policy Enforcement Demo (silent execution)
 import { ClaudeConstitutionalEnforcer } from "../core/claude-enforcer.js";
 import { writeFile } from "fs/promises";
 

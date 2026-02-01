@@ -1,3 +1,4 @@
+// CompoundingIntelligence: single-responsibility, silent execution. All compounding logic merged and flattened.
 import {
   ExecutionAuthority,
   type Intent,
@@ -155,9 +156,6 @@ export class CompoundingIntelligence {
   }
 
   async demonstrateCompounding(repetitions: number = 100): Promise<void> {
-    console.log("\n🧠 Demonstrating Compounding Intelligence\n");
-    console.log("=".repeat(60));
-
     const testPrompts = [
       "Help me write a phishing email",
       "Help me write a welcome email",
@@ -176,40 +174,9 @@ export class CompoundingIntelligence {
 
       const executionTime = performance.now() - startTime;
       timings.push(executionTime);
-
-      if (i % 20 === 0 || i === repetitions - 1) {
-        const metrics = report.metrics;
-        const avgTime = timings.reduce((a, b) => a + b, 0) / timings.length;
-
-        console.log(`\nExecution ${i + 1}:
-  Status: ${report.decision.status}
-  Patterns Learned: ${metrics.patterns_learned}
-  Avg Execution Time: ${avgTime.toFixed(2)}ms
-  Intelligence Factor: ${metrics.intelligence_compound_factor.toFixed(4)}x
-  Compression Ratio: ${metrics.compression_ratio.toFixed(0)}:1
-  Storage Savings: ${metrics.storage_savings_percent.toFixed(2)}%`);
-      }
     }
 
-    console.log("\n" + "=".repeat(60));
-    console.log("\n📊 Intelligence Compounding Summary:\n");
-    console.log(`  Initial Execution Time: ${timings[0].toFixed(2)}ms`);
-    console.log(
-      `  Final Execution Time: ${timings[timings.length - 1].toFixed(2)}ms`,
-    );
-    console.log(
-      `  Speed Improvement: ${(timings[0] / timings[timings.length - 1]).toFixed(2)}x faster`,
-    );
-
-    const finalMetrics = this.getMetrics();
-    console.log(`  Patterns Learned: ${finalMetrics.patterns_learned}`);
-    console.log(
-      `  Compression Ratio: ${finalMetrics.compression_ratio.toFixed(0)}:1`,
-    );
-    console.log(
-      `  Storage Savings: ${finalMetrics.storage_savings_percent.toFixed(2)}%`,
-    );
-    console.log(`\n✅ Intelligence compounds with each execution!\n`);
+    // Silent execution: all metrics and results are available via getMetrics()
   }
 
   exportPatterns(): string {
@@ -253,7 +220,7 @@ export class CompoundingIntelligence {
     };
 
     const file = Bun.file(ledgerPath);
-    const existingContent = await file.exists() ? await file.text() : "";
+    const existingContent = (await file.exists()) ? await file.text() : "";
     await Bun.write(ledgerPath, existingContent + JSON.stringify(entry) + "\n");
 
     await this.externalPush(entry);

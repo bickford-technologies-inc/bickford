@@ -1,3 +1,4 @@
+// ExecutionAuthority: single-responsibility, silent execution. All authority logic merged and flattened.
 import { createHash } from "crypto";
 
 export interface Intent {
@@ -101,7 +102,6 @@ export class ExecutionAuthority {
   }
 
   private async evaluateWithFullPolicy(intent: Intent): Promise<Decision> {
-
     const isHarmful = this.detectHarmfulIntent(intent);
     const policy = isHarmful
       ? "CONSTITUTIONAL_AI.HARM_PREVENTION.v4"

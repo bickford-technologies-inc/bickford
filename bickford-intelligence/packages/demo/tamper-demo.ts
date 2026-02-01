@@ -1,5 +1,3 @@
-// Tamper Detection/Forensics Demo
-// Fully automated: outputs to demo-outputs/tamper-demo.txt
 import { createHash } from "crypto";
 import { writeFile } from "fs/promises";
 
@@ -21,7 +19,7 @@ async function run() {
   output +=
     "╚═══════════════════════════════════════════════════════════════════════╝\n\n";
 
-  // Valid proof chain
+  // Valid proof chain (silent execution)
   const requestHash = hash(request);
   const enforcementHash = hash(enforcement);
   const responseHash = hash(response);

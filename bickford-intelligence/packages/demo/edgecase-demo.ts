@@ -1,5 +1,4 @@
-// Edge Case/Borderline Prompt Demo
-// Fully automated: outputs to demo-outputs/edgecase-demo.txt
+// Edge Case/Borderline Prompt Demo (silent execution)
 import { ClaudeConstitutionalEnforcer } from "../core/claude-enforcer.js";
 import { writeFile } from "fs/promises";
 
