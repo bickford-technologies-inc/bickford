@@ -97,18 +97,25 @@ export class ConstitutionalEnforcer {
     }
     const proof = this.generateProof(prompt, violated, satisfied);
     const executionTime = performance.now() - startTime;
+
     if (violated.length > 0) {
-      throw new Error(
-        `Execution denied. Violated constraints: ${violated.join(", ")}. Policy version: ${this.policyVersion}.`,
-      );
+      return {
+        allowed: false,
+        violated_constraints: violated,
+        satisfied_constraints: satisfied,
+        reasoning: `Execution denied. Violated constraints: ${violated.join(", ")}. Policy version: ${this.policyVersion}.`,
+        proof_hash: proof,
+        policy_version: this.policyVersion,
+      };
     }
+
     return {
       allowed: true,
       violated_constraints: [],
       satisfied_constraints: satisfied,
       reasoning: `All ${satisfied.length} Constitutional AI constraints satisfied. Execution allowed. (Verified in ${executionTime.toFixed(2)}ms)`,
       proof_hash: proof,
-      execution_time_ms: executionTime,
+      policy_version: this.policyVersion,
     };
   }
 
@@ -202,16 +209,27 @@ export class ConstitutionalEnforcer {
       "password",
       "private key",
       "api key",
-      "secret",
+      " secret ",
+      " secret",
+      "secret ",
     ];
 
-    // Check prompt
-    if (privacyPatterns.some((pattern) => prompt.includes(pattern))) {
-      return privacyPatterns.some((pattern) => prompt.includes(pattern));
+    // Check prompt - use word boundary matching for "secret" to avoid false positives
+    const hasPrivacyViolation = privacyPatterns.some((pattern) => {
+      if (pattern.includes("secret")) {
+        // Use regex for word boundary matching
+        const regex = new RegExp(`\\bsecret\\b`, "i");
+        return regex.test(prompt);
+      }
+      return prompt.includes(pattern);
+    });
+
+    if (hasPrivacyViolation) {
+      return true;
     }
 
     const contextStr = JSON.stringify(context).toLowerCase();
-    return privacyPatterns.some((pattern) => contextStr.includes(pattern));
+    return privacyPatterns.some((pattern) => contextStr.includes(pattern.trim()));
   }
 
   private detectMisinformationRequest(prompt: string): boolean {

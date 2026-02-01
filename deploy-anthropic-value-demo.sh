@@ -17,6 +17,31 @@
 
 set -euo pipefail
 
+# 0. Validate required environment variables
+echo "[0/3] Checking required environment variables..."
+
+if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
+    echo "ERROR: ANTHROPIC_API_KEY is not set."
+    echo ""
+    echo "Please set the environment variable before running:"
+    echo "  export ANTHROPIC_API_KEY=\"your-api-key-here\""
+    echo ""
+    echo "Or run with inline variables:"
+    echo "  ANTHROPIC_API_KEY=\"your-key\" ./deploy-anthropic-value-demo.sh"
+    exit 1
+fi
+
+if [[ -z "${ANTHROPIC_ORG_ID:-}" ]]; then
+    echo "WARNING: ANTHROPIC_ORG_ID is not set."
+    echo "  Some API calls may fail if your key requires an organization ID."
+    echo "  Set with: export ANTHROPIC_ORG_ID=\"your-org-id\""
+    echo ""
+fi
+
+echo "  ANTHROPIC_API_KEY: set (${#ANTHROPIC_API_KEY} chars)"
+echo "  ANTHROPIC_ORG_ID: ${ANTHROPIC_ORG_ID:-not set}"
+echo ""
+
 # 1. Install dependencies
 echo "[1/3] Installing dependencies (bun install)..."
 bun install

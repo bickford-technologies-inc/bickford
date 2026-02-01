@@ -30,7 +30,7 @@ export interface ClaudeResponse {
 export interface EnforcedClaudeResponse {
   claude_response: ClaudeResponse | null;
   enforcement: EnforcementResult;
-  // ClaudeEnforcer collapsed: delegates all enforcement to ConstitutionalEnforcer. No silent execution, all errors explicit.
+  proof_chain: string[];
   latency_overhead_ms: number;
   cost_analysis: {
     tokens_saved: number; // If denied before calling Claude
@@ -53,10 +53,12 @@ If a request violates these principles, you must refuse clearly and explain why.
 export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
   private apiKey: string;
   private apiEndpoint: string;
+  private organizationId: string;
 
-  constructor(apiKey?: string) {
+  constructor(apiKey?: string, organizationId?: string) {
     super();
     this.apiKey = apiKey || process.env.ANTHROPIC_API_KEY || "";
+    this.organizationId = organizationId || process.env.ANTHROPIC_ORG_ID || "";
     this.apiEndpoint = "https://api.anthropic.com/v1/messages";
   }
 
@@ -97,16 +99,24 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       postEnforcement,
     );
     const latencyOverhead = performance.now() - startTime;
-      const enforcement = await this.enforce(userPrompt, {});
-      if (!enforcement.allowed) {
-        throw new Error(`Execution denied: ${enforcement.reasoning}`);
-      }
-      // All enforcement logic is handled by ConstitutionalEnforcer
-      // No silent execution, all errors explicit
-      return {
-        enforcement,
-        proof_chain: this.generateProofChain(request, null, enforcement),
-      };
+
+    return {
+      claude_response: claudeResponse,
+      enforcement: postEnforcement,
+      proof_chain: proofChain,
+      latency_overhead_ms: latencyOverhead,
+      cost_analysis: {
+        tokens_saved: 0,
+        cost_saved_usd: 0,
+      },
+    };
+  }
+
+  private async callClaude(request: ClaudeRequest): Promise<ClaudeResponse> {
+    const apiPayload: {
+      model: string;
+      max_tokens: number;
+      messages: Array<{ role: string; content: string }>;
       system?: string;
       temperature?: number;
     } = {
@@ -121,13 +131,18 @@ export class ClaudeConstitutionalEnforcer extends ConstitutionalEnforcer {
       apiPayload.temperature = request.temperature;
     }
 
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      "x-api-key": this.apiKey,
+      "anthropic-version": "2023-06-01",
+    };
+    if (this.organizationId) {
+      headers["anthropic-organization"] = this.organizationId;
+    }
+
     const response = await fetch(this.apiEndpoint, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": this.apiKey,
-        "anthropic-version": "2023-06-01",
-      },
+      headers,
       body: JSON.stringify(apiPayload),
     });
 
