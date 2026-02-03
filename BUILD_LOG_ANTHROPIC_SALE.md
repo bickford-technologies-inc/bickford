@@ -1,15 +1,10 @@
-# Bickford Technologies - Anthropic Acquisition Build Log
-
 **Build Date:** 2026-02-03
 **Build Status:** SUCCESS
 **Build Time:** 33 seconds
 **Platform:** Vercel (Washington, D.C., East - iad1)
 **Build Machine:** 30 cores, 60 GB RAM (Turbo Build Machine)
-
 ---
-
 ## Table of Contents
-
 1. [Executive Summary](#executive-summary)
 2. [Build Output Summary](#build-output-summary)
 3. [UI Pages (Displayed in Browser)](#ui-pages-displayed-in-browser)
@@ -20,47 +15,33 @@
 8. [Non-UI Files (Backend/Config)](#non-ui-files-backendconfig)
 9. [File Integrity Hashes](#file-integrity-hashes)
 10. [Value Proposition](#value-proposition)
-
 ---
-
 ## Executive Summary
-
 This build log contains all essential code files for the Bickford acquisition package. The system provides:
-
 - **Mechanical Constitutional AI enforcement** at runtime
 - **Cryptographic proof chains** for every AI decision
 - **Auto-generated compliance artifacts** for SOC-2, ISO 27001, HIPAA, FedRAMP
 - **$450M-750M/year** addressable market unlock
-
 **Acquisition Cost:** $25M-150M
 **Payback Period:** <1 year
 **3-Year Value:** $1.4B+
-
 ---
-
 ## Build Output Summary
-
 ```
 08:08:46.749 Running build in Washington, D.C., USA (East) – iad1 (Turbo Build Machine)
 08:09:22.530 Build completed successfully
-
 Next.js 15.5.11
 TypeScript 5.9.3
 pnpm 10.28.0
 Prisma 7.3.0
-
 Static pages generated: 27
 Serverless functions: 15
 Total deployment files: 1146
 Build cache: 344.74 MB
 ```
-
 ---
-
 ## UI Pages (Displayed in Browser)
-
 These files are routed as Next.js pages and displayed in the UI:
-
 | Route | File | Size | First Load JS |
 |-------|------|------|---------------|
 | `/` | `pages/index.tsx` | 44.9 kB | 131 kB |
@@ -89,11 +70,8 @@ These files are routed as Next.js pages and displayed in the UI:
 | `/ledger` | `pages/ledger.tsx` | 2.06 kB | 86.1 kB |
 | `/repo/[...path]` | `pages/repo/[...path].tsx` | 1.08 kB | 85.1 kB |
 | `/verify` | `pages/verify.tsx` | 2.47 kB | 86.5 kB |
-
 ---
-
 ## API Endpoints
-
 | Endpoint | Purpose |
 |----------|---------|
 | `/api/chat` | Chat interface with Constitutional AI enforcement |
@@ -117,6 +95,259 @@ These files are routed as Next.js pages and displayed in the UI:
 | `/api/repo-index` | Repository index API |
 | `/api/repo/[...path]` | Repository file access API |
 | `/api/verify-ledger` | Cryptographic ledger verification API |
+---
+## Core Enforcement Engine Code
+...existing code...
+---
+## Demo Scripts Code
+...existing code...
+---
+## UI Components Code
+...existing code...
+---
+## Non-UI Files (Backend/Config)
+...existing code...
+---
+## File Integrity Hashes
+...existing code...
+---
+## Value Proposition
+...existing code...
+---
+## Quick Start
+```bash
+# Set credentials
+export ANTHROPIC_API_KEY="your-key"
+export ANTHROPIC_ORG_ID="your-org-id"
+# Install dependencies
+bun install
+# Run demos
+bun run bickford-intelligence/packages/demo/claude-comparison.ts
+bun run bickford-intelligence/packages/demo/compliance-demo.ts
+bun run bickford-intelligence/packages/demo/regulator-demo.ts
+# Start development server
+pnpm dev
+# Production build
+pnpm build
+```
+---
+**Build Log Generated:** 2026-02-03
+**Total Files:** 1146
+**Build Status:** SUCCESS
+**Ready for Anthropic Review**
+<<<<<<< HEAD
+
+**Build Date:** 2026-02-03
+**Build Status:** SUCCESS
+**Build Time:** 33 seconds
+**Platform:** Vercel (Washington, D.C., East - iad1)
+**Build Machine:** 30 cores, 60 GB RAM (Turbo Build Machine)
+=======
+<<<<<<< HEAD
+
+=======
+**Build Machine:** 30 cores, 60 GB RAM (Turbo Build Machine)
+<<<<<<< HEAD
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
+---
+
+## Table of Contents
+<<<<<<< HEAD
+
+=======
+=======
+---
+## Table of Contents
+>>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+1. [Executive Summary](#executive-summary)
+2. [Build Output Summary](#build-output-summary)
+3. [UI Pages (Displayed in Browser)](#ui-pages-displayed-in-browser)
+4. [API Endpoints](#api-endpoints)
+5. [Core Enforcement Engine Code](#core-enforcement-engine-code)
+6. [Demo Scripts Code](#demo-scripts-code)
+7. [UI Components Code](#ui-components-code)
+<<<<<<< HEAD
+8. [Non-UI Files (Backend/Config)](#non-ui-files-backendconfig)
+9. [File Integrity Hashes](#file-integrity-hashes)
+10. [Value Proposition](#value-proposition)
+
+---
+
+## Executive Summary
+
+This build log contains all essential code files for the Bickford acquisition package. The system provides:
+
+=======
+9. [File Integrity Hashes](#file-integrity-hashes)
+10. [Value Proposition](#value-proposition)
+## Executive Summary
+
+This build log contains all essential code files for the Bickford acquisition package. The system provides:
+=======
+---
+## Executive Summary
+This build log contains all essential code files for the Bickford acquisition package. The system provides:
+>>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+- **Mechanical Constitutional AI enforcement** at runtime
+- **Cryptographic proof chains** for every AI decision
+- **Auto-generated compliance artifacts** for SOC-2, ISO 27001, HIPAA, FedRAMP
+- **$450M-750M/year** addressable market unlock
+<<<<<<< HEAD
+
+**Acquisition Cost:** $25M-150M
+**Payback Period:** <1 year
+**3-Year Value:** $1.4B+
+=======
+<<<<<<< HEAD
+
+**Acquisition Cost:** $25M-150M
+**Payback Period:** <1 year
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
+---
+
+## Build Output Summary
+
+```
+08:08:46.749 Running build in Washington, D.C., USA (East) – iad1 (Turbo Build Machine)
+08:09:22.530 Build completed successfully
+
+<<<<<<< HEAD
+=======
+=======
+**Acquisition Cost:** $25M-150M
+**Payback Period:** <1 year
+**3-Year Value:** $1.4B+
+---
+## Build Output Summary
+```
+08:08:46.749 Running build in Washington, D.C., USA (East) – iad1 (Turbo Build Machine)
+08:09:22.530 Build completed successfully
+>>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+Next.js 15.5.11
+TypeScript 5.9.3
+pnpm 10.28.0
+Prisma 7.3.0
+<<<<<<< HEAD
+
+Static pages generated: 27
+Serverless functions: 15
+Total deployment files: 1146
+Build cache: 344.74 MB
+```
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
+Static pages generated: 27
+Serverless functions: 15
+Total deployment files: 1146
+```
+<<<<<<< HEAD
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
+---
+
+## UI Pages (Displayed in Browser)
+
+These files are routed as Next.js pages and displayed in the UI:
+
+<<<<<<< HEAD
+=======
+=======
+---
+## UI Pages (Displayed in Browser)
+These files are routed as Next.js pages and displayed in the UI:
+>>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+| Route | File | Size | First Load JS |
+|-------|------|------|---------------|
+| `/` | `pages/index.tsx` | 44.9 kB | 131 kB |
+| `/404` | `pages/404.tsx` | 180 B | 84.2 kB |
+| `/chat` | `pages/chat.tsx` | 477 B | 84.5 kB |
+| `/compliance/cost-avoidance` | `pages/compliance/cost-avoidance.tsx` | 516 B | 84.6 kB |
+| `/compliance/iso27001` | `pages/compliance/iso27001.tsx` | 1 kB | 85 kB |
+| `/compliance/key-benefits` | `pages/compliance/key-benefits.tsx` | 544 B | 84.6 kB |
+| `/compliance/soc2` | `pages/compliance/soc2.tsx` | 1.18 kB | 85.2 kB |
+| `/compression/result` | `pages/compression/result.tsx` | 1.13 kB | 85.2 kB |
+<<<<<<< HEAD
+| `/customer-workflows` | `pages/customer-workflows/index.tsx` | 457 B | 86.8 kB |
+| `/customer-workflows/diagrams` | `pages/customer-workflows/diagrams.tsx` | 686 B | 84.7 kB |
+| `/customer-workflows/executive-summary` | `pages/customer-workflows/executive-summary.tsx` | 1.13 kB | 85.2 kB |
+| `/customer-workflows/full-workflows` | `pages/customer-workflows/full-workflows.tsx` | 879 B | 84.9 kB |
+| `/customer-workflows/pitch-script` | `pages/customer-workflows/pitch-script.tsx` | 911 B | 85 kB |
+| `/customer-workflows/summary` | `pages/customer-workflows/summary.tsx` | 977 B | 85 kB |
+| `/demo/adversarial` | `pages/demo/adversarial.tsx` | 1.79 kB | 85.8 kB |
+| `/demo/batch` | `pages/demo/batch.tsx` | 2.41 kB | 86.4 kB |
+| `/demo/claude-comparison` | `pages/demo/claude-comparison.tsx` | 2.43 kB | 86.5 kB |
+| `/demo/edgecase` | `pages/demo/edgecase.tsx` | 1.65 kB | 85.7 kB |
+| `/demo/multi-policy` | `pages/demo/multi-policy.tsx` | 1.57 kB | 85.6 kB |
+| `/demo/policy-update` | `pages/demo/policy-update.tsx` | 864 B | 84.9 kB |
+| `/demo/regulator` | `pages/demo/regulator.tsx` | 1.68 kB | 85.7 kB |
+| `/demo/tamper` | `pages/demo/tamper.tsx` | 797 B | 84.8 kB |
+| `/docs/technical/[file]` | `pages/docs/technical/[file].tsx` | 627 B | 84.7 kB |
+| `/ledger` | `pages/ledger.tsx` | 2.06 kB | 86.1 kB |
+=======
+| `/customer-workflows/diagrams` | `pages/customer-workflows/diagrams.tsx` | 686 B | 84.7 kB |
+| `/customer-workflows/executive-summary` | `pages/customer-workflows/executive-summary.tsx` | 1.13 kB | 85.2 kB |
+| `/customer-workflows/pitch-script` | `pages/customer-workflows/pitch-script.tsx` | 911 B | 85 kB |
+| `/customer-workflows/summary` | `pages/customer-workflows/summary.tsx` | 977 B | 85 kB |
+| `/demo/batch` | `pages/demo/batch.tsx` | 2.41 kB | 86.4 kB |
+| `/demo/claude-comparison` | `pages/demo/claude-comparison.tsx` | 2.43 kB | 86.5 kB |
+| `/demo/multi-policy` | `pages/demo/multi-policy.tsx` | 1.57 kB | 85.6 kB |
+| `/demo/policy-update` | `pages/demo/policy-update.tsx` | 864 B | 84.9 kB |
+| `/demo/tamper` | `pages/demo/tamper.tsx` | 797 B | 84.8 kB |
+| `/docs/technical/[file]` | `pages/docs/technical/[file].tsx` | 627 B | 84.7 kB |
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+| `/repo/[...path]` | `pages/repo/[...path].tsx` | 1.08 kB | 85.1 kB |
+| `/verify` | `pages/verify.tsx` | 2.47 kB | 86.5 kB |
+
+---
+
+## API Endpoints
+
+<<<<<<< HEAD
+=======
+=======
+---
+## API Endpoints
+>>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+| Endpoint | Purpose |
+|----------|---------|
+| `/api/chat` | Chat interface with Constitutional AI enforcement |
+| `/api/decisions` | Decision audit trail API |
+| `/api/demo/alert-system` | Alert system demonstration |
+| `/api/demo/audit-ledger` | Audit ledger demonstration |
+| `/api/demo/canon-runtime` | Canon runtime demonstration |
+<<<<<<< HEAD
+| `/api/demo/defense` | Defense/government compliance demo |
+=======
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+| `/api/demo/drift-detection` | Drift detection demonstration |
+| `/api/demo/finance` | Financial compliance demo |
+| `/api/demo/healthcare` | Healthcare/HIPAA compliance demo |
+| `/api/demo/policy-engine` | Policy engine demonstration |
+| `/api/demo/verification` | Verification demonstration |
+| `/api/docs/technical/[file]` | Technical documentation API |
+| `/api/exec` | Execution API |
+| `/api/health` | Health check endpoint |
+| `/api/intents` | Intent management API |
+| `/api/ledger` | Ledger query API |
+| `/api/messages` | Message handling API |
+| `/api/metrics` | Metrics dashboard API |
+| `/api/repo-index` | Repository index API |
+| `/api/repo/[...path]` | Repository file access API |
+| `/api/verify-ledger` | Cryptographic ledger verification API |
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
 
 ---
 
@@ -1140,18 +1371,58 @@ CANON/canon.json: 1007f89f08b3a22c5a4e0592c8d936c23bd54f51a7ef763d7d8103e2c9ec0e
 
 ## Quick Start
 
+<<<<<<< HEAD
+=======
+=======
+---
+## Core Enforcement Engine Code
+...existing code...
+---
+## Demo Scripts Code
+...existing code...
+---
+## UI Components Code
+...existing code...
+---
+## Non-UI Files (Backend/Config)
+...existing code...
+---
+## File Integrity Hashes
+...existing code...
+---
+## Value Proposition
+...existing code...
+---
+## Quick Start
+>>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
 ```bash
 # Set credentials
 export ANTHROPIC_API_KEY="your-key"
 export ANTHROPIC_ORG_ID="your-org-id"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
 
 # Install dependencies
 bun install
 
+<<<<<<< HEAD
+=======
+=======
+# Install dependencies
+bun install
+>>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
 # Run demos
 bun run bickford-intelligence/packages/demo/claude-comparison.ts
 bun run bickford-intelligence/packages/demo/compliance-demo.ts
 bun run bickford-intelligence/packages/demo/regulator-demo.ts
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
 
 # Start development server
 pnpm dev
@@ -1166,3 +1437,18 @@ pnpm build
 **Total Files:** 1146
 **Build Status:** SUCCESS
 **Ready for Anthropic Review**
+<<<<<<< HEAD
+=======
+=======
+# Start development server
+pnpm dev
+# Production build
+pnpm build
+```
+---
+**Build Log Generated:** 2026-02-03
+**Total Files:** 1146
+**Build Status:** SUCCESS
+**Ready for Anthropic Review**
+>>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
+>>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
