@@ -4,6 +4,11 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+// Type guard for TextBlock
+function isTextBlock(block: any): block is { type: "text"; text: string } {
+  return block && block.type === "text" && typeof block.text === "string";
+}
+
 export async function sendMessageToBickfordChat(
   message: string,
 ): Promise<{ reply: string }> {
@@ -13,9 +18,9 @@ export async function sendMessageToBickfordChat(
     max_tokens: 256,
     messages: [{ role: "user", content: message }],
   });
-  // Find the first content block of type 'text' and extract its text
+  // Use type guard to find the first text block
   const textBlock = Array.isArray(completion.content)
-    ? completion.content.find((block: any) => block.type === "text" && typeof block.text === "string")
+    ? completion.content.find(isTextBlock)
     : null;
   const reply = textBlock?.text || "[No response]";
   return { reply };
