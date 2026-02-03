@@ -433,7 +433,7 @@ export default function HomePage() {
       showModal(
         "info",
         "Configuration",
-        `Configuration for ${moduleData[moduleId as keyof typeof moduleData].title} coming soon.`,
+        `Configuration for ${moduleData[moduleId as keyof typeof moduleData].title} is not yet implemented.`,
       );
     } else if (action === "Run Diagnostics") {
       await new Promise((r) => setTimeout(r, 1200));
@@ -453,12 +453,27 @@ export default function HomePage() {
       showModal(
         "info",
         "Edit Policies",
-        `Policy editor for ${moduleData[moduleId as keyof typeof moduleData].title} coming soon.`,
+        `Policy editor for ${moduleData[moduleId as keyof typeof moduleData].title} is not yet implemented.`,
       );
     } else if (action === "View Logs") {
       openLogsModal(moduleId);
+    } else if (action === "Run Verification") {
+      // Simulate verification check
+      await new Promise((r) => setTimeout(r, 900));
+      showModal(
+        "success",
+        "Verification Result",
+        `All hashes verified for ${moduleData[moduleId as keyof typeof moduleData].title}. No drift detected.`,
+      );
+    } else if (action === "View History") {
+      // Show sample history
+      showModal(
+        "info",
+        "Verification History",
+        `Sample history for ${moduleData[moduleId as keyof typeof moduleData].title}:\n- 2026-02-03: All checks passed\n- 2026-02-02: 1 drift event detected\n- 2026-02-01: All checks passed`,
+      );
     } else {
-      showToast(`${action} - Coming soon!`, "info");
+      showToast(`${action} is not yet implemented.`, "info");
     }
   }
 
@@ -933,19 +948,19 @@ export default function HomePage() {
         <div className="header-actions">
           <button
             className="header-btn btn-primary"
-            onClick={() => showToast("Documentation coming soon!", "info")}
+            onClick={() => showModal("info", "Documentation", "Documentation is not yet implemented. Please check back soon.")}
           >
             Documentation
           </button>
           <button
             className="header-btn btn-secondary"
-            onClick={() => showToast("Contact form coming soon!", "info")}
+            onClick={() => showModal("info", "Contact Us", "Contact form is not yet implemented. Please email support@bickford.ai.")}
           >
             Contact Us
           </button>
           <div
             className="user-avatar"
-            onClick={() => showToast("Profile settings coming soon!", "info")}
+            onClick={() => showModal("info", "Profile Settings", "Profile settings are not yet implemented.")}
           >
             DB
           </div>

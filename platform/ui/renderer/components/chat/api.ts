@@ -1,7 +1,8 @@
 // Stub for future chat API integration
 export async function sendMessageToBickfordChat(
-  _message: string,
+  message: string,
 ): Promise<{ reply: string }> {
-  // Placeholder: always returns coming soon
-  return { reply: "Coming soon!" };
+  // Echo the user's message as a minimal working implementation
+  await new Promise((r) => setTimeout(r, 400));
+  return { reply: `Echo: ${message}` };
 }
