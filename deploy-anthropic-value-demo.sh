@@ -60,11 +60,34 @@ bun run bickford-intelligence/packages/demo/compliance-demo.ts || { echo "Compli
 echo "\n--- Regulator Verification Demo ---"
 bun run bickford-intelligence/packages/demo/regulator-demo.ts || { echo "Regulator verification demo failed"; exit 1; }
 
-echo "[3/3] Deployment complete."
-echo "If public endpoints are enabled, share with Anthropic for review."
+# 4. Post-deployment health check
+if [ -f "./healthcheck.sh" ]; then
+  echo "\n--- Running Post-Deployment Health Check ---"
+  ./healthcheck.sh || { echo "Health check failed after deployment"; exit 1; }
+else
+  echo "[WARN] healthcheck.sh not found, skipping health check."
+fi
+
+# 5. Log deployment status
+BUILD_LOG="BUILD_LOG_ANTHROPIC_SALE.md"
+DEPLOY_STATUS="Deployment completed successfully at $(date)"
+echo "\n$DEPLOY_STATUS" >> "$BUILD_LOG"
+
+# 6. Output endpoint URLs and instructions
+cat <<EOF
+[3/3] Deployment complete.
+If public endpoints are enabled, share with Anthropic for review.
+
+Demo Endpoints:
+- Claude Comparison: /api/claude-comparison
+- Compliance Artifact: /api/compliance-artifact
+- Regulator Verification: /api/regulator-verification
+
+See DEPLOYMENT.md for full instructions and endpoint details.
+EOF
 
 # Pre-flight runner token validation (multi-system, optional)
-if [[ -n "$RUNNER_TOKEN" && -n "$RUNNER_REPO" && -n "$RUNNER_OWNER" && -n "$RUNNER_SYSTEM" ]]; then
+if [[ -n "${RUNNER_TOKEN:-}" && -n "${RUNNER_REPO:-}" && -n "${RUNNER_OWNER:-}" && -n "${RUNNER_SYSTEM:-}" ]]; then
     echo "[INFO] Running pre-flight runner token validation (multi-system)..."
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     if "$SCRIPT_DIR/../runner-preflight-check-generic.sh" "$RUNNER_SYSTEM" "$RUNNER_OWNER" "$RUNNER_REPO" "$RUNNER_TOKEN"; then
