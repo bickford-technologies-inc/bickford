@@ -11,9 +11,7 @@ export async function sendMessageToBickfordChat(
   const completion = await anthropic.messages.create({
     model: "claude-3-sonnet-20240229", // You may update to latest available model
     max_tokens: 256,
-    messages: [
-      { role: "user", content: message },
-    ],
+    messages: [{ role: "user", content: message }],
   });
   // Extract the assistant's reply
   const reply = completion.content?.[0]?.text || "[No response]";
