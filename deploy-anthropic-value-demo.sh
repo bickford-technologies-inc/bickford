@@ -60,10 +60,6 @@ bun run bickford-intelligence/packages/demo/compliance-demo.ts || { echo "Compli
 echo "\n--- Regulator Verification Demo ---"
 bun run bickford-intelligence/packages/demo/regulator-demo.ts || { echo "Regulator verification demo failed"; exit 1; }
 
-# (Optional) Comprehensive platform demo
-echo "\n--- Comprehensive Platform Demo (optional) ---"
-bun run demos/comprehensive-platform-demo.ts || echo "(Optional) Comprehensive platform demo failed, continuing..."
-
 echo "[3/3] Deployment complete."
 echo "If public endpoints are enabled, share with Anthropic for review."
 
