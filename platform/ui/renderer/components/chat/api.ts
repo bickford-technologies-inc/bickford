@@ -13,7 +13,10 @@ export async function sendMessageToBickfordChat(
     max_tokens: 256,
     messages: [{ role: "user", content: message }],
   });
-  // Extract the assistant's reply
-  const reply = completion.content?.[0]?.text || "[No response]";
+  // Find the first content block with a 'text' property
+  const textBlock = Array.isArray(completion.content)
+    ? completion.content.find((block: any) => typeof block.text === "string")
+    : null;
+  const reply = textBlock?.text || "[No response]";
   return { reply };
 }
