@@ -948,19 +948,37 @@ export default function HomePage() {
         <div className="header-actions">
           <button
             className="header-btn btn-primary"
-            onClick={() => showModal("info", "Documentation", "Documentation is not yet implemented. Please check back soon.")}
+            onClick={() =>
+              showModal(
+                "info",
+                "Documentation",
+                "Documentation is not yet implemented. Please check back soon.",
+              )
+            }
           >
             Documentation
           </button>
           <button
             className="header-btn btn-secondary"
-            onClick={() => showModal("info", "Contact Us", "Contact form is not yet implemented. Please email support@bickford.ai.")}
+            onClick={() =>
+              showModal(
+                "info",
+                "Contact Us",
+                "Contact form is not yet implemented. Please email support@bickford.ai.",
+              )
+            }
           >
             Contact Us
           </button>
           <div
             className="user-avatar"
-            onClick={() => showModal("info", "Profile Settings", "Profile settings are not yet implemented.")}
+            onClick={() =>
+              showModal(
+                "info",
+                "Profile Settings",
+                "Profile settings are not yet implemented.",
+              )
+            }
           >
             DB
           </div>
