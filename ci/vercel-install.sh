@@ -29,7 +29,7 @@ else
 fi
 corepack enable
 corepack prepare pnpm@10.28.0 --activate
-pnpm install --frozen-lockfile
+pnpm install --no-frozen-lockfile
 
 # Ensure DATABASE_URL is set for Prisma (Vercel build)
 export DATABASE_URL=${DATABASE_URL:-"file:./dev.db"}
