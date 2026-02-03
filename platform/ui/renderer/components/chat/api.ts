@@ -1,8 +1,21 @@
-// Stub for future chat API integration
+import Anthropic from "@anthropic-ai/sdk";
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
 export async function sendMessageToBickfordChat(
   message: string,
 ): Promise<{ reply: string }> {
-  // Echo the user's message as a minimal working implementation
-  await new Promise((r) => setTimeout(r, 400));
-  return { reply: `Echo: ${message}` };
+  // Call Anthropic Claude API for real response
+  const completion = await anthropic.messages.create({
+    model: "claude-3-sonnet-20240229", // You may update to latest available model
+    max_tokens: 256,
+    messages: [
+      { role: "user", content: message },
+    ],
+  });
+  // Extract the assistant's reply
+  const reply = completion.content?.[0]?.text || "[No response]";
+  return { reply };
 }
