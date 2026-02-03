@@ -22,6 +22,6 @@ export async function sendMessageToBickfordChat(
   const textBlock = Array.isArray(completion.content)
     ? completion.content.find(isTextBlock)
     : null;
-  const reply = textBlock?.text || "[No response]";
+  const reply = textBlock ? (textBlock as { text: string }).text : "[No response]";
   return { reply };
 }
