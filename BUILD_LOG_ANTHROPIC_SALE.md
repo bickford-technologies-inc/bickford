@@ -3,8 +3,11 @@
 **Build Time:** 33 seconds
 **Platform:** Vercel (Washington, D.C., East - iad1)
 **Build Machine:** 30 cores, 60 GB RAM (Turbo Build Machine)
+
 ---
+
 ## Table of Contents
+
 1. [Executive Summary](#executive-summary)
 2. [Build Output Summary](#build-output-summary)
 3. [UI Pages (Displayed in Browser)](#ui-pages-displayed-in-browser)
@@ -15,18 +18,25 @@
 8. [Non-UI Files (Backend/Config)](#non-ui-files-backendconfig)
 9. [File Integrity Hashes](#file-integrity-hashes)
 10. [Value Proposition](#value-proposition)
+
 ---
+
 ## Executive Summary
+
 This build log contains all essential code files for the Bickford acquisition package. The system provides:
+
 - **Mechanical Constitutional AI enforcement** at runtime
 - **Cryptographic proof chains** for every AI decision
 - **Auto-generated compliance artifacts** for SOC-2, ISO 27001, HIPAA, FedRAMP
 - **$450M-750M/year** addressable market unlock
-**Acquisition Cost:** $25M-150M
-**Payback Period:** <1 year
-**3-Year Value:** $1.4B+
+  **Acquisition Cost:** $25M-150M
+  **Payback Period:** <1 year
+  **3-Year Value:** $1.4B+
+
 ---
+
 ## Build Output Summary
+
 ```
 08:08:46.749 Running build in Washington, D.C., USA (East) – iad1 (Turbo Build Machine)
 08:09:22.530 Build completed successfully
@@ -39,8 +49,11 @@ Serverless functions: 15
 Total deployment files: 1146
 Build cache: 344.74 MB
 ```
+
 ---
+
 ## UI Pages (Displayed in Browser)
+
 These files are routed as Next.js pages and displayed in the UI:
 | Route | File | Size | First Load JS |
 |-------|------|------|---------------|
@@ -70,51 +83,63 @@ These files are routed as Next.js pages and displayed in the UI:
 | `/ledger` | `pages/ledger.tsx` | 2.06 kB | 86.1 kB |
 | `/repo/[...path]` | `pages/repo/[...path].tsx` | 1.08 kB | 85.1 kB |
 | `/verify` | `pages/verify.tsx` | 2.47 kB | 86.5 kB |
+
 ---
+
 ## API Endpoints
-| Endpoint | Purpose |
-|----------|---------|
-| `/api/chat` | Chat interface with Constitutional AI enforcement |
-| `/api/decisions` | Decision audit trail API |
-| `/api/demo/alert-system` | Alert system demonstration |
-| `/api/demo/audit-ledger` | Audit ledger demonstration |
-| `/api/demo/canon-runtime` | Canon runtime demonstration |
-| `/api/demo/defense` | Defense/government compliance demo |
-| `/api/demo/drift-detection` | Drift detection demonstration |
-| `/api/demo/finance` | Financial compliance demo |
-| `/api/demo/healthcare` | Healthcare/HIPAA compliance demo |
-| `/api/demo/policy-engine` | Policy engine demonstration |
-| `/api/demo/verification` | Verification demonstration |
-| `/api/docs/technical/[file]` | Technical documentation API |
-| `/api/exec` | Execution API |
-| `/api/health` | Health check endpoint |
-| `/api/intents` | Intent management API |
-| `/api/ledger` | Ledger query API |
-| `/api/messages` | Message handling API |
-| `/api/metrics` | Metrics dashboard API |
-| `/api/repo-index` | Repository index API |
-| `/api/repo/[...path]` | Repository file access API |
-| `/api/verify-ledger` | Cryptographic ledger verification API |
+
+| Endpoint                     | Purpose                                           |
+| ---------------------------- | ------------------------------------------------- |
+| `/api/chat`                  | Chat interface with Constitutional AI enforcement |
+| `/api/decisions`             | Decision audit trail API                          |
+| `/api/demo/alert-system`     | Alert system demonstration                        |
+| `/api/demo/audit-ledger`     | Audit ledger demonstration                        |
+| `/api/demo/canon-runtime`    | Canon runtime demonstration                       |
+| `/api/demo/defense`          | Defense/government compliance demo                |
+| `/api/demo/drift-detection`  | Drift detection demonstration                     |
+| `/api/demo/finance`          | Financial compliance demo                         |
+| `/api/demo/healthcare`       | Healthcare/HIPAA compliance demo                  |
+| `/api/demo/policy-engine`    | Policy engine demonstration                       |
+| `/api/demo/verification`     | Verification demonstration                        |
+| `/api/docs/technical/[file]` | Technical documentation API                       |
+| `/api/exec`                  | Execution API                                     |
+| `/api/health`                | Health check endpoint                             |
+| `/api/intents`               | Intent management API                             |
+| `/api/ledger`                | Ledger query API                                  |
+| `/api/messages`              | Message handling API                              |
+| `/api/metrics`               | Metrics dashboard API                             |
+| `/api/repo-index`            | Repository index API                              |
+| `/api/repo/[...path]`        | Repository file access API                        |
+| `/api/verify-ledger`         | Cryptographic ledger verification API             |
+
 ---
+
 ## Core Enforcement Engine Code
-...existing code...
----
+
+## ...existing code...
+
 ## Demo Scripts Code
-...existing code...
----
+
+## ...existing code...
+
 ## UI Components Code
-...existing code...
----
+
+## ...existing code...
+
 ## Non-UI Files (Backend/Config)
-...existing code...
----
+
+## ...existing code...
+
 ## File Integrity Hashes
-...existing code...
----
+
+## ...existing code...
+
 ## Value Proposition
-...existing code...
----
+
+## ...existing code...
+
 ## Quick Start
+
 ```bash
 # Set credentials
 export ANTHROPIC_API_KEY="your-key"
@@ -130,7 +155,9 @@ pnpm dev
 # Production build
 pnpm build
 ```
+
 ---
+
 **Build Log Generated:** 2026-02-03
 **Total Files:** 1146
 **Build Status:** SUCCESS
@@ -148,19 +175,24 @@ pnpm build
 =======
 **Build Machine:** 30 cores, 60 GB RAM (Turbo Build Machine)
 <<<<<<< HEAD
->>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
+> > > > > > > 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
 
 ---
 
 ## Table of Contents
+
 <<<<<<< HEAD
 
-=======
-=======
+# =======
+
 ---
+
 ## Table of Contents
->>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
->>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
+> > > > > > > e0857318 (docs: Add comprehensive Anthropic sale build log)
+> > > > > > > 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
 1. [Executive Summary](#executive-summary)
 2. [Build Output Summary](#build-output-summary)
 3. [UI Pages (Displayed in Browser)](#ui-pages-displayed-in-browser)
@@ -168,7 +200,7 @@ pnpm build
 5. [Core Enforcement Engine Code](#core-enforcement-engine-code)
 6. [Demo Scripts Code](#demo-scripts-code)
 7. [UI Components Code](#ui-components-code)
-<<<<<<< HEAD
+   <<<<<<< HEAD
 8. [Non-UI Files (Backend/Config)](#non-ui-files-backendconfig)
 9. [File Integrity Hashes](#file-integrity-hashes)
 10. [Value Proposition](#value-proposition)
@@ -179,23 +211,26 @@ pnpm build
 
 This build log contains all essential code files for the Bickford acquisition package. The system provides:
 
-=======
-9. [File Integrity Hashes](#file-integrity-hashes)
-10. [Value Proposition](#value-proposition)
+======= 9. [File Integrity Hashes](#file-integrity-hashes) 10. [Value Proposition](#value-proposition)
+
+## Executive Summary
+
+# This build log contains all essential code files for the Bickford acquisition package. The system provides:
+
+---
+
 ## Executive Summary
 
 This build log contains all essential code files for the Bickford acquisition package. The system provides:
-=======
----
-## Executive Summary
-This build log contains all essential code files for the Bickford acquisition package. The system provides:
->>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
->>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
+> > > > > > > e0857318 (docs: Add comprehensive Anthropic sale build log)
+> > > > > > > 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
 - **Mechanical Constitutional AI enforcement** at runtime
 - **Cryptographic proof chains** for every AI decision
 - **Auto-generated compliance artifacts** for SOC-2, ISO 27001, HIPAA, FedRAMP
 - **$450M-750M/year** addressable market unlock
-<<<<<<< HEAD
+  <<<<<<< HEAD
 
 **Acquisition Cost:** $25M-150M
 **Payback Period:** <1 year
@@ -205,7 +240,8 @@ This build log contains all essential code files for the Bickford acquisition pa
 
 **Acquisition Cost:** $25M-150M
 **Payback Period:** <1 year
->>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
+> > > > > > > 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
 
 ---
 
@@ -224,20 +260,23 @@ This build log contains all essential code files for the Bickford acquisition pa
 ---
 ## Build Output Summary
 ```
+
 08:08:46.749 Running build in Washington, D.C., USA (East) – iad1 (Turbo Build Machine)
 08:09:22.530 Build completed successfully
->>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
->>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
-Next.js 15.5.11
-TypeScript 5.9.3
-pnpm 10.28.0
-Prisma 7.3.0
-<<<<<<< HEAD
+
+> > > > > > > e0857318 (docs: Add comprehensive Anthropic sale build log)
+> > > > > > > 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+> > > > > > > Next.js 15.5.11
+> > > > > > > TypeScript 5.9.3
+> > > > > > > pnpm 10.28.0
+> > > > > > > Prisma 7.3.0
+> > > > > > > <<<<<<< HEAD
 
 Static pages generated: 27
 Serverless functions: 15
 Total deployment files: 1146
 Build cache: 344.74 MB
+
 ```
 =======
 <<<<<<< HEAD
@@ -248,8 +287,10 @@ Static pages generated: 27
 Serverless functions: 15
 Total deployment files: 1146
 ```
+
 <<<<<<< HEAD
->>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
+> > > > > > > 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
 
 ---
 
@@ -257,44 +298,47 @@ Total deployment files: 1146
 
 These files are routed as Next.js pages and displayed in the UI:
 
-<<<<<<< HEAD
-=======
-=======
----
+# <<<<<<< HEAD
+
+## =======
+
 ## UI Pages (Displayed in Browser)
+
 These files are routed as Next.js pages and displayed in the UI:
->>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
->>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
-| Route | File | Size | First Load JS |
-|-------|------|------|---------------|
-| `/` | `pages/index.tsx` | 44.9 kB | 131 kB |
-| `/404` | `pages/404.tsx` | 180 B | 84.2 kB |
-| `/chat` | `pages/chat.tsx` | 477 B | 84.5 kB |
-| `/compliance/cost-avoidance` | `pages/compliance/cost-avoidance.tsx` | 516 B | 84.6 kB |
-| `/compliance/iso27001` | `pages/compliance/iso27001.tsx` | 1 kB | 85 kB |
-| `/compliance/key-benefits` | `pages/compliance/key-benefits.tsx` | 544 B | 84.6 kB |
-| `/compliance/soc2` | `pages/compliance/soc2.tsx` | 1.18 kB | 85.2 kB |
-| `/compression/result` | `pages/compression/result.tsx` | 1.13 kB | 85.2 kB |
-<<<<<<< HEAD
-| `/customer-workflows` | `pages/customer-workflows/index.tsx` | 457 B | 86.8 kB |
+
+> > > > > > > e0857318 (docs: Add comprehensive Anthropic sale build log)
+> > > > > > > 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+> > > > > > > | Route | File | Size | First Load JS |
+> > > > > > > |-------|------|------|---------------|
+> > > > > > > | `/` | `pages/index.tsx` | 44.9 kB | 131 kB |
+> > > > > > > | `/404` | `pages/404.tsx` | 180 B | 84.2 kB |
+> > > > > > > | `/chat` | `pages/chat.tsx` | 477 B | 84.5 kB |
+> > > > > > > | `/compliance/cost-avoidance` | `pages/compliance/cost-avoidance.tsx` | 516 B | 84.6 kB |
+> > > > > > > | `/compliance/iso27001` | `pages/compliance/iso27001.tsx` | 1 kB | 85 kB |
+> > > > > > > | `/compliance/key-benefits` | `pages/compliance/key-benefits.tsx` | 544 B | 84.6 kB |
+> > > > > > > | `/compliance/soc2` | `pages/compliance/soc2.tsx` | 1.18 kB | 85.2 kB |
+> > > > > > > | `/compression/result` | `pages/compression/result.tsx` | 1.13 kB | 85.2 kB |
+> > > > > > > <<<<<<< HEAD
+> > > > > > > | `/customer-workflows` | `pages/customer-workflows/index.tsx` | 457 B | 86.8 kB |
+> > > > > > > | `/customer-workflows/diagrams` | `pages/customer-workflows/diagrams.tsx` | 686 B | 84.7 kB |
+> > > > > > > | `/customer-workflows/executive-summary` | `pages/customer-workflows/executive-summary.tsx` | 1.13 kB | 85.2 kB |
+> > > > > > > | `/customer-workflows/full-workflows` | `pages/customer-workflows/full-workflows.tsx` | 879 B | 84.9 kB |
+> > > > > > > | `/customer-workflows/pitch-script` | `pages/customer-workflows/pitch-script.tsx` | 911 B | 85 kB |
+> > > > > > > | `/customer-workflows/summary` | `pages/customer-workflows/summary.tsx` | 977 B | 85 kB |
+> > > > > > > | `/demo/adversarial` | `pages/demo/adversarial.tsx` | 1.79 kB | 85.8 kB |
+> > > > > > > | `/demo/batch` | `pages/demo/batch.tsx` | 2.41 kB | 86.4 kB |
+> > > > > > > | `/demo/claude-comparison` | `pages/demo/claude-comparison.tsx` | 2.43 kB | 86.5 kB |
+> > > > > > > | `/demo/edgecase` | `pages/demo/edgecase.tsx` | 1.65 kB | 85.7 kB |
+> > > > > > > | `/demo/multi-policy` | `pages/demo/multi-policy.tsx` | 1.57 kB | 85.6 kB |
+> > > > > > > | `/demo/policy-update` | `pages/demo/policy-update.tsx` | 864 B | 84.9 kB |
+> > > > > > > | `/demo/regulator` | `pages/demo/regulator.tsx` | 1.68 kB | 85.7 kB |
+> > > > > > > | `/demo/tamper` | `pages/demo/tamper.tsx` | 797 B | 84.8 kB |
+> > > > > > > | `/docs/technical/[file]` | `pages/docs/technical/[file].tsx` | 627 B | 84.7 kB |
+
+# | `/ledger` | `pages/ledger.tsx` | 2.06 kB | 86.1 kB |
+
 | `/customer-workflows/diagrams` | `pages/customer-workflows/diagrams.tsx` | 686 B | 84.7 kB |
 | `/customer-workflows/executive-summary` | `pages/customer-workflows/executive-summary.tsx` | 1.13 kB | 85.2 kB |
-| `/customer-workflows/full-workflows` | `pages/customer-workflows/full-workflows.tsx` | 879 B | 84.9 kB |
-| `/customer-workflows/pitch-script` | `pages/customer-workflows/pitch-script.tsx` | 911 B | 85 kB |
-| `/customer-workflows/summary` | `pages/customer-workflows/summary.tsx` | 977 B | 85 kB |
-| `/demo/adversarial` | `pages/demo/adversarial.tsx` | 1.79 kB | 85.8 kB |
-| `/demo/batch` | `pages/demo/batch.tsx` | 2.41 kB | 86.4 kB |
-| `/demo/claude-comparison` | `pages/demo/claude-comparison.tsx` | 2.43 kB | 86.5 kB |
-| `/demo/edgecase` | `pages/demo/edgecase.tsx` | 1.65 kB | 85.7 kB |
-| `/demo/multi-policy` | `pages/demo/multi-policy.tsx` | 1.57 kB | 85.6 kB |
-| `/demo/policy-update` | `pages/demo/policy-update.tsx` | 864 B | 84.9 kB |
-| `/demo/regulator` | `pages/demo/regulator.tsx` | 1.68 kB | 85.7 kB |
-| `/demo/tamper` | `pages/demo/tamper.tsx` | 797 B | 84.8 kB |
-| `/docs/technical/[file]` | `pages/docs/technical/[file].tsx` | 627 B | 84.7 kB |
-| `/ledger` | `pages/ledger.tsx` | 2.06 kB | 86.1 kB |
-=======
-| `/customer-workflows/diagrams` | `pages/customer-workflows/diagrams.tsx` | 686 B | 84.7 kB |
-| `/customer-workflows/executive-summary` | `pages/customer-workflows/executive-summary.tsx` | 1.13 kB | 85.2 kB |
 | `/customer-workflows/pitch-script` | `pages/customer-workflows/pitch-script.tsx` | 911 B | 85 kB |
 | `/customer-workflows/summary` | `pages/customer-workflows/summary.tsx` | 977 B | 85 kB |
 | `/demo/batch` | `pages/demo/batch.tsx` | 2.41 kB | 86.4 kB |
@@ -303,51 +347,56 @@ These files are routed as Next.js pages and displayed in the UI:
 | `/demo/policy-update` | `pages/demo/policy-update.tsx` | 864 B | 84.9 kB |
 | `/demo/tamper` | `pages/demo/tamper.tsx` | 797 B | 84.8 kB |
 | `/docs/technical/[file]` | `pages/docs/technical/[file].tsx` | 627 B | 84.7 kB |
->>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
-| `/repo/[...path]` | `pages/repo/[...path].tsx` | 1.08 kB | 85.1 kB |
-| `/verify` | `pages/verify.tsx` | 2.47 kB | 86.5 kB |
+
+> > > > > > > 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+> > > > > > > | `/repo/[...path]` | `pages/repo/[...path].tsx` | 1.08 kB | 85.1 kB |
+> > > > > > > | `/verify` | `pages/verify.tsx` | 2.47 kB | 86.5 kB |
 
 ---
 
 ## API Endpoints
 
-<<<<<<< HEAD
-=======
-=======
----
+# <<<<<<< HEAD
+
+## =======
+
 ## API Endpoints
->>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
->>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
-| Endpoint | Purpose |
-|----------|---------|
-| `/api/chat` | Chat interface with Constitutional AI enforcement |
-| `/api/decisions` | Decision audit trail API |
-| `/api/demo/alert-system` | Alert system demonstration |
-| `/api/demo/audit-ledger` | Audit ledger demonstration |
-| `/api/demo/canon-runtime` | Canon runtime demonstration |
+
+> > > > > > > e0857318 (docs: Add comprehensive Anthropic sale build log)
+> > > > > > > 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+> > > > > > > | Endpoint | Purpose |
+> > > > > > > |----------|---------|
+> > > > > > > | `/api/chat` | Chat interface with Constitutional AI enforcement |
+> > > > > > > | `/api/decisions` | Decision audit trail API |
+> > > > > > > | `/api/demo/alert-system` | Alert system demonstration |
+> > > > > > > | `/api/demo/audit-ledger` | Audit ledger demonstration |
+> > > > > > > | `/api/demo/canon-runtime` | Canon runtime demonstration |
+> > > > > > > <<<<<<< HEAD
+
+# | `/api/demo/defense` | Defense/government compliance demo |
+
+> > > > > > > 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+> > > > > > > | `/api/demo/drift-detection` | Drift detection demonstration |
+> > > > > > > | `/api/demo/finance` | Financial compliance demo |
+> > > > > > > | `/api/demo/healthcare` | Healthcare/HIPAA compliance demo |
+> > > > > > > | `/api/demo/policy-engine` | Policy engine demonstration |
+> > > > > > > | `/api/demo/verification` | Verification demonstration |
+> > > > > > > | `/api/docs/technical/[file]` | Technical documentation API |
+> > > > > > > | `/api/exec` | Execution API |
+> > > > > > > | `/api/health` | Health check endpoint |
+> > > > > > > | `/api/intents` | Intent management API |
+> > > > > > > | `/api/ledger` | Ledger query API |
+> > > > > > > | `/api/messages` | Message handling API |
+> > > > > > > | `/api/metrics` | Metrics dashboard API |
+> > > > > > > | `/api/repo-index` | Repository index API |
+> > > > > > > | `/api/repo/[...path]` | Repository file access API |
+> > > > > > > | `/api/verify-ledger` | Cryptographic ledger verification API |
+
+# <<<<<<< HEAD
+
 <<<<<<< HEAD
-| `/api/demo/defense` | Defense/government compliance demo |
-=======
->>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
-| `/api/demo/drift-detection` | Drift detection demonstration |
-| `/api/demo/finance` | Financial compliance demo |
-| `/api/demo/healthcare` | Healthcare/HIPAA compliance demo |
-| `/api/demo/policy-engine` | Policy engine demonstration |
-| `/api/demo/verification` | Verification demonstration |
-| `/api/docs/technical/[file]` | Technical documentation API |
-| `/api/exec` | Execution API |
-| `/api/health` | Health check endpoint |
-| `/api/intents` | Intent management API |
-| `/api/ledger` | Ledger query API |
-| `/api/messages` | Message handling API |
-| `/api/metrics` | Metrics dashboard API |
-| `/api/repo-index` | Repository index API |
-| `/api/repo/[...path]` | Repository file access API |
-| `/api/verify-ledger` | Cryptographic ledger verification API |
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
+> > > > > > > 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
 
 ---
 
@@ -522,8 +571,16 @@ export class ConstitutionalEnforcer {
 
   private detectHarmfulIntent(prompt: string): boolean {
     const harmfulPatterns = [
-      "phishing", "scam", "deceive", "exploit", "malware",
-      "virus", "hack", "crack", "steal", "fraud",
+      "phishing",
+      "scam",
+      "deceive",
+      "exploit",
+      "malware",
+      "virus",
+      "hack",
+      "crack",
+      "steal",
+      "fraud",
     ];
     return harmfulPatterns.some((pattern) => prompt.includes(pattern));
   }
@@ -533,8 +590,12 @@ export class ConstitutionalEnforcer {
     context: Record<string, unknown>,
   ): boolean {
     const privacyPatterns = [
-      "ssn", "social security", "credit card", "password",
-      "private key", "api key",
+      "ssn",
+      "social security",
+      "credit card",
+      "password",
+      "private key",
+      "api key",
     ];
 
     const hasPrivacyViolation = privacyPatterns.some((pattern) => {
@@ -546,13 +607,19 @@ export class ConstitutionalEnforcer {
     }
 
     const contextStr = JSON.stringify(context).toLowerCase();
-    return privacyPatterns.some((pattern) => contextStr.includes(pattern.trim()));
+    return privacyPatterns.some((pattern) =>
+      contextStr.includes(pattern.trim()),
+    );
   }
 
   private detectMisinformationRequest(prompt: string): boolean {
     const misinfoPatterns = [
-      "fake news", "false information", "lie about",
-      "fabricate", "make up facts", "false statistics",
+      "fake news",
+      "false information",
+      "lie about",
+      "fabricate",
+      "make up facts",
+      "false statistics",
     ];
     return misinfoPatterns.some((pattern) => prompt.includes(pattern));
   }
@@ -567,8 +634,12 @@ export class ConstitutionalEnforcer {
 
   private detectIllegalRequest(prompt: string): boolean {
     const illegalPatterns = [
-      "illegal", "break the law", "commit crime",
-      "money laundering", "tax evasion", "insider trading",
+      "illegal",
+      "break the law",
+      "commit crime",
+      "money laundering",
+      "tax evasion",
+      "insider trading",
     ];
     return illegalPatterns.some((pattern) => prompt.includes(pattern));
   }
@@ -904,10 +975,18 @@ const TEST_SCENARIOS = [
 
 async function runComparison() {
   console.log("\n");
-  console.log("╔═══════════════════════════════════════════════════════════════════════╗");
-  console.log("║        📊 Bickford Value Demonstration: Claude vs Claude+Bickford    ║");
-  console.log("║  Proving Constitutional AI enforcement with cryptographic proofs     ║");
-  console.log("╚═══════════════════════════════════════════════════════════════════════╝");
+  console.log(
+    "╔═══════════════════════════════════════════════════════════════════════╗",
+  );
+  console.log(
+    "║        📊 Bickford Value Demonstration: Claude vs Claude+Bickford    ║",
+  );
+  console.log(
+    "║  Proving Constitutional AI enforcement with cryptographic proofs     ║",
+  );
+  console.log(
+    "╚═══════════════════════════════════════════════════════════════════════╝",
+  );
   console.log("\n");
 
   const enforcer = new ClaudeConstitutionalEnforcer();
@@ -937,21 +1016,31 @@ async function runComparison() {
 
     const result = await enforcer.enforceClaudeRequest(request);
 
-    console.log("   ┌─ CLAUDE ALONE (Unverifiable) ─────────────────────────────");
+    console.log(
+      "   ┌─ CLAUDE ALONE (Unverifiable) ─────────────────────────────",
+    );
     console.log("   │  Status: ❓ Unknown (no enforcement)");
     console.log("   │  Proof: ❌ None");
     console.log("   │  Audit Trail: ❌ None");
 
-    console.log("   ├─ CLAUDE + BICKFORD (Cryptographically Provable) ────────");
+    console.log(
+      "   ├─ CLAUDE + BICKFORD (Cryptographically Provable) ────────",
+    );
 
     if (result.enforcement.allowed) {
       console.log("   │  Status: ✅ ALLOWED");
-      console.log(`   │  Satisfied Constraints: ${result.enforcement.satisfied_constraints.join(", ")}`);
+      console.log(
+        `   │  Satisfied Constraints: ${result.enforcement.satisfied_constraints.join(", ")}`,
+      );
     } else {
       console.log("   │  Status: ❌ DENIED");
-      console.log(`   │  Violated Constraints: ${result.enforcement.violated_constraints.join(", ")}`);
+      console.log(
+        `   │  Violated Constraints: ${result.enforcement.violated_constraints.join(", ")}`,
+      );
       console.log(`   │  Tokens Saved: ${result.cost_analysis.tokens_saved}`);
-      console.log(`   │  Cost Saved: $${result.cost_analysis.cost_saved_usd.toFixed(4)}`);
+      console.log(
+        `   │  Cost Saved: $${result.cost_analysis.cost_saved_usd.toFixed(4)}`,
+      );
 
       totalTokensSaved += result.cost_analysis.tokens_saved;
       totalCostSaved += result.cost_analysis.cost_saved_usd;
@@ -965,9 +1054,15 @@ async function runComparison() {
     });
   }
 
-  console.log("\n╔═══════════════════════════════════════════════════════════════════════╗");
-  console.log("║                     📊 DEMONSTRATION SUMMARY                          ║");
-  console.log("╚═══════════════════════════════════════════════════════════════════════╝");
+  console.log(
+    "\n╔═══════════════════════════════════════════════════════════════════════╗",
+  );
+  console.log(
+    "║                     📊 DEMONSTRATION SUMMARY                          ║",
+  );
+  console.log(
+    "╚═══════════════════════════════════════════════════════════════════════╝",
+  );
 
   console.log("\n💰 ACQUISITION VALUE PROPOSITION:");
   console.log("   Unlocked Markets:");
@@ -980,7 +1075,9 @@ async function runComparison() {
   console.log("   3-Year Value: $1.4B+");
 }
 
-runComparison().catch((err) => { throw err; });
+runComparison().catch((err) => {
+  throw err;
+});
 ```
 
 ---
@@ -1020,7 +1117,8 @@ class ComplianceArtifactGenerator {
       {
         control_id: "CC6.1",
         control_name: "Logical Access Controls",
-        description: "System implements logical access controls to prevent unauthorized access",
+        description:
+          "System implements logical access controls to prevent unauthorized access",
         evidence_count: 1000,
         automated: true,
         manual_review_required: false,
@@ -1029,7 +1127,8 @@ class ComplianceArtifactGenerator {
       {
         control_id: "CC6.2",
         control_name: "Authentication and Authorization",
-        description: "System authenticates and authorizes users before granting access",
+        description:
+          "System authenticates and authorizes users before granting access",
         evidence_count: 500,
         automated: true,
         manual_review_required: false,
@@ -1038,7 +1137,10 @@ class ComplianceArtifactGenerator {
       // ... additional controls
     ];
 
-    const totalCostAvoidance = controls.reduce((sum, c) => sum + c.cost_avoidance_usd, 0);
+    const totalCostAvoidance = controls.reduce(
+      (sum, c) => sum + c.cost_avoidance_usd,
+      0,
+    );
     const automatedControls = controls.filter((c) => c.automated).length;
 
     return {
@@ -1069,21 +1171,36 @@ class ComplianceArtifactGenerator {
 }
 
 async function main() {
-  console.log("╔═══════════════════════════════════════════════════════════════════════╗");
-  console.log("║        📋 Bickford Compliance Artifact Generator                      ║");
-  console.log("║  Auto-generating compliance artifacts from execution ledger          ║");
-  console.log("╚═══════════════════════════════════════════════════════════════════════╝");
+  console.log(
+    "╔═══════════════════════════════════════════════════════════════════════╗",
+  );
+  console.log(
+    "║        📋 Bickford Compliance Artifact Generator                      ║",
+  );
+  console.log(
+    "║  Auto-generating compliance artifacts from execution ledger          ║",
+  );
+  console.log(
+    "╚═══════════════════════════════════════════════════════════════════════╝",
+  );
 
   const generator = new ComplianceArtifactGenerator();
 
   const soc2Report = generator.generateSOC2Report();
   const isoReport = generator.generateISO27001Report();
 
-  const totalAnnualSavings = soc2Report.annual_cost_avoidance_usd + isoReport.annual_cost_avoidance_usd;
+  const totalAnnualSavings =
+    soc2Report.annual_cost_avoidance_usd + isoReport.annual_cost_avoidance_usd;
 
-  console.log(`\nSOC-2 Type II Annual Savings: $${soc2Report.annual_cost_avoidance_usd.toLocaleString()}`);
-  console.log(`ISO 27001 Annual Savings: $${isoReport.annual_cost_avoidance_usd.toLocaleString()}`);
-  console.log(`\nTotal Annual Cost Avoidance: $${totalAnnualSavings.toLocaleString()}`);
+  console.log(
+    `\nSOC-2 Type II Annual Savings: $${soc2Report.annual_cost_avoidance_usd.toLocaleString()}`,
+  );
+  console.log(
+    `ISO 27001 Annual Savings: $${isoReport.annual_cost_avoidance_usd.toLocaleString()}`,
+  );
+  console.log(
+    `\nTotal Annual Cost Avoidance: $${totalAnnualSavings.toLocaleString()}`,
+  );
   console.log(`3-Year Value: $${(totalAnnualSavings * 3).toLocaleString()}`);
 
   console.log("\n✅ Compliance artifacts generated successfully!");
@@ -1094,7 +1211,9 @@ async function main() {
   console.log("  4. Regulator-verifiable cryptographic proofs");
 }
 
-main().catch((err) => { throw err; });
+main().catch((err) => {
+  throw err;
+});
 ```
 
 ---
@@ -1110,7 +1229,10 @@ main().catch((err) => { throw err; });
 import { createHash } from "crypto";
 
 class IndependentVerifier {
-  verifyProofChain(proofChain: string[]): { valid: boolean; reasoning: string[] } {
+  verifyProofChain(proofChain: string[]): {
+    valid: boolean;
+    reasoning: string[];
+  } {
     const reasoning: string[] = [];
     if (proofChain.length !== 4) {
       reasoning.push("❌ Proof chain must have 4 elements");
@@ -1135,11 +1257,21 @@ class IndependentVerifier {
 }
 
 async function main() {
-  console.log("╔═══════════════════════════════════════════════════════════════════════╗");
-  console.log("║        🏛️  Bickford Regulator Verification Demo                       ║");
-  console.log("║  Independent verification of AI decisions                            ║");
-  console.log("║  WITHOUT trusting Anthropic's systems                                ║");
-  console.log("╚═══════════════════════════════════════════════════════════════════════╝");
+  console.log(
+    "╔═══════════════════════════════════════════════════════════════════════╗",
+  );
+  console.log(
+    "║        🏛️  Bickford Regulator Verification Demo                       ║",
+  );
+  console.log(
+    "║  Independent verification of AI decisions                            ║",
+  );
+  console.log(
+    "║  WITHOUT trusting Anthropic's systems                                ║",
+  );
+  console.log(
+    "╚═══════════════════════════════════════════════════════════════════════╝",
+  );
 
   const verifier = new IndependentVerifier();
 
@@ -1167,7 +1299,9 @@ async function main() {
   console.log("  - Result: Approved for deployment, $450M-750M TAM unlocked");
 }
 
-main().catch((err) => { throw err; });
+main().catch((err) => {
+  throw err;
+});
 ```
 
 ---
@@ -1196,7 +1330,9 @@ function calculateCompression(entries: LedgerEntry[]): CompressionStats {
   let found = false;
 
   for (const entry of entries) {
-    const meta = entry.metadata as { originalSize?: number; compressedSize?: number } | undefined;
+    const meta = entry.metadata as
+      | { originalSize?: number; compressedSize?: number }
+      | undefined;
     if (meta?.originalSize && meta?.compressedSize) {
       original += meta.originalSize;
       compressed += meta.compressedSize;
@@ -1345,20 +1481,20 @@ CANON/canon.json: 1007f89f08b3a22c5a4e0592c8d936c23bd54f51a7ef763d7d8103e2c9ec0e
 
 ### Market Opportunity
 
-| Market | Annual Value | Requirements |
-|--------|-------------|--------------|
-| Defense | $200M-300M | Provable compliance, FedRAMP |
-| Healthcare | $150M-250M | HIPAA audit requirements |
-| Financial | $100M-200M | SOC-2/PCI DSS mandatory |
-| **Total** | **$450M-750M** | |
+| Market     | Annual Value   | Requirements                 |
+| ---------- | -------------- | ---------------------------- |
+| Defense    | $200M-300M     | Provable compliance, FedRAMP |
+| Healthcare | $150M-250M     | HIPAA audit requirements     |
+| Financial  | $100M-200M     | SOC-2/PCI DSS mandatory      |
+| **Total**  | **$450M-750M** |                              |
 
 ### Acquisition Economics
 
-| Metric | Value |
-|--------|-------|
-| Acquisition Cost | $25M-150M |
-| Payback Period | <1 year |
-| 3-Year Value | $1.4B+ |
+| Metric                  | Value                     |
+| ----------------------- | ------------------------- |
+| Acquisition Cost        | $25M-150M                 |
+| Payback Period          | <1 year                   |
+| 3-Year Value            | $1.4B+                    |
 | Compliance Cost Savings | $14M+/year per enterprise |
 
 ### Competitive Moat
@@ -1371,31 +1507,39 @@ CANON/canon.json: 1007f89f08b3a22c5a4e0592c8d936c23bd54f51a7ef763d7d8103e2c9ec0e
 
 ## Quick Start
 
-<<<<<<< HEAD
-=======
-=======
----
+# <<<<<<< HEAD
+
+## =======
+
 ## Core Enforcement Engine Code
-...existing code...
----
+
+## ...existing code...
+
 ## Demo Scripts Code
-...existing code...
----
+
+## ...existing code...
+
 ## UI Components Code
-...existing code...
----
+
+## ...existing code...
+
 ## Non-UI Files (Backend/Config)
-...existing code...
----
+
+## ...existing code...
+
 ## File Integrity Hashes
-...existing code...
----
+
+## ...existing code...
+
 ## Value Proposition
-...existing code...
----
+
+## ...existing code...
+
 ## Quick Start
->>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
->>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
+> > > > > > > e0857318 (docs: Add comprehensive Anthropic sale build log)
+> > > > > > > 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+
 ```bash
 # Set credentials
 export ANTHROPIC_API_KEY="your-key"
@@ -1440,10 +1584,15 @@ pnpm build
 <<<<<<< HEAD
 =======
 =======
+
 # Start development server
+
 pnpm dev
+
 # Production build
+
 pnpm build
+
 ```
 ---
 **Build Log Generated:** 2026-02-03
@@ -1452,3 +1601,4 @@ pnpm build
 **Ready for Anthropic Review**
 >>>>>>> e0857318 (docs: Add comprehensive Anthropic sale build log)
 >>>>>>> 72c1024f (Add Bickford acquisition build log with Constitutional AI enforcement (#343))
+```
