@@ -1,12 +1,12 @@
 import type { AppProps } from "next/app";
 import "../styles/globals.css";
-import BickfordChat from "../platform/ui/renderer/components/chat/BickfordChat";
+import ShowBickfordChat from "../platform/ui/renderer/components/ShowBickfordChat";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Component {...pageProps} />
-      <BickfordChat />
+      <ShowBickfordChat />
     </>
   );
 }
