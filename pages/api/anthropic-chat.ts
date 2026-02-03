@@ -7,7 +7,7 @@ const anthropic = new Anthropic({
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -28,7 +28,8 @@ export default async function handler(
     // Find the first text block
     const textBlock = Array.isArray(completion.content)
       ? completion.content.find(
-          (block: any) => block && block.type === "text" && typeof block.text === "string"
+          (block: any) =>
+            block && block.type === "text" && typeof block.text === "string",
         )
       : null;
     const reply = textBlock ? textBlock.text : "[No response]";
