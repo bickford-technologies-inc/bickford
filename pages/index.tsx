@@ -11,6 +11,11 @@ import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
+// Returns the default value as a string for any metric (stub for build success)
+function getMetric(_name: string, defaultValue: number) {
+  return String(defaultValue);
+}
+
 const moduleData = {
   "canon-runtime": {
     title: "Canon Runtime",
