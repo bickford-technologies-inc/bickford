@@ -13,9 +13,9 @@ export async function sendMessageToBickfordChat(
     max_tokens: 256,
     messages: [{ role: "user", content: message }],
   });
-  // Find the first content block with a 'text' property
+  // Find the first content block of type 'text' and extract its text
   const textBlock = Array.isArray(completion.content)
-    ? completion.content.find((block: any) => typeof block.text === "string")
+    ? completion.content.find((block: any) => block.type === "text" && typeof block.text === "string")
     : null;
   const reply = textBlock?.text || "[No response]";
   return { reply };
