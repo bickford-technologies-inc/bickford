@@ -97,6 +97,7 @@ async function fetchSamGovData(apiKey?: string, limit: number = 10): Promise<Sam
     console.log('To fetch real data, obtain an API key from https://sam.gov and set SAM_GOV_API_KEY environment variable.\n');
     
     // Return mock data for demonstration
+    // Note: Mock data always returns 2 records regardless of limit parameter
     return {
       totalRecords: 2,
       entityData: [
@@ -161,10 +162,14 @@ async function fetchSamGovData(apiKey?: string, limit: number = 10): Promise<Sam
   }
 
   // Fetch real data from SAM.gov API
-  const url = `https://api.sam.gov/entity-management/v1/entities?api_key=${apiKey}&registrationStatus=Active&includeSections=entityRegistration,coreData,assertions&limit=${limit}`;
+  const url = `https://api.sam.gov/entity-management/v1/entities?registrationStatus=Active&includeSections=entityRegistration,coreData,assertions&limit=${limit}`;
   
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'X-Api-Key': apiKey, // Use header for security (better than query parameter)
+      },
+    });
     
     if (!response.ok) {
       throw new Error(`SAM.gov API error: ${response.status} ${response.statusText}`);

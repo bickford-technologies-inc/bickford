@@ -95,9 +95,11 @@ ENTITY #1
 The script uses the SAM.gov Entity Management API:
 
 - **Base URL**: `https://api.sam.gov/entity-management/v1/entities`
-- **Authentication**: API key in query parameter or header
+- **Authentication**: API key passed in `X-Api-Key` header (secure method)
 - **Rate Limits**: Varies by account type
 - **Documentation**: https://open.gsa.gov/api/entity-api/
+
+**Note**: The script uses header-based authentication (`X-Api-Key`) instead of query parameters for improved security, preventing API keys from being logged in proxy servers or browser history.
 
 ## Data Fields
 
