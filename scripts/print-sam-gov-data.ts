@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
 /**
  * Script to fetch and print SAM.gov (System for Award Management) entity data
@@ -9,7 +9,9 @@
  * API Documentation: https://open.gsa.gov/api/entity-api/
  * 
  * Usage:
- *   bun run scripts/print-sam-gov-data.ts
+ *   npm run print:sam-gov-data
+ *   # or
+ *   npx tsx scripts/print-sam-gov-data.ts
  * 
  * Environment Variables:
  *   SAM_GOV_API_KEY - Your SAM.gov API key (obtain from https://sam.gov)
