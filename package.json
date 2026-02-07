@@ -10,7 +10,8 @@
     "build:canon-console": "bun build ./apps/canon-console --outdir ./dist/canon-console",
     "serve:canon-console": "bun run --cwd ./apps/canon-console index.html",
     "validate:technical": "bun run tsx scripts/validate-technical-docs.ts",
-    "execute:technical-automation": "bun run tsx scripts/execute-technical-automation.ts"
+    "execute:technical-automation": "bun run tsx scripts/execute-technical-automation.ts",
+    "print:sam-gov-data": "bun run scripts/print-sam-gov-data.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
